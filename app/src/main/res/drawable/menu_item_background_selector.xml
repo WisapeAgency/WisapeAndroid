@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true">
+        <layer-list>
+            <item>
+                <shape>
+                    <solid android:color="@color/app_primary_transparent_10p" />
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+    <item android:state_checked="true">
+        <layer-list>
+            <item>
+                <shape>
+                    <!--<corners android:topLeftRadius="@dimen/app_dialog_radius" android:topRightRadius="@dimen/app_dialog_radius" />-->
+                    <solid android:color="@color/app_primary_transparent_10p" />
+                </shape>
+            </item>
+
+            <!--<item android:bottom="2dp">-->
+            <!--<shape>-->
+            <!--<corners android:topLeftRadius="@dimen/app_dialog_radius" android:topRightRadius="@dimen/app_dialog_radius" />-->
+            <!--<solid android:color="@color/app_tertiary" />-->
+            <!--</shape>-->
+            <!--</item>-->
+        </layer-list>
+    </item>
+
+    <item android:state_checked="false">
+        <shape>
+            <!--<corners android:topLeftRadius="@dimen/app_dialog_radius" android:topRightRadius="@dimen/app_dialog_radius" />-->
+            <solid android:color="#00000000" />
+        </shape>
+    </item>
+</selector>

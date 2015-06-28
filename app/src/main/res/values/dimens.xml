@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="span_space">16dp</dimen>
+
+    <dimen name="app_divider_height">0.5dp</dimen>
+    <dimen name="app_dialog_radius">3dp</dimen>
+    <dimen name="app_text_size_xlarge">20sp</dimen>
+    <dimen name="app_text_size_large">18sp</dimen>
+    <dimen name="app_text_size_medium">16sp</dimen>
+    <dimen name="app_text_size_small">14sp</dimen>
+
+
+    <dimen name="menu_list_item_height">60dp</dimen>
+
+    <dimen name="card_gallery_item_size_w">234dp</dimen>
+    <dimen name="card_gallery_item_size_h">342dp</dimen>
+</resources>

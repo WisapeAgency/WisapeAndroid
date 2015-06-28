@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/blur_background_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitStart" />
+
+    <LinearLayout
+        android:id="@+id/head_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:id="@+id/menu_switch"
+            android:layout_width="50dp"
+            android:layout_height="50dp">
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="12dp"
+                android:layout_centerInParent="true"
+                android:background="@mipmap/menu_switch_bg" />
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="200dp"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="@string/all_stores"
+            android:textColor="@color/app_primary"
+            android:textSize="@dimen/app_text_size_xlarge" />
+    </LinearLayout>
+
+    <com.wisape.android.view.GalleryView
+        android:id="@+id/card_gallery"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/head_bar_layout"
+        android:layout_marginTop="@dimen/span_space" />
+
+
+    <com.getbase.floatingactionbutton.AddFloatingActionButton
+        android:id="@+id/add_story"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="@dimen/span_space"
+        android:layout_marginRight="@dimen/span_space"
+        fab:fab_colorNormal="@color/app_primary"
+        fab:fab_colorPressed="@color/app_primary"
+        fab:fab_plusIconColor="#414141" />
+</RelativeLayout>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--域名 结尾不能有斜杠-->
+    <string name="app_domain">http://192.168.1.246</string>
+
+
+    <!--mobihelp config-->
+    <string name="mobihelp_config_domain">https://yileapp.freshdesk.com</string>
+    <string name="mobihelp_config_appId">linkoak-1-e0f97e44ca6c57140bf56a58cafac1cf</string>
+    <string name="mobihelp_config_appSecret">09c3cfbb5eca54b4beea0f84876be17f5b83bfec</string>
+
+    <string name="facebook_api_key">846379558782294</string>
+    <string name="facebook_api_secret_key">9d13b8fbc615255da5c65b2b2e99943f</string>
+    <string name="facebook_api_callback_uri">http://www.linkoak.com/</string>
+
+    <string name="twitter_api_key">JACxsadE96iElPPJPItTm8pwv</string>
+    <string name="twitter_api_secret_key">x6UqsXX84bKN5GecWnOeKPknVY2KPv5mpcXH3fsJbtshJ9BNoW</string>
+    <string name="twitter_api_callback_uri">http://www.linkoak.com/</string>
+
+    <string name="googleplus_api_key">521918476593-fgrroud61bgbp51hpbbgu18q9h1h5ut0.apps.googleusercontent.com</string>
+    <string name="googleplus_api_secret_key">e0QE2lQvYRKf5h-8GFMx5WjR</string>
+    <string name="googleplus_api_callback_uri">http://www.linkoak.com/oauth2callback</string>
+
+    <string name="wechat_api_key">wxe4678527750c9b24</string>
+    <string name="wechat_api_secret_key">6935bd1aac95b7833829a1b91c31a749</string>
+    <string name="wechat_api_callback_uri">www.linkoak.com</string>
+
+</resources>

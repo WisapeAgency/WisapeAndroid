@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/sdv_user_head_image"
+        android:layout_width="68dp"
+        android:layout_height="68dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="30dp"
+        fresco:roundAsCircle="true" />
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="match_parent"
+        android:layout_height="34dp"
+        android:ellipsize="end"
+        android:gravity="bottom|center_horizontal"
+        android:paddingLeft="@dimen/span_space"
+        android:paddingRight="@dimen/span_space"
+        android:singleLine="true"
+        android:text="NAME NAME"
+        android:textColor="@color/app_primary"
+        android:textSize="@dimen/app_text_size_large" />
+
+    <TextView
+        android:id="@+id/tv_mail"
+        android:layout_width="match_parent"
+        android:layout_height="34dp"
+        android:layout_marginBottom="26dp"
+        android:ellipsize="end"
+        android:gravity="top|center_horizontal"
+        android:paddingLeft="@dimen/span_space"
+        android:paddingRight="@dimen/span_space"
+        android:singleLine="true"
+        android:text="MAIL MAIL"
+        android:textColor="@color/app_primary"
+        android:textSize="@dimen/app_text_size_small" />
+
+    <!--menu item -->
+    <TextView
+        android:id="@+id/message_center"
+        style="@style/MenuListItemStyle"
+        android:text="@string/message_center" />
+
+
+    <TextView
+        android:id="@+id/help_center"
+        style="@style/MenuListItemStyle"
+        android:text="@string/help_center" />
+
+    <TextView
+        android:id="@+id/clear_buffer"
+        style="@style/MenuListItemStyle"
+        android:text="@string/clear_buffer" />
+
+    <TextView
+        android:id="@+id/about_Linkoak"
+        style="@style/MenuListItemStyle"
+        android:text="@string/about_Linkoak" />
+
+
+    <!--login out-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/exit"
+            style="@style/MenuListItemStyle"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/span_space"
+            android:text="@string/exit_login" />
+    </RelativeLayout>
+</LinearLayout>

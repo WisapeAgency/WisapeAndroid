@@ -1,0 +1,30 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+    </style>
+
+    <style name="HorizontalLine" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">0.25dp</item>
+        <item name="android:background">@color/app_primary</item>
+    </style>
+
+    <style name="VerticalLine" parent="">
+        <item name="android:layout_width">0.25dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@color/app_primary</item>
+    </style>
+
+
+    <style name="MenuListItemStyle" parent="">
+        <item name="android:clickable">true</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/menu_list_item_height</item>
+        <item name="android:background">@drawable/menu_item_background_selector</item>
+        <item name="android:textColor">@color/menu_item_text_selector</item>
+        <item name="android:textSize">@dimen/app_text_size_medium</item>
+        <item name="android:gravity">center</item>
+    </style>
+</resources>

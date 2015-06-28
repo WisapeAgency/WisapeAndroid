@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="16dp"
+        android:background="@drawable/main_view_card_item_head" />
+
+    <RelativeLayout
+        android:layout_width="@dimen/card_gallery_item_size_w"
+        android:layout_height="390dp">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/card_album"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/card_gallery_item_size_h"
+            fresco:roundBottomLeft="false"
+            fresco:roundBottomRight="false"
+            fresco:roundTopLeft="true"
+            fresco:roundTopRight="true"
+            fresco:roundedCornerRadius="@dimen/app_dialog_radius"
+            fresco:roundingBorderWidth="1dp" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_below="@id/card_album"
+            android:background="@drawable/background_bottom_round"
+            android:paddingLeft="16dp">
+
+
+            <RelativeLayout
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_alignParentRight="true"
+                android:paddingRight="16dp">
+
+                <ImageView
+                    android:layout_width="3.5dp"
+                    android:layout_height="14dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:background="@mipmap/more_button" />
+            </RelativeLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/shadow_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/gallery_item_shadow_bg" />
+    </RelativeLayout>
+
+
+    <com.wisape.android.view.TextView
+        android:id="@+id/story_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/span_space"
+        android:layout_marginRight="@dimen/span_space"
+        android:layout_marginTop="@dimen/span_space"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:singleLine="true"
+        android:textColor="@color/app_primary"
+        android:textSize="@dimen/app_text_size_large" />
+
+</LinearLayout>

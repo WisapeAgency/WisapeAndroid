@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@mipmap/navbg" />
+
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/main_drawer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <!--Main -->
+        <fragment
+            android:id="@+id/main_view"
+            android:name="com.wisape.android.fragment.CardGalleryFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+
+        <!--Left menu-->
+        <fragment
+            android:id="@+id/left_menu"
+            android:name="com.wisape.android.fragment.MainMenuFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="left"
+            android:layout_marginRight="13dp" />
+
+    </android.support.v4.widget.DrawerLayout>
+</RelativeLayout>

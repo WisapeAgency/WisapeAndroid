@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Wisape</string>
+
+    <!--Login-->
+    <string name="login_with_third">"Sign in with the follow apps"</string>
+
+    <!--Main menu -->
+    <string name="message_center">Message center</string>
+    <string name="help_center">Help center</string>
+    <string name="clear_buffer">Clear buffer</string>
+    <string name="about_Linkoak">About Linkoad</string>
+    <string name="exit_login">Exit login</string>
+    <string name="all_stores">All Stores</string>
+
+
+    <!-- Photo Selector -->
+    <string name="photo_selector_activity_label">照片选择</string>
+    <string name="photo_bucket_all">全部照片</string>
+
+</resources>
