@@ -15,35 +15,22 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.wisape.android.R;
-import com.wisape.android.common.PhotoSelector;
 import com.wisape.android.bean.AppPhotoInfo;
 import com.wisape.android.bean.PhotoBucketInfo;
-import com.wisape.android.widget.PhotoWallAdapter;
+import com.wisape.android.common.PhotoSelector;
+import com.wisape.android.widget.PhotoWallsAdapter;
 
 /**
  * Created by LeiGuoting on 17/6/15.
  */
-public class PhotoWallsFragment extends BaseFragment implements LoaderManager.LoaderCallbacks<Message>{
+public class PhotoWallsFragment extends BaseFragment implements LoaderManager.LoaderCallbacks<Message> {
     private static final String TAG = PhotoWallsFragment.class.getSimpleName();
     private static final int LOADER_ID = 1;
 
     public static final String EXTRA_BUCKET_ID = "extra_bucket_id";
 
-    private PhotoWallAdapter adapter;
+    private PhotoWallsAdapter adapter;
     private long bucketId;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        Bundle extras;
-        if(null != savedInstanceState){
-            extras = savedInstanceState;
-        }else{
-            extras = getArguments();
-        }
-        bucketId = extras.getLong(EXTRA_BUCKET_ID);
-    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -54,24 +41,18 @@ public class PhotoWallsFragment extends BaseFragment implements LoaderManager.Lo
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        RecyclerView view = (RecyclerView)inflater.inflate(R.layout.fragment_photo_walls, container, false);
+        RecyclerView view = (RecyclerView) inflater.inflate(R.layout.fragment_photo_walls, container, false);
         final Context context = getActivity().getApplicationContext();
         GridLayoutManager layoutManager = new GridLayoutManager(context, 4);
         view.setLayoutManager(layoutManager);
-        adapter = new PhotoWallAdapter();
+        adapter = new PhotoWallsAdapter();
         view.setAdapter(adapter);
         return view;
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        getLoaderManager().initLoader(LOADER_ID, null, this);
-    }
-
-    @Override
     public Loader<Message> onCreateLoader(int id, Bundle args) {
-        if(LOADER_ID != id){
+        if (LOADER_ID != id) {
             return null;
         }
 
@@ -84,9 +65,9 @@ public class PhotoWallsFragment extends BaseFragment implements LoaderManager.Lo
                 AppPhotoInfo[] photos;
                 Message msg = Message.obtain();
                 try {
-                    if(0 == bucketId){
+                    if (0 == bucketId) {
                         photos = selector.acquireAllPhotos(context);
-                    }else{
+                    } else {
                         photos = selector.acquirePhotos(context, bucketId);
                     }
 
@@ -94,7 +75,7 @@ public class PhotoWallsFragment extends BaseFragment implements LoaderManager.Lo
 
                     AppPhotoInfo[] newDatas = new AppPhotoInfo[size + 1];
                     newDatas[0] = new AppPhotoInfo(AppPhotoInfo.VIEW_TYPE_CAMERA);
-                    if(0 < size){
+                    if (0 < size) {
                         System.arraycopy(photos, 0, newDatas, 1, size);
                     }
                     photos = newDatas;
@@ -121,17 +102,17 @@ public class PhotoWallsFragment extends BaseFragment implements LoaderManager.Lo
 
     @Override
     public void onLoadFinished(Loader<Message> loader, Message data) {
-        if(isDetached() || null == data){
+        if (isDetached() || null == data) {
             return;
         }
 
         try {
-            if(1 == data.what){
+            if (1 == data.what) {
                 AppPhotoInfo[] photos = (AppPhotoInfo[]) data.obj;
                 Log.d(TAG, "# onLoadFinished, photos:" + photos.length);
                 adapter.update(photos);
             }
-        }finally {
+        } finally {
             data.recycle();
         }
     }
@@ -139,6 +120,14 @@ public class PhotoWallsFragment extends BaseFragment implements LoaderManager.Lo
     @Override
     public void onLoaderReset(Loader<Message> loader) {
         //do nothing
+    }
+
+    public void updateData(AppPhotoInfo[] photos){
+        if (isDetached() || null == photos) {
+            return;
+        }
+
+        adapter.update(photos);
     }
 
     @Override

@@ -63,13 +63,4 @@ public class PhotoBucketInfo implements Parcelable, Cloneable{
         this.thumbData = in.readString();
     }
 
-    public static final Creator<PhotoBucketInfo> CREATOR = new Creator<PhotoBucketInfo>() {
-        public PhotoBucketInfo createFromParcel(Parcel source) {
-            return new PhotoBucketInfo(source);
-        }
-
-        public PhotoBucketInfo[] newArray(int size) {
-            return new PhotoBucketInfo[size];
-        }
-    };
 }

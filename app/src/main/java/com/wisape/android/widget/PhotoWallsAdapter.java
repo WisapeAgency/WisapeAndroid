@@ -31,8 +31,8 @@ import static com.wisape.android.bean.AppPhotoInfo.VIEW_TYPE_PHOTO;
 /**
  * Created by LeiGuoting on 10/6/15.
  */
-public class PhotoWallAdapter extends RecyclerView.Adapter<RecyclerHolder>{
-    private static final String TAG = PhotoWallAdapter.class.getSimpleName();
+public class PhotoWallsAdapter extends RecyclerView.Adapter<RecyclerHolder>{
+    private static final String TAG = PhotoWallsAdapter.class.getSimpleName();
     private AppPhotoItemData[] datas;
 
     public void update(AppPhotoItemData[] datas){

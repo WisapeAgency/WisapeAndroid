@@ -12,7 +12,7 @@ public class VolleyHelper{
     private static RequestQueue queue;
     private static volatile boolean initialized;
 
-    public static void init(Context context){
+    public static void initialize(Context context){
         if(initialized){
             return;
         }

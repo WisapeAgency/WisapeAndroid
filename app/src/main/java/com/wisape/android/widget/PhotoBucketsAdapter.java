@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.wisape.android.R;
+import com.wisape.android.bean.AppPhotoBucketInfo;
 import com.wisape.android.bean.PhotoBucketInfo;
 import com.wisape.android.content.PhotoProvider;
 import com.wisape.android.view.TextView;
@@ -18,12 +19,12 @@ import java.util.List;
 /**
  * Created by LeiGuoting on 15/6/15.
  */
-public class PhotoBucketAdapter extends RecyclerView.Adapter<RecyclerHolder>{
-    private static final String TAG = PhotoBucketAdapter.class.getSimpleName();
-    private List<PhotoBucketInfo> buckets;
+public class PhotoBucketsAdapter extends RecyclerView.Adapter<RecyclerHolder>{
+    private static final String TAG = PhotoBucketsAdapter.class.getSimpleName();
+    private List<AppPhotoBucketInfo> buckets;
 
-    public void update(List<PhotoBucketInfo> buckets){
-        List<PhotoBucketInfo> oldBuckets = this.buckets;
+    public void update(List<AppPhotoBucketInfo> buckets){
+        List<AppPhotoBucketInfo> oldBuckets = this.buckets;
         this.buckets = buckets;
         notifyDataSetChanged();
         if(null != oldBuckets){
@@ -55,5 +56,10 @@ public class PhotoBucketAdapter extends RecyclerView.Adapter<RecyclerHolder>{
     @Override
     public int getItemCount() {
         return null == buckets ? 0 : buckets.size();
+    }
+
+    public interface AppBucketItemData{
+        boolean isSelected();
+        void setSelected(boolean selected);
     }
 }

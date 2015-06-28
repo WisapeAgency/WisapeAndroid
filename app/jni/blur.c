@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <android/bitmap.h>
-#include "log.h"
+#include "custom_log.h"
 
 #define clamp(a,min,max) \
     ({__typeof__ (a) _a__ = (a); \

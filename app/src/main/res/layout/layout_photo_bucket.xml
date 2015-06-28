@@ -12,7 +12,6 @@
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         app:failureImage="@mipmap/ic_launcher"
-        app:retryImage="@mipmap/ic_launcher"
         />
 
     <com.wisape.android.view.TextView
@@ -30,4 +29,14 @@
         android:layout_alignParentBottom="true"
         android:layout_toEndOf="@+id/imgv_bucket_thumb"
         android:layout_toRightOf="@+id/imgv_bucket_thumb"/>
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/imgv_bucket_selected"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        app:actualImageScaleType="center"
+        app:failureImage="@mipmap/icon_selected_flag"/>
 </RelativeLayout>

@@ -14,10 +14,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.wisape.android.R;
-import com.wisape.android.bean.PhotoBucketInfo;
-import com.wisape.android.bean.PhotoInfo;
+import com.wisape.android.bean.AppPhotoBucketInfo;
+import com.wisape.android.bean.AppPhotoInfo;
 import com.wisape.android.common.PhotoSelector;
-import com.wisape.android.widget.PhotoBucketAdapter;
+import com.wisape.android.widget.PhotoBucketsAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +30,7 @@ public class PhotoBucketsFragment extends BaseFragment implements LoaderManager.
     private static final int LOADER_ID = 1;
     private static final long ALL_IN_ONE_BUCKET_ID = 0;
 
-    private PhotoBucketAdapter bucketAdapter;
+    private PhotoBucketsAdapter bucketAdapter;
 
     @Nullable
     @Override
@@ -39,7 +39,7 @@ public class PhotoBucketsFragment extends BaseFragment implements LoaderManager.
         RecyclerView bucketRecyclerView = (RecyclerView) inflater.inflate(R.layout.fragment_photo_buckets,container, false);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
         bucketRecyclerView.setLayoutManager(layoutManager);
-        bucketAdapter = new PhotoBucketAdapter();
+        bucketAdapter = new PhotoBucketsAdapter();
         bucketRecyclerView.setAdapter(bucketAdapter);
         return bucketRecyclerView;
     }
@@ -56,19 +56,19 @@ public class PhotoBucketsFragment extends BaseFragment implements LoaderManager.
                 Message msg = Message.obtain();
                 try {
                     final Context context = getContext();
-                    List<PhotoBucketInfo> buckets = PhotoSelector.instance(PhotoInfo.class, PhotoBucketInfo.class).acquireBuckets(context);
+                    List<AppPhotoBucketInfo> buckets = PhotoSelector.instance(AppPhotoInfo.class, AppPhotoBucketInfo.class).acquireBuckets(context);
                     int size = (null == buckets ? 0 : buckets.size());
                     if(0 != size){
-                        PhotoBucketInfo allInOneBucket = new PhotoBucketInfo();
-                        allInOneBucket.id = ALL_IN_ONE_BUCKET_ID;
-                        allInOneBucket.displayName = context.getString(R.string.photo_bucket_all);
+                        AppPhotoBucketInfo allInBucket = new AppPhotoBucketInfo();
+                        allInBucket.id = ALL_IN_ONE_BUCKET_ID;
+                        allInBucket.displayName = context.getString(R.string.photo_bucket_all);
                         int total = 0;
-                        for(PhotoBucketInfo bucket : buckets){
+                        for(AppPhotoBucketInfo bucket : buckets){
                             total += bucket.childrenCount;
                         }
-                        allInOneBucket.childrenCount = total;
-                        List<PhotoBucketInfo> newBuckets = new ArrayList(size + 1);
-                        newBuckets.add(allInOneBucket);
+                        allInBucket.childrenCount = total;
+                        List<AppPhotoBucketInfo> newBuckets = new ArrayList(size + 1);
+                        newBuckets.add(allInBucket);
                         newBuckets.addAll(buckets);
                         buckets.clear();
                         msg.obj = newBuckets;
@@ -98,7 +98,7 @@ public class PhotoBucketsFragment extends BaseFragment implements LoaderManager.
 
         try {
             if (null != data.obj) {
-                List<PhotoBucketInfo> buckets = (List<PhotoBucketInfo>) data.obj;
+                List<AppPhotoBucketInfo> buckets = (List<AppPhotoBucketInfo>) data.obj;
                 bucketAdapter.update(buckets);
             }
         } finally {
@@ -109,6 +109,14 @@ public class PhotoBucketsFragment extends BaseFragment implements LoaderManager.
     @Override
     public void onLoaderReset(Loader<Message> loader) {
         //do nothing
+    }
+
+    public void updateData(List<AppPhotoBucketInfo> buckets){
+        if(isDetached()){
+            return;
+        }
+
+        bucketAdapter.update(buckets);
     }
 
     @Override
