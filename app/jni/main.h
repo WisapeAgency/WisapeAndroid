@@ -1,8 +1,7 @@
 #include <jni.h>
-#include "android/log.h"
 #include <string.h>
 #include <android/bitmap.h>
-#include "log.h"
+#include "custom_log.h"
 
 #ifndef __KK__MAIN__
 #define __KK__MAIN__

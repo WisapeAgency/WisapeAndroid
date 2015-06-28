@@ -15,7 +15,7 @@ public class WisapeApplication extends Application {
     public void onCreate() {
         super.onCreate();
         final Context context = getApplicationContext();
-        VolleyHelper.init(context);
+        VolleyHelper.initialize(context);
         Fresco.initialize(context);
     }
 }
