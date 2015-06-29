@@ -82,6 +82,7 @@ public class LoginActivity extends BaseCompatActivity implements View.OnClickLis
         Resources resources = getResources();
         switch (v.getId()) {
             case R.id.join:
+                /*
                 ServerAPI.getAPI(this).loginOrRegWithEmail(
                         mUsernameEdt.getText().toString().trim(),
                         mPasswordEdt.getText().toString().trim(),
@@ -96,6 +97,10 @@ public class LoginActivity extends BaseCompatActivity implements View.OnClickLis
 
                             }
                         });
+                */
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
+                finish();
                 break;
             case R.id.connect_with_facebook:
                 OAuthParams paramsFB = new OAuthParams(
