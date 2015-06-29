@@ -12,18 +12,19 @@
 
     <string name="facebook_api_key">900883746624807</string>
     <string name="facebook_api_secret_key">3c4d60f743ca8b81b40bbe73d7120e45</string>
-    <string name="facebook_api_callback_uri">http://www.wisape.com/</string>
+    <string name="facebook_api_callback_uri">http://localhost</string>
 
     <string name="twitter_api_key">JACxsadE96iElPPJPItTm8pwv</string>
     <string name="twitter_api_secret_key">x6UqsXX84bKN5GecWnOeKPknVY2KPv5mpcXH3fsJbtshJ9BNoW</string>
-    <string name="twitter_api_callback_uri">http://www.wisape.com/</string>
+    <string name="twitter_api_callback_uri">http://localhost</string>
 
-    <string name="googleplus_api_key">521918476593-fgrroud61bgbp51hpbbgu18q9h1h5ut0.apps.googleusercontent.com</string>
-    <string name="googleplus_api_secret_key">e0QE2lQvYRKf5h-8GFMx5WjR</string>
-    <string name="googleplus_api_callback_uri">http://www.wisape.com/oauth2callback</string>
+    <string name="googleplus_api_key_debug">79156317172-cpinejp27ccjndpeqsjllfut5er5f3ds.apps.googleusercontent.com</string>
+    <string name="googleplus_api_key">79156317172-p7itv4v8f64sk4kl6clh3s736ar12ho6.apps.googleusercontent.com</string>
+    <string name="googleplus_api_secret_key">AIzaSyBJ9--O7vZVxfOAwlcXV-3zc7fX57Vz3x4</string>
+    <string name="googleplus_api_callback_uri">urn:ietf:wg:oauth:2.0:oob</string>
 
-    <string name="wechat_api_key">wxe4678527750c9b24</string>
-    <string name="wechat_api_secret_key">6935bd1aac95b7833829a1b91c31a749</string>
-    <string name="wechat_api_callback_uri">www.wisape.com</string>
 
+    <string name="wechat_api_key">wx95e5a7049774a0cd</string>
+    <string name="wechat_api_secret_key">cabf7fbf4ccbd13306aab4c6e2dfff37</string>
+    <string name="wechat_api_callback_uri">http://localhost</string>
 </resources>
