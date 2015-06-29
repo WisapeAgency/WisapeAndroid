@@ -21,11 +21,17 @@ android {
     }
 
     signingConfigs {
+        release {
+            storeFile file("wisape.keystore")
+            storePassword "wisape2015"
+            keyAlias "wisape.com"
+            keyPassword "wisape2015"
+        }
     }
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
