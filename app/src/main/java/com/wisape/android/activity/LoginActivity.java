@@ -71,7 +71,7 @@ public class LoginActivity extends BaseCompatActivity implements View.OnClickLis
     }
 
     private void initWechat() {
-        String wechatkey = getResources().getString(R.string.wechat_api_key);
+        String wechatkey = getResources().getString(R.string.wechat_official_accounts_api_key);
         mApi = WXAPIFactory.createWXAPI(this, wechatkey, true);
         mApi.registerApp(wechatkey);
         mApi.handleIntent(getIntent(), this);
