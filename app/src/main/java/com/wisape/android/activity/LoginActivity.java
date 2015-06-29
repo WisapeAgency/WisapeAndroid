@@ -1,6 +1,7 @@
 package com.wisape.android.activity;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -12,6 +13,7 @@ import com.tencent.mm.sdk.modelmsg.SendAuth;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.IWXAPIEventHandler;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
+import com.wisape.android.BuildConfig;
 import com.wisape.android.R;
 import com.wisape.android.common.UserManager;
 import com.wisape.android.network.ServerAPI;
@@ -77,6 +79,7 @@ public class LoginActivity extends BaseCompatActivity implements View.OnClickLis
 
     @Override
     public void onClick(View v) {
+        Resources resources = getResources();
         switch (v.getId()) {
             case R.id.join:
                 ServerAPI.getAPI(this).loginOrRegWithEmail(
@@ -100,9 +103,9 @@ public class LoginActivity extends BaseCompatActivity implements View.OnClickLis
                         OAuthParams.OAUTH_FACEBOOK,
                         "Facebook",
                         "public_profile  email",
-                        getResources().getString(R.string.facebook_api_key),
-                        getResources().getString(R.string.facebook_api_secret_key),
-                        getResources().getString(R.string.facebook_api_callback_uri));
+                        resources.getString(R.string.facebook_api_key),
+                        resources.getString(R.string.facebook_api_secret_key),
+                        resources.getString(R.string.facebook_api_callback_uri));
                 OAuthActivity.start(LoginActivity.this, paramsFB, REQUEST_CODE_FACEBOOK_LOGIN);
                 break;
             case R.id.connect_with_twitter:
@@ -111,9 +114,9 @@ public class LoginActivity extends BaseCompatActivity implements View.OnClickLis
                         OAuthParams.OAUTH_TWITTER,
                         "Twitter",
                         "",
-                        getResources().getString(R.string.twitter_api_key),
-                        getResources().getString(R.string.twitter_api_secret_key),
-                        getResources().getString(R.string.twitter_api_callback_uri));
+                        resources.getString(R.string.twitter_api_key),
+                        resources.getString(R.string.twitter_api_secret_key),
+                        resources.getString(R.string.twitter_api_callback_uri));
                 OAuthActivity.start(LoginActivity.this, paramsTw, REQUEST_CODE_TWITTER_LOGIN);
                 break;
             case R.id.connect_with_googleplus:
@@ -122,9 +125,9 @@ public class LoginActivity extends BaseCompatActivity implements View.OnClickLis
                         OAuthParams.OAUTH_GOOGLEPLUS,
                         "Google+",
                         "openid email profile",
-                        getResources().getString(R.string.googleplus_api_key),
-                        getResources().getString(R.string.googleplus_api_secret_key),
-                        getResources().getString(R.string.googleplus_api_callback_uri));
+                        resources.getString(BuildConfig.DEBUG ? R.string.googleplus_api_key_debug : R.string.googleplus_api_key),
+                        resources.getString(R.string.googleplus_api_secret_key),
+                        resources.getString(R.string.googleplus_api_callback_uri));
                 OAuthActivity.start(LoginActivity.this, paramsGp, REQUEST_CODE_GOOGLEPLUS_LOGIN);
                 break;
             case R.id.connect_with_wechat:
