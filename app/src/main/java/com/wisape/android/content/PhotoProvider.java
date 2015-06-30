@@ -11,6 +11,7 @@ import android.os.CancellationSignal;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
 
+import com.wisape.android.bean.AppPhotoBucketInfo;
 import com.wisape.android.common.PhotoSelector;
 import com.wisape.android.bean.AppPhotoInfo;
 import com.wisape.android.bean.PhotoBucketInfo;
@@ -92,7 +93,7 @@ public class PhotoProvider extends ContentProvider{
         }
         long id = Long.parseLong(uri.getQueryParameter(EXTRA_ID));
         String data = null;
-        PhotoSelector<AppPhotoInfo, PhotoBucketInfo> selector = PhotoSelector.instance(AppPhotoInfo.class, PhotoBucketInfo.class);
+        PhotoSelector<AppPhotoInfo, PhotoBucketInfo> selector = PhotoSelector.instance(AppPhotoInfo.class, AppPhotoBucketInfo.class);
         final Context context = getContext();
         if(PATH_THUMB_BUCKET.equals(path)){
             data = selector.acquireBucketMiniThumbData(context, id);

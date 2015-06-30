@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
@@ -31,7 +32,7 @@ import java.util.List;
  * Created by LeiGuoting on 10/6/15.
  */
 public class PhotoSelectorActivity extends BaseCompatActivity implements LoaderManager.LoaderCallbacks<Message>,
-        PhotoWallsFragment.WallsCallback {
+        PhotoWallsFragment.WallsCallback, PhotoBucketsFragment.BucketsCallback {
     private static final String TAG = "PhotoSelector";
     private static final int WHAT_PHOTOS = 1;
     private static final int WHAT_BUCKETS = 2;
@@ -77,6 +78,12 @@ public class PhotoSelectorActivity extends BaseCompatActivity implements LoaderM
     @Override
     public void onSwitchToBuckets() {
         getSupportLoaderManager().restartLoader(WHAT_BUCKETS, null, this);
+    }
+
+    @Override
+    public void onNewBucketSelected(long bucketId){
+        loadPhotos(bucketId);
+        getSupportFragmentManager().popBackStack();
     }
 
     @Override
@@ -131,7 +138,9 @@ public class PhotoSelectorActivity extends BaseCompatActivity implements LoaderM
                         fragment.setArguments(args);
                         args.putParcelableArrayList(EXTRA_BUCKET_LIST, buckets);
                         fragment.setHasOptionsMenu(true);
-                        fragmentManager.beginTransaction().replace(CONTENT_ID, fragment).commitAllowingStateLoss();
+                        FragmentTransaction transaction = fragmentManager.beginTransaction();
+                        transaction.setCustomAnimations(R.anim.photo_selector_enter, 0, 0, R.anim.photo_selector_exit);
+                        transaction.addToBackStack("buckets").add(CONTENT_ID, fragment).commitAllowingStateLoss();
                     }
                     break;
 
