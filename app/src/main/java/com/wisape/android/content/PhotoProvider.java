@@ -27,7 +27,7 @@ import static android.content.ContentResolver.SCHEME_CONTENT;
 public class PhotoProvider extends ContentProvider{
     private static final String TAG = PhotoProvider.class.getSimpleName();
 
-    private static final String AUTHORITY = "com.yile.linkoak.photo";
+    private static final String AUTHORITY = "com.wisape.photo";
     private static final String PATH_THUMB_BUCKET = "/thumb/bucket";
     private static final String PATH_THUMB_PHOTO = "/thumb/photo";
     private static final String EXTRA_ID = "extra_id";
@@ -86,7 +86,7 @@ public class PhotoProvider extends ContentProvider{
     @Override
     public AssetFileDescriptor openTypedAssetFile(Uri uri, String mimeTypeFilter, Bundle opts, CancellationSignal signal) throws FileNotFoundException {
         String path = uri.getPath();
-        //Log.d(TAG,"# openTypedAssetFile uri:" + uri + ", path:" + path);
+        Log.d(TAG,"#openTypedAssetFile uri:" + uri + ", path:" + path + ", PATH_THUMB_BUCKET:" + PATH_THUMB_BUCKET + ", currentThread:" + Thread.currentThread().getName());
         if(null == path || 0 == path.length()){
             return null;
         }
@@ -101,10 +101,12 @@ public class PhotoProvider extends ContentProvider{
         }
 
         if(null == data){
+            Log.d(TAG, "#openTypedAssetFile data is null");
             return null;
         }
 
         Uri thumbUri = FrescoUriUtils.fromFilePath(data);
+        Log.d(TAG, "#openTypedAssetFile thumbUri:" + thumbUri.toString());
         return super.openTypedAssetFile(thumbUri, mimeTypeFilter, opts, signal);
     }
 
