@@ -45,7 +45,7 @@
             android:launchMode="singleTop" />
 
         <provider
-            android:authorities="com.wisape.wisape.photo"
+            android:authorities="com.wisape.photo"
             android:name="com.wisape.android.content.PhotoProvider"
             android:syncable="false"
             android:exported="false"

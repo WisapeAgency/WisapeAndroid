@@ -84,7 +84,7 @@ public class PhotoWallsAdapter extends RecyclerView.Adapter<RecyclerHolder>{
                 if(0 < index && index < (length - 1)){
                     String suffix = path.substring(index + 1, path.length());
                     if("PNG".equals(suffix.toUpperCase())){
-                        postProcessor = new PngPostprocessor(itemWidth, itemHeight);
+                        postProcessor = new PngResizePostprocessor(itemWidth, itemHeight);
                     }
                 }
 
@@ -122,49 +122,6 @@ public class PhotoWallsAdapter extends RecyclerView.Adapter<RecyclerHolder>{
     @Override
     public int getItemCount() {
         return null == datas ? 0 : datas.length;
-    }
-
-    private static class PngPostprocessor extends BasePostprocessor{
-        private final int viewWidth;
-
-        PngPostprocessor(int viewWidth, int viewHeight){
-            this.viewWidth = viewWidth;
-        }
-
-        @Override
-        public CloseableReference<Bitmap> process(Bitmap sourceBitmap, PlatformBitmapFactory bitmapFactory) {
-            int bmpWidth = sourceBitmap.getWidth();
-            int bmpHeight = sourceBitmap.getHeight();
-            Log.d(TAG, "#process bitmap oldWidth:" + bmpWidth + ", oldHeight:" + bmpHeight);
-            if(bmpWidth <= viewWidth){
-                return super.process(sourceBitmap, bitmapFactory);
-            }else{
-                int newWidth = viewWidth;
-                float scaleWidth = (float) newWidth / (float)bmpWidth;
-                int newHeight = (int)(((float)bmpHeight) * scaleWidth);
-                float scaleHeight = (float) newHeight / bmpHeight;
-
-                CloseableReference<Bitmap> bitmapRef = bitmapFactory.createBitmap(newWidth, newHeight);
-                Matrix matrix = new Matrix();
-                matrix.postScale(scaleWidth, scaleHeight);
-
-                Bitmap newBitmap = Bitmap.createBitmap(sourceBitmap, 0, 0, bmpWidth, bmpHeight, matrix, true);
-                CloseableReference var4;
-                try {
-                    Bitmaps.copyBitmap(bitmapRef.get(), newBitmap);
-                    var4 = CloseableReference.cloneOrNull(bitmapRef);
-                } finally {
-                    CloseableReference.closeSafely(bitmapRef);
-                }
-
-                return var4;
-            }
-        }
-
-        @Override
-        public String getName() {
-            return "PNG-Postprocessor";
-        }
     }
 
     public interface AppPhotoItemData extends RecyclerViewType{

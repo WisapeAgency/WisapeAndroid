@@ -1,5 +1,6 @@
 package com.wisape.android.widget;
 
+import android.graphics.PointF;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -7,7 +8,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.common.ResizeOptions;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
+import com.facebook.imagepipeline.request.Postprocessor;
 import com.wisape.android.R;
 import com.wisape.android.bean.AppPhotoBucketInfo;
 import com.wisape.android.bean.PhotoBucketInfo;
@@ -46,17 +53,33 @@ public class PhotoBucketsAdapter extends RecyclerView.Adapter<RecyclerHolder>{
 
     @Override
     public void onBindViewHolder(RecyclerHolder holder, int position) {
-        View parent = holder.itemView;
-        TextView titleTxtv = (TextView) parent.findViewById(R.id.txtv_bucket_title);
-        TextView messageTxtv = (TextView) parent.findViewById(R.id.txtv_bucket_message);
+        View itemView = holder.itemView;
+        TextView titleTxtv = (TextView) itemView.findViewById(R.id.txtv_bucket_title);
+        TextView messageTxtv = (TextView) itemView.findViewById(R.id.txtv_bucket_message);
         final PhotoBucketInfo bucket = buckets.get(position);
         titleTxtv.setText(bucket.displayName);
         messageTxtv.setText(Integer.toString(bucket.childrenCount));
 
-        final SimpleDraweeView icon = (SimpleDraweeView) parent.findViewById(R.id.imgv_bucket_thumb);
+        final SimpleDraweeView thumb = (SimpleDraweeView) itemView.findViewById(R.id.imgv_bucket_thumb);
+        final ViewGroup.LayoutParams layoutParams = thumb.getLayoutParams();
+        final int itemWidth = layoutParams.width;
+        final int itemHeight = layoutParams.height;
         Uri uri = PhotoProvider.getBucketThumbUri(bucket.id);
-        Log.d(TAG, "#onBindViewHolder uri:" + uri.toString());
-        icon.setImageURI(uri);
+        ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
+                .setResizeOptions(new ResizeOptions(itemWidth, itemHeight))
+                .setProgressiveRenderingEnabled(true)
+                .setLocalThumbnailPreviewsEnabled(true)
+                .setPostprocessor(new PngResizePostprocessor(itemWidth, itemHeight))
+                .setAutoRotateEnabled(true)
+                .build();
+
+        DraweeController controller = Fresco.newDraweeControllerBuilder()
+                .setOldController(thumb.getController())
+                .setImageRequest(request)
+                .setAutoPlayAnimations(false)
+                .build();
+        thumb.getHierarchy().setActualImageFocusPoint(new PointF(0.5f, 0.5f));
+        thumb.setController(controller);
     }
 
     @Override

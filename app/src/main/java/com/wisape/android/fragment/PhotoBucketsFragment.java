@@ -6,6 +6,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -53,6 +55,11 @@ public class PhotoBucketsFragment extends BaseFragment{
         bucketRecyclerView.setLayoutManager(layoutManager);
         bucketRecyclerView.setAdapter(bucketAdapter);
         return bucketRecyclerView;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.photo_backets, menu);
     }
 
     public void updateData(List<AppPhotoBucketInfo> buckets){
