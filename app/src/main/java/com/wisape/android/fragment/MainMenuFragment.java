@@ -10,6 +10,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.freshdesk.mobihelp.Mobihelp;
 import com.freshdesk.mobihelp.MobihelpConfig;
 import com.wisape.android.R;
+import com.wisape.android.activity.PhotoSelectorActivity;
 import com.wisape.android.util.FrescoFactory;
 
 import butterknife.ButterKnife;
@@ -49,12 +50,19 @@ public class MainMenuFragment extends BaseFragment {
 
 
     @OnClick(R.id.help_center)
-    public void onHelpCenterClick(View view){
+    @SuppressWarnings("unused")
+    protected void onHelpCenterClick(View view){
         String domain = getString(R.string.mobihelp_config_domain),
                 appId = getString(R.string.mobihelp_config_appId),
                 appSecret = getString(R.string.mobihelp_config_appSecret);
         Mobihelp.init(getActivity(), new MobihelpConfig(domain,appId,appSecret));
         //Mobihelp.clearUserData(getActivity());
         Mobihelp.showSupport(getActivity());
+    }
+
+    @OnClick(R.id.tv_name)
+    @SuppressWarnings("unused")
+    protected void onNameClicked(){
+        PhotoSelectorActivity.launch(this, 0);
     }
 }

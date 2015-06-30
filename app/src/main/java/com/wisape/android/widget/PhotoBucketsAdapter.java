@@ -23,6 +23,12 @@ public class PhotoBucketsAdapter extends RecyclerView.Adapter<RecyclerHolder>{
     private static final String TAG = PhotoBucketsAdapter.class.getSimpleName();
     private List<AppPhotoBucketInfo> buckets;
 
+    public PhotoBucketsAdapter(){}
+
+    public PhotoBucketsAdapter(List<AppPhotoBucketInfo> buckets){
+        this.buckets = buckets;
+    }
+
     public void update(List<AppPhotoBucketInfo> buckets){
         List<AppPhotoBucketInfo> oldBuckets = this.buckets;
         this.buckets = buckets;

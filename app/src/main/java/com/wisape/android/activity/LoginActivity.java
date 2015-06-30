@@ -45,8 +45,6 @@ public class LoginActivity extends BaseCompatActivity implements View.OnClickLis
     ImageView mTwitter;
     @InjectView(R.id.connect_with_googleplus)
     ImageView mGoogleplus;
-    @InjectView(R.id.connect_with_wechat)
-    ImageView mWechat;
     @InjectView(R.id.username)
     EditText mUsernameEdt;
     @InjectView(R.id.password)
@@ -65,7 +63,6 @@ public class LoginActivity extends BaseCompatActivity implements View.OnClickLis
         mFacebook.setOnClickListener(this);
         mTwitter.setOnClickListener(this);
         mGoogleplus.setOnClickListener(this);
-        mWechat.setOnClickListener(this);
 
         initWechat();
     }
@@ -134,13 +131,6 @@ public class LoginActivity extends BaseCompatActivity implements View.OnClickLis
                         resources.getString(R.string.googleplus_api_secret_key),
                         resources.getString(R.string.googleplus_api_callback_uri));
                 OAuthActivity.start(LoginActivity.this, paramsGp, REQUEST_CODE_GOOGLEPLUS_LOGIN);
-                break;
-            case R.id.connect_with_wechat:
-                // to pull wechat
-                SendAuth.Req req = new SendAuth.Req();
-                req.scope = "snsapi_login";
-                req.state = "STATE";
-                mApi.sendReq(req);
                 break;
         }
     }

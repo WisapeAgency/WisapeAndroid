@@ -1,41 +1,36 @@
 package com.wisape.android.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Message;
 import android.support.annotation.Nullable;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.AsyncTaskLoader;
-import android.support.v4.content.Loader;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.wisape.android.R;
 import com.wisape.android.bean.AppPhotoInfo;
-import com.wisape.android.bean.PhotoBucketInfo;
-import com.wisape.android.common.PhotoSelector;
 import com.wisape.android.widget.PhotoWallsAdapter;
 
 /**
  * Created by LeiGuoting on 17/6/15.
  */
-public class PhotoWallsFragment extends BaseFragment implements LoaderManager.LoaderCallbacks<Message> {
+public class PhotoWallsFragment extends BaseFragment{
     private static final String TAG = PhotoWallsFragment.class.getSimpleName();
-    private static final int LOADER_ID = 1;
-
-    public static final String EXTRA_BUCKET_ID = "extra_bucket_id";
-
     private PhotoWallsAdapter adapter;
-    private long bucketId;
+    private WallsCallback callback;
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putLong(EXTRA_BUCKET_ID, bucketId);
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if(activity instanceof WallsCallback){
+            callback = (WallsCallback) activity;
+        }
     }
 
     @Nullable
@@ -51,82 +46,25 @@ public class PhotoWallsFragment extends BaseFragment implements LoaderManager.Lo
     }
 
     @Override
-    public Loader<Message> onCreateLoader(int id, Bundle args) {
-        if (LOADER_ID != id) {
-            return null;
-        }
-
-        return new AsyncTaskLoader<Message>(getActivity().getApplicationContext()) {
-
-            @Override
-            public Message loadInBackground() {
-                final Context context = getContext();
-                PhotoSelector<AppPhotoInfo, PhotoBucketInfo> selector = PhotoSelector.instance(AppPhotoInfo.class, PhotoBucketInfo.class);
-                AppPhotoInfo[] photos;
-                Message msg = Message.obtain();
-                try {
-                    if (0 == bucketId) {
-                        photos = selector.acquireAllPhotos(context);
-                    } else {
-                        photos = selector.acquirePhotos(context, bucketId);
-                    }
-
-                    int size = (null == photos ? 0 : photos.length);
-
-                    AppPhotoInfo[] newDatas = new AppPhotoInfo[size + 1];
-                    newDatas[0] = new AppPhotoInfo(AppPhotoInfo.VIEW_TYPE_CAMERA);
-                    if (0 < size) {
-                        System.arraycopy(photos, 0, newDatas, 1, size);
-                    }
-                    photos = newDatas;
-                    msg.what = 1;
-                    msg.obj = photos;
-                } catch (java.lang.InstantiationException e) {
-                    Log.e(TAG, "", e);
-                    msg.what = -1;
-                    msg.obj = e;
-                } catch (IllegalAccessException e) {
-                    Log.e(TAG, "", e);
-                    msg.what = -1;
-                    msg.obj = e;
-                }
-                return msg;
-            }
-
-            @Override
-            protected void onStartLoading() {
-                forceLoad();
-            }
-        };
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.photo_walls, menu);
     }
 
     @Override
-    public void onLoadFinished(Loader<Message> loader, Message data) {
-        if (isDetached() || null == data) {
-            return;
-        }
-
-        try {
-            if (1 == data.what) {
-                AppPhotoInfo[] photos = (AppPhotoInfo[]) data.obj;
-                Log.d(TAG, "# onLoadFinished, photos:" + photos.length);
-                adapter.update(photos);
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(R.id.switch_to_buckets == item.getItemId()){
+            if(null != callback){
+                callback.onSwitchToBuckets();
             }
-        } finally {
-            data.recycle();
+            return true;
         }
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Message> loader) {
-        //do nothing
+        return false;
     }
 
     public void updateData(AppPhotoInfo[] photos){
         if (isDetached() || null == photos) {
             return;
         }
-
         adapter.update(photos);
     }
 
@@ -134,5 +72,10 @@ public class PhotoWallsFragment extends BaseFragment implements LoaderManager.Lo
     public void onDetach() {
         super.onDetach();
         adapter = null;
+        callback = null;
+    }
+
+    public interface WallsCallback{
+        void onSwitchToBuckets();
     }
 }

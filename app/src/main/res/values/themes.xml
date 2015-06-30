@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="DefaultTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorPrimaryDark">@color/app_tertiary</item>
-        <item name="colorPrimary">@color/app_tertiary</item>
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="actionBarStyle">@style/AppActionBar</item>
+
+        <item name="colorPrimaryDark">@color/primary_dark_material_dark</item>
+        <item name="colorPrimary">@color/app_primary</item>
         <item name="colorAccent">@color/app_tertiary</item>
 
         <item name="android:windowContentOverlay">@null</item>
@@ -14,7 +16,7 @@
         <item name="android:textColorTertiary">@color/app_primary</item>
 
     </style>
-    <style name="NoActionBarTheme" parent="DefaultTheme">
+    <style name="NoActionBarTheme" parent="AppTheme">
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
         <item name="windowActionBar">false</item>

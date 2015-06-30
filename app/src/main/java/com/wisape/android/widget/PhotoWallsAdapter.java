@@ -93,6 +93,7 @@ public class PhotoWallsAdapter extends RecyclerView.Adapter<RecyclerHolder>{
                         .setProgressiveRenderingEnabled(true)
                         .setLocalThumbnailPreviewsEnabled(true)
                         .setPostprocessor(postProcessor)
+                        .setAutoRotateEnabled(true)
                         .build();
 
                 DraweeController controller = Fresco.newDraweeControllerBuilder()
@@ -125,11 +126,9 @@ public class PhotoWallsAdapter extends RecyclerView.Adapter<RecyclerHolder>{
 
     private static class PngPostprocessor extends BasePostprocessor{
         private final int viewWidth;
-        private final int viewHeight;
 
         PngPostprocessor(int viewWidth, int viewHeight){
             this.viewWidth = viewWidth;
-            this.viewHeight = viewHeight;
         }
 
         @Override

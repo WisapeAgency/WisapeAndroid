@@ -30,7 +30,8 @@ import java.util.List;
  * <p/>
  * Created by LeiGuoting on 10/6/15.
  */
-public class PhotoSelectorActivity extends BaseCompatActivity implements LoaderManager.LoaderCallbacks<Message> {
+public class PhotoSelectorActivity extends BaseCompatActivity implements LoaderManager.LoaderCallbacks<Message>,
+        PhotoWallsFragment.WallsCallback {
     private static final String TAG = "PhotoSelector";
     private static final int WHAT_PHOTOS = 1;
     private static final int WHAT_BUCKETS = 2;
@@ -53,14 +54,29 @@ public class PhotoSelectorActivity extends BaseCompatActivity implements LoaderM
     }
 
     private boolean isBucketView;
+    private long bucketId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (null == savedInstanceState) {
-            getSupportFragmentManager().beginTransaction().add(CONTENT_ID, new PhotoWallsFragment()).commitAllowingStateLoss();
+            Fragment fragment = new PhotoWallsFragment();
+            fragment.setHasOptionsMenu(true);
+            getSupportFragmentManager().beginTransaction().add(CONTENT_ID, fragment).commit();
         }
-        getSupportLoaderManager().initLoader(isBucketView ? WHAT_BUCKETS : WHAT_PHOTOS, null, this);
+        loadPhotos(bucketId);
+    }
+
+    private void loadPhotos(long bucketId){
+        Bundle args = new Bundle();
+        args.putLong(EXTRA_BUCKET_ID, bucketId);
+        getSupportLoaderManager().restartLoader(WHAT_PHOTOS, args, this);
+    }
+
+
+    @Override
+    public void onSwitchToBuckets() {
+        getSupportLoaderManager().restartLoader(WHAT_BUCKETS, null, this);
     }
 
     @Override
@@ -95,7 +111,7 @@ public class PhotoSelectorActivity extends BaseCompatActivity implements LoaderM
 
                 case WHAT_PHOTOS :
                     AppPhotoInfo[] photos = (AppPhotoInfo[]) data.obj;
-                    Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.photo_walls);
+                    Fragment fragment = getSupportFragmentManager().findFragmentById(/*R.id.photo_walls*/CONTENT_ID);
                     if(null != fragment){
                         PhotoWallsFragment photoWallsFragment = (PhotoWallsFragment) fragment;
                         photoWallsFragment.updateData(photos);
@@ -114,7 +130,8 @@ public class PhotoSelectorActivity extends BaseCompatActivity implements LoaderM
                         Bundle args = new Bundle();
                         fragment.setArguments(args);
                         args.putParcelableArrayList(EXTRA_BUCKET_LIST, buckets);
-                        fragmentManager.beginTransaction().add(CONTENT_ID, fragment).commitAllowingStateLoss();
+                        fragment.setHasOptionsMenu(true);
+                        fragmentManager.beginTransaction().replace(CONTENT_ID, fragment).commitAllowingStateLoss();
                     }
                     break;
 
@@ -141,11 +158,11 @@ public class PhotoSelectorActivity extends BaseCompatActivity implements LoaderM
     }
 
     private static class PhotosLoader extends AsyncTaskLoader<Message>{
-        private int bucketId;
+        private long bucketId;
 
         public PhotosLoader(Context context, Bundle args) {
             super(context);
-            bucketId = null == args ? 0 : args.getInt(EXTRA_BUCKET_ID, 0);
+            bucketId = null == args ? 0 : args.getLong(EXTRA_BUCKET_ID, 0);
         }
 
         @Override
