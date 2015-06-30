@@ -26,14 +26,19 @@ import java.util.List;
 /**
  * Created by LeiGuoting on 15/6/15.
  */
-public class PhotoBucketsAdapter extends RecyclerView.Adapter<RecyclerHolder>{
+public class PhotoBucketsAdapter extends RecyclerView.Adapter<RecyclerHolder> implements View.OnClickListener{
     private static final String TAG = PhotoBucketsAdapter.class.getSimpleName();
     private List<AppPhotoBucketInfo> buckets;
+    private BucketAdapterListener adapterListener;
 
     public PhotoBucketsAdapter(){}
 
     public PhotoBucketsAdapter(List<AppPhotoBucketInfo> buckets){
         this.buckets = buckets;
+    }
+
+    public void setBucketAdapterListener(BucketAdapterListener adapterListener){
+        this.adapterListener = adapterListener;
     }
 
     public void update(List<AppPhotoBucketInfo> buckets){
@@ -54,6 +59,8 @@ public class PhotoBucketsAdapter extends RecyclerView.Adapter<RecyclerHolder>{
     @Override
     public void onBindViewHolder(RecyclerHolder holder, int position) {
         View itemView = holder.itemView;
+        itemView.setOnClickListener(this);
+        itemView.setTag(position);
         TextView titleTxtv = (TextView) itemView.findViewById(R.id.txtv_bucket_title);
         TextView messageTxtv = (TextView) itemView.findViewById(R.id.txtv_bucket_message);
         final PhotoBucketInfo bucket = buckets.get(position);
@@ -87,8 +94,31 @@ public class PhotoBucketsAdapter extends RecyclerView.Adapter<RecyclerHolder>{
         return null == buckets ? 0 : buckets.size();
     }
 
+    @Override
+    public void onClick(View view) {
+        if(null == adapterListener){
+            return;
+        }
+
+        int position = (Integer) view.getTag();
+        AppPhotoBucketInfo bucket = buckets.get(position);
+        adapterListener.onBucketSelected(bucket.id);
+    }
+
+    public void destroy(){
+        if(null != buckets){
+            buckets.clear();
+            buckets = null;
+        }
+        adapterListener = null;
+    }
+
     public interface AppBucketItemData{
         boolean isSelected();
         void setSelected(boolean selected);
+    }
+
+    public interface BucketAdapterListener{
+        void onBucketSelected(long bucketId);
     }
 }

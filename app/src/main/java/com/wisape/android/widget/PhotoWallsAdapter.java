@@ -68,17 +68,16 @@ public class PhotoWallsAdapter extends RecyclerView.Adapter<RecyclerHolder>{
         View itemView = holder.itemView;
         SimpleDraweeView thumbView = (SimpleDraweeView)itemView.findViewById(R.id.photo_thumb);
         switch (holder.getItemViewType()){
-            default :
             case VIEW_TYPE_PHOTO :
                 AppPhotoInfo photo = (AppPhotoInfo) data;
-                Uri uri = FrescoUriUtils.fromFilePath(photo.data);
+                String path = photo.data;
+                Uri uri = FrescoUriUtils.fromFilePath(path);
 
                 final ViewGroup.LayoutParams layoutParams = itemView.getLayoutParams();
                 final int itemWidth = layoutParams.width;
                 final int itemHeight = layoutParams.height;
 
                 Postprocessor postProcessor = null;
-                String path = photo.data;
                 int index = path.lastIndexOf('.');
                 int length = path.length();
                 if(0 < index && index < (length - 1)){
@@ -112,10 +111,13 @@ public class PhotoWallsAdapter extends RecyclerView.Adapter<RecyclerHolder>{
                     selectedFlag.setVisibility(View.GONE);
                 }
                 break;
-
+            /*
             case VIEW_TYPE_CAMERA :
                 thumbView.setImageURI(FrescoUriUtils.fromResId(R.mipmap.icon_camera));
                 break;
+            */
+            default :
+                return;
         }
     }
 
