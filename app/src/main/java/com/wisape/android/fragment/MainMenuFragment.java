@@ -1,5 +1,7 @@
 package com.wisape.android.fragment;
 
+import android.app.Activity;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +33,12 @@ public class MainMenuFragment extends AbsFragment {
     TextView tvMail;
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Mobihelp.init(getActivity(), new MobihelpConfig(getString(R.string.freshdesk_domain), getString(R.string.freshdesk_key), getString(R.string.freshdesk_secret)));
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main_menu, null, false);
         ButterKnife.inject(this, rootView);
@@ -52,11 +60,6 @@ public class MainMenuFragment extends AbsFragment {
     @OnClick(R.id.help_center)
     @SuppressWarnings("unused")
     protected void onHelpCenterClick(View view){
-        String domain = getString(R.string.freshdesk_domain),
-                appId = getString(R.string.freshdesk_key),
-                appSecret = getString(R.string.freshdesk_secret);
-        Mobihelp.init(getActivity(), new MobihelpConfig(domain,appId,appSecret));
-        //Mobihelp.clearUserData(getActivity());
         Mobihelp.showSupport(getActivity());
     }
 
@@ -64,5 +67,10 @@ public class MainMenuFragment extends AbsFragment {
     @SuppressWarnings("unused")
     protected void onNameClicked(){
         UserProfileActivity.launch(getActivity(), 0);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 }
