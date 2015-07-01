@@ -2,7 +2,7 @@
     <style name="AppActionBar" parent="Widget.AppCompat.Light.ActionBar.Solid.Inverse">
         <item name="displayOptions">homeAsUp|showHome|showTitle</item>
         <item name="elevation">0dp</item>
-        <item name="homeAsUpIndicator">@mipmap/icon_back</item>
+        <item name="homeAsUpIndicator">@drawable/icon_back</item>
         <item name="titleTextStyle">@style/AppActionBar.TitleStyle</item>
     </style>
     

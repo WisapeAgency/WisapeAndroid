@@ -5,5 +5,5 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:actualImageScaleType="center"
-    app:failureImage="@mipmap/icon_camera"
-    app:placeholderImage="@mipmap/icon_camera"/>
+    app:failureImage="@drawable/icon_camera"
+    app:placeholderImage="@drawable/icon_camera"/>

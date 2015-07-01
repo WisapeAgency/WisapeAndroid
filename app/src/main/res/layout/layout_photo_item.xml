@@ -18,5 +18,5 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right|end"
         app:actualImageScaleType="center"
-        app:failureImage="@mipmap/icon_selected_flag"/>
+        app:failureImage="@drawable/icon_selected_flag"/>
 </FrameLayout>
