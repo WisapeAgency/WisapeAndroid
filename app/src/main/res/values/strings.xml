@@ -8,7 +8,7 @@
     <string name="message_center">Message center</string>
     <string name="help_center">Help center</string>
     <string name="clear_buffer">Clear buffer</string>
-    <string name="about_Linkoak">About Linkoad</string>
+    <string name="about_label">About</string>
     <string name="exit_login">Exit login</string>
     <string name="all_stores">All Stores</string>
 
@@ -18,5 +18,8 @@
     <string name="photo_bucket_list">相册列表</string>
     <string name="photo_to_buckets">切换到相册</string>
     <string name="photo_menu_buckets">相切模式</string>
+
+    <!-- User Profile -->
+    <string name="user_profile_label">用户信息</string>
 
 </resources>

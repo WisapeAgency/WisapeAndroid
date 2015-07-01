@@ -11,7 +11,7 @@ import org.json.JSONObject;
  * UserEntity
  * Created by Xugm on 15/6/16.
  */
-public class UserEntity extends BaseEntity {
+public class UserInfo extends BaseInfo {
     public int id;
     public String nick_name;
     public String user_pwd;
@@ -34,19 +34,19 @@ public class UserEntity extends BaseEntity {
     public int token_end;
     public String isDefaultUser;
 
-    public UserEntity() {
+    public UserInfo() {
     }
 
-    protected UserEntity(Parcel source) {
+    protected UserInfo(Parcel source) {
         readFromParcel(source);
     }
 
-    public static UserEntity fromJsonObject(JSONObject json) {
-        return new Gson().fromJson(json.toString(), UserEntity.class);
+    public static UserInfo fromJsonObject(JSONObject json) {
+        return new Gson().fromJson(json.toString(), UserInfo.class);
     }
 
-    public static UserEntity parse(JSONObject object) {
-        UserEntity entity = new UserEntity();
+    public static UserInfo parse(JSONObject object) {
+        UserInfo entity = new UserInfo();
         entity.id = object.optInt("id", 0);
         entity.nick_name = object.optString("nick_name", "");
         entity.user_pwd = object.optString("user_pwd", "");
@@ -72,7 +72,7 @@ public class UserEntity extends BaseEntity {
         return entity;
     }
 
-    public static JSONObject toJsonObject(UserEntity entity) throws JSONException {
+    public static JSONObject toJsonObject(UserInfo entity) throws JSONException {
         JSONObject jsonObj = new JSONObject();
         jsonObj.put("id", entity.id);
         jsonObj.put("nick_name", entity.nick_name);
@@ -152,16 +152,16 @@ public class UserEntity extends BaseEntity {
         isDefaultUser = source.readString();
     }
 
-    public static final Creator<UserEntity> CREATOR = new Creator<UserEntity>() {
+    public static final Creator<UserInfo> CREATOR = new Creator<UserInfo>() {
 
         @Override
-        public UserEntity createFromParcel(Parcel source) {
-            return new UserEntity(source);
+        public UserInfo createFromParcel(Parcel source) {
+            return new UserInfo(source);
         }
 
         @Override
-        public UserEntity[] newArray(int size) {
-            return new UserEntity[size];
+        public UserInfo[] newArray(int size) {
+            return new UserInfo[size];
         }
 
     };

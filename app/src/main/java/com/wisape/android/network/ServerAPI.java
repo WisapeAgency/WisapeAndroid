@@ -8,7 +8,7 @@ import android.text.TextUtils;
 
 import com.android.volley.Request;
 import com.wisape.android.R;
-import com.wisape.android.bean.UserEntity;
+import com.wisape.android.bean.UserInfo;
 import com.wisape.android.util.Utils;
 import com.oauth.android.OAuthParams;
 import com.oauth.android.OAuthRequestor;
@@ -142,7 +142,7 @@ public class ServerAPI {
         callAPI(url, Request.Method.GET, map, callback);
     }
 
-    public void createByThirdlogin(final APICallback callback, UserEntity userEntity, String type) {
+    public void createByThirdlogin(final APICallback callback, UserInfo userEntity, String type) {
         String url = SERVER_BASE_URL + "/Home/Index/third";
         HashMap<String, String> map = new HashMap<String, String>();
         map.put("openid", userEntity.user_ext_id);
@@ -176,7 +176,7 @@ public class ServerAPI {
         try {
             result = OAuthRequestor.get(params, token, secret, url, map);
             JSONObject object = new JSONObject(result);
-            UserEntity entity = new UserEntity();
+            UserInfo entity = new UserInfo();
             entity.user_ext_id = object.optString("id");
             entity.nick_name = object.optString("name");
             entity.user_icon_n = object.optString("profile_image_url");

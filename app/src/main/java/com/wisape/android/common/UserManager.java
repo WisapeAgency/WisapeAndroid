@@ -6,7 +6,7 @@ import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 
 import com.google.gson.Gson;
-import com.wisape.android.bean.UserEntity;
+import com.wisape.android.bean.UserInfo;
 import com.wisape.android.network.ServerAPI;
 
 import org.json.JSONException;
@@ -36,7 +36,7 @@ public class UserManager {
     private static UserManager sInstance;
     private static ArrayList<WeakReference<UserInfoListener>> sWeakRefListeners;
 
-    private static UserEntity mUserEntity;
+    private static UserInfo mUserEntity;
 
     private UserManager() {
     }
@@ -69,7 +69,7 @@ public class UserManager {
         }
     }
 
-    public void onUserInfoChanged(int type, UserEntity entity) {
+    public void onUserInfoChanged(int type, UserInfo entity) {
         Iterator<WeakReference<UserInfoListener>> iter = sWeakRefListeners.iterator();
         while (iter.hasNext()) {
             WeakReference<UserInfoListener> ref = iter.next();
@@ -83,14 +83,14 @@ public class UserManager {
     }
 
     public interface UserInfoListener {
-        void onUserInfoChanged(int type, UserEntity entity);
+        void onUserInfoChanged(int type, UserInfo entity);
     }
 
-    public UserEntity getUserInfo() {
+    public UserInfo getUserInfo() {
         String jsonString = mSp.getString(SP_USER_INFO_KEY, "");
-        UserEntity entity = null;
+        UserInfo entity = null;
         try {
-            entity = UserEntity.parse(new JSONObject(jsonString));
+            entity = UserInfo.parse(new JSONObject(jsonString));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -98,11 +98,11 @@ public class UserManager {
         return entity;
     }
 
-    public void saveUserInfo(final UserEntity entity) {
-        new AsyncTask<UserEntity, Void, UserEntity>() {
+    public void saveUserInfo(final UserInfo entity) {
+        new AsyncTask<UserInfo, Void, UserInfo>() {
 
             @Override
-            protected UserEntity doInBackground(UserEntity... params) {
+            protected UserInfo doInBackground(UserInfo... params) {
 //                sHelper.saveUserInfo(entity);
                 String jsonString = mGson.toJson(params[0]);
                 mSp.edit().putString(SP_USER_INFO_KEY, jsonString).apply();
@@ -110,7 +110,7 @@ public class UserManager {
             }
 
             @Override
-            protected void onPostExecute(UserEntity entity) {
+            protected void onPostExecute(UserInfo entity) {
                 onUserInfoChanged(USER_LOG_IN, entity);
             }
         }.execute(entity);
@@ -126,7 +126,7 @@ public class UserManager {
         ServerAPI.getAPI(context).loadFacebookProfile(token, new ServerAPI.APICallback() {
             @Override
             public void onSucces(Object result) {
-                mUserEntity = new UserEntity();
+                mUserEntity = new UserInfo();
                 JSONObject resultObj = null;
                 try {
                     resultObj = new JSONObject((String)result);
@@ -173,7 +173,7 @@ public class UserManager {
         ServerAPI.getAPI(context).loadTwitterProfile(context, token, secret, response, new ServerAPI.APICallback() {
             @Override
             public void onSucces(Object result) {
-                UserEntity entity = (UserEntity) result;
+                UserInfo entity = (UserInfo) result;
                 mUserEntity = entity;
 
                 createByThirdLogin(context, callback, USER_TYPE_TWITTER);
@@ -192,7 +192,7 @@ public class UserManager {
             public void onSucces(Object result) {
                 try {
                     JSONObject object = new JSONObject((String) result);
-                    mUserEntity = new UserEntity();
+                    mUserEntity = new UserInfo();
                     mUserEntity.user_ext_id = object.optString("id");
                     mUserEntity.email = object.optString("email");
                     mUserEntity.nick_name = object.optString("name");
@@ -215,7 +215,7 @@ public class UserManager {
         ServerAPI.getAPI(context).createByThirdlogin(new ServerAPI.APICallback() {
             @Override
             public void onSucces(Object result) {
-                UserEntity entity = null;
+                UserInfo entity = null;
                 JSONObject object = null;
                 int status = 0;
                 try {
@@ -227,7 +227,7 @@ public class UserManager {
 
                 switch (status) {
                     case 1:
-                        entity = UserEntity.fromJsonObject(object.optJSONObject("info"));
+                        entity = UserInfo.fromJsonObject(object.optJSONObject("info"));
                         break;
                     default:
                         break;
