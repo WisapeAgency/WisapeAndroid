@@ -20,7 +20,6 @@ public class AppPhotoBucketInfo extends PhotoBucketInfo implements PhotoBucketsA
         this.selected = selected;
     }
 
-
     @Override
     public int describeContents() {
         return 0;

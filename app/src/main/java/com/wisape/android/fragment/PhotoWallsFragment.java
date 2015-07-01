@@ -2,31 +2,39 @@ package com.wisape.android.fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.wisape.android.R;
 import com.wisape.android.bean.AppPhotoInfo;
 import com.wisape.android.widget.PhotoWallsAdapter;
 
+import java.io.File;
+
+import static com.wisape.android.bean.AppPhotoInfo.VIEW_TYPE_CAMERA;
+
 /**
  * Created by LeiGuoting on 17/6/15.
  */
-public class PhotoWallsFragment extends BaseFragment{
+public class PhotoWallsFragment extends BaseFragment implements PhotoWallsAdapter.PhotoItemListener {
     private static final String TAG = PhotoWallsFragment.class.getSimpleName();
+    private static final int REQUEST_CODE_CAMERA = 2;
     private PhotoWallsAdapter adapter;
     private WallsCallback callback;
+    private Uri cameraImageUri;
 
     @Override
     public void onAttach(Activity activity) {
@@ -44,8 +52,39 @@ public class PhotoWallsFragment extends BaseFragment{
         GridLayoutManager layoutManager = new GridLayoutManager(context, 4);
         view.setLayoutManager(layoutManager);
         adapter = new PhotoWallsAdapter();
+        adapter.setPhotoItemListener(this);
         view.setAdapter(adapter);
         return view;
+    }
+
+    @Override
+    public void onItemSelected(int type, AppPhotoInfo photo) {
+        if(VIEW_TYPE_CAMERA == type){
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            File photoFile = new File(Environment.getExternalStorageDirectory(),  "Pic.jpg");
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
+            cameraImageUri = Uri.fromFile(photoFile);
+            startActivityForResult(intent, REQUEST_CODE_CAMERA);
+        }else{
+            if(null != callback){
+                callback.onPhotoSelected(Uri.parse(photo.data));
+            }
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(REQUEST_CODE_CAMERA == requestCode){
+            if(resultCode == Activity.RESULT_OK){
+                if(null != callback){
+                    Uri uri = cameraImageUri;
+                    callback.onPhotoSelected(uri);
+                    cameraImageUri = null;
+                }
+            }
+        }else{
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     @Override
@@ -75,11 +114,15 @@ public class PhotoWallsFragment extends BaseFragment{
     @Override
     public void onDetach() {
         super.onDetach();
-        adapter = null;
+        if(null != adapter){
+            adapter.destroy();
+            adapter = null;
+        }
         callback = null;
     }
 
     public interface WallsCallback{
         void onSwitchToBuckets();
+        void onPhotoSelected(Uri uri);
     }
 }

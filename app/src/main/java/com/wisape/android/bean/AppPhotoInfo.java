@@ -8,8 +8,8 @@ import com.wisape.android.widget.PhotoWallsAdapter;
  * Created by LeiGuoting on 18/6/15.
  */
 public class AppPhotoInfo extends PhotoInfo implements PhotoWallsAdapter.AppPhotoItemData {
-    public static final short VIEW_TYPE_PHOTO = 0x01;
-    public static final short VIEW_TYPE_CAMERA = 0x02;
+    public static final int VIEW_TYPE_PHOTO = 0x01;
+    public static final int VIEW_TYPE_CAMERA = 0x02;
 
     private int viewType = VIEW_TYPE_PHOTO;
     private boolean selected;

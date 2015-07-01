@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -58,6 +59,7 @@ public class PhotoBucketsFragment extends BaseFragment implements PhotoBucketsAd
             bucketAdapter = new PhotoBucketsAdapter();
         }
         bucketAdapter.setBucketAdapterListener(this);
+        setTitle(R.string.photo_bucket_list);
     }
 
     @Nullable
@@ -105,13 +107,13 @@ public class PhotoBucketsFragment extends BaseFragment implements PhotoBucketsAd
     }
 
     @Override
-    public void onBucketSelected(long bucketId) {
+    public void onBucketSelected(AppPhotoBucketInfo bucket) {
         if(null != callback){
-            callback.onNewBucketSelected(bucketId);
+            callback.onNewBucketSelected(bucket);
         }
     }
 
     public interface BucketsCallback{
-        void onNewBucketSelected(long bucketId);
+        void onNewBucketSelected(AppPhotoBucketInfo bucket);
     }
 }

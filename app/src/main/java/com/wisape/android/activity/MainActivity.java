@@ -23,7 +23,6 @@ public class MainActivity extends BaseCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setTheme(R.style.NoActionBarTheme);
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);

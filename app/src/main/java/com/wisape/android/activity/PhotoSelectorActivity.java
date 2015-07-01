@@ -3,6 +3,7 @@ package com.wisape.android.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.v4.app.Fragment;
@@ -43,6 +44,7 @@ public class PhotoSelectorActivity extends BaseCompatActivity implements LoaderM
 
     public static final String EXTRA_BUCKET_ID = "extra_bucket_id";
     public static final String EXTRA_BUCKET_LIST = "extra_bucket_list";
+    public static final String EXTRA_IMAGE_URI = "extra_image_uri";
 
     public static void launch(Activity activity, int requestCode) {
         Intent intent = new Intent(activity.getApplicationContext(), PhotoSelectorActivity.class);
@@ -54,7 +56,6 @@ public class PhotoSelectorActivity extends BaseCompatActivity implements LoaderM
         fragment.startActivityForResult(intent, requestCode);
     }
 
-    private boolean isBucketView;
     private long bucketId;
 
     @Override
@@ -64,11 +65,19 @@ public class PhotoSelectorActivity extends BaseCompatActivity implements LoaderM
             Fragment fragment = new PhotoWallsFragment();
             fragment.setHasOptionsMenu(true);
             getSupportFragmentManager().beginTransaction().add(CONTENT_ID, fragment).commit();
+        } else {
+            bucketId = savedInstanceState.getLong(EXTRA_BUCKET_ID, 0);
         }
         loadPhotos(bucketId);
     }
 
-    private void loadPhotos(long bucketId){
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putLong(EXTRA_BUCKET_ID, bucketId);
+    }
+
+    private void loadPhotos(long bucketId) {
         Bundle args = new Bundle();
         args.putLong(EXTRA_BUCKET_ID, bucketId);
         getSupportLoaderManager().restartLoader(WHAT_PHOTOS, args, this);
@@ -81,8 +90,18 @@ public class PhotoSelectorActivity extends BaseCompatActivity implements LoaderM
     }
 
     @Override
-    public void onNewBucketSelected(long bucketId){
+    public void onPhotoSelected(Uri uri) {
+        Intent data = new Intent();
+        data.putExtra(EXTRA_IMAGE_URI, uri);
+        setResult(RESULT_OK, data);
+        finish();
+    }
+
+    @Override
+    public void onNewBucketSelected(AppPhotoBucketInfo bucket) {
+        bucketId = bucket.id;
         loadPhotos(bucketId);
+        getSupportActionBar().setTitle(bucket.displayName);
         getSupportFragmentManager().popBackStack();
     }
 
@@ -94,7 +113,7 @@ public class PhotoSelectorActivity extends BaseCompatActivity implements LoaderM
                 loader = null;
                 break;
 
-            case WHAT_PHOTOS :
+            case WHAT_PHOTOS:
                 loader = new PhotosLoader(getApplicationContext(), args);
                 break;
 
@@ -107,32 +126,32 @@ public class PhotoSelectorActivity extends BaseCompatActivity implements LoaderM
 
     @Override
     public void onLoadFinished(Loader<Message> loader, Message data) {
-        if(isDestroyed() || null == data){
+        if (isDestroyed() || null == data) {
             return;
         }
 
-        try{
-            switch (loader.getId()){
-                default :
+        try {
+            switch (loader.getId()) {
+                default:
                     break;
 
-                case WHAT_PHOTOS :
+                case WHAT_PHOTOS:
                     AppPhotoInfo[] photos = (AppPhotoInfo[]) data.obj;
                     Fragment fragment = getSupportFragmentManager().findFragmentById(/*R.id.photo_walls*/CONTENT_ID);
-                    if(null != fragment){
+                    if (null != fragment) {
                         PhotoWallsFragment photoWallsFragment = (PhotoWallsFragment) fragment;
                         photoWallsFragment.updateData(photos);
                     }
                     break;
 
-                case WHAT_BUCKETS :
+                case WHAT_BUCKETS:
                     ArrayList<AppPhotoBucketInfo> buckets = (ArrayList<AppPhotoBucketInfo>) data.obj;
                     FragmentManager fragmentManager = getSupportFragmentManager();
                     fragment = fragmentManager.findFragmentById(R.id.photo_buckets);
-                    if(null != fragment){
+                    if (null != fragment) {
                         PhotoBucketsFragment bucketFragment = (PhotoBucketsFragment) fragment;
                         bucketFragment.updateData(buckets);
-                    }else{
+                    } else {
                         fragment = new PhotoBucketsFragment();
                         Bundle args = new Bundle();
                         fragment.setArguments(args);
@@ -144,11 +163,11 @@ public class PhotoSelectorActivity extends BaseCompatActivity implements LoaderM
                     }
                     break;
 
-                case WHAT_ERROR :
+                case WHAT_ERROR:
                     Log.e(TAG, "", (Throwable) data.obj);
                     break;
             }
-        }finally {
+        } finally {
             data.recycle();
         }
     }
@@ -166,7 +185,7 @@ public class PhotoSelectorActivity extends BaseCompatActivity implements LoaderM
         loaderManager.destroyLoader(WHAT_PHOTOS);
     }
 
-    private static class PhotosLoader extends AsyncTaskLoader<Message>{
+    private static class PhotosLoader extends AsyncTaskLoader<Message> {
         private long bucketId;
 
         public PhotosLoader(Context context, Bundle args) {
@@ -218,7 +237,7 @@ public class PhotoSelectorActivity extends BaseCompatActivity implements LoaderM
         }
     }
 
-    private static class BucketsLoader extends AsyncTaskLoader<Message>{
+    private static class BucketsLoader extends AsyncTaskLoader<Message> {
         public BucketsLoader(Context context) {
             super(context);
         }
@@ -230,12 +249,12 @@ public class PhotoSelectorActivity extends BaseCompatActivity implements LoaderM
                 final Context context = getContext();
                 List<AppPhotoBucketInfo> buckets = PhotoSelector.instance(AppPhotoInfo.class, AppPhotoBucketInfo.class).acquireBuckets(context);
                 int size = (null == buckets ? 0 : buckets.size());
-                if(0 != size){
+                if (0 != size) {
                     AppPhotoBucketInfo allInBucket = new AppPhotoBucketInfo();
                     allInBucket.id = ALL_IN_BUCKETS_ID;
                     allInBucket.displayName = context.getString(R.string.photo_bucket_all);
                     int total = 0;
-                    for(AppPhotoBucketInfo bucket : buckets){
+                    for (AppPhotoBucketInfo bucket : buckets) {
                         total += bucket.childrenCount;
                     }
                     allInBucket.childrenCount = total;

@@ -2,8 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="?android:attr/windowBackground">
+    android:layout_height="match_parent">
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/imgv_bucket_thumb"
@@ -14,8 +13,7 @@
         android:layout_centerVertical="true"
         app:failureImage="@mipmap/ic_launcher"
         app:placeholderImage="@mipmap/ic_launcher"
-        app:actualImageScaleType="center"
-        />
+        app:actualImageScaleType="center"/>
 
     <com.wisape.android.view.TextView
         android:id="@+id/txtv_bucket_title"
@@ -42,6 +40,8 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
+        android:visibility="gone"
         app:actualImageScaleType="center"
-        app:failureImage="@mipmap/icon_selected_flag"/>
+        app:failureImage="@mipmap/icon_selected_flag"
+        app:placeholderImage="@mipmap/icon_selected_flag"/>
 </RelativeLayout>

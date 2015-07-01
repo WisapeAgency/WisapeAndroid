@@ -13,8 +13,8 @@ public class PhotoBucketInfo implements Parcelable, Cloneable{
     public String thumbData;
 
     @Override
-    public PhotoBucketInfo clone() throws CloneNotSupportedException {
-        return (PhotoBucketInfo)super.clone();
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 
     @Override
@@ -39,9 +39,6 @@ public class PhotoBucketInfo implements Parcelable, Cloneable{
         return newBucket.hashCode() == this.hashCode() || newBucket.id == this.id;
     }
 
-    public PhotoBucketInfo() {
-    }
-
 
     @Override
     public int describeContents() {
@@ -56,6 +53,9 @@ public class PhotoBucketInfo implements Parcelable, Cloneable{
         dest.writeString(this.thumbData);
     }
 
+    public PhotoBucketInfo() {
+    }
+
     protected PhotoBucketInfo(Parcel in) {
         this.id = in.readLong();
         this.displayName = in.readString();
@@ -63,4 +63,13 @@ public class PhotoBucketInfo implements Parcelable, Cloneable{
         this.thumbData = in.readString();
     }
 
+    public static final Creator<PhotoBucketInfo> CREATOR = new Creator<PhotoBucketInfo>() {
+        public PhotoBucketInfo createFromParcel(Parcel source) {
+            return new PhotoBucketInfo(source);
+        }
+
+        public PhotoBucketInfo[] newArray(int size) {
+            return new PhotoBucketInfo[size];
+        }
+    };
 }

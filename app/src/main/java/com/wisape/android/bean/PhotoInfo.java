@@ -15,8 +15,8 @@ public class PhotoInfo implements Parcelable, Cloneable{
     public String data;
 
     @Override
-    public PhotoInfo clone() throws CloneNotSupportedException {
-        return (PhotoInfo)super.clone();
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 
     @Override
@@ -71,4 +71,13 @@ public class PhotoInfo implements Parcelable, Cloneable{
         this.data = in.readString();
     }
 
+    public static final Creator<PhotoInfo> CREATOR = new Creator<PhotoInfo>() {
+        public PhotoInfo createFromParcel(Parcel source) {
+            return new PhotoInfo(source);
+        }
+
+        public PhotoInfo[] newArray(int size) {
+            return new PhotoInfo[size];
+        }
+    };
 }

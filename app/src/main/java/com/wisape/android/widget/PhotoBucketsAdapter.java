@@ -63,7 +63,7 @@ public class PhotoBucketsAdapter extends RecyclerView.Adapter<RecyclerHolder> im
         itemView.setTag(position);
         TextView titleTxtv = (TextView) itemView.findViewById(R.id.txtv_bucket_title);
         TextView messageTxtv = (TextView) itemView.findViewById(R.id.txtv_bucket_message);
-        final PhotoBucketInfo bucket = buckets.get(position);
+        final AppPhotoBucketInfo bucket = buckets.get(position);
         titleTxtv.setText(bucket.displayName);
         messageTxtv.setText(Integer.toString(bucket.childrenCount));
 
@@ -87,6 +87,15 @@ public class PhotoBucketsAdapter extends RecyclerView.Adapter<RecyclerHolder> im
                 .build();
         thumb.getHierarchy().setActualImageFocusPoint(new PointF(0.5f, 0.5f));
         thumb.setController(controller);
+
+        final SimpleDraweeView selectedView = (SimpleDraweeView) itemView.findViewById(R.id.imgv_bucket_selected);
+        boolean selected = bucket.isSelected();
+        if(selected){
+            bucket.setSelected(false);
+            selectedView.setVisibility(View.VISIBLE);
+        }else if(View.VISIBLE == selectedView.getVisibility()){
+            selectedView.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -101,8 +110,19 @@ public class PhotoBucketsAdapter extends RecyclerView.Adapter<RecyclerHolder> im
         }
 
         int position = (Integer) view.getTag();
+
         AppPhotoBucketInfo bucket = buckets.get(position);
-        adapterListener.onBucketSelected(bucket.id);
+        bucket.setSelected(true);
+        notifyItemChanged(position);
+
+        AppPhotoBucketInfo copyBucket;
+        try {
+            copyBucket = (AppPhotoBucketInfo)bucket.clone();
+        } catch (CloneNotSupportedException e) {
+            Log.e(TAG, "", e);
+            copyBucket = bucket;
+        }
+        adapterListener.onBucketSelected(copyBucket);
     }
 
     public void destroy(){
@@ -119,6 +139,6 @@ public class PhotoBucketsAdapter extends RecyclerView.Adapter<RecyclerHolder> im
     }
 
     public interface BucketAdapterListener{
-        void onBucketSelected(long bucketId);
+        void onBucketSelected(AppPhotoBucketInfo bucket);
     }
 }

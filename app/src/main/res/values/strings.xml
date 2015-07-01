@@ -14,8 +14,8 @@
 
 
     <!-- Photo Selector -->
-    <string name="photo_selector_activity_label">照片选择</string>
     <string name="photo_bucket_all">全部照片</string>
+    <string name="photo_bucket_list">相册列表</string>
     <string name="photo_to_buckets">切换到相册</string>
     <string name="photo_menu_buckets">相切模式</string>
 
