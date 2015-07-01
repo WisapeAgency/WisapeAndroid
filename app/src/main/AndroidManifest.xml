@@ -52,6 +52,7 @@
             android:launchMode="singleTop" />
 
         <activity android:name=".activity.UserProfileActivity"
+            android:label="@string/user_profile_label"
             android:screenOrientation="portrait"
             android:launchMode="singleTop"/>
 

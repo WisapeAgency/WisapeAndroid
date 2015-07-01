@@ -8,7 +8,7 @@ import com.google.gson.Gson;
  * BaseEntity
  * Created by Xugm on 15/6/16.
  */
-public abstract class BaseEntity implements Parcelable {
+public abstract class BaseInfo implements Parcelable {
 
     @Override
     public String toString() {
