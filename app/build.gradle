@@ -69,4 +69,7 @@ dependencies {
     compile 'com.getbase:floatingactionbutton:1.9.1'
     compile "com.facebook.fresco:fresco:${FRESCO_VERSION}"
     compile "com.facebook.fresco:imagepipeline-okhttp:${FRESCO_VERSION}"
+    compile 'com.google.zxing:core:3.2.0'
+    compile 'com.google.zxing:android-core:3.2.0'
+    compile 'com.google.zxing:android-integration:3.2.0'
 }
