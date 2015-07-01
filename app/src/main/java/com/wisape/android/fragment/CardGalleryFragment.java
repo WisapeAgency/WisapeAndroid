@@ -123,7 +123,7 @@ public class CardGalleryFragment extends AbsFragment {
 
         private Context mContext;
 
-        public Integer[] imgs = {R.mipmap.navbg, R.mipmap.navbg, R.mipmap.navbg, R.mipmap.ic_launcher, R.mipmap.navbg, R.mipmap.navbg, R.mipmap.ic_launcher};
+        public Integer[] imgs = {R.drawable.navbg, R.drawable.navbg, R.drawable.navbg, R.mipmap.ic_launcher, R.drawable.navbg, R.drawable.navbg, R.mipmap.ic_launcher};
         DisplayMetrics dm;
 
         public GalleryAdapter(Context c) {

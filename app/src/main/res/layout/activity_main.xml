@@ -6,7 +6,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@mipmap/navbg" />
+        android:background="@drawable/navbg" />
 
     <android.support.v4.widget.DrawerLayout
         android:id="@+id/main_drawer"

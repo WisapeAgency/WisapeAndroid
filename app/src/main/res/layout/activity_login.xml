@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@mipmap/login_bg">
+    android:background="@drawable/login_bg">
 
     <com.wisape.android.view.TextView
         android:layout_width="wrap_content"
@@ -98,6 +98,11 @@
         android:layout_marginTop="20dp"
         android:imeOptions="actionDone"
         android:inputType="textPassword"
+        android:drawableEnd="@drawable/password_visibility_selector"
+        android:drawableRight="@drawable/password_visibility_selector"
+        android:drawablePadding="12dp"
+        android:paddingEnd="12dp"
+        android:paddingRight="12dp"
         android:singleLine="true" />
 
     <Button

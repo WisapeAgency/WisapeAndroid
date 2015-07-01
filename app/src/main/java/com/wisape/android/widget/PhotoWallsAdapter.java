@@ -106,7 +106,7 @@ public class PhotoWallsAdapter extends RecyclerView.Adapter<RecyclerHolder> impl
                 SimpleDraweeView selectedFlag = (SimpleDraweeView) itemView.findViewById(R.id.photo_selected_flag);
                 if(photo.isSelected()){
                     selectedFlag.setVisibility(View.VISIBLE);
-                    selectedFlag.setImageURI(FrescoUriUtils.fromResId(R.mipmap.icon_selected_flag));
+                    selectedFlag.setImageURI(FrescoUriUtils.fromResId(R.drawable.icon_selected_flag));
                 }else{
                     selectedFlag.setVisibility(View.GONE);
                 }

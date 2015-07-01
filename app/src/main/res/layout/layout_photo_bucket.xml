@@ -42,6 +42,6 @@
         android:layout_centerVertical="true"
         android:visibility="gone"
         app:actualImageScaleType="center"
-        app:failureImage="@mipmap/icon_selected_flag"
-        app:placeholderImage="@mipmap/icon_selected_flag"/>
+        app:failureImage="@drawable/icon_selected_flag"
+        app:placeholderImage="@drawable/icon_selected_flag"/>
 </RelativeLayout>
