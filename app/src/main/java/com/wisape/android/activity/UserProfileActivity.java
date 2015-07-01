@@ -55,6 +55,7 @@ public class UserProfileActivity extends AbsCompatActivity implements LoaderMana
     }
 
     @OnClick(R.id.qr_code)
+    @SuppressWarnings("unused")
     protected void doQRCodeClicked(){
         getSupportLoaderManager().restartLoader(1, null, this);
     }
