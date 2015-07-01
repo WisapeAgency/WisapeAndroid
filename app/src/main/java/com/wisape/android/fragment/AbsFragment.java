@@ -11,7 +11,7 @@ import android.util.DisplayMetrics;
 /**
  * @author Duke
  */
-public abstract class BaseFragment extends Fragment {
+public abstract class AbsFragment extends Fragment {
     public DisplayMetrics mDisplayMetrics;
     public Handler mHandler = new Handler();
 

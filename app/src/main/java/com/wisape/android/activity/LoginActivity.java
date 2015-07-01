@@ -9,7 +9,6 @@ import android.widget.ImageView;
 
 import com.tencent.mm.sdk.modelbase.BaseReq;
 import com.tencent.mm.sdk.modelbase.BaseResp;
-import com.tencent.mm.sdk.modelmsg.SendAuth;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.IWXAPIEventHandler;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
@@ -30,7 +29,7 @@ import butterknife.InjectView;
  * Login Activity
  * Created by Xugm on 15/6/10.
  */
-public class LoginActivity extends BaseCompatActivity implements View.OnClickListener, ServerAPI.APICallback, IWXAPIEventHandler {
+public class LoginActivity extends AbsCompatActivity implements View.OnClickListener, ServerAPI.APICallback, IWXAPIEventHandler {
 
     public static final int REQUEST_CODE_FACEBOOK_LOGIN = 1;
     public static final int REQUEST_CODE_TWITTER_LOGIN = 2;

@@ -41,6 +41,10 @@ public class PhotoProvider extends ContentProvider{
         return new Uri.Builder().scheme(SCHEME_CONTENT).authority(AUTHORITY).path(PATH_THUMB_PHOTO).appendQueryParameter(EXTRA_ID, Long.toString(photoId)).build();
     }
 
+    public static Uri getPhotoUri(String path){
+        return new Uri.Builder().scheme(SCHEME_CONTENT).authority(AUTHORITY).path(path).build();
+    }
+
     @Override
     public boolean onCreate() {
         //do nothing
@@ -91,14 +95,19 @@ public class PhotoProvider extends ContentProvider{
         if(null == path || 0 == path.length()){
             return null;
         }
-        long id = Long.parseLong(uri.getQueryParameter(EXTRA_ID));
-        String data = null;
-        PhotoSelector<AppPhotoInfo, PhotoBucketInfo> selector = PhotoSelector.instance(AppPhotoInfo.class, AppPhotoBucketInfo.class);
+
+        String data;
         final Context context = getContext();
         if(PATH_THUMB_BUCKET.equals(path)){
+            long id = Long.parseLong(uri.getQueryParameter(EXTRA_ID));
+            PhotoSelector<AppPhotoInfo, PhotoBucketInfo> selector = PhotoSelector.instance(AppPhotoInfo.class, AppPhotoBucketInfo.class);
             data = selector.acquireBucketMiniThumbData(context, id);
         }else if(PATH_THUMB_PHOTO.equals(path)){
+            long id = Long.parseLong(uri.getQueryParameter(EXTRA_ID));
+            PhotoSelector<AppPhotoInfo, PhotoBucketInfo> selector = PhotoSelector.instance(AppPhotoInfo.class, AppPhotoBucketInfo.class);
             data = selector.acquirePhotoMiniThumbData(context, id);
+        }else{
+            return super.openTypedAssetFile(uri, mimeTypeFilter, opts, signal);
         }
 
         if(null == data){

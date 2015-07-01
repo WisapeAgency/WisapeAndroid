@@ -10,7 +10,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.freshdesk.mobihelp.Mobihelp;
 import com.freshdesk.mobihelp.MobihelpConfig;
 import com.wisape.android.R;
-import com.wisape.android.activity.PhotoSelectorActivity;
+import com.wisape.android.activity.UserProfileActivity;
 import com.wisape.android.util.FrescoFactory;
 
 import butterknife.ButterKnife;
@@ -20,7 +20,7 @@ import butterknife.OnClick;
 /**
  * @author Duke
  */
-public class MainMenuFragment extends BaseFragment {
+public class MainMenuFragment extends AbsFragment {
 
 
     @InjectView(R.id.sdv_user_head_image)
@@ -63,6 +63,6 @@ public class MainMenuFragment extends BaseFragment {
     @OnClick(R.id.tv_name)
     @SuppressWarnings("unused")
     protected void onNameClicked(){
-        PhotoSelectorActivity.launch(this, 0);
+        UserProfileActivity.launch(getActivity(), 0);
     }
 }

@@ -51,6 +51,14 @@
             android:screenOrientation="portrait"
             android:launchMode="singleTop" />
 
+        <activity android:name=".activity.UserProfileActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop"/>
+
+        <activity android:name="com.soundcloud.android.crop.CropImageActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop"/>
+
         <provider
             android:authorities="com.wisape.photo"
             android:name="com.wisape.android.content.PhotoProvider"

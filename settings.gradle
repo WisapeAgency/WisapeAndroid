@@ -1,2 +1,2 @@
-include ':app', 'oauth', ':volley',":mobihelp_sdk_android_v1_4"
+include ':app', 'oauth', ':volley', ":mobihelp_sdk_android_v1_4", 'android-crop'
 
