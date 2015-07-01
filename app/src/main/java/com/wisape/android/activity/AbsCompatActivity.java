@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 /**
  * @author Duke
  */
-public class BaseCompatActivity extends AppCompatActivity {
+public abstract class AbsCompatActivity extends AppCompatActivity {
     private boolean destroyed;
 
     @Override

@@ -32,7 +32,7 @@ import java.util.List;
  * <p/>
  * Created by LeiGuoting on 10/6/15.
  */
-public class PhotoSelectorActivity extends BaseCompatActivity implements LoaderManager.LoaderCallbacks<Message>,
+public class PhotoSelectorActivity extends AbsCompatActivity implements LoaderManager.LoaderCallbacks<Message>,
         PhotoWallsFragment.WallsCallback, PhotoBucketsFragment.BucketsCallback {
     private static final String TAG = "PhotoSelector";
     private static final int WHAT_PHOTOS = 1;

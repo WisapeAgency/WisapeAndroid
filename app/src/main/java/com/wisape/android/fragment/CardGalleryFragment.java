@@ -28,7 +28,7 @@ import butterknife.OnClick;
 /**
  * @author Duke
  */
-public class CardGalleryFragment extends BaseFragment {
+public class CardGalleryFragment extends AbsFragment {
 
     @InjectView(R.id.card_gallery)
     GalleryView mCardGallery;

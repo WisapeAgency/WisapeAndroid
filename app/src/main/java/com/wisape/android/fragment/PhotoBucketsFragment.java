@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -25,7 +24,7 @@ import java.util.List;
 /**
  * Created by LeiGuoting on 17/6/15.
  */
-public class PhotoBucketsFragment extends BaseFragment implements PhotoBucketsAdapter.BucketAdapterListener,
+public class PhotoBucketsFragment extends AbsFragment implements PhotoBucketsAdapter.BucketAdapterListener,
         RecyclerView.RecyclerListener{
     private static final String TAG = "PhotoSelector";
 

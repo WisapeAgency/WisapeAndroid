@@ -10,7 +10,6 @@ import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,7 +28,7 @@ import static com.wisape.android.bean.AppPhotoInfo.VIEW_TYPE_CAMERA;
 /**
  * Created by LeiGuoting on 17/6/15.
  */
-public class PhotoWallsFragment extends BaseFragment implements PhotoWallsAdapter.PhotoItemListener {
+public class PhotoWallsFragment extends AbsFragment implements PhotoWallsAdapter.PhotoItemListener {
     private static final String TAG = PhotoWallsFragment.class.getSimpleName();
     private static final int REQUEST_CODE_CAMERA = 2;
     private PhotoWallsAdapter adapter;
