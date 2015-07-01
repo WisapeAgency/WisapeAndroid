@@ -52,9 +52,9 @@ public class MainMenuFragment extends AbsFragment {
     @OnClick(R.id.help_center)
     @SuppressWarnings("unused")
     protected void onHelpCenterClick(View view){
-        String domain = getString(R.string.mobihelp_config_domain),
-                appId = getString(R.string.mobihelp_config_appId),
-                appSecret = getString(R.string.mobihelp_config_appSecret);
+        String domain = getString(R.string.freshdesk_domain),
+                appId = getString(R.string.freshdesk_key),
+                appSecret = getString(R.string.freshdesk_secret);
         Mobihelp.init(getActivity(), new MobihelpConfig(domain,appId,appSecret));
         //Mobihelp.clearUserData(getActivity());
         Mobihelp.showSupport(getActivity());

@@ -2,13 +2,13 @@
 <resources>
 
     <!--域名 结尾不能有斜杠-->
-    <string name="app_domain">http://192.168.1.246</string>
+    <string name="app_domain">http://106.75.194.11</string>
 
 
     <!--mobihelp config-->
-    <string name="mobihelp_config_domain">https://wisape.freshdesk.com</string>
-    <string name="mobihelp_config_appId">linkoak-1-e0f97e44ca6c57140bf56a58cafac1cf</string>
-    <string name="mobihelp_config_appSecret">09c3cfbb5eca54b4beea0f84876be17f5b83bfec</string>
+    <string name="freshdesk_domain">https://wisape.freshdesk.com</string>
+    <string name="freshdesk_key">wisape-1-2603967d3512a971d25f1de35ceb178e</string>
+    <string name="freshdesk_secret">1a763b087768ca7c6f05172c0527f3a4cd82ac10</string>
 
     <string name="facebook_api_key">900883746624807</string>
     <string name="facebook_api_secret_key">3c4d60f743ca8b81b40bbe73d7120e45</string>
