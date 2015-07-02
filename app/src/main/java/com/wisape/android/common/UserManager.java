@@ -51,6 +51,10 @@ public class UserManager {
         return sInstance;
     }
 
+    public String acquireAccessToken(){
+        return "";
+    }
+
     public void registerUserInfoListener(UserInfoListener listener) {
         sWeakRefListeners.add(new WeakReference(listener));
     }

@@ -3,7 +3,11 @@
 
     <!--域名 结尾不能有斜杠-->
     <string name="app_domain">http://106.75.194.11</string>
-
+    <string name="www_schema">http</string>
+    <string name="www_host">106.75.194.11</string>
+    <string name="www_port">80</string>
+    <string name="www_version">v1</string>
+    <string name="www_timeout">5000</string>
 
     <!--mobihelp config-->
     <string name="freshdesk_domain">https://wisape.freshdesk.com</string>

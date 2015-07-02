@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-
-
-    <!--uris 统一都以"/"开头-->
-    <string name="path_all_stores"></string>
-</resources>
