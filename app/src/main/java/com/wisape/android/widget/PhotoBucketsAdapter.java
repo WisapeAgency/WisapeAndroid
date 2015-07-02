@@ -14,10 +14,8 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.common.ResizeOptions;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
-import com.facebook.imagepipeline.request.Postprocessor;
 import com.wisape.android.R;
-import com.wisape.android.bean.AppPhotoBucketInfo;
-import com.wisape.android.bean.PhotoBucketInfo;
+import com.wisape.android.model.AppPhotoBucketInfo;
 import com.wisape.android.content.PhotoProvider;
 import com.wisape.android.view.TextView;
 

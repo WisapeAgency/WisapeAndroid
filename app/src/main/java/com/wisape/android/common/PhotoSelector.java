@@ -9,8 +9,8 @@ import android.provider.MediaStore;
 import android.provider.MediaStore.Images.Media;
 import android.provider.MediaStore.Images.Thumbnails;
 
-import com.wisape.android.bean.PhotoBucketInfo;
-import com.wisape.android.bean.PhotoInfo;
+import com.wisape.android.model.PhotoBucketInfo;
+import com.wisape.android.model.PhotoInfo;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Array;

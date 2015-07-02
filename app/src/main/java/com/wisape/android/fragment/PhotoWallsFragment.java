@@ -18,12 +18,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.wisape.android.R;
-import com.wisape.android.bean.AppPhotoInfo;
+import com.wisape.android.model.AppPhotoInfo;
 import com.wisape.android.widget.PhotoWallsAdapter;
 
 import java.io.File;
 
-import static com.wisape.android.bean.AppPhotoInfo.VIEW_TYPE_CAMERA;
+import static com.wisape.android.model.AppPhotoInfo.VIEW_TYPE_CAMERA;
 
 /**
  * Created by LeiGuoting on 17/6/15.

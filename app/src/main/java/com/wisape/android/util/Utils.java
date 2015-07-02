@@ -31,36 +31,9 @@ public class Utils {
         return value.matches("[_a-z\\d\\-\\./]+@[_a-z\\d\\-]+(\\.[_a-z\\d\\-]+)*(\\.(info|biz|com|edu|gov|net|am|bz|cn|cx|hk|jp|tw|vc|vn))$");
     }
 
-    public static String getMD5(String val) {
-        String md5Str = "";
-        try {
-            MessageDigest md5 = MessageDigest.getInstance("MD5");
-            md5.update(val.getBytes());
-            byte[] m = md5.digest();//加密
-            md5Str = getString(m);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-
-        return md5Str;
-    }
-
-    private static String getString(byte[] bytes) {
-        StringBuilder builder = new StringBuilder();
-        for (byte b : bytes) {
-            int bt = b & 0xff;
-            if (bt < 16) {
-                builder.append(0);
-            }
-            builder.append(Integer.toHexString(bt));
-        }
-
-        return builder.toString();
-    }
-
     public static String getAuthString(String openid) {
-        String result = "easeus" + openid + "2015612";
-        return getMD5(result);
+        String result = "wisape" + openid + "2015612";
+        return SecurityUtils.md5(result);
     }
 
     public static void dumpThrowable(Throwable ex, StringBuilder builder){

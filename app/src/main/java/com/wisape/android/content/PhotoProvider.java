@@ -11,10 +11,10 @@ import android.os.CancellationSignal;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
 
-import com.wisape.android.bean.AppPhotoBucketInfo;
+import com.wisape.android.model.AppPhotoBucketInfo;
 import com.wisape.android.common.PhotoSelector;
-import com.wisape.android.bean.AppPhotoInfo;
-import com.wisape.android.bean.PhotoBucketInfo;
+import com.wisape.android.model.AppPhotoInfo;
+import com.wisape.android.model.PhotoBucketInfo;
 import com.wisape.android.util.FrescoUriUtils;
 
 import java.io.File;

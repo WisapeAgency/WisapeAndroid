@@ -1,4 +1,4 @@
-package com.wisape.android.bean;
+package com.wisape.android.model;
 
 import android.os.Parcel;
 
@@ -11,7 +11,7 @@ import org.json.JSONObject;
  * UserEntity
  * Created by Xugm on 15/6/16.
  */
-public class UserInfo extends BaseInfo {
+public class UserInfo extends ServerInfo {
     public int id;
     public String nick_name;
     public String user_pwd;

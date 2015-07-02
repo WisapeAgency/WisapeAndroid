@@ -15,7 +15,7 @@ import android.view.ViewGroup;
 
 import com.wisape.android.R;
 import com.wisape.android.activity.PhotoSelectorActivity;
-import com.wisape.android.bean.AppPhotoBucketInfo;
+import com.wisape.android.model.AppPhotoBucketInfo;
 import com.wisape.android.widget.PhotoBucketsAdapter;
 
 import java.util.ArrayList;

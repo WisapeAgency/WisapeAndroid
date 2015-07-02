@@ -8,7 +8,8 @@ import android.text.TextUtils;
 
 import com.android.volley.Request;
 import com.wisape.android.R;
-import com.wisape.android.bean.UserInfo;
+import com.wisape.android.model.UserInfo;
+import com.wisape.android.util.SecurityUtils;
 import com.wisape.android.util.Utils;
 import com.oauth.android.OAuthParams;
 import com.oauth.android.OAuthRequestor;
@@ -118,9 +119,9 @@ public class ServerAPI {
 
     public void loginOrRegWithEmail(String emailStr, String passwordStr, final APICallback callback) {
         String url = SERVER_BASE_URL + "/Home/Index/login";
-        HashMap<String, String> map = new HashMap<String, String>();
+        HashMap<String, String> map = new HashMap();
         map.put("email", emailStr);
-        map.put("passwd", Utils.getMD5(passwordStr));
+        map.put("passwd", SecurityUtils.md5(passwordStr));
         map.put("auth", Utils.getAuthString(emailStr));
         callAPI(url, Request.Method.POST, map, callback);
     }
