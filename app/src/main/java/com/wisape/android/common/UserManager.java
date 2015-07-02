@@ -6,7 +6,7 @@ import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 
 import com.google.gson.Gson;
-import com.wisape.android.bean.UserInfo;
+import com.wisape.android.model.UserInfo;
 import com.wisape.android.network.ServerAPI;
 
 import org.json.JSONException;

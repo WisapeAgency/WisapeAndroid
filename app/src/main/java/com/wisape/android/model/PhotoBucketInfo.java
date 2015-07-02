@@ -1,4 +1,4 @@
-package com.wisape.android.bean;
+package com.wisape.android.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

@@ -16,7 +16,7 @@ import android.widget.ImageView;
 import com.getbase.floatingactionbutton.AddFloatingActionButton;
 import com.wisape.android.R;
 import com.wisape.android.activity.MainActivity;
-import com.wisape.android.util.KKBitmapFactory;
+import com.wisape.android.util.AppBitmapFactory;
 import com.wisape.android.util.image.StackBlur;
 import com.wisape.android.view.GalleryRelativeLayoutWrapper;
 import com.wisape.android.view.GalleryView;
@@ -55,7 +55,7 @@ public class CardGalleryFragment extends AbsFragment {
 
 
         //
-        Bitmap oriBitmap = KKBitmapFactory.getBitmap(CardGalleryFragment.this.getActivity(), mGalleryAdapter.getItem(0), 0, 0, Bitmap.Config.ARGB_8888);
+        Bitmap oriBitmap = AppBitmapFactory.getBitmap(CardGalleryFragment.this.getActivity(), mGalleryAdapter.getItem(0), 0, 0, Bitmap.Config.ARGB_8888);
         StackBlur.blur(oriBitmap, new StackBlur.BlurListener() {
             @Override
             public void onSuccessed(final Bitmap bitmap) {
@@ -91,7 +91,7 @@ public class CardGalleryFragment extends AbsFragment {
                     if(null != mGalleryAdapter)resId = mGalleryAdapter.getItem(primaryView.getId());
                     if(mPrimaryPosition != primaryView.getId()) {
                         mPrimaryPosition = primaryView.getId();
-                        Bitmap oriBitmap = KKBitmapFactory.getBitmap(CardGalleryFragment.this.getActivity(), resId, 0, 0, Bitmap.Config.ARGB_8888);
+                        Bitmap oriBitmap = AppBitmapFactory.getBitmap(CardGalleryFragment.this.getActivity(), resId, 0, 0, Bitmap.Config.ARGB_8888);
                         StackBlur.blur(oriBitmap, new StackBlur.BlurListener() {
                             @Override
                             public void onSuccessed(final Bitmap bitmap) {

@@ -11,7 +11,7 @@ import android.graphics.BitmapFactory;
  *
  * @author Duke
  */
-public class KKBitmapFactory {
+public class AppBitmapFactory {
 
     public static Bitmap getBitmapFromFile (String path, int destWidth,int destHeight,Config config) {
         if (path == null)

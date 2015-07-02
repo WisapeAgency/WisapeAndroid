@@ -33,6 +33,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 /**
+ * All request server using the class.
+ *
  * Created by LeiGuoting on 2/7/15.
  */
 public final class Requester{
@@ -64,18 +66,18 @@ public final class Requester{
         queue.cancelAll(tag);
     }
 
-    public Message verifyResponse(JSONObject jsonObject){
+    public ServerMessage verifyResponse(JSONObject jsonObject){
         if(null == jsonObject){
-            return new Message(Message.STATUS_LOCAL_NULL_OBJECT);
+            return ServerMessage.obtain(ServerMessage.STATUS_LOCAL_NULL_OBJECT);
         }
 
-        int status = jsonObject.optInt(Message.EXTRA_STATUS, Message.STATUS_LOCAL_OPT_JSON_FAILED);
-        String message = jsonObject.optString(Message.EXTRA_MESSAGE, "");
-        JSONObject data = jsonObject.optJSONObject(Message.EXTRA_DATA);
-        return new Message(status, message, data);
+        int status = jsonObject.optInt(ServerMessage.EXTRA_STATUS, ServerMessage.STATUS_LOCAL_OPT_JSON_FAILED);
+        String message = jsonObject.optString(ServerMessage.EXTRA_MESSAGE, "");
+        JSONObject data = jsonObject.optJSONObject(ServerMessage.EXTRA_DATA);
+        return ServerMessage.obtain(status, message, data);
     }
 
-    public Message post(Context context, Uri uri, Map<String, String> params, Object tag){
+    public ServerMessage post(Context context, Uri uri, Map<String, String> params, Object tag){
         RequestFuture<JSONObject> future = RequestFuture.newFuture();
         JsonObjectRequestImpl request = new JsonObjectRequestImpl(Request.Method.POST, uri.toString(), params, future, future);
 
@@ -83,18 +85,18 @@ public final class Requester{
         RequestQueue queue = VolleyHelper.getRequestQueue();
         queue.add(request);
 
-        Message msg;
+        ServerMessage msg;
         try{
             JSONObject json = future.get(defaultPolicy.getCurrentTimeout(), TimeUnit.MILLISECONDS);
             msg = verifyResponse(json);
         } catch (InterruptedException e){
             //do nothing
-            msg = new Message(Message.STATUS_LOCAL_INTERRUPTED);
+            msg = ServerMessage.obtain(ServerMessage.STATUS_LOCAL_INTERRUPTED);
         } catch (ExecutionException e){
             throw new IllegalStateException(e);
         } catch (TimeoutException e){
             //do nothing
-            msg = new Message(Message.STATUS_LOCAL_TIMEOUT);
+            msg = ServerMessage.obtain(ServerMessage.STATUS_LOCAL_TIMEOUT);
         }
 
         return msg;
@@ -126,7 +128,7 @@ public final class Requester{
         }
     }
 
-    public static String makeToken(Map<String, String> params){
+    private String makeToken(Map<String, String> params){
         if(null == params || 0 == params.size()){
             return "";
         }
@@ -194,7 +196,7 @@ public final class Requester{
         }
     }
 
-    public static class Message implements Parcelable{
+    public static class ServerMessage implements Parcelable{
         public static final String EXTRA_STATUS = "success";
         public static final String EXTRA_MESSAGE = "message";
         public static final String EXTRA_DATA = "data";
@@ -208,25 +210,75 @@ public final class Requester{
         public static final int STATUS_LOCAL_TIMEOUT = -3;
         public static final int STATUS_LOCAL_INTERRUPTED = -4;
         public static final int STATUS_LOCAL_EXCEPTION = -5;
+
+        private static final int CACHE_DEFAULT_SIZE = 10;
+        private static WeakReference<ServerMessage>[] cachePool = new WeakReference[CACHE_DEFAULT_SIZE];
+
         public int status;
         public String message;
         public JSONObject data;
 
-        public Message() {}
+        public static ServerMessage obtain(){
+            ServerMessage msg = null;
+            synchronized (cachePool){
+                WeakReference<ServerMessage>[] cache = cachePool;
+                for(WeakReference<ServerMessage> ref : cache){
+                    if(null != ref && null != (msg = ref.get())){
+                        break;
+                    }
+                }
+            }
 
-        public Message(int status){
-            this.status = status;
+            if(null == msg){
+                msg = new ServerMessage();
+            }
+            return msg;
         }
 
-        public Message(int status, String message){
-            this.status = status;
-            this.message = message;
+        public static ServerMessage obtain(int status){
+            ServerMessage msg = obtain();
+            msg.status = status;
+            return  msg;
         }
 
-        public Message(int status, String message, JSONObject data){
-            this.status = status;
-            this.message = message;
-            this.data = data;
+        public static ServerMessage obtain(int status, String message){
+            ServerMessage msg = obtain();
+            msg.status = status;
+            msg.message = message;
+            return  msg;
+        }
+
+        public static ServerMessage obtain(int status, String message, JSONObject data){
+            ServerMessage msg = obtain();
+            msg.status = status;
+            msg.message = message;
+            msg.data = data;
+            return  msg;
+        }
+
+        private ServerMessage(){}
+
+        public boolean succeed(){
+            return STATUS_SUCCESS == status;
+        }
+
+        public void recycle(){
+            this.status = 0;
+            this.message = null;
+            this.data = null;
+
+            synchronized (cachePool){
+                WeakReference<ServerMessage>[] cache = cachePool;
+                int size = cache.length;
+                WeakReference<ServerMessage> ref;
+                for(int i = 0; i < size; i ++){
+                    ref = cache[i];
+                    if(null == ref || null == ref.get()){
+                        cache[i] = new WeakReference(this);
+                        break;
+                    }
+                }
+            }
         }
 
         @Override
@@ -285,7 +337,7 @@ public final class Requester{
             dest.writeString((null == data) ? "" : data.toString());
         }
 
-        protected Message(Parcel in) {
+        protected ServerMessage(Parcel in) {
             this.status = in.readInt();
             this.message = in.readString();
             JSONObject jsonObject;
@@ -297,13 +349,13 @@ public final class Requester{
             this.data = jsonObject;
         }
 
-        public static final Creator<Message> CREATOR = new Creator<Message>() {
-            public Message createFromParcel(Parcel source) {
-                return new Message(source);
+        public static final Creator<ServerMessage> CREATOR = new Creator<ServerMessage>() {
+            public ServerMessage createFromParcel(Parcel source) {
+                return new ServerMessage(source);
             }
 
-            public Message[] newArray(int size) {
-                return new Message[size];
+            public ServerMessage[] newArray(int size) {
+                return new ServerMessage[size];
             }
         };
     }
@@ -317,19 +369,19 @@ public final class Requester{
         @Override
         public void onErrorResponse(VolleyError error) {
             if(null != listener){
-                Message msg;
+                ServerMessage msg;
                 Throwable cause = error.getCause();
                 if(cause instanceof InterruptedException){
-                    msg = new Message(Message.STATUS_LOCAL_INTERRUPTED);
+                    msg = ServerMessage.obtain(ServerMessage.STATUS_LOCAL_INTERRUPTED);
                 }else if(cause instanceof TimeoutException){
-                    msg = new Message(Message.STATUS_LOCAL_TIMEOUT);
+                    msg = ServerMessage.obtain(ServerMessage.STATUS_LOCAL_TIMEOUT);
                 }else if(null != error.networkResponse){
                     NetworkResponse response = error.networkResponse;
-                    msg = new Message(response.statusCode, "HTTP status code");
+                    msg = ServerMessage.obtain(response.statusCode, "HTTP status code");
                 }else{
                     StringBuilder dumpBuilder = new StringBuilder(255);
                     Utils.dumpThrowable(error, dumpBuilder);
-                    msg = new Message(Message.STATUS_LOCAL_EXCEPTION, dumpBuilder.toString());
+                    msg = ServerMessage.obtain(ServerMessage.STATUS_LOCAL_EXCEPTION, dumpBuilder.toString());
                 }
                 listener.onResponse(msg);
                 listener = null;
@@ -345,5 +397,5 @@ public final class Requester{
         }
     }
 
-    public interface ResponseListener extends Response.Listener<Message>{}
+    public interface ResponseListener extends Response.Listener<ServerMessage>{}
 }

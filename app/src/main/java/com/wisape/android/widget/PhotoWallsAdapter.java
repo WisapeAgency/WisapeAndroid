@@ -16,11 +16,11 @@ import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.facebook.imagepipeline.request.Postprocessor;
 import com.wisape.android.R;
-import com.wisape.android.bean.AppPhotoInfo;
+import com.wisape.android.model.AppPhotoInfo;
 import com.wisape.android.util.FrescoUriUtils;
 
-import static com.wisape.android.bean.AppPhotoInfo.VIEW_TYPE_CAMERA;
-import static com.wisape.android.bean.AppPhotoInfo.VIEW_TYPE_PHOTO;
+import static com.wisape.android.model.AppPhotoInfo.VIEW_TYPE_CAMERA;
+import static com.wisape.android.model.AppPhotoInfo.VIEW_TYPE_PHOTO;
 /**
  * Created by LeiGuoting on 10/6/15.
  */
@@ -142,8 +142,8 @@ public class PhotoWallsAdapter extends RecyclerView.Adapter<RecyclerHolder> impl
 
     public interface PhotoItemListener{
         /**
-         * @param type one of {@link com.wisape.android.bean.AppPhotoInfo#VIEW_TYPE_CAMERA}
-         *             {@link com.wisape.android.bean.AppPhotoInfo#VIEW_TYPE_PHOTO}
+         * @param type one of {@link com.wisape.android.model.AppPhotoInfo#VIEW_TYPE_CAMERA}
+         *             {@link com.wisape.android.model.AppPhotoInfo#VIEW_TYPE_PHOTO}
          */
         void onItemSelected(int type, AppPhotoInfo photo);
     }
