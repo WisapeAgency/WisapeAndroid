@@ -4,7 +4,7 @@ import android.app.Application;
 import android.content.Context;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
-import com.wisape.android.network.VolleyHelper;
+import com.wisape.android.network.WWWConfig;
 
 /**
  * @author Duke
@@ -15,7 +15,7 @@ public class WisapeApplication extends Application {
     public void onCreate() {
         super.onCreate();
         final Context context = getApplicationContext();
-        VolleyHelper.initialize(context);
         Fresco.initialize(context);
+        WWWConfig.initialize(context);
     }
 }

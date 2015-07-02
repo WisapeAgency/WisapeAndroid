@@ -62,4 +62,19 @@ public class Utils {
         String result = "easeus" + openid + "2015612";
         return getMD5(result);
     }
+
+    public static void dumpThrowable(Throwable ex, StringBuilder builder){
+        builder.append(ex.toString()).append("\r\n");
+        builder.append("Stack Trace:\r\n");
+        StackTraceElement[] stackTraceElements = ex.getStackTrace();
+        for(StackTraceElement element : stackTraceElements){
+            builder.append(element).append("\r\n");
+        }
+
+        Throwable cause = ex.getCause();
+        if(null != cause){
+            builder.append("Cause:\r\n");
+            dumpThrowable(cause, builder);
+        }
+    }
 }
