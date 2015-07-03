@@ -7,7 +7,7 @@ import android.os.Handler;
 /**
  * Created by LeiGuoting on 29/6/15.
  */
-public class LauncherActivity extends AbsCompatActivity {
+public class LauncherActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

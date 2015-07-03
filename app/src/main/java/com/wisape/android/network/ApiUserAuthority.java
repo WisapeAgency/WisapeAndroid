@@ -26,7 +26,7 @@ public class ApiUserAuthority extends ApiBase{
 
     public UserInfo signup(Context context, AttrSignupInfo attrInfo, Object tag){
         Uri uri = WWWConfig.acquireUri(context.getString(R.string.uri_user_login));
-        Log.d(TAG, "#signup uri:" + uri.toString());
+        Log.d(TAG, "#signup uri:" + uri.toString() + ", port:" + uri.getPort());
 
         Requester requester = Requester.instance();
         Requester.ServerMessage message = requester.post(context, uri, attrInfo.convert(), tag);
@@ -38,6 +38,7 @@ public class ApiUserAuthority extends ApiBase{
             user.status = message.status;
             user.message = message.message;
         }
+        Log.d(TAG, "#signup ServerMessage:" + message.toString());
         message.recycle();
         return user;
     }
@@ -119,6 +120,8 @@ public class ApiUserAuthority extends ApiBase{
         public static final String ATTRIBUTE_TYPE = "type";
         public static final String ATTRIBUTE_EMAIL = "user_email";
         public static final String ATTRIBUTE_PASSWORD = "user_pwd";
+
+        public static final int DEFINE_TYPE_SIGNUP = 1;
 
         public int type;
         public String email;

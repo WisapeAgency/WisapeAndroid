@@ -16,7 +16,7 @@ import butterknife.InjectView;
 /**
  * @author Duke
  */
-public class MainActivity extends AbsCompatActivity {
+public class MainActivity extends BaseActivity {
 
     @InjectView(R.id.main_drawer)
     DrawerLayout mMainDrawer;

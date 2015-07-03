@@ -10,6 +10,7 @@ import android.os.Message;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -29,7 +30,7 @@ import butterknife.OnClick;
 /**
  * Created by LeiGuoting on 1/7/15.
  */
-public class UserProfileActivity extends AbsCompatActivity implements LoaderManager.LoaderCallbacks<Message>{
+public class UserProfileActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Message>{
     private static final String TAG = UserProfileActivity.class.getSimpleName();
 
     public static void launch(Activity activity, int requestCode){

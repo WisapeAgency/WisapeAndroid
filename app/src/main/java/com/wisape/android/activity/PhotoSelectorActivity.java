@@ -12,14 +12,15 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.wisape.android.R;
-import com.wisape.android.model.AppPhotoBucketInfo;
-import com.wisape.android.model.AppPhotoInfo;
 import com.wisape.android.common.PhotoSelector;
 import com.wisape.android.fragment.PhotoBucketsFragment;
 import com.wisape.android.fragment.PhotoWallsFragment;
+import com.wisape.android.model.AppPhotoBucketInfo;
+import com.wisape.android.model.AppPhotoInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +33,7 @@ import java.util.List;
  * <p/>
  * Created by LeiGuoting on 10/6/15.
  */
-public class PhotoSelectorActivity extends AbsCompatActivity implements LoaderManager.LoaderCallbacks<Message>,
+public class PhotoSelectorActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Message>,
         PhotoWallsFragment.WallsCallback, PhotoBucketsFragment.BucketsCallback {
     private static final String TAG = "PhotoSelector";
     private static final int WHAT_PHOTOS = 1;

@@ -3,20 +3,21 @@ package com.wisape.android.activity;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.view.KeyEvent;
+import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.tencent.mm.sdk.modelbase.BaseReq;
 import com.tencent.mm.sdk.modelbase.BaseResp;
-import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.IWXAPIEventHandler;
-import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.wisape.android.BuildConfig;
 import com.wisape.android.R;
 import com.wisape.android.common.UserManager;
+import com.wisape.android.logic.UserAuthorityLogic;
+import com.wisape.android.model.UserInfo;
+import com.wisape.android.network.ApiUserAuthority;
 import com.wisape.android.network.ServerAPI;
 import com.wisape.android.view.EditText;
 import com.oauth.android.OAuthActivity;
@@ -29,57 +30,50 @@ import butterknife.InjectView;
 
 /**
  * Login Activity
- * Created by Xugm on 15/6/10.
+ * Created by LeiGuoting on 15/6/10.
  */
-public class LoginActivity extends AbsCompatActivity implements View.OnClickListener, ServerAPI.APICallback, IWXAPIEventHandler {
+public class LoginActivity extends BaseActivity implements View.OnClickListener, ServerAPI.APICallback, IWXAPIEventHandler {
+    private static final String TAG = LoginActivity.class.getSimpleName();
 
     public static final int REQUEST_CODE_FACEBOOK_LOGIN = 1;
     public static final int REQUEST_CODE_TWITTER_LOGIN = 2;
     public static final int REQUEST_CODE_GOOGLEPLUS_LOGIN = 3;
     public static final int REQUEST_CODE_WECHAT_LOGIN = 4;
 
-    @InjectView(R.id.join)
-    Button mJoinBtn;
-    @InjectView(R.id.connect_with_facebook)
-    ImageView mFacebook;
-    @InjectView(R.id.connect_with_twitter)
-    ImageView mTwitter;
-    @InjectView(R.id.connect_with_googleplus)
-    ImageView mGoogleplus;
-    @InjectView(R.id.username)
-    EditText mUsernameEdt;
-    @InjectView(R.id.password)
-    EditText mPasswordEdt;
+    private static final String EXTRA_ATTR_SIGNUP = "attr_signup_info";
 
-    private IWXAPI mApi;
+    @InjectView(R.id.join)
+    Button joinBtn;
+    @InjectView(R.id.connect_with_facebook)
+    ImageView facebook;
+    @InjectView(R.id.connect_with_twitter)
+    ImageView twitter;
+    @InjectView(R.id.connect_with_googleplus)
+    ImageView googlePlus;
+    @InjectView(R.id.username)
+    EditText userNameEdt;
+    @InjectView(R.id.password)
+    EditText passwordEdt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.inject(this);
-
-        mJoinBtn.setOnClickListener(this);
-
-        mFacebook.setOnClickListener(this);
-        mTwitter.setOnClickListener(this);
-        mGoogleplus.setOnClickListener(this);
-
-        initWechat();
-        mPasswordEdt.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-
-                return false;
-            }
-        });
     }
 
-    private void initWechat() {
-        String wechatkey = getResources().getString(R.string.wechat_official_accounts_api_key);
-        mApi = WXAPIFactory.createWXAPI(this, wechatkey, true);
-        mApi.registerApp(wechatkey);
-        mApi.handleIntent(getIntent(), this);
+    @Override
+    protected Message onBackgroundRunning(int what, Bundle args) throws AsyncLoaderError {
+        ApiUserAuthority.AttrSignupInfo signupInfo = args.getParcelable(EXTRA_ATTR_SIGNUP);
+        UserInfo user = UserAuthorityLogic.instance().signup(getApplicationContext(), signupInfo, this);
+        Message msg = Message.obtain();
+        msg.what = what;
+        return msg;
+    }
+
+    @Override
+    protected void onLoadCompleted(Message data) {
+
     }
 
     @Override
@@ -103,9 +97,15 @@ public class LoginActivity extends AbsCompatActivity implements View.OnClickList
                             }
                         });
                 */
+                /*
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
                 finish();
+                */
+                ApiUserAuthority.AttrSignupInfo signupInfo = new ApiUserAuthority.AttrSignupInfo();
+                Bundle args = new Bundle();
+                args.putParcelable(EXTRA_ATTR_SIGNUP, signupInfo);
+                startLoad(0, args);
                 break;
             case R.id.connect_with_facebook:
                 OAuthParams paramsFB = new OAuthParams(

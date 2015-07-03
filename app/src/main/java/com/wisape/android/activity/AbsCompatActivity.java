@@ -57,7 +57,7 @@ public abstract class AbsCompatActivity extends AppCompatActivity implements Loa
      * @param what
      * @param args can was null
      */
-    protected void loadData(int what, Bundle args){
+    protected void startLoad(int what, Bundle args){
         Bundle inputArgs;
         if(null == args){
             inputArgs = new Bundle();
@@ -103,7 +103,11 @@ public abstract class AbsCompatActivity extends AppCompatActivity implements Loa
     }
 
     @Override
-    public Message onAsyncLoad(int what, Bundle args) throws AsyncLoaderError{
+    public final Message onAsyncLoad(int what, Bundle args) throws AsyncLoaderError{
+        return onBackgroundRunning(what, args);
+    }
+
+    protected Message onBackgroundRunning(int what, Bundle args) throws AsyncLoaderError{
         return null;
     }
 
