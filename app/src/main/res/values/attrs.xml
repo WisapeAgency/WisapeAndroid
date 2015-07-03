@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SignUpEditText">
+        <attr name="sign_up_icon" format="reference"/>
+        <attr name="action" format="reference"/>
+        <attr name="icon_paddingStart" format="reference|dimension"/>
+        <attr name="icon_paddingEnd" format="reference|dimension"/>
+        <attr name="action_paddingStart" format="reference|dimension"/>
+        <attr name="action_paddingEnd" format="reference|dimension"/>
+        <attr name="edit_background" format="reference|color"/>
+        <attr name="edit_textStyle" format="reference"/>
+        <attr name="warning_icon" format="reference"/>
+        <attr name="warning_icon_paddingStart" format="reference"/>
+        <attr name="warning_icon_paddingEnd" format="reference"/>
+        <attr name="warning_textStyle" format="reference"/>
+        <attr name="warning_background" format="reference|color"/>
+        <attr name="android:inputType"/>
+    </declare-styleable>
+</resources>

@@ -32,6 +32,10 @@
             android:theme="@style/Theme.AppCompat.NoActionBar"
             android:screenOrientation="portrait" />
 
+        <activity android:name=".activity.SignUpActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+            android:screenOrientation="portrait" />
+
         <!-- Oauth Activity-->
         <activity
             android:name="com.oauth.android.OAuthActivity"

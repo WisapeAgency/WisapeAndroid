@@ -1,6 +1,5 @@
 package com.wisape.android.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 
@@ -21,8 +20,6 @@ public class LauncherActivity extends BaseActivity {
     }
 
     private void redirect(){
-        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-        startActivity(intent);
-        finish();
+        SignUpActivity.launch(this, -1);
     }
 }
