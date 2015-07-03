@@ -11,7 +11,6 @@ import org.json.JSONException;
 public class PhotoSelectorPlugin extends CordovaPlugin {
 
     public boolean execute(String action, CordovaArgs args, CallbackContext callbackContext) throws JSONException {
-
         return false;
     }
 }
