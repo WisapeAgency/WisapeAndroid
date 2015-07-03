@@ -6,14 +6,13 @@ import android.net.Uri;
 
 import com.wisape.android.R;
 
-import java.util.Locale;
-
 /**
  * Created by LeiGuoting on 2/7/15.
  */
 public class WWWConfig{
     private static String schema;
     private static String authority;
+    private static String version;
     public static int timeoutMills;
 
     public static void initialize(Context context){
@@ -21,9 +20,10 @@ public class WWWConfig{
         schema = res.getString(R.string.www_schema);
         String host = res.getString(R.string.www_host);
         String port = res.getString(R.string.www_port);
-        String version = res.getString(R.string.www_version);
-        authority = String.format(Locale.US, "%1$s:%2$s/%3$s", host, port, version);
-        timeoutMills = Integer.parseInt(res.getString(R.string.www_timeout));
+        authority = String.format("%1$s:%2$s", host, port);
+
+        version = res.getString(R.string.www_version);
+        timeoutMills = Integer.parseInt(res.getString(R.string.www_timeout_mills));
 
         //initialize other about www config
         VolleyHelper.initialize(context);
@@ -32,8 +32,9 @@ public class WWWConfig{
     public static Uri acquireUri(String path){
         Uri.Builder builder = new Uri.Builder();
         builder.scheme(schema);
-        builder.authority(authority);
-        builder.path(path);
+        builder.encodedAuthority(authority);
+        builder.encodedPath(version);
+        builder.appendEncodedPath(path);
         return builder.build();
     }
 }
