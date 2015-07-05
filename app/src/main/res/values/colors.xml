@@ -10,4 +10,6 @@
     <color name="app_tertiary">#666666</color>
     <color name="app_fourth">#000000</color>
 
+    <color name="theme_primary_warning">#FF8800</color>
+
 </resources>
