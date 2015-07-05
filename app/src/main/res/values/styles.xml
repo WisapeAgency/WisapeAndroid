@@ -6,7 +6,7 @@
         <item name="titleTextStyle">@style/AppActionBar.TitleStyle</item>
     </style>
     
-    <style name="AppActionBar.TitleStyle" parent="">
+    <style name="AppActionBar.TitleStyle" parent="TextAppearance.AppCompat.Medium.Inverse">
         <item name="android:textColor">@color/app_fourth</item>
     </style>
 
@@ -31,5 +31,9 @@
         <item name="android:textColor">@color/menu_item_text_selector</item>
         <item name="android:textSize">@dimen/app_text_size_medium</item>
         <item name="android:gravity">center</item>
+    </style>
+    
+    <style name="SignUp.Warning" parent="TextAppearance.AppCompat.Small.Inverse">
+        <item name="android:textColor">@color/theme_primary_warning</item>
     </style>
 </resources>

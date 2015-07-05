@@ -10,10 +10,11 @@
         <attr name="edit_background" format="reference|color"/>
         <attr name="edit_textStyle" format="reference"/>
         <attr name="warning_icon" format="reference"/>
-        <attr name="warning_icon_paddingStart" format="reference"/>
-        <attr name="warning_icon_paddingEnd" format="reference"/>
+        <attr name="warning_icon_paddingStart" format="reference|dimension"/>
+        <attr name="warning_icon_paddingEnd" format="reference|dimension"/>
         <attr name="warning_textStyle" format="reference"/>
         <attr name="warning_background" format="reference|color"/>
+        <attr name="show_error" format="boolean"/>
         <attr name="android:inputType"/>
     </declare-styleable>
 </resources>
