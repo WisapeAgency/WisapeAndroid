@@ -80,27 +80,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         Resources resources = getResources();
         switch (v.getId()) {
             case R.id.join:
-                /*
-                ServerAPI.getAPI(this).loginOrRegWithEmail(
-                        mUsernameEdt.getText().toString().trim(),
-                        mPasswordEdt.getText().toString().trim(),
-                        new ServerAPI.APICallback() {
-                            @Override
-                            public void onSucces(Object result) {
-                                System.out.println((String)result);
-                            }
-
-                            @Override
-                            public void onFail(int errorCode, String errorMessage) {
-
-                            }
-                        });
-                */
-                /*
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intent);
-                finish();
-                */
                 ApiUserAuthority.AttrSignUpInfo signupInfo = new ApiUserAuthority.AttrSignUpInfo();
                 Bundle args = new Bundle();
                 args.putParcelable(EXTRA_ATTR_SIGNUP, signupInfo);

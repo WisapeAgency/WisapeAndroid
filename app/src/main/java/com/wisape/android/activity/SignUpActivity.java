@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Message;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
@@ -15,12 +16,15 @@ import com.oauth.android.OAuthActivity;
 import com.oauth.android.OAuthParams;
 import com.wisape.android.BuildConfig;
 import com.wisape.android.R;
+import com.wisape.android.common.FacebookProfileRequester;
+import com.wisape.android.common.GooglePlusProfileRequester;
+import com.wisape.android.common.ProfileRequester;
+import com.wisape.android.common.TwitterProfileRequester;
 import com.wisape.android.common.UserManager;
 import com.wisape.android.logic.UserAuthorityLogic;
 import com.wisape.android.model.UserInfo;
 import com.wisape.android.network.ApiUserAuthority;
 import com.wisape.android.network.Requester;
-import com.wisape.android.network.ServerAPI;
 import com.wisape.android.util.SecurityUtils;
 import com.wisape.android.util.Utils;
 import com.wisape.android.widget.SignUpEditText;
@@ -36,7 +40,11 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
     private static final String TAG = SignUpActivity.class.getSimpleName();
     private static final String EXTRA_EMAIL = "extra_email";
     private static final String EXTRA_PASSWORD = "extra_password";
+    private static final String EXTRA_PROFILE_PARAM = "profile_param";
     private static final int LOADER_SIGN_UP = 1;
+    private static final int LOADER_SIGN_UP_WITH_FACEBOOK = 2;
+    private static final int LOADER_SIGN_UP_WITH_TWITTER = 3;
+    private static final int LOADER_SIGN_UP_WITH_GOOGLE_PLUS = 4;
 
     public static final int REQUEST_CODE_FACEBOOK_LOGIN = 1;
     public static final int REQUEST_CODE_TWITTER_LOGIN = 2;
@@ -120,58 +128,66 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            switch (requestCode) {
-                case REQUEST_CODE_FACEBOOK_LOGIN:
+        switch(requestCode){
+            default :
+                super.onActivityResult(requestCode, resultCode, data);
+                return;
+
+            case REQUEST_CODE_FACEBOOK_LOGIN :
+                if(RESULT_OK == resultCode){
                     String facebookToken = data.getStringExtra(OAuthActivity.EXTEA_TOKEN);
-                    //TODO to get userinfo and connect
-                    System.out.println("facebookToken:" + facebookToken);
-                    UserManager.getInstance(getApplicationContext()).connectWithFacebook(facebookToken, this, new ServerAPI.APICallback() {
-                        @Override
-                        public void onSucces(Object result) {
+                    Log.d(TAG, "#onActivityResult facebookToken:" + facebookToken);
+                    ProfileRequester.Param param = new ProfileRequester.Param();
+                    param.token = facebookToken;
+                    Bundle args = new Bundle();
+                    args.putParcelable(EXTRA_PROFILE_PARAM, param);
+                    startLoad(LOADER_SIGN_UP_WITH_FACEBOOK, args);
+                }else{
+                    //TODO OAuth failed
+                }
+                break;
 
-                        }
-
-                        @Override
-                        public void onFail(int errorCode, String errorMessage) {
-
-                        }
-                    });
-                    break;
-                case REQUEST_CODE_TWITTER_LOGIN:
+            case REQUEST_CODE_TWITTER_LOGIN :
+                if(RESULT_OK == resultCode){
                     String twitterToken = data.getStringExtra(OAuthActivity.EXTEA_TOKEN);
                     String twitterSecret = data.getStringExtra(OAuthActivity.EXTEA_SECRET);
                     String twitterRefresh = data.getStringExtra(OAuthActivity.EXTEA_RESPONSE);
-                    System.out.println("twitterToken:" + twitterToken);
-                    UserManager.getInstance(getApplicationContext()).connectWithTwitter(twitterToken, twitterSecret, twitterRefresh, this, new ServerAPI.APICallback() {
-                        @Override
-                        public void onSucces(Object result) {
+                    Log.d(TAG, "#onActivityResult twitterToken:" + twitterToken + ", twitterSecret:" + twitterSecret + ", twitterRefresh:" + twitterRefresh);
 
-                        }
+                    Resources resources = getResources();
+                    String apiKey = resources.getString(R.string.twitter_api_key);
+                    String apiSecret = resources.getString(R.string.twitter_api_secret_key);
+                    String apiCallback = resources.getString(R.string.twitter_api_callback_uri);
 
-                        @Override
-                        public void onFail(int errorCode, String errorMessage) {
+                    TwitterProfileRequester.TwitterParams twParam = new TwitterProfileRequester.TwitterParams();
+                    twParam.token = twitterToken;
+                    twParam.refreshResponse = twitterRefresh;
+                    twParam.screen = twitterSecret;
+                    twParam.apiKey = apiKey;
+                    twParam.apiSecret = apiSecret;
+                    twParam.apiCallback = apiCallback;
+                    Bundle args = new Bundle();
+                    args.putParcelable(EXTRA_PROFILE_PARAM, twParam);
+                    startLoad(LOADER_SIGN_UP_WITH_TWITTER, args);
+                }else{
+                    //TODO OAuth failed
+                }
+                break;
 
-                        }
-                    });
-                    break;
-                case REQUEST_CODE_GOOGLE_PLUS_LOGIN:
-                    String googleplusToken = data.getStringExtra(OAuthActivity.EXTEA_TOKEN);
-                    System.out.println("googleplusToken:" + googleplusToken);
-                    UserManager.getInstance(getApplicationContext()).connectWithGoogleplus(googleplusToken, this, new ServerAPI.APICallback() {
-                        @Override
-                        public void onSucces(Object result) {
+            case REQUEST_CODE_GOOGLE_PLUS_LOGIN :
+                if(RESULT_OK == resultCode){
+                    String googlePlusToken = data.getStringExtra(OAuthActivity.EXTEA_TOKEN);
+                    Log.d(TAG, "#onActivityResult googlePlusToken:" + googlePlusToken);
+                    ProfileRequester.Param param = new ProfileRequester.Param();
+                    param.token = googlePlusToken;
 
-                        }
-
-                        @Override
-                        public void onFail(int errorCode, String errorMessage) {
-
-                        }
-                    });
-                    break;
-            }
+                    Bundle args = new Bundle();
+                    args.putParcelable(EXTRA_PROFILE_PARAM, param);
+                    startLoad(LOADER_SIGN_UP_WITH_GOOGLE_PLUS, args);
+                }else{
+                    //TODO OAuth failed
+                }
+                break;
         }
     }
 
@@ -190,7 +206,6 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
             args.putString(EXTRA_PASSWORD, password);
             startLoad(LOADER_SIGN_UP, args);
         }
-        //MainActivity.launch(this, null, -1);
     }
 
     private boolean verifyEMail(String email){
@@ -247,6 +262,39 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
                 msg.obj = user;
                 msg.arg1 = STATUS_SUCCESS;
                 break;
+
+            case LOADER_SIGN_UP_WITH_FACEBOOK :
+                ProfileRequester.Param param = args.getParcelable(EXTRA_PROFILE_PARAM);
+                ProfileRequester profileRequester = new FacebookProfileRequester();
+                ProfileRequester.ProfileInfo profile = profileRequester.request(param);
+
+                logic = UserAuthorityLogic.instance();
+                user = logic.signUpWith(getApplicationContext(), profile, getCancelableTag());
+                msg.obj = user;
+                msg.arg1 = STATUS_SUCCESS;
+                break;
+
+            case LOADER_SIGN_UP_WITH_GOOGLE_PLUS :
+                param = args.getParcelable(EXTRA_PROFILE_PARAM);
+                profileRequester = new GooglePlusProfileRequester();
+                profile = profileRequester.request(param);
+
+                logic = UserAuthorityLogic.instance();
+                user = logic.signUpWith(getApplicationContext(), profile, getCancelableTag());
+                msg.obj = user;
+                msg.arg1 = STATUS_SUCCESS;
+                break;
+
+            case LOADER_SIGN_UP_WITH_TWITTER :
+                TwitterProfileRequester.TwitterParams twParams = args.getParcelable(EXTRA_PROFILE_PARAM);
+                profileRequester = new TwitterProfileRequester();
+                profile = profileRequester.request(twParams);
+
+                logic = UserAuthorityLogic.instance();
+                user = logic.signUpWith(getApplicationContext(), profile, getCancelableTag());
+                msg.obj = user;
+                msg.arg1 = STATUS_SUCCESS;
+                break;
         }
         return msg;
     }
@@ -262,6 +310,19 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
                 return;
 
             case LOADER_SIGN_UP :
+                if(STATUS_SUCCESS == data.arg1){
+                    UserInfo user = (UserInfo) data.obj;
+                    if(Requester.ServerMessage.STATUS_SUCCESS == user.status){
+                        MainActivity.launch(this, user, -1);
+                    }else{
+                        //TODO 注册登录失败
+                    }
+                }
+                break;
+
+            case LOADER_SIGN_UP_WITH_TWITTER :
+            case LOADER_SIGN_UP_WITH_GOOGLE_PLUS :
+            case LOADER_SIGN_UP_WITH_FACEBOOK :
                 if(STATUS_SUCCESS == data.arg1){
                     UserInfo user = (UserInfo) data.obj;
                     if(Requester.ServerMessage.STATUS_SUCCESS == user.status){

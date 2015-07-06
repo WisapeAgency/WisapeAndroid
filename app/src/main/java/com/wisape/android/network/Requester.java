@@ -1,6 +1,5 @@
 package com.wisape.android.network;
 
-import android.content.Context;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -37,7 +36,7 @@ import java.util.concurrent.TimeoutException;
  *
  * Created by LeiGuoting on 2/7/15.
  */
-public final class Requester{
+public final class Requester {
     private static final String TAG = Requester.class.getSimpleName();
     public static final String EXTRA_TOKEN = "token";
     public static final String EXTRA_ACCESS_TOKEN = "access_token";
@@ -63,6 +62,10 @@ public final class Requester{
         defaultPolicy = new DefaultRetryPolicy(WWWConfig.timeoutMills, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
     }
 
+    public RetryPolicy getDefaultPolicy(){
+        return defaultPolicy;
+    }
+
     public void cancelAll(Object tag){
         RequestQueue queue = VolleyHelper.getRequestQueue();
         queue.cancelAll(tag);
@@ -79,7 +82,7 @@ public final class Requester{
         return ServerMessage.obtain(status, message, data);
     }
 
-    public ServerMessage post(Context context, Uri uri, Map<String, String> params, Object tag){
+    public ServerMessage post(Uri uri, Map<String, String> params, Object tag){
         RequestFuture<String> future = RequestFuture.newFuture();
         VolleyRequestImpl request = new VolleyRequestImpl(Request.Method.POST, uri.toString(), params, future, future);
 
@@ -93,7 +96,7 @@ public final class Requester{
             //JSONObject json = future.get(defaultPolicy.getCurrentTimeout(), TimeUnit.MILLISECONDS);
             data = future.get(defaultPolicy.getCurrentTimeout(), TimeUnit.MILLISECONDS);
             JSONObject json = parseResponseAsJSON(data);
-            Log.d(TAG, "#post data:" + data);
+            Log.d(TAG, "#Result data:" + data);
             msg = verifyResponse(json);
         } catch (InterruptedException e){
             //do nothing
@@ -110,7 +113,7 @@ public final class Requester{
         return msg;
     }
 
-    public void postAsync(Context context, Uri uri, Map<String, String> params, ResponseListener listener, Object tag){
+    public void postAsync(Uri uri, Map<String, String> params, WisapeResponseListener listener, Object tag){
         VolleyResponseListener volleyListener = new VolleyResponseListener(listener);
         VolleyRequestImpl request = new VolleyRequestImpl(Request.Method.POST, uri.toString(), params, volleyListener, volleyListener);
         setting(request, params, tag);
@@ -379,8 +382,8 @@ public final class Requester{
     }
 
     private static class VolleyResponseListener implements Response.ErrorListener, Response.Listener<String>{
-        private ResponseListener listener;
-        VolleyResponseListener(ResponseListener listener){
+        private WisapeResponseListener listener;
+        VolleyResponseListener(WisapeResponseListener listener){
             this.listener = listener;
         }
 
@@ -424,5 +427,5 @@ public final class Requester{
         }
     }
 
-    public interface ResponseListener extends Response.Listener<ServerMessage>{}
+    public interface WisapeResponseListener extends Response.Listener<ServerMessage>{}
 }

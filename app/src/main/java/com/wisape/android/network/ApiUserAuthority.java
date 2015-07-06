@@ -29,7 +29,7 @@ public class ApiUserAuthority extends ApiBase{
 
         Requester requester = Requester.instance();
         setAccessToken(context, attrInfo);
-        Requester.ServerMessage message = requester.post(context, uri, attrInfo.convert(), tag);
+        Requester.ServerMessage message = requester.post(uri, attrInfo.convert(), tag);
         UserInfo user;
         if(message.succeed()){
             user = UserInfo.fromJsonObject(message.data);
@@ -49,7 +49,7 @@ public class ApiUserAuthority extends ApiBase{
 
         Requester requester = Requester.instance();
         setAccessToken(context, attrInfo);
-        Requester.ServerMessage message = requester.post(context, uri, attrInfo.convert(), tag);
+        Requester.ServerMessage message = requester.post(uri, attrInfo.convert(), tag);
         UserInfo user;
         if(message.succeed()){
             user = UserInfo.fromJsonObject(message.data);
@@ -124,21 +124,30 @@ public class ApiUserAuthority extends ApiBase{
         public static final String ATTR_TYPE = "type";
         public static final String ATTR_EMAIL = "user_email";
         public static final String ATTR_PASSWORD = "user_pwd";
+        public static final String ATTR_USER_ICON = "user_ico";
+        public static final String ATTR_NICK_NAME = "nick_name";
+        public static final String ATTR_UNIQUE_STR = "unique_str";
 
         public String type;
         public String email;
         public String password;
+        public String userIcon;
+        public String nickName;
+        public String uniqueStr;
 
         @Override
         protected void onConvert(Map<String, String> params) {
             params.put(ATTR_TYPE, null == type ? "" : type);
             params.put(ATTR_EMAIL, null == email ? "" : email);
             params.put(ATTR_PASSWORD, null == password ? "" : password);
+            params.put(ATTR_USER_ICON, null == userIcon ? "" : userIcon);
+            params.put(ATTR_NICK_NAME, null == nickName ? "" : nickName);
+            params.put(ATTR_UNIQUE_STR, null == uniqueStr ? "" : uniqueStr);
         }
 
         @Override
         protected int acquireAttributeNumber() {
-            return 3;
+            return 6;
         }
 
         @Override

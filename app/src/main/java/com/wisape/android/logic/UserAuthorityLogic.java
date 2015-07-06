@@ -2,6 +2,7 @@ package com.wisape.android.logic;
 
 import android.content.Context;
 
+import com.wisape.android.common.ProfileRequester;
 import com.wisape.android.common.UserManager;
 import com.wisape.android.model.UserInfo;
 import com.wisape.android.network.ApiUserAuthority;
@@ -26,5 +27,15 @@ public class UserAuthorityLogic{
             UserManager.instance().saveUser(context, user);
         }
         return user;
+    }
+
+    public UserInfo signUpWith(Context context, ProfileRequester.ProfileInfo profile, Object cancelableTag){
+        ApiUserAuthority.AttrSignUpInfo attr = new ApiUserAuthority.AttrSignUpInfo();
+        attr.type = profile.platform;
+        attr.email = profile.email;
+        attr.userIcon = profile.icon;
+        attr.nickName = profile.nickName;
+        attr.uniqueStr = profile.uniqueStr;
+        return signUp(context, attr, cancelableTag);
     }
 }

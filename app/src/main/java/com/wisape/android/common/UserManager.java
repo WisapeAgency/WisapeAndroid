@@ -3,7 +3,6 @@ package com.wisape.android.common;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.os.Handler;
 import android.os.Looper;
 import android.preference.PreferenceManager;
 
@@ -63,7 +62,7 @@ public class UserManager {
             synchronized (UserManager.class){
                 if(null == ref || null == (manager = ref.get())){
                     manager = new UserManager();
-                    ref = new WeakReference(ref);
+                    ref = new WeakReference(manager);
                 }
             }
         }
