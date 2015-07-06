@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -63,9 +62,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     }
 
     @Override
-    protected Message onBackgroundRunning(int what, Bundle args) throws AsyncLoaderError {
-        ApiUserAuthority.AttrSignupInfo signupInfo = args.getParcelable(EXTRA_ATTR_SIGNUP);
-        UserInfo user = UserAuthorityLogic.instance().signup(getApplicationContext(), signupInfo, this);
+    protected Message onLoadBackgroundRunning(int what, Bundle args) throws AsyncLoaderError {
+        ApiUserAuthority.AttrSignUpInfo signupInfo = args.getParcelable(EXTRA_ATTR_SIGNUP);
+        UserInfo user = UserAuthorityLogic.instance().signUp(getApplicationContext(), signupInfo, this);
         Message msg = Message.obtain();
         msg.what = what;
         return msg;
@@ -102,7 +101,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                 startActivity(intent);
                 finish();
                 */
-                ApiUserAuthority.AttrSignupInfo signupInfo = new ApiUserAuthority.AttrSignupInfo();
+                ApiUserAuthority.AttrSignUpInfo signupInfo = new ApiUserAuthority.AttrSignUpInfo();
                 Bundle args = new Bundle();
                 args.putParcelable(EXTRA_ATTR_SIGNUP, signupInfo);
                 startLoad(0, args);

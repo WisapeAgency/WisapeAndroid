@@ -15,6 +15,10 @@
         <attr name="warning_textStyle" format="reference"/>
         <attr name="warning_background" format="reference|color"/>
         <attr name="show_error" format="boolean"/>
+        <attr name="edit_height" format="reference|dimension"/>
+        <attr name="warning_height" format="reference|dimension"/>
         <attr name="android:inputType"/>
     </declare-styleable>
+
+    <attr name="signUpTextCursorDrawable" format="reference|color"/>
 </resources>

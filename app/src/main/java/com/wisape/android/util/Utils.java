@@ -3,9 +3,13 @@ package com.wisape.android.util;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Log;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * Utils
@@ -49,5 +53,25 @@ public class Utils {
             builder.append("Cause:\r\n");
             dumpThrowable(cause, builder);
         }
+    }
+
+    public static long acquireUTCTimestamp(){
+        DateFormat df = DateFormat.getTimeInstance();
+        SimpleDateFormat utcDateFormat = new SimpleDateFormat("yy/MM/dd hh:mm:ss.SSS");
+        utcDateFormat.setTimeZone(TimeZone.getTimeZone("gmt"));
+        Date currentDate = new Date();
+        String utcTime = utcDateFormat.format(currentDate);
+        Log.d("Utils", "#acquireUTCTimestamp current timestamp:" + currentDate.getTime());
+        SimpleDateFormat normalDateFormat = new SimpleDateFormat("yy/MM/dd hh:mm:ss.SSS");
+        long utcTimestamp;
+        try{
+            Date date = normalDateFormat.parse(utcTime);
+            utcTimestamp = date.getTime();
+        }catch (ParseException e){
+            Log.e("Utils", "#acquireUTCTimestamp ", e);
+            throw new IllegalStateException(e);
+        }
+        Log.d("Utils", "#acquireUTCTimestamp UTC timestamp:" + utcTimestamp);
+        return utcTimestamp;
     }
 }

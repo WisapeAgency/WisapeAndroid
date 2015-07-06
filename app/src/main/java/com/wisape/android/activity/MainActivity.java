@@ -1,5 +1,7 @@
 package com.wisape.android.activity;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
@@ -9,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.wisape.android.R;
+import com.wisape.android.model.UserInfo;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -17,9 +20,22 @@ import butterknife.InjectView;
  * @author Duke
  */
 public class MainActivity extends BaseActivity {
+    private static final String TAG = MainActivity.class.getSimpleName();
+    private static final String EXTRA_USER_INFO = "extra_user_info";
 
     @InjectView(R.id.main_drawer)
     DrawerLayout mMainDrawer;
+
+    public static void launch(Activity activity, UserInfo user, int requestCode){
+        Intent intent = new Intent(activity.getApplicationContext(), MainActivity.class);
+        intent.putExtra(EXTRA_USER_INFO, user);
+        if(-1 == requestCode){
+            activity.startActivity(intent);
+            activity.finish();
+        }else {
+            activity.startActivityForResult(intent, requestCode);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

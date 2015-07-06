@@ -104,10 +104,10 @@ public abstract class AbsCompatActivity extends AppCompatActivity implements Loa
 
     @Override
     public final Message onAsyncLoad(int what, Bundle args) throws AsyncLoaderError{
-        return onBackgroundRunning(what, args);
+        return onLoadBackgroundRunning(what, args);
     }
 
-    protected Message onBackgroundRunning(int what, Bundle args) throws AsyncLoaderError{
+    protected Message onLoadBackgroundRunning(int what, Bundle args) throws AsyncLoaderError{
         return null;
     }
 

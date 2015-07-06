@@ -23,7 +23,13 @@ public abstract class VolleyActivity extends AbsCompatActivity{
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Requester.instance().cancelAll(cancelableTag);
+        if(needCancelNetworkRequest()){
+            Requester.instance().cancelAll(cancelableTag);
+        }
         cancelableTag = null;
+    }
+
+    protected boolean needCancelNetworkRequest(){
+        return false;
     }
 }

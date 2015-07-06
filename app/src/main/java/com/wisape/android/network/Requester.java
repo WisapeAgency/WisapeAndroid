@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -13,9 +14,8 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.RequestFuture;
-import com.wisape.android.common.UserManager;
+import com.android.volley.toolbox.StringRequest;
 import com.wisape.android.util.SecurityUtils;
 import com.wisape.android.util.Utils;
 
@@ -38,8 +38,10 @@ import java.util.concurrent.TimeoutException;
  * Created by LeiGuoting on 2/7/15.
  */
 public final class Requester{
+    private static final String TAG = Requester.class.getSimpleName();
     public static final String EXTRA_TOKEN = "token";
     public static final String EXTRA_ACCESS_TOKEN = "access_token";
+    public static final String EXTRA_EXPIRES = "expires";
 
     private static WeakReference<Requester> ref;
 
@@ -78,16 +80,20 @@ public final class Requester{
     }
 
     public ServerMessage post(Context context, Uri uri, Map<String, String> params, Object tag){
-        RequestFuture<JSONObject> future = RequestFuture.newFuture();
-        JsonObjectRequestImpl request = new JsonObjectRequestImpl(Request.Method.POST, uri.toString(), params, future, future);
+        RequestFuture<String> future = RequestFuture.newFuture();
+        VolleyRequestImpl request = new VolleyRequestImpl(Request.Method.POST, uri.toString(), params, future, future);
 
-        setting(context, request, params, tag);
+        setting(request, params, tag);
         RequestQueue queue = VolleyHelper.getRequestQueue();
         queue.add(request);
 
         ServerMessage msg;
+        String data = "";
         try{
-            JSONObject json = future.get(defaultPolicy.getCurrentTimeout(), TimeUnit.MILLISECONDS);
+            //JSONObject json = future.get(defaultPolicy.getCurrentTimeout(), TimeUnit.MILLISECONDS);
+            data = future.get(defaultPolicy.getCurrentTimeout(), TimeUnit.MILLISECONDS);
+            JSONObject json = parseResponseAsJSON(data);
+            Log.d(TAG, "#post data:" + data);
             msg = verifyResponse(json);
         } catch (InterruptedException e){
             //do nothing
@@ -97,6 +103,8 @@ public final class Requester{
         } catch (TimeoutException e){
             //do nothing
             msg = ServerMessage.obtain(ServerMessage.STATUS_LOCAL_TIMEOUT);
+        } catch(JSONException e){
+            msg = ServerMessage.obtain(ServerMessage.STATUS_LOCAL_PARSE_ERROR, "Server Data:" + data);
         }
 
         return msg;
@@ -104,24 +112,24 @@ public final class Requester{
 
     public void postAsync(Context context, Uri uri, Map<String, String> params, ResponseListener listener, Object tag){
         VolleyResponseListener volleyListener = new VolleyResponseListener(listener);
-        JsonObjectRequestImpl request = new JsonObjectRequestImpl(Request.Method.POST, uri.toString(), params, volleyListener, volleyListener);
-        setting(context, request, params, tag);
+        VolleyRequestImpl request = new VolleyRequestImpl(Request.Method.POST, uri.toString(), params, volleyListener, volleyListener);
+        setting(request, params, tag);
         RequestQueue queue = VolleyHelper.getRequestQueue();
         queue.add(request);
     }
 
-    private void setting(Context context, JsonObjectRequestImpl request, Map<String, String> params, Object tag){
+    private JSONObject parseResponseAsJSON(String source) throws JSONException{
+        return new JSONObject(source);
+    }
+
+    private void setting(VolleyRequestImpl request, Map<String, String> params, Object tag){
         request.setRetryPolicy(defaultPolicy);
         Map<String, String> headers;
-        if(null == params || 0 == params.size()){
+        if(null != params && 0 == params.size()){
             headers = new HashMap(1);
-        }else{
-            headers = new HashMap(2);
             headers.put(EXTRA_TOKEN, makeToken(params));
+            request.setHeaders(headers);
         }
-
-        headers.put(EXTRA_ACCESS_TOKEN, UserManager.getInstance(context).acquireAccessToken());
-        request.setHeaders(headers);
         request.setShouldCache(true);
         if(null != tag){
             request.setTag(tag);
@@ -135,24 +143,27 @@ public final class Requester{
 
         Set<String> keySet = params.keySet();
         String[] keyArray = keySet.toArray(new String[keySet.size()]);
-        Arrays.sort(keyArray, TokenComparator.instance());
-        StringBuilder builder = new StringBuilder(256);
+        Arrays.sort(keyArray, TokenKeyComparator.instance());
+        StringBuilder builder = new StringBuilder(params.size() * 16);
         for(String key : keyArray){
             builder.append(key).append("=").append(params.get(key)).append("&");
         }
         String paramString = builder.substring(0, builder.length() - 1);
-        return SecurityUtils.md5(paramString);
+        Log.d(TAG, "#makeToken token source:" + paramString);
+        String md5 = SecurityUtils.md5(paramString);
+        Log.d(TAG, "#makeToken token:" + md5);
+        return md5;
     }
 
-    private static class TokenComparator implements Comparator<String> {
+    private static class TokenKeyComparator implements Comparator<String> {
         private static WeakReference<Comparator> comparatorRef;
 
         public static Comparator instance(){
             Comparator comparator;
             if(null == comparatorRef || null == (comparator = comparatorRef.get())){
-                synchronized (TokenComparator.class){
+                synchronized (TokenKeyComparator.class){
                     if(null == comparatorRef || null == (comparator = comparatorRef.get())){
-                        comparator = new TokenComparator();
+                        comparator = new TokenKeyComparator();
                         comparatorRef = new WeakReference(comparator);
                     }
                 }
@@ -160,7 +171,7 @@ public final class Requester{
             return comparator;
         }
 
-        private TokenComparator(){}
+        private TokenKeyComparator(){}
 
         @Override
         public int compare(String lhs, String rhs) {
@@ -168,21 +179,22 @@ public final class Requester{
         }
     }
 
-    private static class JsonObjectRequestImpl extends JsonObjectRequest{
+    private static class VolleyRequestImpl extends StringRequest{
         private Map<String, String> params;
         private Map<String, String> headers;
 
-        public JsonObjectRequestImpl(int method, String url, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
+        public VolleyRequestImpl(int method, String url, Response.Listener<String> listener, Response.ErrorListener errorListener) {
             this(method, url, null, listener, errorListener);
         }
 
-        public JsonObjectRequestImpl(int method, String url, Map<String, String> params, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
-            super(method, url, null, listener, errorListener);
+        public VolleyRequestImpl(int method, String url, Map<String, String> params, Response.Listener<String> listener, Response.ErrorListener errorListener) {
+            super(method, url, listener, errorListener);
             this.params = params;
         }
 
         @Override
         protected Map<String, String> getParams() throws AuthFailureError {
+            Log.d(TAG, "#getParams ___ ");
             return params;
         }
 
@@ -192,6 +204,7 @@ public final class Requester{
 
         @Override
         public Map<String, String> getHeaders() throws AuthFailureError {
+            Log.d(TAG, "#getHeaders ___ ");
             return (null == headers || 0 == headers.size()) ? super.getHeaders() : headers;
         }
     }
@@ -210,6 +223,7 @@ public final class Requester{
         public static final int STATUS_LOCAL_TIMEOUT = -3;
         public static final int STATUS_LOCAL_INTERRUPTED = -4;
         public static final int STATUS_LOCAL_EXCEPTION = -5;
+        public static final int STATUS_LOCAL_PARSE_ERROR = -6;
 
         private static final int CACHE_DEFAULT_SIZE = 10;
         private static WeakReference<ServerMessage>[] cachePool = new WeakReference[CACHE_DEFAULT_SIZE];
@@ -321,6 +335,10 @@ public final class Requester{
                 case STATUS_LOCAL_EXCEPTION :
                     name = "STATUS_LOCAL_EXCEPTION";
                     break;
+
+                case STATUS_LOCAL_PARSE_ERROR :
+                    name = "STATUS_LOCAL_PARSE_ERROR";
+                    break;
             }
             return name;
         }
@@ -360,7 +378,7 @@ public final class Requester{
         };
     }
 
-    private static class VolleyResponseListener implements Response.ErrorListener, Response.Listener<JSONObject>{
+    private static class VolleyResponseListener implements Response.ErrorListener, Response.Listener<String>{
         private ResponseListener listener;
         VolleyResponseListener(ResponseListener listener){
             this.listener = listener;
@@ -389,9 +407,18 @@ public final class Requester{
         }
 
         @Override
-        public void onResponse(JSONObject response) {
+        public void onResponse(String data) {
             if(null != listener){
-                listener.onResponse(Requester.instance().verifyResponse(response));
+                Requester req = Requester.instance();
+                JSONObject json;
+                ServerMessage msg;
+                try{
+                    json = req.parseResponseAsJSON(data);
+                    msg = req.verifyResponse(json);
+                }catch (JSONException e){
+                    msg = ServerMessage.obtain(ServerMessage.STATUS_LOCAL_PARSE_ERROR, "Server Data:" + data);
+                }
+                listener.onResponse(msg);
                 listener = null;
             }
         }

@@ -24,6 +24,10 @@
 
     <!--Sign Up-->
     <string name="sign_up_btn">注册</string>
-    <string name="forget_password">"忘记密码"</string>
-
+    <string name="forget_password">忘记密码?</string>
+    <string name="sign_up_email_not_right">邮箱格式不正确</string>
+    <string name="sign_up_password_can_not_null">密码不能为空</string>
+    <string name="sign_up_password_error">密码不正确</string>
+    <string name="password_reset">重置</string>
+    <string name="password_reset_label">重置密码</string>
 </resources>

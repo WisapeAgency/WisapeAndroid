@@ -8,7 +8,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -23,7 +22,7 @@ import com.wisape.android.R;
  *
  * Created by LeiGuoting on 3/7/15.
  */
-public class SignUpEditText extends LinearLayout{
+public class SignUpEditText extends LinearLayout implements View.OnFocusChangeListener{
     private static final String TAG = SignUpEditText.class.getSimpleName();
 
     private InnerEditText editText;
@@ -59,9 +58,10 @@ public class SignUpEditText extends LinearLayout{
             int actionPaddingStart = typed.getDimensionPixelSize(R.styleable.SignUpEditText_action_paddingStart, 0);
             int actionPaddingEnd = typed.getDimensionPixelSize(R.styleable.SignUpEditText_action_paddingEnd, 0);
 
+            editText.setOnFocusChangeListener(this);
             editText.setIconAndAction(icon, action);
             editText.setCompoundDrawablePadding(iconPaddingEnd > actionPaddingStart ? iconPaddingEnd : actionPaddingStart);
-            editText.setPadding(iconPaddingStart, 0, actionPaddingEnd, 0);
+            //editText.setPadding(iconPaddingStart, 0, actionPaddingEnd, 0);
 
             Drawable background = typed.getDrawable(R.styleable.SignUpEditText_edit_background);
             if(null != background){
@@ -75,6 +75,11 @@ public class SignUpEditText extends LinearLayout{
             editText.setInputType(0);
             int inputType = typed.getInt(R.styleable.SignUpEditText_android_inputType, EditorInfo.TYPE_CLASS_TEXT);
             editText.setInputType(inputType);
+
+            int height = typed.getDimensionPixelSize(R.styleable.SignUpEditText_edit_height, 0);
+            if(0 < height){
+                editText.setHeight(height);
+            }
 
             if(showError){
                 background = typed.getDrawable(R.styleable.SignUpEditText_warning_background);
@@ -99,14 +104,29 @@ public class SignUpEditText extends LinearLayout{
                 if(0 < iconPaddingEnd){
                     warningTxtv.setCompoundDrawablePadding(iconPaddingEnd);
                 }
+                height = typed.getDimensionPixelSize(R.styleable.SignUpEditText_warning_height, 0);
+                if(0 < height){
+                    warningTxtv.setHeight(height);
+                }
             }
         }finally {
             typed.recycle();
         }
     }
 
+    @Override
+    public void onFocusChange(View view, boolean hasFocus) {
+        if(R.id.edit_text == view.getId() && !hasFocus){
+            cleanWarning();
+        }
+    }
+
     public void setText(CharSequence text){
         editText.setText(text);
+    }
+
+    public String getText(){
+        return editText.getText().toString();
     }
 
     public void setError(CharSequence error){
@@ -128,6 +148,7 @@ public class SignUpEditText extends LinearLayout{
             }
         }
         warningTxtv.setVisibility(VISIBLE);
+        editText.setSelected(true);
     }
 
     public void setOnActionListener(OnActionListener onActionListener){
@@ -169,10 +190,22 @@ public class SignUpEditText extends LinearLayout{
                 == (EditorInfo.TYPE_CLASS_TEXT | EditorInfo.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
     }
 
+    private void cleanWarning(){
+        if(showError && VISIBLE == warningTxtv.getVisibility()){
+            warningTxtv.setText(null);
+            warningTxtv.setVisibility(INVISIBLE);
+            editText.setSelected(false);
+        }
+    }
+
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        editText = null;
+        if(null != editText){
+            editText.setOnFocusChangeListener(null);
+            editText = null;
+        }
+        warningTxtv = null;
     }
 
     private static class InnerEditText extends EditText{
@@ -227,11 +260,6 @@ public class SignUpEditText extends LinearLayout{
         }
 
         @Override
-        protected int[] onCreateDrawableState(int extraSpace) {
-            return super.onCreateDrawableState(extraSpace);
-        }
-
-        @Override
         @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
         public boolean onTouchEvent(MotionEvent event) {
             if(MotionEvent.ACTION_DOWN == event.getAction()){
@@ -240,9 +268,10 @@ public class SignUpEditText extends LinearLayout{
                     Rect bounds = action.getBounds();
                     float x = event.getRawX();
                     float y = event.getRawY();
-                    Log.d(TAG, "#onTouchEvent x:" + x + ", y:" + y + ", Action's bounds:" + bounds.toString());
+                    //Log.d(TAG, "#onTouchEvent x:" + x + ", y:" + y + ", Action's bounds:" + bounds.toString());
                     if(isActionBounds(bounds, x, y)){
                         if(null != onActionListener){
+                            parent.cleanWarning();
                             onActionListener.onActionClicked(parent);
                         }
                     }
@@ -264,6 +293,12 @@ public class SignUpEditText extends LinearLayout{
 
         private boolean isActionBounds(Rect actionBounds, float x, float y){
             return x >= getRight() - actionBounds.width();
+        }
+
+        @Override
+        protected void onDetachedFromWindow() {
+            super.onDetachedFromWindow();
+            parent = null;
         }
     }
 

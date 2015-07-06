@@ -146,14 +146,14 @@ public class ServerAPI {
     public void createByThirdlogin(final APICallback callback, UserInfo userEntity, String type) {
         String url = SERVER_BASE_URL + "/Home/Index/third";
         HashMap<String, String> map = new HashMap<String, String>();
-        map.put("openid", userEntity.user_ext_id);
-        if (!TextUtils.isEmpty(userEntity.email)) {
-            map.put("email", userEntity.email);
+        map.put("openid", userEntity.unique_str);
+        if (!TextUtils.isEmpty(userEntity.user_email)) {
+            map.put("email", userEntity.user_email);
         }
         map.put("user_ext_name", userEntity.nick_name);
-        map.put("user_icon_n", userEntity.user_icon_n);
+        map.put("user_icon_n", userEntity.user_ico_normal);
         map.put("third", type);
-        map.put("auth", Utils.getAuthString(userEntity.user_ext_id));
+        map.put("auth", Utils.getAuthString(userEntity.unique_str));
         callAPI(url, Request.Method.POST, map, callback);
     }
 
@@ -178,9 +178,9 @@ public class ServerAPI {
             result = OAuthRequestor.get(params, token, secret, url, map);
             JSONObject object = new JSONObject(result);
             UserInfo entity = new UserInfo();
-            entity.user_ext_id = object.optString("id");
+            entity.unique_str = object.optString("id");
             entity.nick_name = object.optString("name");
-            entity.user_icon_n = object.optString("profile_image_url");
+            entity.user_ico_normal = object.optString("profile_image_url");
             callback.onSucces(entity);
         } catch (Exception e) {
             e.printStackTrace();
