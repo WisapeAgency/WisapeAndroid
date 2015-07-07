@@ -4,29 +4,121 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Button
+    <TextView
+        android:id="@+id/user_profile_icon_title"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New Button"
-        android:id="@+id/button"
+        android:layout_height="100dp"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="39dp" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:gravity="left|start|center_vertical"
+        android:textColor="@android:color/black"
+        android:text="@string/user_profile_icon_title"/>
 
-    <Button
+    <ImageView
+        android:id="@+id/icon_down"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="QR Code"
-        android:id="@+id/qr_code"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/button"
-        android:layout_marginTop="13dp" />
+        android:layout_height="100dp"
+        android:scaleType="center"
+        android:gravity="left|start|center_vertical"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/icon_down"/>
 
     <com.facebook.drawee.view.SimpleDraweeView
-        android:layout_width="300dp"
-        android:layout_height="300dp"
-        android:id="@+id/imageView"
-        android:layout_below="@+id/qr_code"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="51dp"/>
+        android:id="@+id/user_profile_icon"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignRight="@+id/icon_down"
+        app:placeholderImage="@drawable/default_user_icon"
+        app:failureImage="@drawable/default_user_icon"
+        app:actualImageScaleType="center"/>
+    
+    <View
+        android:id="@+id/divider_icon"
+        style="@style/Divider.ForList"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_below="@+id/user_profile_icon_title"/>
+
+    <TextView
+        android:id="@+id/user_profile_name_title"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/divider_icon"
+        android:gravity="left|start|center_vertical"
+        android:textColor="@android:color/black"
+        android:text="@string/user_profile_name_title"/>
+
+    <ImageView
+        android:id="@+id/name_down"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:scaleType="center"
+        android:gravity="left|start|center_vertical"
+        android:layout_below="@+id/icon_down"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/icon_down"/>
+
+    <EditText
+        android:id="@+id/user_profile_name_edit"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:textColor="@android:color/black"
+        android:layout_toRightOf="@+id/user_profile_name_title"
+        android:layout_toEndOf="@+id/user_profile_name_title"
+        android:layout_toLeftOf="@+id/name_down"
+        android:layout_toStartOf="@+id/name_down"
+        android:layout_below="@+id/user_profile_icon"
+        android:gravity="right|end|center_vertical"
+        android:text="hehehehe"/>
+
+    <View
+        android:id="@+id/divider_name"
+        style="@style/Divider.ForList"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_below="@+id/user_profile_name_title"/>
+
+    <TextView
+        android:id="@+id/user_profile_email_title"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/divider_name"
+        android:gravity="left|start|center_vertical"
+        android:textColor="@android:color/black"
+        android:text="@string/user_profile_email_title"/>
+
+    <ImageView
+        android:id="@+id/email_down"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:scaleType="center"
+        android:gravity="left|start|center_vertical"
+        android:layout_below="@+id/name_down"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/icon_down"/>
+
+    <EditText
+        android:id="@+id/user_profile_email_edit"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:textColor="@android:color/black"
+        android:layout_toRightOf="@+id/user_profile_email_title"
+        android:layout_toEndOf="@+id/user_profile_email_title"
+        android:layout_toLeftOf="@+id/email_down"
+        android:layout_toStartOf="@+id/email_down"
+        android:layout_below="@+id/user_profile_name_edit"
+        android:gravity="right|end|center_vertical"
+        android:text="hehehehe"/>
+
+
 </RelativeLayout>

@@ -20,7 +20,7 @@ import butterknife.InjectView;
  */
 public class MainActivity extends BaseActivity implements DrawerLayout.DrawerListener, MainMenuFragment.UserCallback{
     private static final String TAG = MainActivity.class.getSimpleName();
-    private static final String EXTRA_USER_INFO = "_user_info";
+    public static final String EXTRA_USER_INFO = "_user_info";
 
     @InjectView(R.id.drawer)
     DrawerLayout drawer;

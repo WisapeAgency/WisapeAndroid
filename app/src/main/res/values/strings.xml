@@ -30,4 +30,9 @@
     <string name="sign_up_password_error">密码不正确</string>
     <string name="password_reset">重置</string>
     <string name="password_reset_label">重置密码</string>
+
+    <!--User Profile-->
+    <string name="user_profile_icon_title">用户头像</string>
+    <string name="user_profile_name_title">昵称</string>
+    <string name="user_profile_email_title">邮箱</string>
 </resources>

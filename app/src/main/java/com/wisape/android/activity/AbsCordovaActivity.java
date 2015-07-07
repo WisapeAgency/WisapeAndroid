@@ -1,6 +1,5 @@
 package com.wisape.android.activity;
 
-import android.app.Activity;
 import android.view.View;
 
 import com.wisape.android.R;

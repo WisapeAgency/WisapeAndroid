@@ -24,6 +24,7 @@
     <title>Cordova Tests</title>
       <link rel="stylesheet" href="master.css" type="text/css" media="screen" title="no title">
       <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+      <script type="text/javascript" charset="utf-8" src="cordova.file.js"></script>
       <script type="text/javascript" charset="utf-8" src="main.js"></script>
       <script>
       function startActivity(url, opts, className) {
@@ -33,7 +34,8 @@
       function startPhotoSelector(url, opts, className){
          cordova.exec(function(path) {console.log("Image URL:" + path);}, function(e) {console.log("Error: "+e);}, "PhotoSelector", "story", [className, url, opts || {}]);
       };
-      
+
+      console.log(File);
       localStorage.lifecyclestatus = "";
       localStorage.backgroundstatus = "";
       </script>

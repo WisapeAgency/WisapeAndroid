@@ -36,4 +36,9 @@
     <style name="SignUp.Warning" parent="TextAppearance.AppCompat.Small.Inverse">
         <item name="android:textColor">@color/theme_primary_warning</item>
     </style>
+
+    <style name="Divider.ForList" parent="">
+        <item name="android:height">0.5dp</item>
+        <item name="android:background">@drawable/divider_for_list</item>
+    </style>
 </resources>

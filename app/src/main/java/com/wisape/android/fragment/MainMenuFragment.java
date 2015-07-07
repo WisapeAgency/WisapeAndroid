@@ -13,6 +13,7 @@ import com.freshdesk.mobihelp.Mobihelp;
 import com.freshdesk.mobihelp.MobihelpConfig;
 import com.wisape.android.R;
 import com.wisape.android.activity.TestActivity;
+import com.wisape.android.activity.UserProfileActivity;
 import com.wisape.android.model.UserInfo;
 import com.wisape.android.util.FrescoFactory;
 
@@ -41,6 +42,10 @@ public class MainMenuFragment extends AbsFragment {
         if(activity instanceof UserCallback){
             callback = (UserCallback) activity;
         }
+
+        if(null == callback){
+            throw new IllegalStateException("The UserCallback can not be null.");
+        }
     }
 
     @Override
@@ -58,16 +63,14 @@ public class MainMenuFragment extends AbsFragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        if(null != callback){
-            UserInfo user = callback.getUserInfo();
-            String icon = user.user_ico_normal;
-            if(null != icon && 0 < icon.length()){
-                FrescoFactory.bindImageFromUri(sdvUserHeadImage, icon);
-            }
-
-            tvName.setText(user.nick_name);
-            tvMail.setText(user.user_email);
+        UserInfo user = callback.getUserInfo();
+        String icon = user.user_ico_normal;
+        if(null != icon && 0 < icon.length()){
+            FrescoFactory.bindImageFromUri(sdvUserHeadImage, icon);
         }
+
+        tvName.setText(user.nick_name);
+        tvMail.setText(user.user_email);
     }
 
     @Override
@@ -93,7 +96,7 @@ public class MainMenuFragment extends AbsFragment {
     @OnClick(R.id.tv_name)
     @SuppressWarnings("unused")
     protected void onNameClicked(){
-        TestActivity.launch(getActivity(), 0);
+        UserProfileActivity.launch(this, callback.getUserInfo(), UserProfileActivity.REQUEST_CODE_PROFILE);
     }
 
 
