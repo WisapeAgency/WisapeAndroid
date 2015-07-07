@@ -65,6 +65,10 @@
             android:screenOrientation="portrait"
             android:launchMode="singleTop"/>
 
+        <activity android:name=".activity.StoryTemplateActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop"
+            />
 
         <activity android:name="com.soundcloud.android.crop.CropImageActivity"
             android:screenOrientation="portrait"

@@ -1,2 +1,2 @@
-include ':app', ':compress-lzf', 'oauth', ':volley', ":mobihelp_sdk_android_v1_4", 'android-crop', 'cordova'
+include ':app', 'oauth', ':volley', ":mobihelp_sdk_android_v1_4", 'android-crop', 'cordova'
 
