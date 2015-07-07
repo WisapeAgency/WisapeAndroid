@@ -31,7 +31,7 @@
       };
 
       function startPhotoSelector(url, opts, className){
-         cordova.exec(function() {console.log("Success");}, function(e) {console.log("Error: "+e);}, "PhotoSelector", "select", [className, url, opts || {}]);
+         cordova.exec(function(path) {console.log("Image URL:" + path);}, function(e) {console.log("Error: "+e);}, "PhotoSelector", "story", [className, url, opts || {}]);
       };
       
       localStorage.lifecyclestatus = "";

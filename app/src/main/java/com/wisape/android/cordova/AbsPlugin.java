@@ -1,8 +1,7 @@
 package com.wisape.android.cordova;
 
 import android.app.Activity;
-
-import com.wisape.android.activity.AbsCordovaActivity;
+import android.content.Intent;
 
 import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaPlugin;
@@ -11,18 +10,22 @@ import org.apache.cordova.CordovaWebView;
 /**
  * Created by LeiGuoting on 7/7/15.
  */
-public class AbsPlugin extends CordovaPlugin{
-    private AbsCordovaActivity.CordovaWebViewTag tag;
+public abstract class AbsPlugin extends CordovaPlugin{
+    private CordovaInterface cordova;
     private volatile boolean destroyed;
 
     @Override
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
         super.initialize(cordova, webView);
-        tag = (AbsCordovaActivity.CordovaWebViewTag) webView.getView().getTag(AbsCordovaActivity.CordovaWebViewTag.TAG_KEY);
+        this.cordova = cordova;
     }
 
     protected Activity getCurrentActivity(){
-        return tag.activity;
+        return cordova.getActivity();
+    }
+
+    protected void startActivityForResult(Intent intent, int requestCode){
+        cordova.startActivityForResult(this, intent, requestCode);
     }
 
     public boolean isDestroyed(){
@@ -33,6 +36,6 @@ public class AbsPlugin extends CordovaPlugin{
     public void onDestroy() {
         destroyed = true;
         super.onDestroy();
-        tag = null;
+        cordova = null;
     }
 }

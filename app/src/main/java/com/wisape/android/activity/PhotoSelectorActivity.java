@@ -14,6 +14,7 @@ import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuItem;
 
 import com.wisape.android.R;
 import com.wisape.android.common.PhotoSelector;
@@ -46,15 +47,19 @@ public class PhotoSelectorActivity extends AppCompatActivity implements LoaderMa
     public static final String EXTRA_BUCKET_ID = "extra_bucket_id";
     public static final String EXTRA_BUCKET_LIST = "extra_bucket_list";
     public static final String EXTRA_IMAGE_URI = "extra_image_uri";
+    public static final int REQUEST_CODE_PHOTO = 10;
+
 
     public static void launch(Activity activity, int requestCode) {
-        Intent intent = new Intent(activity.getApplicationContext(), PhotoSelectorActivity.class);
-        activity.startActivityForResult(intent, requestCode);
+        activity.startActivityForResult(getIntent(activity.getApplicationContext()), requestCode);
     }
 
     public static void launch(Fragment fragment, int requestCode) {
-        Intent intent = new Intent(fragment.getActivity().getApplicationContext(), PhotoSelectorActivity.class);
-        fragment.startActivityForResult(intent, requestCode);
+        fragment.startActivityForResult(getIntent(fragment.getActivity().getApplicationContext()), requestCode);
+    }
+
+    public static Intent getIntent(Context context){
+        return new Intent(context, PhotoSelectorActivity.class);
     }
 
     private long bucketId;
@@ -76,6 +81,21 @@ public class PhotoSelectorActivity extends AppCompatActivity implements LoaderMa
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putLong(EXTRA_BUCKET_ID, bucketId);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(android.R.id.home == item.getItemId()){
+            return onBackNavigation();
+        }else{
+            return super.onOptionsItemSelected(item);
+        }
+    }
+
+    protected boolean onBackNavigation(){
+        setResult(RESULT_CANCELED);
+        finish();
+        return true;
     }
 
     private void loadPhotos(long bucketId) {

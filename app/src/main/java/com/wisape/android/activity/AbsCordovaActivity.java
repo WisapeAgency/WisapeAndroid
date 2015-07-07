@@ -18,7 +18,7 @@ public abstract class AbsCordovaActivity extends CordovaActivity {
     public void loadUrl(String url) {
         super.loadUrl(url);
         CordovaWebView appView = this.appView;
-        appView.getView().setTag(CordovaWebViewTag.TAG_KEY, new CordovaWebViewTag(this));
+        appView.getView().setTag(CordovaWebViewTag.TAG_KEY, new CordovaWebViewTag());
     }
 
     @Override
@@ -34,13 +34,8 @@ public abstract class AbsCordovaActivity extends CordovaActivity {
 
     public static class CordovaWebViewTag{
         public static final int TAG_KEY = R.integer.cordova_tag_key;
-        public Activity activity;
 
-        public CordovaWebViewTag(Activity activity){
-            this.activity = activity;
-        }
         public void destory(){
-            activity = null;
         }
     }
 }
