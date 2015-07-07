@@ -8,9 +8,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import com.tencent.mm.sdk.modelbase.BaseReq;
-import com.tencent.mm.sdk.modelbase.BaseResp;
-import com.tencent.mm.sdk.openapi.IWXAPIEventHandler;
+import com.oauth.android.OAuthActivity;
+import com.oauth.android.OAuthParams;
 import com.wisape.android.BuildConfig;
 import com.wisape.android.R;
 import com.wisape.android.common.UserManager;
@@ -19,8 +18,6 @@ import com.wisape.android.model.UserInfo;
 import com.wisape.android.network.ApiUserAuthority;
 import com.wisape.android.network.ServerAPI;
 import com.wisape.android.view.EditText;
-import com.oauth.android.OAuthActivity;
-import com.oauth.android.OAuthParams;
 
 import org.json.JSONArray;
 
@@ -31,7 +28,7 @@ import butterknife.InjectView;
  * Login Activity
  * Created by Xugm on 15/6/10.
  */
-public class LoginActivity extends BaseActivity implements View.OnClickListener, ServerAPI.APICallback, IWXAPIEventHandler {
+public class LoginActivity extends BaseActivity implements View.OnClickListener, ServerAPI.APICallback{
     private static final String TAG = LoginActivity.class.getSimpleName();
 
     public static final int REQUEST_CODE_FACEBOOK_LOGIN = 1;
@@ -195,15 +192,4 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     public void onFail(int errorCode, String errorMessage) {
         System.out.println("errorCode:" + errorCode + "|" + "errorMessage:" + errorMessage);
     }
-
-    @Override
-    public void onReq(BaseReq baseReq) {
-        System.out.println(baseReq.toString());
-    }
-
-    @Override
-    public void onResp(BaseResp baseResp) {
-        System.out.println(baseResp.toString());
-    }
-
 }
