@@ -1,8 +1,8 @@
 package com.wisape.android.fragment;
 
 import android.app.Activity;
-import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +12,8 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.freshdesk.mobihelp.Mobihelp;
 import com.freshdesk.mobihelp.MobihelpConfig;
 import com.wisape.android.R;
-import com.wisape.android.activity.UserProfileActivity;
+import com.wisape.android.activity.TestActivity;
+import com.wisape.android.model.UserInfo;
 import com.wisape.android.util.FrescoFactory;
 
 import butterknife.ButterKnife;
@@ -23,7 +24,7 @@ import butterknife.OnClick;
  * @author Duke
  */
 public class MainMenuFragment extends AbsFragment {
-
+    private static final String TAG = MainMenuFragment.class.getSimpleName();
 
     @InjectView(R.id.sdv_user_head_image)
     SimpleDraweeView sdvUserHeadImage;
@@ -31,6 +32,16 @@ public class MainMenuFragment extends AbsFragment {
     TextView tvName;
     @InjectView(R.id.tv_mail)
     TextView tvMail;
+
+    private UserCallback callback;
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if(activity instanceof UserCallback){
+            callback = (UserCallback) activity;
+        }
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,12 +53,21 @@ public class MainMenuFragment extends AbsFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main_menu, null, false);
         ButterKnife.inject(this, rootView);
-        init();
         return rootView;
     }
 
-    private void init() {
-        FrescoFactory.bindImageFromUri(sdvUserHeadImage, "http://static.6yoo.com/yuyan/cms/d/qinsmoon/market/4ad/2015-06-03/b84729802bdc351165bda6f545ce9b93.jpg");
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        if(null != callback){
+            UserInfo user = callback.getUserInfo();
+            String icon = user.user_ico_normal;
+            if(null != icon && 0 < icon.length()){
+                FrescoFactory.bindImageFromUri(sdvUserHeadImage, icon);
+            }
+
+            tvName.setText(user.nick_name);
+            tvMail.setText(user.user_email);
+        }
     }
 
     @Override
@@ -56,6 +76,13 @@ public class MainMenuFragment extends AbsFragment {
         ButterKnife.reset(this);
     }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        if(null != callback){
+            callback = null;
+        }
+    }
 
     @OnClick(R.id.help_center)
     @SuppressWarnings("unused")
@@ -66,11 +93,11 @@ public class MainMenuFragment extends AbsFragment {
     @OnClick(R.id.tv_name)
     @SuppressWarnings("unused")
     protected void onNameClicked(){
-        UserProfileActivity.launch(getActivity(), 0);
+        TestActivity.launch(getActivity(), 0);
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
+
+    public interface UserCallback{
+        UserInfo getUserInfo();
     }
 }

@@ -68,7 +68,6 @@ public class CardGalleryFragment extends AbsFragment {
                 });
             }
         });
-
     }
 
     @Override

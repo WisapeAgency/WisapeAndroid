@@ -29,7 +29,7 @@ import butterknife.InjectView;
 
 /**
  * Login Activity
- * Created by LeiGuoting on 15/6/10.
+ * Created by Xugm on 15/6/10.
  */
 public class LoginActivity extends BaseActivity implements View.OnClickListener, ServerAPI.APICallback, IWXAPIEventHandler {
     private static final String TAG = LoginActivity.class.getSimpleName();

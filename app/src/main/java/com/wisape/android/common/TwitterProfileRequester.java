@@ -53,7 +53,7 @@ public class TwitterProfileRequester implements ProfileRequester<TwitterParams>{
         return profile;
     }
 
-    public static class TwitterParams extends Param{
+    public static class TwitterParams extends ProfileRequester.Param{
         public String refreshResponse;
         public String apiKey;
         public String apiSecret;

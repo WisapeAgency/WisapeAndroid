@@ -12,7 +12,8 @@
         android:layout_height="68dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="30dp"
-        fresco:roundAsCircle="true" />
+        fresco:roundAsCircle="true"
+        fresco:placeholderImage="@mipmap/ic_launcher"/>
 
     <TextView
         android:id="@+id/tv_name"
@@ -23,7 +24,6 @@
         android:paddingLeft="@dimen/span_space"
         android:paddingRight="@dimen/span_space"
         android:singleLine="true"
-        android:text="NAME NAME"
         android:textColor="@color/app_primary"
         android:textSize="@dimen/app_text_size_large" />
 
@@ -37,7 +37,6 @@
         android:paddingLeft="@dimen/span_space"
         android:paddingRight="@dimen/span_space"
         android:singleLine="true"
-        android:text="MAIL MAIL"
         android:textColor="@color/app_primary"
         android:textSize="@dimen/app_text_size_small" />
 

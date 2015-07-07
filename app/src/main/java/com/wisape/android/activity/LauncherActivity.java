@@ -3,6 +3,7 @@ package com.wisape.android.activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemClock;
 
 import com.wisape.android.common.UserManager;
 import com.wisape.android.model.UserInfo;
@@ -12,6 +13,9 @@ import com.wisape.android.model.UserInfo;
  */
 public class LauncherActivity extends BaseActivity {
     private static final int LOADER_SIGN_IN = 1;
+    private static final long LAUNCH_TIME_MILLS = 1000;
+
+    private long startTimeInMills;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +26,8 @@ public class LauncherActivity extends BaseActivity {
                 startLoad(LOADER_SIGN_IN, null);
             }
         }, 1000);
+        startLoad(LOADER_SIGN_IN, null);
+        startTimeInMills = SystemClock.uptimeMillis();
     }
 
     @Override
@@ -35,7 +41,23 @@ public class LauncherActivity extends BaseActivity {
 
     @Override
     protected void onLoadCompleted(Message data) {
-        UserInfo user = (UserInfo)data.obj;
+        long costMills = SystemClock.uptimeMillis() - startTimeInMills;
+        long diffMills = LAUNCH_TIME_MILLS - costMills;
+
+        final UserInfo user = (UserInfo)data.obj;
+        if(0 < diffMills){
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    redirect(user);
+                }
+            }, diffMills);
+        }else{
+            redirect(user);
+        }
+    }
+
+    private void redirect(UserInfo user){
         if(null == user){
             SignUpActivity.launch(this, -1);
         }else{
