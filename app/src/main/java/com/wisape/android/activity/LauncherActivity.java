@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
+import android.util.Log;
 
 import com.wisape.android.common.UserManager;
 import com.wisape.android.model.UserInfo;
@@ -20,12 +21,6 @@ public class LauncherActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                startLoad(LOADER_SIGN_IN, null);
-            }
-        }, 1000);
         startLoad(LOADER_SIGN_IN, null);
         startTimeInMills = SystemClock.uptimeMillis();
     }
@@ -45,6 +40,7 @@ public class LauncherActivity extends BaseActivity {
         long diffMills = LAUNCH_TIME_MILLS - costMills;
 
         final UserInfo user = (UserInfo)data.obj;
+        Log.d("LauncherActivity", "#onLoadCompleted diffMills:" + diffMills);
         if(0 < diffMills){
             new Handler().postDelayed(new Runnable() {
                 @Override

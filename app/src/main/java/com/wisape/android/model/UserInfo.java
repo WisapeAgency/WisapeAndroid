@@ -1,5 +1,6 @@
 package com.wisape.android.model;
 
+import android.net.Uri;
 import android.os.Parcel;
 
 import org.json.JSONObject;
@@ -15,11 +16,11 @@ public class UserInfo extends ServerInfo {
     public String access_token;
     public String user_pwd;
     public String nick_name;
-    public String platform;         // ->user_ext
+    public String user_ext;         //平台类型见 UserManager
     public String user_ext_name;
-    public String user_ico_normal;  // ->user_ico_n
-    public String user_ico_big;     // ->user_ico_b
-    public String user_ico_small;   // ->user_ico_s
+    public String user_ico_n;
+    public String user_ico_b;
+    public String user_ico_s;
     public String user_back_img;
     public String unique_str;       //第三方平台ID
 
@@ -34,11 +35,11 @@ public class UserInfo extends ServerInfo {
         entity.user_pwd = object.optString("user_pwd", "");
         entity.user_email = object.optString("user_email", "");
         entity.access_token = object.optString("access_token", "");
-        entity.platform = object.optString("user_ext", "");
+        entity.user_ext = object.optString("user_ext", "");
         entity.user_ext_name = object.optString("user_ext_name", "");
-        entity.user_ico_normal = object.optString("user_ico_n", "");
-        entity.user_ico_big = object.optString("user_ico_b", "");
-        entity.user_ico_small = object.optString("user_ico_s", "");
+        entity.user_ico_n = object.optString("user_ico_n", "");
+        entity.user_ico_b = object.optString("user_ico_b", "");
+        entity.user_ico_s = object.optString("user_ico_s", "");
         entity.user_back_img = object.optString("user_back_img", "");
         entity.unique_str = object.optString("unique_str", "");
         return entity;
@@ -59,12 +60,12 @@ public class UserInfo extends ServerInfo {
         dest.writeString(this.access_token);
         dest.writeString(this.user_pwd);
         dest.writeString(this.nick_name);
-        dest.writeString(this.platform);
+        dest.writeString(this.user_ext);
         dest.writeString(this.user_ext_name);
-        dest.writeString(this.user_ico_normal);
-        dest.writeString(this.user_ico_big);
-        dest.writeString(this.user_ico_small);
-        dest.writeString(this.user_back_img);
+        dest.writeString(Uri.encode(this.user_ico_n));
+        dest.writeString(Uri.encode(this.user_ico_b));
+        dest.writeString(Uri.encode(this.user_ico_s));
+        dest.writeString(Uri.encode(this.user_back_img));
         dest.writeString(this.unique_str);
     }
 
@@ -76,12 +77,12 @@ public class UserInfo extends ServerInfo {
         this.access_token = in.readString();
         this.user_pwd = in.readString();
         this.nick_name = in.readString();
-        this.platform = in.readString();
+        this.user_ext = in.readString();
         this.user_ext_name = in.readString();
-        this.user_ico_normal = in.readString();
-        this.user_ico_big = in.readString();
-        this.user_ico_small = in.readString();
-        this.user_back_img = in.readString();
+        this.user_ico_n = Uri.decode(in.readString());
+        this.user_ico_b = Uri.decode(in.readString());
+        this.user_ico_s = Uri.decode(in.readString());
+        this.user_back_img = Uri.decode(in.readString());
         this.unique_str = in.readString();
     }
 

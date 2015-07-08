@@ -75,7 +75,7 @@ public class UserProfileActivity extends BaseActivity{
 
         nameEdit.setText(user.nick_name);
         emailEdit.setText(user.user_email);
-        String iconUrl = user.user_ico_normal;
+        String iconUrl = user.user_ico_n;
         if(null != iconUrl && 0 < iconUrl.length()){
             iconView.getHierarchy().setActualImageFocusPoint(new PointF(0.5f, 0.5f));
             FrescoFactory.bindImageFromUri(iconView, iconUrl);

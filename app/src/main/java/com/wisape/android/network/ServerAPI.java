@@ -151,7 +151,7 @@ public class ServerAPI {
             map.put("email", userEntity.user_email);
         }
         map.put("user_ext_name", userEntity.nick_name);
-        map.put("user_icon_n", userEntity.user_ico_normal);
+        map.put("user_icon_n", userEntity.user_ico_n);
         map.put("third", type);
         map.put("auth", Utils.getAuthString(userEntity.unique_str));
         callAPI(url, Request.Method.POST, map, callback);
@@ -180,7 +180,7 @@ public class ServerAPI {
             UserInfo entity = new UserInfo();
             entity.unique_str = object.optString("id");
             entity.nick_name = object.optString("name");
-            entity.user_ico_normal = object.optString("profile_image_url");
+            entity.user_ico_n = object.optString("profile_image_url");
             callback.onSucces(entity);
         } catch (Exception e) {
             e.printStackTrace();

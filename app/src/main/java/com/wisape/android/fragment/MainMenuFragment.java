@@ -17,7 +17,6 @@ import com.freshdesk.mobihelp.Mobihelp;
 import com.freshdesk.mobihelp.MobihelpConfig;
 import com.wisape.android.R;
 import com.wisape.android.activity.MainActivity;
-import com.wisape.android.activity.TestActivity;
 import com.wisape.android.activity.UserProfileActivity;
 import com.wisape.android.common.DynamicBroadcastReceiver;
 import com.wisape.android.model.UserInfo;
@@ -96,7 +95,7 @@ public class MainMenuFragment extends AbsFragment implements DynamicBroadcastRec
     }
 
     private void refreshUI(UserInfo user){
-        String icon = user.user_ico_normal;
+        String icon = user.user_ico_n;
         Log.d(TAG, "#onViewCreated icon:" + icon);
         if(null != icon && 0 < icon.length()){
             FrescoFactory.bindImageFromUri(sdvUserHeadImage, icon);

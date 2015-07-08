@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Looper;
 import android.preference.PreferenceManager;
+import android.util.Base64;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.wisape.android.model.UserInfo;
@@ -91,9 +93,11 @@ public class UserManager {
             synchronized (this){
                 if(null == this.user){
                     SharedPreferences preferences = getPreferences(context);
-                    String json = preferences.getString(EXTRA_USER_INFO, "");
-                    if(0 != json.length()){
+                    String decode = preferences.getString(EXTRA_USER_INFO, "");
+                    if(0 != decode.length()){
                         try{
+                            String json = new String(Base64.decode(decode.getBytes(), Base64.DEFAULT));
+                            Log.d("UserManager", "#loadUser json:" + json + "\r\n decode:" + decode);
                             JSONObject jsonObject = new JSONObject(json);
                             user = UserInfo.fromJsonObject(jsonObject);
                             this.user = user;
@@ -101,6 +105,9 @@ public class UserManager {
                             preferences.edit().clear().commit();
                             user = null;
                         }
+                    }else{
+                        preferences.edit().clear().commit();
+                        user = null;
                     }
                 }
             }
@@ -122,8 +129,10 @@ public class UserManager {
             this.user = user;
         }
         String json = new Gson().toJson(user);
+        String encode = Base64.encodeToString(json.getBytes(), Base64.DEFAULT);
         SharedPreferences preferences = getPreferences(context);
-        preferences.edit().putString(EXTRA_USER_INFO, json).commit();
+        Log.d("UserManager", "#saveUser json:" + json + "\r\n encode:" + encode);
+        preferences.edit().putString(EXTRA_USER_INFO, encode).commit();
     }
 
     private SharedPreferences getPreferences(Context context){
@@ -228,7 +237,7 @@ public class UserManager {
                     @Override
                     public void onSucces(Object result) {
                         try {
-                            mUserEntity.user_ico_normal = (new JSONObject((String)result)).optJSONObject("data").optString("url");
+                            mUserEntity.user_ico_n = (new JSONObject((String)result)).optJSONObject("data").optString("url");
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -284,7 +293,7 @@ public class UserManager {
                     mUserEntity.unique_str = object.optString("id");
                     mUserEntity.user_email = object.optString("email");
                     mUserEntity.nick_name = object.optString("name");
-                    mUserEntity.user_ico_normal = object.optString("picture");
+                    mUserEntity.user_ico_n = object.optString("picture");
 
                     createByThirdLogin(context, callback, SIGN_UP_WITH_GOOGLE_PLUS);
                 } catch (JSONException e) {
@@ -327,7 +336,7 @@ public class UserManager {
 
             @Override
             public void onFail(int errorCode, String errorMessage) {
-                callback.onFail(0, "Create user in our platform with third user fail!");
+                callback.onFail(0, "Create user in our plfm with third user fail!");
             }
         }, mUserEntity, userType);
     }

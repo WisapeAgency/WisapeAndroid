@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 
@@ -78,6 +79,7 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
             return;
         }
 
+        Log.d(TAG, "#onCreate this:" + hashCode() + ", user:" + user.toString());
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
         initStyle();

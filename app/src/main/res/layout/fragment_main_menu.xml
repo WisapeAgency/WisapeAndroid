@@ -13,7 +13,8 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="30dp"
         fresco:roundAsCircle="true"
-        fresco:placeholderImage="@mipmap/ic_launcher"/>
+        fresco:placeholderImage="@drawable/default_user_icon"
+        fresco:failureImage="@drawable/default_user_icon"/>
 
     <TextView
         android:id="@+id/tv_name"
