@@ -18,6 +18,13 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //NanoService.startNanoServer(getApplicationContext());
         loadUrl(START_URL);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        //NanoService.stopNanoServer(getApplicationContext());
     }
 }

@@ -79,6 +79,8 @@
             android:screenOrientation="portrait"
             android:launchMode="singleTop"/>
 
+        <service android:name=".service.NanoService"
+            android:exported="false"/>
         <provider
             android:authorities="com.wisape.photo"
             android:name="com.wisape.android.content.PhotoProvider"

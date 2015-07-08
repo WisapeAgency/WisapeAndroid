@@ -32,7 +32,14 @@
       };
 
       function startPhotoSelector(url, opts, className){
-         cordova.exec(function(path) {console.log("Image URL:" + path);}, function(e) {console.log("Error: "+e);}, "PhotoSelector", "story", [className, url, opts || {}]);
+         cordova.exec(function(url) {
+             console.log("Image URL:" + url);
+             var imgID = new Image();
+             imgID.src=url;
+             imgID.onload = function(){
+                document.getElementById("img_logo").innerHTML = "<img src="+imgID.src+" />";
+             }
+         }, function(e) {console.log("Error: "+e);}, "PhotoSelector", "story", [className, url, opts || {}]);
       };
 
       console.log(File);
@@ -51,7 +58,8 @@
         <h4>Run each of the test activities below:</h4>
     </div>
     <button class="btn large" onclick="startPhotoSelector('menus/index.html', null, 'org.apache.cordova.test.menus');">Open Photo Selector</button>
-    <button class="btn large" onclick="startActivity('jqmtabbackbutton/index.html');">Backbutton jQM tab</button>
+    <!--img id="image_from_android" src="http://127.0.0.1:7029/image/L3N0b3JhZ2UvZW11bGF0ZWQvMC9BbmRyb2lkL2RhdGEvY29tLndpc2FwZS5hbmRyb2lkL2ZpbGVzL1BpY3R1cmVzL19jcm9wXzFfODUxMTUxODcuanBlZw=="/-->
+    <img id="img_logo" src="img/logo.png">
     <button class="btn large" onclick="startActivity('backbuttonmultipage/index.html');">Backbutton with multiple pages</button>
     <button class="btn large" onclick="startActivity('backgroundcolor/index.html', {backgroundcolor: -16711936});">Background Color</button>
     <button class="btn large" onclick="startActivity('basicauth/index.html');">Basic Authentication</button>

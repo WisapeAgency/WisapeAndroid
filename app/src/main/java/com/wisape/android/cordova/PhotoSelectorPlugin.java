@@ -9,6 +9,7 @@ import android.util.Log;
 import com.soundcloud.android.crop.Crop;
 import com.wisape.android.activity.PhotoSelectorActivity;
 import com.wisape.android.content.PhotoProvider;
+import com.wisape.android.network.NanoServer;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaArgs;
@@ -64,7 +65,9 @@ public class PhotoSelectorPlugin extends AbsPlugin {
             case Crop.REQUEST_CROP :
                 if(Activity.RESULT_OK == resultCode){
                     CallbackContext callback = callbackContextMap.get(ACTION_STORY_BACKGROUND);
-                    callback.success(cropImgUri.toString());
+                    String localPath = cropImgUri.getPath();
+                    Uri newUri = NanoServer.makeImageUrl(localPath);
+                    callback.success(newUri.toString());
                     cropImgUri = null;
                 }
                 break;
