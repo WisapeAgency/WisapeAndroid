@@ -21,9 +21,9 @@ import com.wisape.android.common.GooglePlusProfileRequester;
 import com.wisape.android.common.ProfileRequester;
 import com.wisape.android.common.TwitterProfileRequester;
 import com.wisape.android.common.UserManager;
-import com.wisape.android.logic.UserAuthorityLogic;
+import com.wisape.android.logic.UserLogic;
 import com.wisape.android.model.UserInfo;
-import com.wisape.android.network.ApiUserAuthority;
+import com.wisape.android.network.ApiUser;
 import com.wisape.android.network.Requester;
 import com.wisape.android.util.SecurityUtils;
 import com.wisape.android.util.Utils;
@@ -250,8 +250,8 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
                 break;
 
             case LOADER_SIGN_UP :
-                UserAuthorityLogic logic = UserAuthorityLogic.instance();
-                ApiUserAuthority.AttrSignUpInfo attr = new ApiUserAuthority.AttrSignUpInfo();
+                UserLogic logic = UserLogic.instance();
+                ApiUser.AttrSignUpInfo attr = new ApiUser.AttrSignUpInfo();
                 attr.email = args.getString(EXTRA_EMAIL, "");
                 String password = args.getString(EXTRA_PASSWORD, "");
                 attr.password = SecurityUtils.md5(password);
@@ -268,7 +268,7 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
                 ProfileRequester profileRequester = new FacebookProfileRequester();
                 ProfileRequester.ProfileInfo profile = profileRequester.request(param);
 
-                logic = UserAuthorityLogic.instance();
+                logic = UserLogic.instance();
                 user = logic.signUpWith(getApplicationContext(), profile, getCancelableTag());
                 msg.obj = user;
                 msg.arg1 = STATUS_SUCCESS;
@@ -279,7 +279,7 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
                 profileRequester = new GooglePlusProfileRequester();
                 profile = profileRequester.request(param);
 
-                logic = UserAuthorityLogic.instance();
+                logic = UserLogic.instance();
                 user = logic.signUpWith(getApplicationContext(), profile, getCancelableTag());
                 msg.obj = user;
                 msg.arg1 = STATUS_SUCCESS;
@@ -290,7 +290,7 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
                 profileRequester = new TwitterProfileRequester();
                 profile = profileRequester.request(twParams);
 
-                logic = UserAuthorityLogic.instance();
+                logic = UserLogic.instance();
                 user = logic.signUpWith(getApplicationContext(), profile, getCancelableTag());
                 msg.obj = user;
                 msg.arg1 = STATUS_SUCCESS;

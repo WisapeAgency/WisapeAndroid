@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Message;
+import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -23,6 +25,8 @@ import com.wisape.android.fragment.PhotoWallsFragment;
 import com.wisape.android.model.AppPhotoBucketInfo;
 import com.wisape.android.model.AppPhotoInfo;
 
+import java.io.File;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,6 +64,38 @@ public class PhotoSelectorActivity extends AppCompatActivity implements LoaderMa
 
     public static Intent getIntent(Context context){
         return new Intent(context, PhotoSelectorActivity.class);
+    }
+
+    public static Uri buildCropUri(Context context, int type){
+        if(!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())){
+            throw new IllegalStateException("We can not found External Storage.");
+        }
+
+        File parentDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        final String header = String.format("_crop_%1$s", Integer.toString(type));
+        final String parentPath = parentDir.getPath();
+        String[] children = parentDir.list(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String filename) {
+                return dir.getPath().equals(parentPath) && filename.startsWith(header);
+            }
+        });
+
+        int count = (null == children ? 0 : children.length);
+        if(0 < count){
+            File child;
+            for (String path : children){
+                child = new File(path);
+                if(child.exists() && !child.delete()){
+                    child.deleteOnExit();
+                }
+            }
+        }
+        String fileName = String.format("%1$s_%2$s.jpeg", header, Long.toString(SystemClock.uptimeMillis()));
+        File cropPhoto = new File(parentDir,  fileName);
+        Uri uri = Uri.fromFile(cropPhoto);
+        Log.d(TAG, "#buildCropUri uri:" + uri);
+        return uri;
     }
 
     private long bucketId;
@@ -147,7 +183,7 @@ public class PhotoSelectorActivity extends AppCompatActivity implements LoaderMa
 
     @Override
     public void onLoadFinished(Loader<Message> loader, Message data) {
-        if (isDestroyed() || null == data) {
+        if (isFinishing() || null == data) {
             return;
         }
 

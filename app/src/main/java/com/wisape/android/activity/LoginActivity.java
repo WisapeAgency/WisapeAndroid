@@ -13,9 +13,9 @@ import com.oauth.android.OAuthParams;
 import com.wisape.android.BuildConfig;
 import com.wisape.android.R;
 import com.wisape.android.common.UserManager;
-import com.wisape.android.logic.UserAuthorityLogic;
+import com.wisape.android.logic.UserLogic;
 import com.wisape.android.model.UserInfo;
-import com.wisape.android.network.ApiUserAuthority;
+import com.wisape.android.network.ApiUser;
 import com.wisape.android.network.ServerAPI;
 import com.wisape.android.view.EditText;
 
@@ -60,8 +60,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
 
     @Override
     protected Message onLoadBackgroundRunning(int what, Bundle args) throws AsyncLoaderError {
-        ApiUserAuthority.AttrSignUpInfo signupInfo = args.getParcelable(EXTRA_ATTR_SIGNUP);
-        UserInfo user = UserAuthorityLogic.instance().signUp(getApplicationContext(), signupInfo, this);
+        ApiUser.AttrSignUpInfo signupInfo = args.getParcelable(EXTRA_ATTR_SIGNUP);
+        UserInfo user = UserLogic.instance().signUp(getApplicationContext(), signupInfo, this);
         Message msg = Message.obtain();
         msg.what = what;
         return msg;
@@ -77,7 +77,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         Resources resources = getResources();
         switch (v.getId()) {
             case R.id.join:
-                ApiUserAuthority.AttrSignUpInfo signupInfo = new ApiUserAuthority.AttrSignUpInfo();
+                ApiUser.AttrSignUpInfo signupInfo = new ApiUser.AttrSignUpInfo();
                 Bundle args = new Bundle();
                 args.putParcelable(EXTRA_ATTR_SIGNUP, signupInfo);
                 startLoad(0, args);

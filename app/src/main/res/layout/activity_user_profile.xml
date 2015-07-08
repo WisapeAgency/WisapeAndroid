@@ -65,7 +65,7 @@
         android:layout_alignParentEnd="true"
         android:src="@drawable/icon_down"/>
 
-    <EditText
+    <com.widgets.EditableTextView
         android:id="@+id/user_profile_name_edit"
         android:layout_width="match_parent"
         android:layout_height="60dp"
@@ -76,7 +76,7 @@
         android:layout_toStartOf="@+id/name_down"
         android:layout_below="@+id/user_profile_icon"
         android:gravity="right|end|center_vertical"
-        android:text="hehehehe"/>
+        app:etv_editable="false"/>
 
     <View
         android:id="@+id/divider_name"
@@ -107,7 +107,7 @@
         android:layout_alignParentEnd="true"
         android:src="@drawable/icon_down"/>
 
-    <EditText
+    <com.widgets.EditableTextView
         android:id="@+id/user_profile_email_edit"
         android:layout_width="match_parent"
         android:layout_height="60dp"
@@ -118,7 +118,7 @@
         android:layout_toStartOf="@+id/email_down"
         android:layout_below="@+id/user_profile_name_edit"
         android:gravity="right|end|center_vertical"
-        android:text="hehehehe"/>
+        app:etv_editable="false"/>
 
 
 </RelativeLayout>

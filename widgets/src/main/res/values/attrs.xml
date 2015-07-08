@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="EditableTextView">
+        <attr name="etv_editable" format="boolean"/>
+        <attr name="editable_background" format="reference"/>
+        <attr name="readonly_background" format="reference"/>
+        <attr name="editable_textStyle" format="reference"/>
+        <attr name="readonly_textStyle" format="reference"/>
+    </declare-styleable>
+</resources>

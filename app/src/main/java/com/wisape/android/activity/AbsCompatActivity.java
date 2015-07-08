@@ -134,8 +134,10 @@ public abstract class AbsCompatActivity extends AppCompatActivity implements Loa
             Message msg;
             try{
                 msg = callback.onAsyncLoad(what, args);
-                msg.what = what;
-                msg.arg1 = STATUS_SUCCESS;
+                if(null != msg){
+                    msg.what = what;
+                    msg.arg1 = STATUS_SUCCESS;
+                }
             }catch (AsyncLoaderError error){
                 msg = Message.obtain();
                 msg.arg1 = STATUS_EXCEPTION;

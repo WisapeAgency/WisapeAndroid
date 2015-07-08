@@ -55,8 +55,7 @@ public class PhotoSelectorPlugin extends AbsPlugin {
             case REQUEST_CODE_PHOTO :
                 if(Activity.RESULT_OK == resultCode){
                     Uri imageUri = intent.getParcelableExtra(PhotoSelectorActivity.EXTRA_IMAGE_URI);
-                    File photoFile = new File(Environment.getExternalStorageDirectory(),  "CropPic.jpg");
-                    cropImgUri = Uri.fromFile(photoFile);
+                    cropImgUri = PhotoSelectorActivity.buildCropUri(getCurrentActivity(), 1);
                     Intent cropIntent = Crop.of(PhotoProvider.getPhotoUri(imageUri.getPath()), cropImgUri).asSquare().getIntent(getCurrentActivity().getApplicationContext());
                     startActivityForResult(cropIntent, Crop.REQUEST_CROP);
                 }

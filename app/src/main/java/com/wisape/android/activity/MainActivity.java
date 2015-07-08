@@ -1,14 +1,19 @@
 package com.wisape.android.activity;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Gravity;
 import android.view.View;
 
 import com.wisape.android.R;
+import com.wisape.android.common.DynamicBroadcastReceiver;
 import com.wisape.android.fragment.MainMenuFragment;
 import com.wisape.android.model.UserInfo;
 
@@ -18,7 +23,8 @@ import butterknife.InjectView;
 /**
  * @author Duke
  */
-public class MainActivity extends BaseActivity implements DrawerLayout.DrawerListener, MainMenuFragment.UserCallback{
+public class MainActivity extends BaseActivity implements DrawerLayout.DrawerListener, MainMenuFragment.UserCallback,
+        DynamicBroadcastReceiver.OnDynamicBroadcastReceiverListener{
     private static final String TAG = MainActivity.class.getSimpleName();
     public static final String EXTRA_USER_INFO = "_user_info";
 
@@ -37,6 +43,25 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
     }
 
     private UserInfo user;
+    private LocalBroadcastManager localBroadcastManager;
+    private DynamicBroadcastReceiver localReceiver;
+
+    @Override
+    public void onReceiveBroadcast(Context context, Intent intent) {
+        if(isDestroyed()){
+            return;
+        }
+
+        String action = intent.getAction();
+        if(null == action || 0 == action.length()){
+            return;
+        }
+
+        if(UserProfileActivity.ACTION_PROFILE_UPDATED.equals(action)){
+            UserInfo newUser = intent.getParcelableExtra(EXTRA_USER_INFO);
+            user = newUser;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +82,9 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         ButterKnife.inject(this);
         initStyle();
         drawer.setDrawerListener(this);
+        localBroadcastManager = LocalBroadcastManager.getInstance(getApplicationContext());
+        localReceiver = new DynamicBroadcastReceiver(this);
+        localBroadcastManager.registerReceiver(localReceiver, new IntentFilter(UserProfileActivity.ACTION_PROFILE_UPDATED));
     }
 
     @Override
@@ -154,6 +182,13 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         if(null != drawer){
             drawer.setOnDragListener(null);
             drawer = null;
+        }
+
+        if(null != localBroadcastManager){
+            localBroadcastManager.unregisterReceiver(localReceiver);
+            localReceiver.destroy();
+            localReceiver = null;
+            localBroadcastManager = null;
         }
         user = null;
     }
