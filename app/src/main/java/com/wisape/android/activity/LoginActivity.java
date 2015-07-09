@@ -15,7 +15,7 @@ import com.wisape.android.R;
 import com.wisape.android.common.UserManager;
 import com.wisape.android.logic.UserLogic;
 import com.wisape.android.model.UserInfo;
-import com.wisape.android.network.ApiUser;
+import com.wisape.android.api.ApiUser;
 import com.wisape.android.network.ServerAPI;
 import com.wisape.android.view.EditText;
 

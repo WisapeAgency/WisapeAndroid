@@ -23,7 +23,7 @@ import com.wisape.android.common.ProfileForTwitterRequester;
 import com.wisape.android.common.UserManager;
 import com.wisape.android.logic.UserLogic;
 import com.wisape.android.model.UserInfo;
-import com.wisape.android.network.ApiUser;
+import com.wisape.android.api.ApiUser;
 import com.wisape.android.network.Requester;
 import com.wisape.android.util.SecurityUtils;
 import com.wisape.android.util.Utils;

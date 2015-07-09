@@ -5,8 +5,8 @@ import android.util.Log;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.RetryPolicy;
+import com.android.volley.request.StringRequest;
 import com.android.volley.toolbox.RequestFuture;
-import com.android.volley.toolbox.StringRequest;
 import com.wisape.android.network.Requester;
 import com.wisape.android.network.VolleyHelper;
 

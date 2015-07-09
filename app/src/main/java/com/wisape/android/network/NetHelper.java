@@ -1,10 +1,10 @@
 package com.wisape.android.network;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.error.AuthFailureError;
+import com.android.volley.request.StringRequest;
 import com.android.volley.toolbox.RequestFuture;
-import com.android.volley.toolbox.StringRequest;
 
 import java.util.Map;
 import java.util.concurrent.ExecutionException;

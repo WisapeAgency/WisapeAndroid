@@ -2,4 +2,5 @@
 <resources>
     <string name="uri_user_login">user/login</string>
     <string name="uri_user_profile_update">user/editprofile</string>
+    <string name="uri_story_create">story/create</string>
 </resources>

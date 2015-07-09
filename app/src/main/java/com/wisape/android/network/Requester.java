@@ -5,16 +5,17 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.RetryPolicy;
-import com.android.volley.VolleyError;
+import com.android.volley.error.AuthFailureError;
+import com.android.volley.error.VolleyError;
+import com.android.volley.request.SimpleMultiPartRequest;
+import com.android.volley.request.StringRequest;
 import com.android.volley.toolbox.RequestFuture;
-import com.android.volley.toolbox.StringRequest;
 import com.wisape.android.util.SecurityUtils;
 import com.wisape.android.util.Utils;
 
@@ -26,6 +27,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -82,18 +84,44 @@ public final class Requester {
         return ServerMessage.obtain(status, message, data);
     }
 
+    public ServerMessage postMultiPart(Uri uri, Map<String, String> params, MultiPartFile[] localFiles, Object tag){
+        RequestFuture<String> future = RequestFuture.newFuture();
+        SimpleMultiPartRequest request = new SimpleMultiPartRequest(uri.toString(), future, future);
+        setting(request, params, tag);
+
+        int paramsCount = (null == params ? 0 : params.size());
+        if(0 < paramsCount){
+            Set<String> keys = params.keySet();
+            for(String key : keys){
+                request.addMultipartParam(key, "text/plain", params.get(key));
+            }
+        }
+
+        int fileCount = (null == localFiles ? 0 : localFiles.length);
+        if(0 < fileCount){
+            for(MultiPartFile file : localFiles){
+                request.addFile(file.name, file.uri.getPath());
+            }
+        }
+
+        return postSyncRequest(request, future);
+    }
+
     public ServerMessage post(Uri uri, Map<String, String> params, Object tag){
         RequestFuture<String> future = RequestFuture.newFuture();
         VolleyRequestImpl request = new VolleyRequestImpl(Request.Method.POST, uri.toString(), params, future, future);
 
         setting(request, params, tag);
+        return postSyncRequest(request, future);
+    }
+
+    private ServerMessage postSyncRequest(Request request, RequestFuture<String> future){
         RequestQueue queue = VolleyHelper.getRequestQueue();
         queue.add(request);
 
         ServerMessage msg;
         String data = "";
         try{
-            //JSONObject json = future.get(defaultPolicy.getCurrentTimeout(), TimeUnit.MILLISECONDS);
             data = future.get(defaultPolicy.getCurrentTimeout(), TimeUnit.MILLISECONDS);
             JSONObject json = parseResponseAsJSON(data);
             Log.d(TAG, "#Result data:" + data);
@@ -125,7 +153,7 @@ public final class Requester {
         return new JSONObject(source);
     }
 
-    private void setting(VolleyRequestImpl request, Map<String, String> params, Object tag){
+    private void setting(Request request, Map<String, String> params, Object tag){
         request.setRetryPolicy(defaultPolicy);
         Map<String, String> headers;
         if(null != params && 0 == params.size()){
@@ -182,7 +210,7 @@ public final class Requester {
         }
     }
 
-    private static class VolleyRequestImpl extends StringRequest{
+    private static class VolleyRequestImpl extends StringRequest {
         private Map<String, String> params;
         private Map<String, String> headers;
 
@@ -424,6 +452,18 @@ public final class Requester {
                 listener.onResponse(msg);
                 listener = null;
             }
+        }
+    }
+
+    public static class MultiPartFile{
+        public String name;
+        public Uri uri;
+
+        public MultiPartFile(){}
+
+        public MultiPartFile(String name, Uri uri){
+            this.name = name;
+            this.uri = uri;
         }
     }
 

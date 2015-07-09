@@ -1,4 +1,4 @@
-package com.wisape.android.network;
+package com.wisape.android.api;
 
 import android.content.Context;
 import android.net.Uri;
@@ -7,7 +7,12 @@ import android.util.Log;
 
 import com.wisape.android.R;
 import com.wisape.android.model.AttributeInfo;
+import com.wisape.android.model.ServerInfo;
 import com.wisape.android.model.UserInfo;
+import com.wisape.android.network.Requester;
+import com.wisape.android.network.WWWConfig;
+
+import org.json.JSONObject;
 
 import java.util.Map;
 
@@ -30,7 +35,7 @@ public class ApiUser extends ApiBase{
         Requester requester = Requester.instance();
         setAccessToken(context, attrInfo);
         Requester.ServerMessage message = requester.post(uri, attrInfo.convert(), tag);
-        return convertUserInfo(message);
+        return convert(message);
     }
 
     public UserInfo updateProfile(Context context, AttrUserProfile profile, Object tag){
@@ -40,21 +45,22 @@ public class ApiUser extends ApiBase{
         Requester requester = Requester.instance();
         setAccessToken(context, profile);
         Requester.ServerMessage message = requester.post(uri, profile.convert(), tag);
-        return convertUserInfo(message);
+        return convert(message);
     }
 
-    private UserInfo convertUserInfo(Requester.ServerMessage message){
-        UserInfo user;
-        if(message.succeed()){
-            user = UserInfo.fromJsonObject(message.data);
-        }else{
-            user = new UserInfo();
-            user.message = message.message;
-        }
-        user.status = message.status;
-        Log.d(TAG, "#convertUserInfo ServerMessage:" + message.toString());
-        message.recycle();
-        return user;
+    @Override
+    protected UserInfo convert(Requester.ServerMessage message) {
+        return (UserInfo)super.convert(message);
+    }
+
+    @Override
+    protected ServerInfo onConvert(JSONObject json) {
+        return UserInfo.fromJsonObject(json);
+    }
+
+    @Override
+    protected ServerInfo onConvertError() {
+        return new UserInfo();
     }
 
     public static class AttrUserProfile extends AttributeInfo{

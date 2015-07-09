@@ -8,6 +8,8 @@ import android.os.Message;
 import android.util.Log;
 
 import com.wisape.android.R;
+import com.wisape.android.api.ApiStory;
+import com.wisape.android.logic.StoryLogic;
 import com.wisape.android.util.EnvironmentUtils;
 import com.wisape.android.util.ZipUtils;
 
@@ -41,6 +43,13 @@ public class TestActivity extends BaseActivity{
         startLoad(2, null);
     }
 
+    @OnClick(R.id.qr_code)
+    @SuppressWarnings("unused")
+    protected void doQr(){
+        startLoad(3, null);
+    }
+
+
     @Override
     protected Message onLoadBackgroundRunning(int what, Bundle args) throws AsyncLoaderError {
         if(1 == what){
@@ -60,6 +69,17 @@ public class TestActivity extends BaseActivity{
             }catch (IOException e){
                 Log.e(TAG, "", e);
             }
+        }
+
+        else if(3 == what){
+            ApiStory.AttrStoryInfo story = new ApiStory.AttrStoryInfo();
+            Uri thumb = Uri.fromFile(new File(EnvironmentUtils.getAppTemporaryDirectory(), "_crop_0_66899726.jpeg"));
+            story.attrStoryThumb = thumb;
+            story.storyStatus = ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE;
+            story.story = Uri.fromFile(new File(EnvironmentUtils.getAppDataDirectory(), "template_light"));
+            story.storyName = "story_one_1.zip";
+            story.storyDescription = "hahahaha";
+            StoryLogic.instance().update(getApplicationContext(), story, getCancelableTag());
         }
         return null;
     }
