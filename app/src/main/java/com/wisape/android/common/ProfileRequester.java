@@ -48,5 +48,14 @@ public interface ProfileRequester<P extends ProfileRequester.Param>{
             this.screen = in.readString();
         }
 
+        public static final Creator<Param> CREATOR = new Creator<Param>() {
+            public Param createFromParcel(Parcel source) {
+                return new Param(source);
+            }
+
+            public Param[] newArray(int size) {
+                return new Param[size];
+            }
+        };
     }
 }

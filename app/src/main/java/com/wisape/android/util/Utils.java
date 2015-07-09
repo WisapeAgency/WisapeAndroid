@@ -75,13 +75,12 @@ public class Utils {
     }
 
     public static long acquireUTCTimestamp(){
-        DateFormat df = DateFormat.getTimeInstance();
-        SimpleDateFormat utcDateFormat = new SimpleDateFormat("yy/MM/dd hh:mm:ss.SSS");
+        SimpleDateFormat utcDateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss.SSS");
         utcDateFormat.setTimeZone(TimeZone.getTimeZone("gmt"));
         Date currentDate = new Date();
         String utcTime = utcDateFormat.format(currentDate);
         Log.d("Utils", "#acquireUTCTimestamp current timestamp:" + currentDate.getTime());
-        SimpleDateFormat normalDateFormat = new SimpleDateFormat("yy/MM/dd hh:mm:ss.SSS");
+        SimpleDateFormat normalDateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss.SSS");
         long utcTimestamp;
         try{
             Date date = normalDateFormat.parse(utcTime);

@@ -6,7 +6,7 @@ import android.util.Log;
 
 import com.oauth.android.OAuthParams;
 import com.oauth.android.OAuthRequestor;
-import com.wisape.android.common.TwitterProfileRequester.TwitterParams;
+import com.wisape.android.common.ProfileForTwitterRequester.TwitterParams;
 
 import org.json.JSONObject;
 
@@ -15,8 +15,8 @@ import java.util.HashMap;
 /**
  * Created by LeiGuoting on 6/7/15.
  */
-public class TwitterProfileRequester implements ProfileRequester<TwitterParams>{
-    private static final String TAG = TwitterProfileRequester.class.getSimpleName();
+public class ProfileForTwitterRequester implements ProfileRequester<TwitterParams>{
+    private static final String TAG = ProfileForTwitterRequester.class.getSimpleName();
     private static final String URL_PROFILE = "https://api.twitter.com/1.1/users/show.json";
 
     @Override

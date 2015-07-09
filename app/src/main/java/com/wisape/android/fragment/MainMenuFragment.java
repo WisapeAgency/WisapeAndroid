@@ -18,7 +18,7 @@ import com.freshdesk.mobihelp.MobihelpConfig;
 import com.wisape.android.R;
 import com.wisape.android.activity.MainActivity;
 import com.wisape.android.activity.UserProfileActivity;
-import com.wisape.android.common.DynamicBroadcastReceiver;
+import com.wisape.android.content.DynamicBroadcastReceiver;
 import com.wisape.android.model.UserInfo;
 import com.wisape.android.util.FrescoFactory;
 

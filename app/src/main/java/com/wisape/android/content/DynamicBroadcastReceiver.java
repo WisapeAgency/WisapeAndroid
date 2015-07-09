@@ -1,4 +1,4 @@
-package com.wisape.android.common;
+package com.wisape.android.content;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

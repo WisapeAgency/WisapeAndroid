@@ -19,8 +19,8 @@ import java.util.concurrent.CountDownLatch;
 /**
  * Created by LeiGuoting on 6/7/15.
  */
-public class FacebookProfileRequester implements ProfileRequester<ProfileRequester.Param>{
-    private static final String TAG = FacebookProfileRequester.class.getSimpleName();
+public class ProfileForFacebookRequester implements ProfileRequester<ProfileRequester.Param>{
+    private static final String TAG = ProfileForFacebookRequester.class.getSimpleName();
     private static final String URL_PROFILE = "https://graph.facebook.com/v2.2/me";
     private static final String URL_ICON = "https://graph.facebook.com/v2.2/me/picture";
 

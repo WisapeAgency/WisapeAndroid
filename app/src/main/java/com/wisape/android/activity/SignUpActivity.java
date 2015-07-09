@@ -16,10 +16,10 @@ import com.oauth.android.OAuthActivity;
 import com.oauth.android.OAuthParams;
 import com.wisape.android.BuildConfig;
 import com.wisape.android.R;
-import com.wisape.android.common.FacebookProfileRequester;
-import com.wisape.android.common.GooglePlusProfileRequester;
+import com.wisape.android.common.ProfileForFacebookRequester;
+import com.wisape.android.common.ProfileForGooglePlusRequester;
 import com.wisape.android.common.ProfileRequester;
-import com.wisape.android.common.TwitterProfileRequester;
+import com.wisape.android.common.ProfileForTwitterRequester;
 import com.wisape.android.common.UserManager;
 import com.wisape.android.logic.UserLogic;
 import com.wisape.android.model.UserInfo;
@@ -159,7 +159,7 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
                     String apiSecret = resources.getString(R.string.twitter_api_secret_key);
                     String apiCallback = resources.getString(R.string.twitter_api_callback_uri);
 
-                    TwitterProfileRequester.TwitterParams twParam = new TwitterProfileRequester.TwitterParams();
+                    ProfileForTwitterRequester.TwitterParams twParam = new ProfileForTwitterRequester.TwitterParams();
                     twParam.token = twitterToken;
                     twParam.refreshResponse = twitterRefresh;
                     twParam.screen = twitterSecret;
@@ -265,7 +265,7 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
 
             case LOADER_SIGN_UP_WITH_FACEBOOK :
                 ProfileRequester.Param param = args.getParcelable(EXTRA_PROFILE_PARAM);
-                ProfileRequester profileRequester = new FacebookProfileRequester();
+                ProfileRequester profileRequester = new ProfileForFacebookRequester();
                 ProfileRequester.ProfileInfo profile = profileRequester.request(param);
 
                 logic = UserLogic.instance();
@@ -276,7 +276,7 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
 
             case LOADER_SIGN_UP_WITH_GOOGLE_PLUS :
                 param = args.getParcelable(EXTRA_PROFILE_PARAM);
-                profileRequester = new GooglePlusProfileRequester();
+                profileRequester = new ProfileForGooglePlusRequester();
                 profile = profileRequester.request(param);
 
                 logic = UserLogic.instance();
@@ -286,8 +286,8 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
                 break;
 
             case LOADER_SIGN_UP_WITH_TWITTER :
-                TwitterProfileRequester.TwitterParams twParams = args.getParcelable(EXTRA_PROFILE_PARAM);
-                profileRequester = new TwitterProfileRequester();
+                ProfileForTwitterRequester.TwitterParams twParams = args.getParcelable(EXTRA_PROFILE_PARAM);
+                profileRequester = new ProfileForTwitterRequester();
                 profile = profileRequester.request(twParams);
 
                 logic = UserLogic.instance();

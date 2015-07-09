@@ -1,7 +1,6 @@
 package com.wisape.android.activity;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -14,7 +13,7 @@ import android.view.Gravity;
 import android.view.View;
 
 import com.wisape.android.R;
-import com.wisape.android.common.DynamicBroadcastReceiver;
+import com.wisape.android.content.DynamicBroadcastReceiver;
 import com.wisape.android.fragment.MainMenuFragment;
 import com.wisape.android.model.UserInfo;
 

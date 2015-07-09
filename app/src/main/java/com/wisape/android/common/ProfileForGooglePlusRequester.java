@@ -18,8 +18,8 @@ import java.util.concurrent.ExecutionException;
 /**
  * Created by LeiGuoting on 6/7/15.
  */
-public class GooglePlusProfileRequester implements ProfileRequester<ProfileRequester.Param>{
-    private static final String TAG = GooglePlusProfileRequester.class.getSimpleName();
+public class ProfileForGooglePlusRequester implements ProfileRequester<ProfileRequester.Param>{
+    private static final String TAG = ProfileForGooglePlusRequester.class.getSimpleName();
     private static final String URL_PROFILE = "https://www.googleapis.com/oauth2/v1/userinfo";
 
     @Override
