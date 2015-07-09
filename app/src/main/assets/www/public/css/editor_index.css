@@ -1,0 +1,72 @@
+@font-face {
+    font-family: 'Helvetica';
+    src: url('fonts/Helvetica/Helvetica.eot');
+    src: url('fonts/Helvetica/Helvetica.eot?#iefix') format('embedded-opentype'),
+    url('fonts/Helvetica/Helvetica.woff') format('woff'),
+    url('fonts/Helvetica/Helvetica.ttf') format('truetype'),
+    url('fonts/Helvetica/Helvetica.svg#NeuesBauenDemo') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+body{
+    font-family: 'Helvetica';
+}
+/*文字相关*/
+.text-black{
+    color: #000000;
+}
+.text-gray{
+    color: #2d3437;
+}
+.text-orange{
+    color: #ff8800;
+}
+.text-green{
+    color: #53b802;
+}
+.text-xxs{
+    font-size: 12px;
+}
+.text-xs{
+    font-size: 14px;
+}
+.text-sm{
+    font-size: 16px;
+}
+.text-lg{
+    font-size: 18px;
+}
+.text-xl{
+    font-size: 24px;
+}
+.text-xxl{
+    font-size: 32px;
+}
+/*图标相关*/
+[class*="icon-"]{
+    display: inline-block;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+.icon-add-stage{
+    background-image: url(../img/icon-add-stage.png);
+}
+.icon-align-center{
+    background-image: url(../img/icon-align-center.png);
+}
+.icon-align-left{
+    background-image: url(../img/icon-align-left.png);
+}
+.icon-align-right{
+    background-image: url(../img/icon-align-right.png);
+}
+.icon-arrow-left{
+    background-image: url(../img/icon-arrow-left.png);
+}
+.icon-arrow-left-cirle{
+    background-image: url(../img/icon-arrow-left-cirle.png);
+}
+.icon-arrow-left-cirle{
+    background-image: url(../img/icon-arrow-left-cirle.png);
+}
+

@@ -1,0 +1,140 @@
+body{
+    display: block;
+    position: absolute;
+    width: 100%;
+    max-width: 1080px;
+    height: 100%;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+}
+stage,symbol{
+    display: block;
+}
+.ab{
+    position: absolute;
+}
+.rel{
+    position: relative;
+}
+.affix{
+    position: fixed;
+}
+.page{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+.page-active{
+    z-index: 2;
+}
+.pull-right {
+    float: right !important;
+}
+.pull-left {
+    float: left !important;
+}
+.hide {
+    display: none !important;
+}
+.show {
+    display: block !important;
+}
+.list-inline:before,
+.list-inline:after,
+.clearfix:before,
+.clearfix:after,
+.row:before,
+.row:after{
+    content: " ";
+    display: table;
+}
+.list-inline:after,
+.clearfix:after,
+.row:after{
+    clear: both;
+}
+.center-block {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+.list-inline>li{
+    float: left;
+}
+.row-fh,.row-fh [class*='col-']{
+    height: 100%;
+}
+.col-1, .col-2, .col-3, .col-4, .col-5, .col-6, .col-7, .col-8, .col-9, .col-10, .col-11, .col-12 {
+    float: left;
+}
+.col-12 {
+    width: 100%;
+}
+.col-11 {
+    width: 91.66666667%;
+}
+.col-10 {
+    width: 83.33333333%;
+}
+.col-9 {
+    width: 75%;
+}
+.col-8 {
+    width: 66.66666667%;
+}
+.col-7 {
+    width: 58.33333333%;
+}
+.col-6 {
+    width: 50%;
+}
+.col-5 {
+    width: 41.66666667%;
+}
+.col-4 {
+    width: 33.33333333%;
+}
+.col-3 {
+    width: 25%;
+}
+.col-2 {
+    width: 16.66666667%;
+}
+.col-1 {
+    width: 8.33333333%;
+}
+.box{
+    display:-moz-box;
+    display:-webkit-box;
+    display:box;
+}
+.box-1{
+    -moz-box-flex:1.0; /* Firefox */
+    -webkit-box-flex:1.0; /* Safari 和 Chrome */
+    box-flex:1.0;
+}
+.box-2{
+    -moz-box-flex:2.0; /* Firefox */
+    -webkit-box-flex:2.0; /* Safari 和 Chrome */
+    box-flex:2.0;
+}
+.box-3{
+    -moz-box-flex:3.0; /* Firefox */
+    -webkit-box-flex:3.0; /* Safari 和 Chrome */
+    box-flex:3.0;
+}
+.box-4{
+    -moz-box-flex:4.0; /* Firefox */
+    -webkit-box-flex:4.0; /* Safari 和 Chrome */
+    box-flex:4.0;
+}
+.box-5{
+    -moz-box-flex:5.0; /* Firefox */
+    -webkit-box-flex:5.0; /* Safari 和 Chrome */
+    box-flex:5.0;
+}
+

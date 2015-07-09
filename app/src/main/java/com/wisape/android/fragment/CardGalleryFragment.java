@@ -75,8 +75,8 @@ public class CardGalleryFragment extends AbsFragment {
     @OnClick(R.id.add_story)
     @SuppressWarnings("unused")
     protected void doAddStory(){
-        //StoryTemplateActivity.launch(this, 0);
-        TestActivity.launch(getActivity(), 0);
+        StoryTemplateActivity.launch(this, 0);
+        //TestActivity.launch(getActivity(), 0);
     }
 
     @Override
