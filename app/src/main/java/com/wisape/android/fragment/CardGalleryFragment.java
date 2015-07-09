@@ -17,6 +17,7 @@ import com.getbase.floatingactionbutton.AddFloatingActionButton;
 import com.wisape.android.R;
 import com.wisape.android.activity.MainActivity;
 import com.wisape.android.activity.StoryTemplateActivity;
+import com.wisape.android.activity.TestActivity;
 import com.wisape.android.util.AppBitmapFactory;
 import com.wisape.android.util.image.StackBlur;
 import com.wisape.android.view.GalleryRelativeLayoutWrapper;
@@ -74,7 +75,8 @@ public class CardGalleryFragment extends AbsFragment {
     @OnClick(R.id.add_story)
     @SuppressWarnings("unused")
     protected void doAddStory(){
-        StoryTemplateActivity.launch(this, 0);
+        //StoryTemplateActivity.launch(this, 0);
+        TestActivity.launch(getActivity(), 0);
     }
 
     @Override

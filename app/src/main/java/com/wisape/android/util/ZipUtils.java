@@ -35,6 +35,7 @@ public class ZipUtils{
             return source;
         }
 
+        Log.d("ZipUtils", "#zip source path:" + sourceFile.getPath());
         File target;
         ZipArchiveOutputStream zipOutput = null;
         try{
@@ -43,7 +44,7 @@ public class ZipUtils{
             zipOutput.setComment("wisape");
             zipOutput.setUseZip64(Zip64Mode.AsNeeded);
             zipOutput.setEncoding("UTF-8");
-            zipDir(sourceFile, zipOutput);
+            zipDir(sourceFile, sourceFile, zipOutput);
         }finally {
             try{
                 if(null != zipOutput){
@@ -58,39 +59,64 @@ public class ZipUtils{
         return uri;
     }
 
-    private static void zipDir(File dir, ZipArchiveOutputStream outputStream) throws IOException {
-        if(dir.isFile()){
-            zipSingleFile(dir, outputStream);
-        }else if(dir.isDirectory()){
-            String[] children = dir.list();
+    private static void zipDir(File root, File file, ZipArchiveOutputStream outputStream) throws IOException {
+        if(file.isFile()){
+            zipSingleFile(root, file, outputStream);
+        }else if(file.isDirectory()){
+            String[] children = file.list();
             int count = (null == children ? 0 : children.length);
             if(0 == count){
                 return;
             }
 
-            File file;
+            Log.d("ZipUtils", "#zipDir count:" + count + ", dir:" + file.getName());
+            File childFile;
+            ZipArchiveEntry dirEntry;
             for(String child : children){
-                file = new File(child);
-                if(file.isDirectory()){
+                Log.d("ZipUtils", "#zipDir child:" + child + ", dir:" + file.getName());
+                childFile = new File(file, child);
+                if(childFile.isDirectory()){
+                    dirEntry = makeEntry(root, childFile);
+                    outputStream.putArchiveEntry(dirEntry);
                     outputStream.closeArchiveEntry();
-                    zipDir(file, outputStream);
-                }else if(file.isFile()){
-                    zipSingleFile(file, outputStream);
+
+                    zipDir(root, childFile, outputStream);
+                }else if(childFile.isFile()){
+                    zipSingleFile(root, childFile, outputStream);
                 }
             }
         }
     }
 
-    private static void zipSingleFile(File file, ZipArchiveOutputStream outputStream) throws IOException {
-        ZipArchiveEntry entry = new ZipArchiveEntry(file, file.getName());
-        entry.setComment("wisape");
-        entry.setTime(SystemClock.uptimeMillis());
+    private static void zipSingleFile(File root, File file, ZipArchiveOutputStream outputStream) throws IOException {
+        ZipArchiveEntry entry = makeEntry(root, file);
         outputStream.putArchiveEntry(entry);
 
-        InputStream input = new FileInputStream(file);
-        IOUtils.copy(input, outputStream);
-        outputStream.closeArchiveEntry();
-        outputStream.flush();
+        InputStream input = null;
+        try{
+            input = new FileInputStream(file);
+            IOUtils.copy(input, outputStream);
+            outputStream.closeArchiveEntry();
+            outputStream.flush();
+        }finally {
+            if(null != input){
+                input.close();
+            }
+        }
+    }
+
+    private static ZipArchiveEntry makeEntry(File root, File file){
+        String entryName = makeEntryName(root.getPath(), file.getPath());
+        Log.d("ZipUtils", "#makeEntry file:" + entryName);
+        ZipArchiveEntry entry = new ZipArchiveEntry(file, entryName);
+        entry.setComment("wisape");
+        entry.setTime(SystemClock.uptimeMillis());
+        return entry;
+    }
+
+
+    private static String makeEntryName(String root, String path){
+        return path.replace(root + File.separator, "");
     }
 
     public static Uri unzip(Uri source, File targetDir) throws IOException{
@@ -106,12 +132,24 @@ public class ZipUtils{
 
             File entryFile;
             OutputStream output;
+            if(!targetDir.exists()){
+                targetDir.mkdirs();
+            }
+
             for(;null != (entry = zipInput.getNextZipEntry());){
                 entryName = entry.getName();
+                Log.d("ZipUtils", "#unzip entryName:" + entryName);
                 if(entry.isDirectory()){
-                    //TODO
+                    entryFile = new File(targetDir, entryName);
+                    if(!entryFile.exists()){
+                        entryFile.mkdirs();
+                    }
                 }else{
                     entryFile = new File(targetDir, entryName);
+                    if(!entryFile.exists()){
+                        entryFile.createNewFile();
+                    }
+
                     output = new FileOutputStream(entryFile);
                     for(; 0 < (count = zipInput.read(buffer, 0, bufferSize));){
                         output.write(buffer, 0, count);
