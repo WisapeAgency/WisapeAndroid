@@ -16,14 +16,13 @@
  specific language governing permissions and limitations
  under the License.
 */
-
 cordova.define('cordova/plugin_list', function(require, exports, module) {
     module.exports = [
         {
-            "file": "plugins/cordova.plugin.file/www/requestFileSystem.js",
-            "id": "cordova.plugin.file",
+            "file": "plugins/cordova.plugin.file/www/File.js",
+            "id": "cordova.plugin.file.File",
             "merges": [
-                "navigator.file"
+                "File"
             ]
         }
     ];

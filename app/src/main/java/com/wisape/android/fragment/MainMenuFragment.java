@@ -16,6 +16,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.freshdesk.mobihelp.Mobihelp;
 import com.freshdesk.mobihelp.MobihelpConfig;
 import com.wisape.android.R;
+import com.wisape.android.activity.AboutActivity;
 import com.wisape.android.activity.MainActivity;
 import com.wisape.android.activity.UserProfileActivity;
 import com.wisape.android.content.DynamicBroadcastReceiver;
@@ -140,6 +141,11 @@ public class MainMenuFragment extends AbsFragment implements DynamicBroadcastRec
     @SuppressWarnings("unused")
     protected void onNameClicked(){
         UserProfileActivity.launch(this, callback.getUserInfo(), UserProfileActivity.REQUEST_CODE_PROFILE);
+    }
+
+    @OnClick(R.id.about)
+    protected void doAboutClicked(){
+        AboutActivity.launch(this);
     }
 
 

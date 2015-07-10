@@ -59,7 +59,7 @@
         android:text="@string/clear_buffer" />
 
     <TextView
-        android:id="@+id/about_Linkoak"
+        android:id="@+id/about"
         style="@style/MenuListItemStyle"
         android:text="@string/about_label" />
 

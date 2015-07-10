@@ -8,7 +8,6 @@
     <string name="message_center">Message center</string>
     <string name="help_center">Help center</string>
     <string name="clear_buffer">Clear buffer</string>
-    <string name="about_label">About</string>
     <string name="exit_login">Exit login</string>
     <string name="all_stores">All Stores</string>
 
@@ -35,4 +34,11 @@
     <string name="user_profile_icon_title">用户头像</string>
     <string name="user_profile_name_title">昵称</string>
     <string name="user_profile_email_title">邮箱</string>
+
+    <!-- About -->
+    <string name="about_label">About</string>
+    <string name="about_terms_of_service">服务条款</string>
+    <string name="about_privacy_policy">隐私政策</string>
+    <string name="about_copyright">版权政策</string>
+    <string name="about_rate">求给好评</string>
 </resources>
