@@ -13,6 +13,10 @@ import com.wisape.android.model.StoryInfo;
  */
 @DatabaseTable(tableName = "_story")
 public class StoryEntity extends BaseEntity implements Parcelable{
+
+    @DatabaseField()
+    public long storyServerId;
+
     @DatabaseField()
     public String storyName;
 
@@ -49,7 +53,7 @@ public class StoryEntity extends BaseEntity implements Parcelable{
 
     public static StoryEntity transform(StoryInfo info){
         StoryEntity entity = new StoryEntity();
-        entity.id = info.id;
+        entity.storyServerId = info.id;
         entity.storyName = info.story_name;
         entity.storyDesc = info.description;
         entity.storyThumbUri = info.small_img;
@@ -66,7 +70,7 @@ public class StoryEntity extends BaseEntity implements Parcelable{
 
     public static StoryInfo convert(StoryEntity entity){
         StoryInfo info = new StoryInfo();
-        info.id = entity.id;
+        info.id = (0 < entity.storyServerId ? entity.storyServerId : entity.id);
         info.story_name = entity.storyName;
         info.description = entity.storyDesc;
         info.small_img = entity.storyThumbUri;
@@ -80,7 +84,6 @@ public class StoryEntity extends BaseEntity implements Parcelable{
         return info;
     }
 
-
     @Override
     public int describeContents() {
         return 0;
@@ -88,6 +91,7 @@ public class StoryEntity extends BaseEntity implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.storyServerId);
         dest.writeString(this.storyName);
         dest.writeString(this.storyDesc);
         dest.writeString(this.storyThumbUri);
@@ -103,6 +107,7 @@ public class StoryEntity extends BaseEntity implements Parcelable{
     }
 
     protected StoryEntity(Parcel in) {
+        this.storyServerId = in.readLong();
         this.storyName = in.readString();
         this.storyDesc = in.readString();
         this.storyThumbUri = in.readString();

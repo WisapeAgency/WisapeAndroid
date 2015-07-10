@@ -144,6 +144,7 @@ public class MainMenuFragment extends AbsFragment implements DynamicBroadcastRec
     }
 
     @OnClick(R.id.about)
+    @SuppressWarnings("unused")
     protected void doAboutClicked(){
         AboutActivity.launch(this);
     }

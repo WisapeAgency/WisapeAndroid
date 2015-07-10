@@ -39,6 +39,11 @@ public class ApiStory extends ApiBase{
         return convert(message);
     }
 
+    public boolean deleteStory(Context context, StoryInfo story, Object tag){
+
+        return true;
+    }
+
     @Override
     protected StoryInfo convert(Requester.ServerMessage message) {
         return (StoryInfo)super.convert(message);

@@ -7,7 +7,7 @@ import com.j256.ormlite.field.DatabaseField;
  */
 
 public abstract class BaseEntity {
-    @DatabaseField(generatedId = true)
+    @DatabaseField(generatedId = true, id=true)
     public long id;
 
     @DatabaseField()
