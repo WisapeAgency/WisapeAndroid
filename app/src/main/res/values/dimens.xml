@@ -14,4 +14,7 @@
 
     <dimen name="card_gallery_item_size_w">234dp</dimen>
     <dimen name="card_gallery_item_size_h">342dp</dimen>
+
+    <dimen name="config_minScalingTouchMajor">48dp</dimen>
+    <dimen name="config_minScalingSpan">27mm</dimen>
 </resources>

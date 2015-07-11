@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.soundcloud.android.crop.Crop;
 import com.wisape.android.activity.PhotoSelectorActivity;
+import com.wisape.android.activity.ScaleCropImageActivity;
 import com.wisape.android.content.PhotoProvider;
 import com.wisape.android.network.NanoServer;
 
@@ -57,8 +58,11 @@ public class PhotoSelectorPlugin extends AbsPlugin {
                 if(Activity.RESULT_OK == resultCode){
                     Uri imageUri = intent.getParcelableExtra(PhotoSelectorActivity.EXTRA_IMAGE_URI);
                     cropImgUri = PhotoSelectorActivity.buildCropUri(getCurrentActivity(), 1);
-                    Intent cropIntent = Crop.of(PhotoProvider.getPhotoUri(imageUri.getPath()), cropImgUri).asSquare().getIntent(getCurrentActivity().getApplicationContext());
-                    startActivityForResult(cropIntent, Crop.REQUEST_CROP);
+                    //Intent cropIntent = Crop.of(PhotoProvider.getPhotoUri(imageUri.getPath()), cropImgUri).asSquare().getIntent(getCurrentActivity().getApplicationContext());
+                    //startActivityForResult(cropIntent, Crop.REQUEST_CROP);
+
+                    Intent cropIntent = ScaleCropImageActivity.getIntent(getCurrentActivity(), PhotoProvider.getPhotoUri(imageUri.getPath()), cropImgUri);
+                    startActivityForResult(cropIntent, ScaleCropImageActivity.REQUEST_CODE_CROP);
                 }
                 break;
 

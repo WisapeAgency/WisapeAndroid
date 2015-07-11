@@ -4,16 +4,16 @@ import android.app.LoaderManager;
 import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.content.Loader;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
-import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
+import com.soundcloud.android.crop.MonitoredActivity;
+
 /**
- * @author LeiGuoting
+ * Created by LeiGuoting on 11/7/15.
  */
-public abstract class AbsCompatActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Message>, AsyncTaskLoaderCallback<Message>{
+public class AbsMonitoredActivity extends MonitoredActivity implements LoaderManager.LoaderCallbacks<Message>, AsyncTaskLoaderCallback<Message>{
     private static final int DEFAULT_LOADER_ID = Integer.MAX_VALUE;
     private static final String EXTRA_WHAT = "loader_what";
     protected static final int STATUS_EXCEPTION = Integer.MIN_VALUE;
@@ -21,22 +21,10 @@ public abstract class AbsCompatActivity extends AppCompatActivity implements Loa
 
     private Object cancelableTag;
 
-    private boolean destroyed;
-
     @Override
-    protected void onDestroy() {
-        if(17 > Build.VERSION.SDK_INT){
-            destroyed = true;
-        }
-        super.onDestroy();
-    }
-
-    public boolean isDestroyed() {
-        if(17 > Build.VERSION.SDK_INT){
-            return destroyed;
-        }else{
-            return super.isDestroyed();
-        }
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        cancelableTag = new Object();
     }
 
     @Override
@@ -89,9 +77,10 @@ public abstract class AbsCompatActivity extends AppCompatActivity implements Loa
 
     @Override
     public final void onLoadFinished(Loader<Message> loader, Message data) {
-        if(isDestroyed() || null == data){
+        if(isFinishing() || null == data){
             return;
         }
+
         try{
             onLoadCompleted(data);
         }finally {
@@ -113,7 +102,17 @@ public abstract class AbsCompatActivity extends AppCompatActivity implements Loa
         return null;
     }
 
-    private static class AsyncTaskLoaderImpl extends AsyncTaskLoader<Message>{
+    protected Object getCancelableTag(){
+        return cancelableTag;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        cancelableTag = null;
+    }
+
+    private static class AsyncTaskLoaderImpl extends AsyncTaskLoader<Message> {
         private AsyncTaskLoaderCallback<Message> callback;
         private Bundle args;
 

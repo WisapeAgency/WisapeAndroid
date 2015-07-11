@@ -10,11 +10,6 @@
     <link href="../public/css/animation.css" rel="stylesheet"/>
     <link href="../public/css/editor_index.css" rel="stylesheet"/>
     <link href="../public/css/stageSelct.css" rel="stylesheet"/>
-    <script src="../public/js/jquery2.1.4.min.js"></script>
-    <script src="../public/js/hammer.min.js"></script>
-    <script src="../public/js/iscroll-lite.js"></script>
-    <script src="../public/js/animation.js"></script>
-    <!--<script src="../public/js/cordova.js"></script>-->
 </head>
 <body>
     <div id="main" class="page">
@@ -31,51 +26,7 @@
                 </ul>
             </div>
         </div>
-        <!--<div html-include="stage_select.html"></div>-->
-        <div id="stageSelect">
-            <div class="tabnav text-gray">
-                <ul class="list-inline content-box">
-                    <li><a class="text-sm active">CATEGORY1</a></li>
-                    <li><a class="text-sm">CATEGORY2</a></li>
-                    <li><a class="text-sm">CATEGORY3</a></li>
-                    <li><a class="text-sm">CATEGORY4</a></li>
-                    <li><a class="text-sm">CATEGORY5</a></li>
-                </ul>
-            </div>
-            <div class="tabcon">
-                <div class="tabcon-item">
-                    <ul class="list-inline content-box">
-                        <li>
-                            <div class="rel" style="background-image: url('../public/img/temp/stage_example.jpg');">
-                                <span class="icon-tags-new"></span>
-                                <div class="icon-download"></div>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="rel" style="background-image: url('../public/img/temp/stage_example.jpg');">
-                                <span class="icon-tags-hot"></span>
-                                <div class="icon-download"></div>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="rel" style="background-image: url('../public/img/temp/stage_example.jpg');">
-                                <div class="proccess-bar"><span></span></div>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="rel" style="background-image: url('../public/img/temp/stage_example.jpg');">
-                                <div class="proccess-bar"><span></span></div>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="rel active" style="background-image: url('../public/img/temp/stage_example.jpg');">
-
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+        <div html-include="stage_select.html"></div>
         <!--Story加载区-->
         <story>
             ...
@@ -91,61 +42,13 @@
     <div html-include="story_stageMana.html"></div>
     <!--故事设置-->
     <div html-include="story_setting.html"></div>
-    <script>
-        document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
-        $(window).load(function(){
-            var tabnav = $('#stageSelect .tabnav');
-            var tabcon_item = $('#stageSelect .tabcon-item');
-            function set_ul_width(dom){
-                dom.each(function(){
-
-                });
-                var wid = 0;
-                var ul = dom.find('ul');
-                var li = dom.find('li');
-                li.each(function(){
-                    wid += $(this).outerWidth()
-                });
-                ul.css('width',wid+1);
-            }
-            set_ul_width(tabnav);
-            set_ul_width(tabcon_item);
-            tabnav.iScroll({
-                scrollX:true,
-                scrollY:false
-            });
-            tabcon_item.iScroll({
-                scrollX:true,
-                scrollY:false
-            });
-        });
-        $.fn.iScroll = function(options){
-            return this.each(function(){
-                this.iScroll = new IScroll(this,options);
-            });
-        };
-        document.addEventListener("deviceready", function(){
-            console.log(DirectoryEntry);
-            console.log(DirectoryReader);
-            console.log(Entry);
-            console.log(File);
-            console.log(FileEntry);
-            console.log(FileError);
-            console.log(FileReader);
-            console.log(FileSystem);
-            console.log(fileSystemPaths);
-            console.log(fileSystems);
-            console.log(fileSystems-roots);
-            console.log(FileUploadOptions);
-            console.log(FileUploadResult);
-            console.log(FileWriter);
-            console.log(Flags);
-            console.log(LocalFileSystem);
-            console.log(Metadata);
-            console.log(ProgressEvent);
-            console.log(requestFileSystem);
-            console.log(resolveLocalFileSystemURL);
-        }, false);
-    </script>
+    <!--脚本-->
+    <script src="../public/js/cordova.js"></script>
+    <script src="../public/js/class.js"></script>
+    <script src="../public/js/jquery2.1.4.min.js"></script>
+    <script src="../public/js/hammer.min.js"></script>
+    <script src="../public/js/iscroll-lite.js"></script>
+    <script src="../public/js/animation.js"></script>
+    <script src="../public/js/app-main.js"></script>
 </body>
 </html>

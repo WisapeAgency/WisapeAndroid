@@ -27,7 +27,8 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
         Uri uri = new Uri.Builder().scheme(ContentResolver.SCHEME_FILE).encodedPath(EnvironmentUtils.getAppDataDirectory().getPath()).appendEncodedPath("template_light/index.html").build();
         String url = uri.toString();
         Log.d(TAG, "#onCreate url:" + url);
-        loadUrl(START_URL);
+        loadUrl(url);
+        //loadUrl(START_URL);
     }
 
     @Override

@@ -1,5 +1,5 @@
 <resources>
-    <style name="AppActionBar" parent="Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+    <style name="AppActionBar" parent="Widget.AppCompat.Light.ActionBar">
         <item name="displayOptions">homeAsUp|showHome|showTitle</item>
         <item name="elevation">0dp</item>
         <item name="homeAsUpIndicator">@drawable/icon_back</item>
@@ -7,7 +7,7 @@
     </style>
     
     <style name="AppActionBar.Transparent" parent="AppActionBar">
-        <item name="android:background">@android:color/transparent</item>
+        <item name="background">@android:color/transparent</item>
     </style>
     
     <style name="AppActionBar.TitleStyle" parent="TextAppearance.AppCompat.Medium.Inverse">

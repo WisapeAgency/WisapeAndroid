@@ -31,6 +31,14 @@ public class CropImageView extends ImageViewTouchBase {
         super(context, attrs, defStyle);
     }
 
+    public ArrayList<HighlightView> getHighlightViews(){
+        return highlightViews;
+    }
+
+    public HighlightView getMotionHighlightView(){
+        return motionHighlightView;
+    }
+
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
