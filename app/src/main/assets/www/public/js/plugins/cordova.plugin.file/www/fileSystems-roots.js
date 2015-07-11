@@ -17,28 +17,29 @@
  * specific language governing permissions and limitations
  * under the License.
  *
-*/
-
+ */
+cordova.define('cordova.plugin.file.fileSystems-roots', function(require, exports, module) {
 // Map of fsName -> FileSystem.
-var fsMap = null;
-var FileSystem = require('./FileSystem');
-var exec = require('cordova/exec');
+    var fsMap = null;
+    var FileSystem = require('cordova.plugin.file.FileSystem');
+    var exec = require('cordova/exec');
 
 // Overridden by Android, BlackBerry 10 and iOS to populate fsMap.
-require('./fileSystems').getFs = function(name, callback) {
-    if (fsMap) {
-        callback(fsMap[name]);
-    } else {
-        exec(success, null, "File", "requestAllFileSystems", []);
-        function success(response) {
-            fsMap = {};
-            for (var i = 0; i < response.length; ++i) {
-                var fsRoot = response[i];
-                var fs = new FileSystem(fsRoot.filesystemName, fsRoot);
-                fsMap[fs.name] = fs;
-            }
+    require('cordova.plugin.file.fileSystems').getFs = function (name, callback) {
+        if (fsMap) {
             callback(fsMap[name]);
+        } else {
+            exec(success, null, "File", "requestAllFileSystems", []);
+            function success(response) {
+                fsMap = {};
+                for (var i = 0; i < response.length; ++i) {
+                    var fsRoot = response[i];
+                    var fs = new FileSystem(fsRoot.filesystemName, fsRoot);
+                    fsMap[fs.name] = fs;
+                }
+                callback(fsMap[name]);
+            }
         }
-    }
-};
+    };
+});
 

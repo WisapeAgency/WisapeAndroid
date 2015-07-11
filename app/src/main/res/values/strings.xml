@@ -41,4 +41,6 @@
     <string name="about_privacy_policy">隐私政策</string>
     <string name="about_copyright">版权政策</string>
     <string name="about_rate">求给好评</string>
+
+    <string name="crop_activity_label">图片剪切</string>
 </resources>

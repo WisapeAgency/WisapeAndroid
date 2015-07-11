@@ -29,13 +29,15 @@
  * @param headers {Object}   Keys are header names, values are header values. Multiple
  *                           headers of the same name are not supported.
  */
-var FileUploadOptions = function(fileKey, fileName, mimeType, params, headers, httpMethod) {
-    this.fileKey = fileKey || null;
-    this.fileName = fileName || null;
-    this.mimeType = mimeType || null;
-    this.params = params || null;
-    this.headers = headers || null;
-    this.httpMethod = httpMethod || null;
-};
+cordova.define('cordova.plugin.file.FileUploadOptions', function(require, exports, module) {
+    var FileUploadOptions = function (fileKey, fileName, mimeType, params, headers, httpMethod) {
+        this.fileKey = fileKey || null;
+        this.fileName = fileName || null;
+        this.mimeType = mimeType || null;
+        this.params = params || null;
+        this.headers = headers || null;
+        this.httpMethod = httpMethod || null;
+    };
 
-module.exports = FileUploadOptions;
+    module.exports = FileUploadOptions;
+});

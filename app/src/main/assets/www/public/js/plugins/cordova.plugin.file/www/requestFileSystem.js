@@ -20,7 +20,7 @@
 */
 
 //For browser platform: not all browsers use this file.
-cordova.define('../requestFileSystem', function(require, exports, module) {
+cordova.define('cordova.plugin.file.requestFileSystem', function(require, exports, module) {
     function checkBrowser() {
         if (cordova.platformId === "browser" && navigator.userAgent.search(/Chrome/) > 0) {
             var requestFileSystem  = window.requestFileSystem || window.webkitRequestFileSystem;
@@ -31,10 +31,10 @@ cordova.define('../requestFileSystem', function(require, exports, module) {
     checkBrowser();
 
     var argscheck = require('cordova/argscheck'),
-        FileError = require('./FileError'),
-        FileSystem = require('./FileSystem'),
+        FileError = require('cordova.plugin.file.FileError'),
+        FileSystem = require('cordova.plugin.file.FileSystem'),
         exec = require('cordova/exec');
-    var fileSystems = require('./fileSystems');
+    var fileSystems = require('cordova.plugin.file.fileSystems');
 
     /**
      * Request a file system in which to store application data.

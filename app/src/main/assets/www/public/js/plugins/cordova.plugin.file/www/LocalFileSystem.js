@@ -18,6 +18,7 @@
  * under the License.
  *
 */
-
-exports.TEMPORARY = 0;
-exports.PERSISTENT = 1;
+cordova.define('cordova.plugin.file.LocalFileSystem', function(require, exports, module) {
+    exports.TEMPORARY = 0;
+    exports.PERSISTENT = 1;
+});

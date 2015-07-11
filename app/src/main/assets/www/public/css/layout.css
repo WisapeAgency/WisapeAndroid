@@ -1,3 +1,14 @@
+* {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+*:before,
+*:after {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
 body{
     display: block;
     position: absolute;
@@ -19,6 +30,11 @@ stage,symbol{
 }
 .affix{
     position: fixed;
+}
+.content-box{
+    -webkit-box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
 }
 .page{
     position: absolute;
@@ -137,4 +153,32 @@ stage,symbol{
     -webkit-box-flex:5.0; /* Safari 和 Chrome */
     box-flex:5.0;
 }
+.text-xxs{
+    font-size: 12px;
+}
+.text-xs{
+    font-size: 14px;
+}
+.text-sm{
+    font-size: 16px;
+}
+.text-lg{
+    font-size: 18px;
+}
+.text-xl{
+    font-size: 24px;
+}
+.text-xxl{
+    font-size: 32px;
+}
+.b{
+    font-weight: bold;
+}
+[class*="icon-"]{
+    display: block;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 100% 100%;
+}
+
 

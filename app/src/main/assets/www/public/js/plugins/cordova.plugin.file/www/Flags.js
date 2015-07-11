@@ -28,9 +28,11 @@
  *            {boolean} used with create; if true the command will fail if
  *            target path exists
  */
-function Flags(create, exclusive) {
-    this.create = create || false;
-    this.exclusive = exclusive || false;
-}
+cordova.define('cordova.plugin.file.Flags', function(require, exports, module) {
+    function Flags(create, exclusive) {
+        this.create = create || false;
+        this.exclusive = exclusive || false;
+    }
 
-module.exports = Flags;
+    module.exports = Flags;
+});

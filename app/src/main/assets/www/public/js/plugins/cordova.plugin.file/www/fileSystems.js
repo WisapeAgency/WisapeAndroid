@@ -18,8 +18,9 @@
  * under the License.
  *
 */
-
-// Overridden by Android, BlackBerry 10 and iOS to populate fsMap.
-module.exports.getFs = function(name, callback) {
-    callback(null);
-};
+cordova.define('cordova.plugin.file.fileSystems', function(require, exports, module) {
+    // Overridden by Android, BlackBerry 10 and iOS to populate fsMap.
+    module.exports.getFs = function (name, callback) {
+        callback(null);
+    };
+});

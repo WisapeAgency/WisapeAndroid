@@ -2,16 +2,15 @@
     font-family: 'Helvetica';
     src: url('fonts/Helvetica/Helvetica.eot');
     src: url('fonts/Helvetica/Helvetica.eot?#iefix') format('embedded-opentype'),
-    url('fonts/Helvetica/Helvetica.woff') format('woff'),
+    url('fonts/Helvetica/Helvetica.svg') format('svg'),
     url('fonts/Helvetica/Helvetica.ttf') format('truetype'),
-    url('fonts/Helvetica/Helvetica.svg#NeuesBauenDemo') format('svg');
+    url('fonts/Helvetica/Helvetica.woff') format('woff');
     font-weight: normal;
     font-style: normal;
 }
 body{
-    font-family: 'Helvetica';
+    font-family: Helvetica;
 }
-/*文字相关*/
 .text-black{
     color: #000000;
 }
@@ -23,30 +22,6 @@ body{
 }
 .text-green{
     color: #53b802;
-}
-.text-xxs{
-    font-size: 12px;
-}
-.text-xs{
-    font-size: 14px;
-}
-.text-sm{
-    font-size: 16px;
-}
-.text-lg{
-    font-size: 18px;
-}
-.text-xl{
-    font-size: 24px;
-}
-.text-xxl{
-    font-size: 32px;
-}
-/*图标相关*/
-[class*="icon-"]{
-    display: inline-block;
-    background-repeat: no-repeat;
-    background-position: center center;
 }
 .icon-add-stage{
     background-image: url(../img/icon-add-stage.png);
@@ -66,7 +41,108 @@ body{
 .icon-arrow-left-cirle{
     background-image: url(../img/icon-arrow-left-cirle.png);
 }
-.icon-arrow-left-cirle{
-    background-image: url(../img/icon-arrow-left-cirle.png);
+.icon-arrow-left-white{
+    background-image: url(../img/icon-arrow-left-white.png);
 }
+.icon-arrow-right-list{
+    background-image: url(../img/icon-arrow-right-list.png);
+}
+.icon-arrow-up-twoline{
+    background-image: url(../img/icon-arrow-up-twoline.png);
+}
+.icon-bold{
+    background-image: url(../img/icon-bold.png);
+}
+.icon-bold-active{
+    background-image: url(../img/icon-bold-active.png);
+}
+.icon-correct{
+    background-image: url(../img/icon-correct.png);
+}
+.icon-correct-black{
+    background-image: url(../img/icon-correct-black.png);
+}
+.icon-correct-white{
+    background-image: url(../img/icon-correct-white.png);
+}
+.icon-download{
+    background-image: url(../img/icon-download.png);
+}
+.icon-dustbin{
+    background-image: url(../img/icon-dustbin.png);
+}
+.icon-hyperlink{
+    background-image: url(../img/icon-hyperlink.png);
+}
+.icon-hyperlink-active{
+    background-image: url(../img/icon-hyperlink-active.png);
+}
+.icon-italic{
+    background-image: url(../img/icon-italic.png);
+}
+.icon-italic-active{
+    background-image: url(../img/icon-italic-active.png);
+}
+.icon-layout{
+    background-image: url(../img/icon-layout.png);
+}
+.icon-layout-active{
+    background-image: url(../img/icon-layout-active.png);
+}
+.icon-list{
+    background-image: url(../img/icon-list.png);
+}
+.icon-music-cd{
+    background-image: url(../img/icon-music-cd.png);
+}
+.icon-pencil{
+    background-image: url(../img/icon-pencil.png);
+}
+.icon-pencil-active{
+    background-image: url(../img/icon-pencil-active.png);
+}
+.icon-pencil-circle{
+    background-image: url(../img/icon-pencil-circle.png);
+}
+.icon-play{
+    background-image: url(../img/icon-play.png);
+}
+.icon-publish-circle{
+    background-image: url(../img/icon-publish-circle.png);
+}
+.icon-quot-end{
+    background-image: url(../img/icon-quot-end.png);
+}
+.icon-quot-start{
+    background-image: url(../img/icon-quot-start.png);
+}
+.icon-settings{
+    background-image: url(../img/icon-settings.png);
+}
+.icon-tags-hot{
+    background-image: url(../img/icon-tags-hot.png);
+}
+.icon-tags-new{
+    background-image: url(../img/icon-tags-new.png);
+}
+.icon-logo{
+    background-image: url(../img/logo.png);
+}
+.header{
+    height: 48px;
+}
+.header .icon-arrow-left,
+.header .icon-play,
+.header .icon-layout,
+.header .icon-list,
+.header .icon-settings{
+    width: 48px;
+    height: 48px;
+    background-size: auto 50%;
+}
+
+
+
+
+
 

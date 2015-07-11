@@ -18,100 +18,101 @@
  * under the License.
  *
 */
+cordova.define('cordova.plugin.file.DirectoryEntry', function(require, exports, module) {
+    var argscheck = require('cordova/argscheck'),
+        utils = require('cordova/utils'),
+        exec = require('cordova/exec'),
+        Entry = require('cordova.plugin.file.Entry'),
+        FileError = require('cordova.plugin.file.FileError'),
+        DirectoryReader = require('cordova.plugin.file.DirectoryReader');
 
-var argscheck = require('cordova/argscheck'),
-    utils = require('cordova/utils'),
-    exec = require('cordova/exec'),
-    Entry = require('./Entry'),
-    FileError = require('./FileError'),
-    DirectoryReader = require('./DirectoryReader');
+    /**
+     * An interface representing a directory on the file system.
+     *
+     * {boolean} isFile always false (readonly)
+     * {boolean} isDirectory always true (readonly)
+     * {DOMString} name of the directory, excluding the path leading to it (readonly)
+     * {DOMString} fullPath the absolute full path to the directory (readonly)
+     * {FileSystem} filesystem on which the directory resides (readonly)
+     */
+    var DirectoryEntry = function (name, fullPath, fileSystem, nativeURL) {
 
-/**
- * An interface representing a directory on the file system.
- *
- * {boolean} isFile always false (readonly)
- * {boolean} isDirectory always true (readonly)
- * {DOMString} name of the directory, excluding the path leading to it (readonly)
- * {DOMString} fullPath the absolute full path to the directory (readonly)
- * {FileSystem} filesystem on which the directory resides (readonly)
- */
-var DirectoryEntry = function(name, fullPath, fileSystem, nativeURL) {
-
-    // add trailing slash if it is missing
-    if ((fullPath) && !/\/$/.test(fullPath)) {
-        fullPath += "/";
-    }
-    // add trailing slash if it is missing
-    if (nativeURL && !/\/$/.test(nativeURL)) {
-        nativeURL += "/";
-    }
-    DirectoryEntry.__super__.constructor.call(this, false, true, name, fullPath, fileSystem, nativeURL);
-};
-
-utils.extend(DirectoryEntry, Entry);
-
-/**
- * Creates a new DirectoryReader to read entries from this directory
- */
-DirectoryEntry.prototype.createReader = function() {
-    return new DirectoryReader(this.toInternalURL());
-};
-
-/**
- * Creates or looks up a directory
- *
- * @param {DOMString} path either a relative or absolute path from this directory in which to look up or create a directory
- * @param {Flags} options to create or exclusively create the directory
- * @param {Function} successCallback is called with the new entry
- * @param {Function} errorCallback is called with a FileError
- */
-DirectoryEntry.prototype.getDirectory = function(path, options, successCallback, errorCallback) {
-    argscheck.checkArgs('sOFF', 'DirectoryEntry.getDirectory', arguments);
-    var fs = this.filesystem;
-    var win = successCallback && function(result) {
-        var entry = new DirectoryEntry(result.name, result.fullPath, fs, result.nativeURL);
-        successCallback(entry);
+        // add trailing slash if it is missing
+        if ((fullPath) && !/\/$/.test(fullPath)) {
+            fullPath += "/";
+        }
+        // add trailing slash if it is missing
+        if (nativeURL && !/\/$/.test(nativeURL)) {
+            nativeURL += "/";
+        }
+        DirectoryEntry.__super__.constructor.call(this, false, true, name, fullPath, fileSystem, nativeURL);
     };
-    var fail = errorCallback && function(code) {
-        errorCallback(new FileError(code));
-    };
-    exec(win, fail, "File", "getDirectory", [this.toInternalURL(), path, options]);
-};
 
-/**
- * Deletes a directory and all of it's contents
- *
- * @param {Function} successCallback is called with no parameters
- * @param {Function} errorCallback is called with a FileError
- */
-DirectoryEntry.prototype.removeRecursively = function(successCallback, errorCallback) {
-    argscheck.checkArgs('FF', 'DirectoryEntry.removeRecursively', arguments);
-    var fail = errorCallback && function(code) {
-        errorCallback(new FileError(code));
-    };
-    exec(successCallback, fail, "File", "removeRecursively", [this.toInternalURL()]);
-};
+    utils.extend(DirectoryEntry, Entry);
 
-/**
- * Creates or looks up a file
- *
- * @param {DOMString} path either a relative or absolute path from this directory in which to look up or create a file
- * @param {Flags} options to create or exclusively create the file
- * @param {Function} successCallback is called with the new entry
- * @param {Function} errorCallback is called with a FileError
- */
-DirectoryEntry.prototype.getFile = function(path, options, successCallback, errorCallback) {
-    argscheck.checkArgs('sOFF', 'DirectoryEntry.getFile', arguments);
-    var fs = this.filesystem;
-    var win = successCallback && function(result) {
-        var FileEntry = require('./FileEntry');
-        var entry = new FileEntry(result.name, result.fullPath, fs, result.nativeURL);
-        successCallback(entry);
+    /**
+     * Creates a new DirectoryReader to read entries from this directory
+     */
+    DirectoryEntry.prototype.createReader = function () {
+        return new DirectoryReader(this.toInternalURL());
     };
-    var fail = errorCallback && function(code) {
-        errorCallback(new FileError(code));
-    };
-    exec(win, fail, "File", "getFile", [this.toInternalURL(), path, options]);
-};
 
-module.exports = DirectoryEntry;
+    /**
+     * Creates or looks up a directory
+     *
+     * @param {DOMString} path either a relative or absolute path from this directory in which to look up or create a directory
+     * @param {Flags} options to create or exclusively create the directory
+     * @param {Function} successCallback is called with the new entry
+     * @param {Function} errorCallback is called with a FileError
+     */
+    DirectoryEntry.prototype.getDirectory = function (path, options, successCallback, errorCallback) {
+        argscheck.checkArgs('sOFF', 'DirectoryEntry.getDirectory', arguments);
+        var fs = this.filesystem;
+        var win = successCallback && function (result) {
+            var entry = new DirectoryEntry(result.name, result.fullPath, fs, result.nativeURL);
+            successCallback(entry);
+        };
+        var fail = errorCallback && function (code) {
+            errorCallback(new FileError(code));
+        };
+        exec(win, fail, "File", "getDirectory", [this.toInternalURL(), path, options]);
+    };
+
+    /**
+     * Deletes a directory and all of it's contents
+     *
+     * @param {Function} successCallback is called with no parameters
+     * @param {Function} errorCallback is called with a FileError
+     */
+    DirectoryEntry.prototype.removeRecursively = function (successCallback, errorCallback) {
+        argscheck.checkArgs('FF', 'DirectoryEntry.removeRecursively', arguments);
+        var fail = errorCallback && function (code) {
+            errorCallback(new FileError(code));
+        };
+        exec(successCallback, fail, "File", "removeRecursively", [this.toInternalURL()]);
+    };
+
+    /**
+     * Creates or looks up a file
+     *
+     * @param {DOMString} path either a relative or absolute path from this directory in which to look up or create a file
+     * @param {Flags} options to create or exclusively create the file
+     * @param {Function} successCallback is called with the new entry
+     * @param {Function} errorCallback is called with a FileError
+     */
+    DirectoryEntry.prototype.getFile = function (path, options, successCallback, errorCallback) {
+        argscheck.checkArgs('sOFF', 'DirectoryEntry.getFile', arguments);
+        var fs = this.filesystem;
+        var win = successCallback && function (result) {
+            var FileEntry = require('cordova.plugin.file.FileEntry');
+            var entry = new FileEntry(result.name, result.fullPath, fs, result.nativeURL);
+            successCallback(entry);
+        };
+        var fail = errorCallback && function (code) {
+            errorCallback(new FileError(code));
+        };
+        exec(win, fail, "File", "getFile", [this.toInternalURL(), path, options]);
+    };
+
+    module.exports = DirectoryEntry;
+});

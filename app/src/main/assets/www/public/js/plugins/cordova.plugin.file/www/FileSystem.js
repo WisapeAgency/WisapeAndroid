@@ -18,31 +18,32 @@
  * under the License.
  *
 */
+cordova.define('cordova.plugin.file.FileSystem', function(require, exports, module) {
+    var DirectoryEntry = require('cordova.plugin.file.DirectoryEntry');
 
-var DirectoryEntry = require('./DirectoryEntry');
+    /**
+     * An interface representing a file system
+     *
+     * @constructor
+     * {DOMString} name the unique name of the file system (readonly)
+     * {DirectoryEntry} root directory of the file system (readonly)
+     */
+    var FileSystem = function (name, root) {
+        this.name = name;
+        if (root) {
+            this.root = new DirectoryEntry(root.name, root.fullPath, this, root.nativeURL);
+        } else {
+            this.root = new DirectoryEntry(this.name, '/', this);
+        }
+    };
 
-/**
- * An interface representing a file system
- *
- * @constructor
- * {DOMString} name the unique name of the file system (readonly)
- * {DirectoryEntry} root directory of the file system (readonly)
- */
-var FileSystem = function(name, root) {
-    this.name = name;
-    if (root) {
-        this.root = new DirectoryEntry(root.name, root.fullPath, this, root.nativeURL);
-    } else {
-        this.root = new DirectoryEntry(this.name, '/', this);
-    }
-};
+    FileSystem.prototype.__format__ = function (fullPath, nativeUrl) {
+        return fullPath;
+    };
 
-FileSystem.prototype.__format__ = function(fullPath, nativeUrl) {
-    return fullPath;
-};
+    FileSystem.prototype.toJSON = function () {
+        return "<FileSystem: " + this.name + ">";
+    };
 
-FileSystem.prototype.toJSON = function() {
-    return "<FileSystem: " + this.name + ">";
-};
-
-module.exports = FileSystem;
+    module.exports = FileSystem;
+});
