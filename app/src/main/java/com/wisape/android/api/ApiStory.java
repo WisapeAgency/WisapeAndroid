@@ -12,8 +12,10 @@ import com.wisape.android.model.StoryInfo;
 import com.wisape.android.network.Requester;
 import com.wisape.android.network.WWWConfig;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -39,9 +41,25 @@ public class ApiStory extends ApiBase{
         return convert(message);
     }
 
-    public boolean deleteStory(Context context, StoryInfo story, Object tag){
 
-        return true;
+    public StoryInfo delete(Context context, AttrStoryDeleteInfo attr, Object tag){
+        Uri uri = WWWConfig.acquireUri(context.getString(R.string.uri_story_del));
+        Log.d(TAG, "#updateStory uri:" + uri.toString());
+
+        Requester requester = Requester.instance();
+        setAccessToken(context, attr);
+        Requester.ServerMessage message = requester.post(uri, attr.convert(), tag);
+        return convert(message);
+    }
+
+    public StoryInfo[] list(Context context, AttrStoryListInfo attr, Object tag){
+        Uri uri = WWWConfig.acquireUri(context.getString(R.string.uri_story_list));
+        Log.d(TAG, "#updateStory uri:" + uri.toString());
+
+        Requester requester = Requester.instance();
+        setAccessToken(context, attr);
+        Requester.ServerMessage message = requester.post(uri, attr.convert(), tag);
+        return convertArray(message);
     }
 
     @Override
@@ -57,6 +75,155 @@ public class ApiStory extends ApiBase{
     @Override
     protected ServerInfo onConvertError() {
         return new StoryInfo();
+    }
+
+    @Override
+    protected StoryInfo[] convertArray(Requester.ServerMessage message) {
+        return (StoryInfo[])super.convertArray(message);
+    }
+
+    @Override
+    protected StoryInfo[] onConvertArray(JSONArray jsonArray, int status) {
+        final int length = (null == jsonArray ? 0 :jsonArray.length());
+        if(0 == length){
+            return null;
+        }
+
+        StoryInfo storyArray[] = new StoryInfo[length];
+        JSONObject jsonObj;
+        int index = 0;
+        for(int i = 0; i < length; i++){
+            jsonObj = jsonArray.optJSONObject(i);
+            if(null == jsonObj){
+                continue;
+            }
+
+            storyArray[index ++] = StoryInfo.fromJsonObject(jsonObj);
+        }
+
+        if(index < length){
+            int newLength = index;
+            StoryInfo[] newArray = new StoryInfo[newLength];
+            System.arraycopy(storyArray, 0, newArray, 0, newLength);
+            storyArray = newArray;
+        }
+        return storyArray;
+    }
+
+    @Override
+    protected ServerInfo[] onConvertArrayError() {
+        return null;
+    }
+
+    public static class AttrStoryListInfo extends AttributeInfo{
+        public static final String ATTR_PAGE = "page";
+        public static final String ATTR_PAGE_SIZE = "page_size";
+
+        public int page;
+        public int pageSize;
+
+        public AttrStoryListInfo(int page, int pageSize){
+            this.page = page;
+            this.pageSize = pageSize;
+        }
+
+        @Override
+        protected void onConvert(Map<String, String> params) {
+            if(0 < page){
+                params.put(ATTR_PAGE, Integer.toString(page));
+            }
+            if(0 < pageSize){
+                params.put(ATTR_PAGE_SIZE, Integer.toString(pageSize));
+            }
+        }
+
+        @Override
+        protected int acquireAttributeNumber() {
+            int count = 0;
+            if(0 < page){
+                count ++;
+            }
+
+            if(0 < pageSize){
+                count ++;
+            }
+            return count;
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(this.page);
+            dest.writeInt(this.pageSize);
+        }
+
+        public AttrStoryListInfo() {
+        }
+
+        protected AttrStoryListInfo(Parcel in) {
+            this.page = in.readInt();
+            this.pageSize = in.readInt();
+        }
+
+        public static final Creator<AttrStoryListInfo> CREATOR = new Creator<AttrStoryListInfo>() {
+            public AttrStoryListInfo createFromParcel(Parcel source) {
+                return new AttrStoryListInfo(source);
+            }
+
+            public AttrStoryListInfo[] newArray(int size) {
+                return new AttrStoryListInfo[size];
+            }
+        };
+    }
+
+    public static class AttrStoryDeleteInfo extends AttrStoryInfo{
+        public static final String ATTR_STORY_ID = "sid";
+
+        public long storyId;
+
+        @Override
+        protected void onConvert(Map<String, String> params) {
+            params.put(ATTR_STORY_ID, Long.toString(storyId));
+        }
+
+        @Override
+        protected int acquireAttributeNumber() {
+            return 1;
+        }
+
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            super.writeToParcel(dest, flags);
+            dest.writeLong(this.storyId);
+        }
+
+        public AttrStoryDeleteInfo() {
+        }
+
+        protected AttrStoryDeleteInfo(Parcel in) {
+            super(in);
+            this.storyId = in.readLong();
+        }
+
+        public static final Creator<AttrStoryDeleteInfo> CREATOR = new Creator<AttrStoryDeleteInfo>() {
+            public AttrStoryDeleteInfo createFromParcel(Parcel source) {
+                return new AttrStoryDeleteInfo(source);
+            }
+
+            public AttrStoryDeleteInfo[] newArray(int size) {
+                return new AttrStoryDeleteInfo[size];
+            }
+        };
     }
 
     public static class AttrStoryInfo extends AttributeInfo{
@@ -132,14 +299,5 @@ public class ApiStory extends ApiBase{
             this.story = in.readParcelable(Uri.class.getClassLoader());
         }
 
-        public static final Creator<AttrStoryInfo> CREATOR = new Creator<AttrStoryInfo>() {
-            public AttrStoryInfo createFromParcel(Parcel source) {
-                return new AttrStoryInfo(source);
-            }
-
-            public AttrStoryInfo[] newArray(int size) {
-                return new AttrStoryInfo[size];
-            }
-        };
     }
 }

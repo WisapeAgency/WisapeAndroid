@@ -9,7 +9,10 @@ import com.wisape.android.model.ServerInfo;
 import com.wisape.android.model.UserInfo;
 import com.wisape.android.network.Requester;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.Objects;
 
 /**
  * Created by LeiGuoting on 2/7/15.
@@ -25,7 +28,13 @@ public abstract class ApiBase{
     protected ServerInfo convert(Requester.ServerMessage message){
         ServerInfo info;
         if(message.succeed()){
-            info = onConvert(message.data);
+            Object data = message.data;
+            if(data instanceof JSONObject){
+                info = onConvert((JSONObject) message.data);
+            }else{
+                info = onConvertError();
+                message.status = Requester.ServerMessage.STATUS_LOCAL_OPT_JSON_FAILED;
+            }
         }else{
             info = onConvertError();
             info.message = message.message;
@@ -36,8 +45,33 @@ public abstract class ApiBase{
         return info;
     }
 
-    protected abstract ServerInfo onConvert(JSONObject json);
+    protected abstract ServerInfo onConvert(JSONObject jsonObj);
 
     protected abstract ServerInfo onConvertError();
+
+    protected ServerInfo[] convertArray(Requester.ServerMessage message){
+        ServerInfo[] infoArray;
+        if(message.succeed()){
+            Object data = message.data;
+            if(data instanceof JSONArray){
+                infoArray = onConvertArray((JSONArray) message.data, message.status);
+            }else{
+                infoArray = onConvertArrayError();
+            }
+        }else{
+            infoArray = onConvertArrayError();
+        }
+        Log.d("", "#convert ServerMessage:" + message.toString());
+        message.recycle();
+        return infoArray;
+    }
+
+    protected ServerInfo[] onConvertArray(JSONArray jsonArray, int status){
+        throw new UnsupportedOperationException("");
+    }
+
+    protected ServerInfo[] onConvertArrayError(){
+        throw new UnsupportedOperationException("");
+    }
 }
 

@@ -27,7 +27,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -80,7 +79,7 @@ public final class Requester {
 
         int status = jsonObject.optInt(ServerMessage.EXTRA_STATUS, ServerMessage.STATUS_LOCAL_OPT_JSON_FAILED);
         String message = jsonObject.optString(ServerMessage.EXTRA_MESSAGE, "");
-        JSONObject data = jsonObject.optJSONObject(ServerMessage.EXTRA_DATA);
+        Object data = jsonObject.opt(ServerMessage.EXTRA_DATA);
         return ServerMessage.obtain(status, message, data);
     }
 
@@ -261,7 +260,7 @@ public final class Requester {
 
         public int status;
         public String message;
-        public JSONObject data;
+        public Object data;
 
         public static ServerMessage obtain(){
             ServerMessage msg = null;
@@ -293,7 +292,7 @@ public final class Requester {
             return  msg;
         }
 
-        public static ServerMessage obtain(int status, String message, JSONObject data){
+        public static ServerMessage obtain(int status, String message, Object data){
             ServerMessage msg = obtain();
             msg.status = status;
             msg.message = message;
