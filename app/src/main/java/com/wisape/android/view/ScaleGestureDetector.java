@@ -192,10 +192,7 @@ public class ScaleGestureDetector {
         mTouchMinMajor = res.getDimensionPixelSize(R.dimen.config_minScalingTouchMajor);
         mMinSpan = res.getDimensionPixelSize(R.dimen.config_minScalingSpan);
         mHandler = handler;
-        // Quick scale is enabled by default after JB_MR2
-        if (context.getApplicationInfo().targetSdkVersion > Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            setQuickScaleEnabled(true);
-        }
+        setQuickScaleEnabled(true);
     }
 
     /**
@@ -415,8 +412,6 @@ public class ScaleGestureDetector {
 
             if (mInProgress) {
                 updatePrev = mListener.onScale(this);
-            }else{
-                Log.d("##", "#onTouchEvent __ move mCurrSpanX:" + mCurrSpanX + ", mCurrSpanY:" + mCurrSpanY);
             }
 
             if (updatePrev) {
