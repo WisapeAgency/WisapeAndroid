@@ -30,7 +30,7 @@ public class ApiStory extends ApiBase{
 
     private ApiStory(){}
 
-    public StoryInfo updateStory(Context context, AttrStoryInfo attr, Object tag){
+    public StoryInfo update(Context context, AttrStoryInfo attr, Object tag){
         Uri uri = WWWConfig.acquireUri(context.getString(R.string.uri_story_create));
         Log.d(TAG, "#updateStory uri:" + uri.toString());
 
@@ -184,6 +184,10 @@ public class ApiStory extends ApiBase{
         public static final String ATTR_STORY_ID = "sid";
 
         public long storyId;
+
+        public AttrStoryDeleteInfo(long storyId){
+            this.storyId = storyId;
+        }
 
         @Override
         protected void onConvert(Map<String, String> params) {

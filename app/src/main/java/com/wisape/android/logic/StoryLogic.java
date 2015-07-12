@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.util.Log;
 
+import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.Where;
@@ -24,8 +25,8 @@ import java.util.List;
 import java.util.Locale;
 
 import static com.wisape.android.api.ApiStory.AttrStoryInfo.STORY_STATUS_DELETE;
-import static com.wisape.android.api.ApiStory.AttrStoryInfo.STORY_STATUS_TEMPORARY;
 import static com.wisape.android.api.ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE;
+import static com.wisape.android.api.ApiStory.AttrStoryInfo.STORY_STATUS_TEMPORARY;
 
 /**
  * Created by LeiGuoting on 9/7/15.
@@ -67,7 +68,7 @@ public class StoryLogic{
             attr.storyThumb = thumb;
 
             ApiStory api = ApiStory.instance();
-            story = api.updateStory(context, attr, tag);
+            story = api.update(context, attr, tag);
         }else{
             story = new StoryInfo();
             story.createtime = System.currentTimeMillis();
@@ -81,7 +82,7 @@ public class StoryLogic{
 
         Log.d(TAG, "#update story:" + story);
         //save to local
-        DatabaseHelper helper = new DatabaseHelper(context);
+        DatabaseHelper helper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
         SQLiteDatabase db = helper.getWritableDatabase();
         db.beginTransaction();
         StoryEntity entity = null;
@@ -120,9 +121,10 @@ public class StoryLogic{
             db.setTransactionSuccessful();
         }catch (SQLException e){
             Log.e(TAG, "", e);
-            //do nothing
+            throw new IllegalStateException(e);
         }finally {
             db.endTransaction();
+            OpenHelperManager.releaseHelper();
         }
 
         if(STORY_STATUS_TEMPORARY.equals(storyStatus) && null != entity){
@@ -143,14 +145,65 @@ public class StoryLogic{
             return false;
         }
 
+        boolean deleted = false;
+        long storyServerId = 0;
         if(STORY_STATUS_RELEASE.equals(story)){
-
+            //delete server
+            ApiStory api = ApiStory.instance();
+            ApiStory.AttrStoryDeleteInfo attr = new ApiStory.AttrStoryDeleteInfo(story.id);
+            StoryInfo info = api.delete(context, attr, tag);
+            deleted = (null != info && ApiStory.AttrStoryInfo.STORY_STATUS_DELETE.equals(info.rec_status));
+            storyServerId = story.id;
         }
 
-        return true;
+        if(deleted){
+            //delete local
+            DatabaseHelper helper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
+            SQLiteDatabase db = helper.getWritableDatabase();
+            db.beginTransaction();
+            try{
+                Dao<StoryEntity, Long> storyDao = helper.getDao(StoryEntity.class);
+
+            }catch (SQLException e){
+                Log.e(TAG, "", e);
+                throw new IllegalStateException(e);
+            }finally {
+                OpenHelperManager.releaseHelper();
+            }
+        }
+        return deleted;
     }
 
-    public List<StoryInfo> listReleaseStory(Context context, Object tag){
+    public StoryInfo[] listReleaseStory(Context context, Object tag){
+
         return null;
+    }
+
+    public StoryInfo[] listStory(Context context, Object tag){
+        DatabaseHelper helper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
+        StoryInfo[] storyArray = null;
+        try{
+            Dao<StoryEntity, Long> storyDao = helper.getDao(StoryEntity.class);
+            QueryBuilder<StoryEntity, Long> builder = storyDao.queryBuilder();
+            Where<StoryEntity, Long> where = builder.where();
+            where.eq("status", ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE);
+            where.eq("status", ApiStory.AttrStoryInfo.STORY_STATUS_TEMPORARY);
+            builder.orderBy("status", false);
+            List<StoryEntity> storyList = builder.query();
+            int size = (null == storyList ? 0 : storyList.size());
+            if(0 < size){
+                storyArray = new StoryInfo[size];
+                int index = 0;
+                for(StoryEntity entity : storyList){
+                    storyArray[index] = StoryEntity.convert(entity);
+                }
+            }
+        }catch (SQLException e){
+            Log.e(TAG, "", e);
+            throw new IllegalStateException(e);
+        }finally {
+            OpenHelperManager.releaseHelper();
+        }
+        return storyArray;
     }
 }

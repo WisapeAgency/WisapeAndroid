@@ -4,6 +4,8 @@ import android.app.Application;
 import android.content.Context;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.wisape.android.database.DatabaseHelper;
 import com.wisape.android.network.WWWConfig;
 import com.wisape.android.service.NanoService;
 
