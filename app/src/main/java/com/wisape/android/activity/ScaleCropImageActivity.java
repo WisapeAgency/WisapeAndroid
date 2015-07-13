@@ -221,6 +221,10 @@ public class ScaleCropImageActivity extends AbsMonitoredActivity{
         setResult(RESULT_ERROR, new Intent().putExtra(Extra.ERROR, throwable));
     }
 
+    private void doSaveCrop(){
+
+    }
+
     private class Cropper {
 
         private void makeDefault() {
