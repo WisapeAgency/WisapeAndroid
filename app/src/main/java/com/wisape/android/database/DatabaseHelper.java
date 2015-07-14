@@ -1,5 +1,6 @@
 package com.wisape.android.database;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -25,6 +26,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     public void onCreate(SQLiteDatabase db, ConnectionSource source) {
         try{
             TableUtils.createTableIfNotExists(source, StoryEntity.class);
+            TableUtils.createTableIfNotExists(source, UserMessageEntity.class);
+            TableUtils.createTableIfNotExists(source, UserActivityEntity.class);
         }catch (SQLException e){
             throw new IllegalStateException(e);
         }

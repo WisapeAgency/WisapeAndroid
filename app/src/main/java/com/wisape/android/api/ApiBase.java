@@ -25,18 +25,18 @@ public abstract class ApiBase{
         attr.setAccessToken(accessToken);
     }
 
-    protected ServerInfo convert(Requester.ServerMessage message){
+    protected ServerInfo convert(int what, Requester.ServerMessage message){
         ServerInfo info;
         if(message.succeed()){
             Object data = message.data;
             if(data instanceof JSONObject){
-                info = onConvert((JSONObject) message.data);
+                info = onConvert(what, (JSONObject) message.data);
             }else{
-                info = onConvertError();
+                info = onConvertError(what);
                 message.status = Requester.ServerMessage.STATUS_LOCAL_OPT_JSON_FAILED;
             }
         }else{
-            info = onConvertError();
+            info = onConvertError(what);
             info.message = message.message;
         }
         info.status = message.status;
@@ -45,32 +45,41 @@ public abstract class ApiBase{
         return info;
     }
 
-    protected abstract ServerInfo onConvert(JSONObject jsonObj);
+    protected ServerInfo convert(Requester.ServerMessage message){
+        return convert(0, message);
+    }
 
-    protected abstract ServerInfo onConvertError();
+    protected abstract ServerInfo onConvert(int what, JSONObject jsonObj);
 
-    protected ServerInfo[] convertArray(Requester.ServerMessage message){
+    protected abstract ServerInfo onConvertError(int what);
+
+
+    protected ServerInfo[] convertArray(int what, Requester.ServerMessage message){
         ServerInfo[] infoArray;
         if(message.succeed()){
             Object data = message.data;
             if(data instanceof JSONArray){
-                infoArray = onConvertArray((JSONArray) message.data, message.status);
+                infoArray = onConvertArray(what, (JSONArray) message.data, message.status);
             }else{
-                infoArray = onConvertArrayError();
+                infoArray = onConvertArrayError(what);
             }
         }else{
-            infoArray = onConvertArrayError();
+            infoArray = onConvertArrayError(what);
         }
         Log.d("", "#convert ServerMessage:" + message.toString());
         message.recycle();
         return infoArray;
     }
 
-    protected ServerInfo[] onConvertArray(JSONArray jsonArray, int status){
+    protected ServerInfo[] convertArray(Requester.ServerMessage message){
+        return convertArray(0, message);
+    }
+
+    protected ServerInfo[] onConvertArray(int what, JSONArray jsonArray, int status){
         throw new UnsupportedOperationException("");
     }
 
-    protected ServerInfo[] onConvertArrayError(){
+    protected ServerInfo[] onConvertArrayError(int what){
         throw new UnsupportedOperationException("");
     }
 }

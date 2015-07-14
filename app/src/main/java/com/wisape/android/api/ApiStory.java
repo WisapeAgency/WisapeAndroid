@@ -68,12 +68,12 @@ public class ApiStory extends ApiBase{
     }
 
     @Override
-    protected ServerInfo onConvert(JSONObject json) {
+    protected ServerInfo onConvert(int what, JSONObject json) {
         return StoryInfo.fromJsonObject(json);
     }
 
     @Override
-    protected ServerInfo onConvertError() {
+    protected ServerInfo onConvertError(int what) {
         return new StoryInfo();
     }
 
@@ -83,7 +83,7 @@ public class ApiStory extends ApiBase{
     }
 
     @Override
-    protected StoryInfo[] onConvertArray(JSONArray jsonArray, int status) {
+    protected StoryInfo[] onConvertArray(int what, JSONArray jsonArray, int status) {
         final int length = (null == jsonArray ? 0 :jsonArray.length());
         if(0 == length){
             return null;
@@ -111,7 +111,7 @@ public class ApiStory extends ApiBase{
     }
 
     @Override
-    protected ServerInfo[] onConvertArrayError() {
+    protected ServerInfo[] onConvertArrayError(int what) {
         return null;
     }
 

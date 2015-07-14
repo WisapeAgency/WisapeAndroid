@@ -2,7 +2,11 @@
 <resources>
     <string name="uri_user_login">user/login</string>
     <string name="uri_user_profile_update">user/editprofile</string>
+    <string name="uri_user_message">user/message</string>
+    <string name="uri_user_activity">user/active</string>
+
     <string name="uri_story_create">story/create</string>
     <string name="uri_story_del">story/del</string>
     <string name="uri_story_list">story/list</string>
+
 </resources>

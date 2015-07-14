@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.telephony.TelephonyManager;
 import android.util.Base64;
 import android.util.Log;
 
@@ -129,5 +130,23 @@ public class Utils {
                 //do nothing
             }
         }
+    }
+
+    public static String acquireCountryIso(Context context){
+        TelephonyManager telephonyManager = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
+        String code;
+
+        int phoneType = telephonyManager.getPhoneType();
+        /*
+         * Availability: Only when user is registered to a network. Result may be unreliable on CDMA networks (use getPhoneType() to determine if on a CDMA network).
+         */
+        if(TelephonyManager.PHONE_TYPE_NONE != phoneType && TelephonyManager.PHONE_TYPE_CDMA != phoneType){
+            code = telephonyManager.getNetworkCountryIso();
+            Log.d("Utils", "#acquireCountryIso from TelephonyManager; code:" + code);
+        }else{
+            code = context.getResources().getConfiguration().locale.getCountry();
+            Log.d("Utils", "#acquireCountryIso from Resources.Configuration.locale; code:" + code);
+        }
+        return code;
     }
 }

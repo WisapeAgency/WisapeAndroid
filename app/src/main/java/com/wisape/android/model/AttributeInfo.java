@@ -21,7 +21,7 @@ public abstract class AttributeInfo extends BaseInfo implements Parcelable{
     }
 
     public final Map<String, String> convert(){
-        HashMap<String, String> params = new HashMap(acquireAttributeNumber());
+        HashMap<String, String> params = new HashMap(acquireAttributeNumber() + 2);
         onConvert(params);
         params.put(ATTR_ACCESS_TOKEN, null == accessToken ? "" : accessToken);
         params.put(ATTR_EXPIRES, Long.toString(Utils.acquireUTCTimestamp()));
