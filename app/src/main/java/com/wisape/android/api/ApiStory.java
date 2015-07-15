@@ -9,6 +9,8 @@ import com.wisape.android.R;
 import com.wisape.android.model.AttributeInfo;
 import com.wisape.android.model.ServerInfo;
 import com.wisape.android.model.StoryInfo;
+import com.wisape.android.model.StoryMusicInfo;
+import com.wisape.android.model.StoryTemplateInfo;
 import com.wisape.android.network.Requester;
 import com.wisape.android.network.WWWConfig;
 
@@ -23,6 +25,8 @@ import java.util.Map;
  */
 public class ApiStory extends ApiBase{
     private static final String TAG = ApiStory.class.getSimpleName();
+    private static final int WHAT_LIST_STORY_MUSIC = 0x01;
+    private static final int WHAT_LIST_STORY_TEMPLATE = 0x02;
 
     public static ApiStory instance(){
         return new ApiStory();
@@ -44,7 +48,7 @@ public class ApiStory extends ApiBase{
 
     public StoryInfo delete(Context context, AttrStoryDeleteInfo attr, Object tag){
         Uri uri = WWWConfig.acquireUri(context.getString(R.string.uri_story_del));
-        Log.d(TAG, "#updateStory uri:" + uri.toString());
+        Log.d(TAG, "#delete uri:" + uri.toString());
 
         Requester requester = Requester.instance();
         setAccessToken(context, attr);
@@ -52,14 +56,38 @@ public class ApiStory extends ApiBase{
         return convert(message);
     }
 
-    public StoryInfo[] list(Context context, AttrStoryListInfo attr, Object tag){
+    public StoryInfo[] listStory(Context context, AttrStoryListInfo attr, Object tag){
         Uri uri = WWWConfig.acquireUri(context.getString(R.string.uri_story_list));
-        Log.d(TAG, "#updateStory uri:" + uri.toString());
+        Log.d(TAG, "#listStory uri:" + uri.toString());
 
         Requester requester = Requester.instance();
         setAccessToken(context, attr);
         Requester.ServerMessage message = requester.post(uri, attr.convert(), tag);
         return convertArray(message);
+    }
+
+    public StoryMusicInfo[] listStoryMusic(Context context, Object tag){
+        Uri uri = WWWConfig.acquireUri(context.getString(R.string.uri_music_list));
+        Log.d(TAG, "#listStoryMusic uri:" + uri.toString());
+
+        Requester requester = Requester.instance();
+        AttributeInfoImpl attr = new AttributeInfoImpl();
+        setAccessToken(context, attr);
+        Requester.ServerMessage message = requester.post(uri, attr.convert(), tag);
+        StoryMusicInfo storyMusicArray[] = (StoryMusicInfo[])convertArray(WHAT_LIST_STORY_MUSIC, message);
+        return storyMusicArray;
+    }
+
+    public StoryTemplateInfo[] listStoryTemplate(Context context, Object tag){
+        Uri uri = WWWConfig.acquireUri(context.getString(R.string.uri_template_list));
+        Log.d(TAG, "#StoryTemplateInfo uri:" + uri.toString());
+
+        Requester requester = Requester.instance();
+        AttributeInfoImpl attr = new AttributeInfoImpl();
+        setAccessToken(context, attr);
+        Requester.ServerMessage message = requester.post(uri, attr.convert(), tag);
+        StoryTemplateInfo storyTemplateArray[] = (StoryTemplateInfo[])convertArray(WHAT_LIST_STORY_TEMPLATE, message);
+        return storyTemplateArray;
     }
 
     @Override
@@ -83,31 +111,79 @@ public class ApiStory extends ApiBase{
     }
 
     @Override
-    protected StoryInfo[] onConvertArray(int what, JSONArray jsonArray, int status) {
+    protected ServerInfo[] onConvertArray(int what, JSONArray jsonArray, int status) {
         final int length = (null == jsonArray ? 0 :jsonArray.length());
         if(0 == length){
             return null;
         }
 
-        StoryInfo storyArray[] = new StoryInfo[length];
-        JSONObject jsonObj;
-        int index = 0;
-        for(int i = 0; i < length; i++){
-            jsonObj = jsonArray.optJSONObject(i);
-            if(null == jsonObj){
-                continue;
-            }
+        ServerInfo infoArray[];
+        switch (what){
+            default :
+                infoArray = new StoryInfo[length];
+                JSONObject jsonObj;
+                int index = 0;
+                for(int i = 0; i < length; i++){
+                    jsonObj = jsonArray.optJSONObject(i);
+                    if(null == jsonObj){
+                        continue;
+                    }
 
-            storyArray[index ++] = StoryInfo.fromJsonObject(jsonObj);
-        }
+                    infoArray[index ++] = StoryInfo.fromJsonObject(jsonObj);
+                }
 
-        if(index < length){
-            int newLength = index;
-            StoryInfo[] newArray = new StoryInfo[newLength];
-            System.arraycopy(storyArray, 0, newArray, 0, newLength);
-            storyArray = newArray;
+                if(index < length){
+                    int newLength = index;
+                    StoryInfo[] newArray = new StoryInfo[newLength];
+                    System.arraycopy(infoArray, 0, newArray, 0, newLength);
+                    infoArray = newArray;
+                }
+                break;
+
+            case WHAT_LIST_STORY_MUSIC :
+                infoArray = new StoryMusicInfo[length];
+                index = 0;
+                StoryMusicInfo music;
+                for(int i = 0; i < length; i ++){
+                    jsonObj = jsonArray.optJSONObject(i);
+                    music = StoryMusicInfo.fromJsonObject(jsonObj);
+                    if(null == music){
+                        continue;
+                    }
+
+                    infoArray[index ++] = music;
+                }
+
+                if(index < length){
+                    int newLength = index;
+                    StoryMusicInfo[] newArray = new StoryMusicInfo[newLength];
+                    System.arraycopy(infoArray, 0, newArray, 0, newLength);
+                    infoArray = newArray;
+                }
+                break;
+
+            case WHAT_LIST_STORY_TEMPLATE :
+                infoArray = new StoryTemplateInfo[length];
+                index = 0;
+                StoryTemplateInfo template;
+                for(int i = 0; i < length; i ++){
+                    jsonObj = jsonArray.optJSONObject(i);
+                    template = StoryTemplateInfo.fromJsonObject(jsonObj);
+                    if(null == template){
+                        continue;
+                    }
+                    infoArray[index ++] = template;
+                }
+
+                if(index < length){
+                    int newLength = index;
+                    StoryTemplateInfo[] newArray = new StoryTemplateInfo[newLength];
+                    System.arraycopy(infoArray, 0, newArray, 0, newLength);
+                    infoArray = newArray;
+                }
+                break;
         }
-        return storyArray;
+        return infoArray;
     }
 
     @Override

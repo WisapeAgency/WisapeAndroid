@@ -13,7 +13,9 @@ import com.wisape.android.api.ApiStory;
 import com.wisape.android.common.UserManager;
 import com.wisape.android.database.DatabaseHelper;
 import com.wisape.android.database.StoryEntity;
+import com.wisape.android.database.StoryMusicEntity;
 import com.wisape.android.model.StoryInfo;
+import com.wisape.android.model.StoryMusicInfo;
 import com.wisape.android.model.UserInfo;
 import com.wisape.android.util.EnvironmentUtils;
 import com.wisape.android.util.Utils;
@@ -206,4 +208,23 @@ public class StoryLogic{
         }
         return storyArray;
     }
+
+    public StoryMusicEntity[] listStoryMusicLocal(Context context, Object tag){
+        DatabaseHelper helper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
+        StoryMusicEntity storyMusicArray[];
+        Dao<StoryMusicEntity, Long> dao;
+        try{
+            dao = helper.getDao(StoryMusicEntity.class);
+            List<StoryMusicEntity> storyMusicList = dao.queryForAll();
+            storyMusicArray = new StoryMusicEntity[storyMusicList.size()];
+            storyMusicArray = storyMusicList.toArray(storyMusicArray);
+        }catch (SQLException e){
+            Log.e(TAG, "", e);
+            throw new IllegalStateException(e);
+        }finally {
+            OpenHelperManager.releaseHelper();
+        }
+        return storyMusicArray;
+    }
+
 }

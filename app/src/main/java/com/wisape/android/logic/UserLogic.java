@@ -21,6 +21,7 @@ import com.wisape.android.common.UserManager;
 import com.wisape.android.database.BaseEntity;
 import com.wisape.android.database.DatabaseHelper;
 import com.wisape.android.database.StoryEntity;
+import com.wisape.android.database.UserActivityEntity;
 import com.wisape.android.database.UserMessageEntity;
 import com.wisape.android.model.UserActivityInfo;
 import com.wisape.android.model.UserInfo;
@@ -214,5 +215,27 @@ public class UserLogic {
         Log.d(TAG, "#listUserActivities CountryIso:" + attr.countryIso);
 
         return ApiUser.instance().listUserActivities(context, attr, cancelableTag);
+    }
+
+    public List<UserActivityEntity> listUserActivitiesLocal(Context context){
+        DatabaseHelper helper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
+        SQLiteDatabase db = helper.getWritableDatabase();
+        Dao<UserActivityEntity, Long> activityDao;
+
+        db.beginTransaction();
+        List<UserActivityEntity> activities;
+        try{
+            activityDao = helper.getDao(UserActivityEntity.class);
+            QueryBuilder<UserActivityEntity, Long> builder = activityDao.queryBuilder();
+            builder.orderBy("status", true);
+            activities = builder.query();
+        }catch (SQLException e){
+            Log.e(TAG, "", e);
+            throw new IllegalStateException(e);
+        }finally {
+            db.endTransaction();
+            OpenHelperManager.releaseHelper();
+        }
+        return activities;
     }
 }

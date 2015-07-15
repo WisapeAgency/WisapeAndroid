@@ -12,6 +12,7 @@ import com.wisape.android.model.UserActivityInfo;
  */
 @DatabaseTable(tableName = "_user_activity")
 public class UserActivityEntity extends BaseEntity implements Parcelable {
+    public static final int LOCAL_STATUS_DELETE = 0x03;
 
     @DatabaseField()
     public long serverId;
