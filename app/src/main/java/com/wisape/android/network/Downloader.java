@@ -22,7 +22,7 @@ import okio.Sink;
  * Created by LeiGuoting on 15/7/15.
  */
 public class Downloader{
-    public static final String ACTION_DOWNLOAD_DEFAULT = "";
+    public static final String ACTION_DOWNLOAD_DEFAULT = "com.wisape.android.action.DOWNLOADER";
     public static final String EXTRA_TOTAL_SIZE = "_total_size";
     public static final String EXTRA_TRANSFERRED_BYTES = "_transferred_bytes";
     public static final String EXTRA_PROGRESS = "_progress";
@@ -42,19 +42,18 @@ public class Downloader{
                 buffer.flush();
                 sink.flush();
                 buffer.close();
-
                 buffer = bufferedSource.buffer();
             }
         }finally {
             sink.close();
         }
-
     }
 
     private static class ProgressListenerImpl implements com.android.volley.Response.ProgressListener {
         private Uri source;
         private LocalBroadcastManager broadcast;
         private String action;
+        private volatile boolean ended;
 
         ProgressListenerImpl(Context context, Uri source, String broadcastAction){
             this.source = source;
@@ -64,6 +63,10 @@ public class Downloader{
 
         @Override
         public void onProgress(long transferredBytes, long totalSize) {
+            if(ended){
+                return;
+            }
+
             Intent intent = new Intent();
             String action;
             if(null == this.action || 0 == this.action.length()){
@@ -75,9 +78,14 @@ public class Downloader{
             intent.setData(source);
             intent.putExtra(EXTRA_TOTAL_SIZE, totalSize);
             intent.putExtra(EXTRA_TRANSFERRED_BYTES, transferredBytes);
-            intent.putExtra(EXTRA_PROGRESS, ((double)transferredBytes /(double)totalSize));
+            intent.putExtra(EXTRA_PROGRESS, ((double) transferredBytes / (double) totalSize));
 
             broadcast.sendBroadcast(intent);
+            if(transferredBytes == totalSize){
+                ended = true;
+                broadcast = null;
+                source = null;
+            }
         }
     }
 

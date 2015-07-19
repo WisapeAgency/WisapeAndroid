@@ -18,11 +18,7 @@ public abstract class AbsCompatActivity extends AppCompatActivity implements Loa
     private static final String EXTRA_WHAT = "loader_what";
     protected static final int STATUS_EXCEPTION = Integer.MIN_VALUE;
     protected static final int STATUS_SUCCESS = 1;
-
-    private Object cancelableTag;
-
     private boolean destroyed;
-
     @Override
     protected void onDestroy() {
         if(17 > Build.VERSION.SDK_INT){

@@ -10,4 +10,8 @@
     <string name="uri_story_list">story/list</string>
     <string name="uri_template_list">template/list</string>
     <string name="uri_music_list">music/list</string>
+    <string name="uri_template_download">template/download</string>
+    <string name="uri_music_download">music/download</string>
+    <!--获取模板类型列表-->
+    <string name="uri_template_gettype">template/gettype</string>
 </resources>

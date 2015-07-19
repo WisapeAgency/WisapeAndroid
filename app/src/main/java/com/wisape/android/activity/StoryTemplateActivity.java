@@ -23,7 +23,6 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //NanoService.startNanoServer(getApplicationContext());
         Uri uri = new Uri.Builder().scheme(ContentResolver.SCHEME_FILE).encodedPath(EnvironmentUtils.getAppDataDirectory().getPath()).appendEncodedPath("template_light/index.html").build();
         String url = uri.toString();
         Log.d(TAG, "#onCreate url:" + url);
@@ -34,6 +33,5 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        //NanoService.stopNanoServer(getApplicationContext());
     }
 }

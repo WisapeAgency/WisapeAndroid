@@ -16,6 +16,9 @@ public class StoryTemplateEntity extends BaseEntity implements Parcelable {
     public String description;
     public String template;    //URL
     public String recStatus;
+    public long type;
+    public int order;
+    public String orderType;
 
     public static StoryTemplateEntity transform(StoryTemplateInfo info){
         if(null == info){
@@ -29,6 +32,9 @@ public class StoryTemplateEntity extends BaseEntity implements Parcelable {
         entity.description = info.temp_description;
         entity.template = info.temp_url;
         entity.recStatus = info.rec_status;
+        entity.type = info.type;
+        entity.order = info.order;
+        entity.orderType = info.order_type;
         return entity;
     }
 
@@ -44,9 +50,11 @@ public class StoryTemplateEntity extends BaseEntity implements Parcelable {
         info.temp_img = entity.thumb;
         info.temp_url = entity.template;
         info.rec_status = entity.recStatus;
+        info.type = entity.type;
+        info.order = entity.order;
+        info.order_type = entity.orderType;
         return info;
     }
-
 
     @Override
     public int describeContents() {
@@ -61,6 +69,9 @@ public class StoryTemplateEntity extends BaseEntity implements Parcelable {
         dest.writeString(this.description);
         dest.writeString(this.template);
         dest.writeString(this.recStatus);
+        dest.writeLong(this.type);
+        dest.writeInt(this.order);
+        dest.writeString(this.orderType);
     }
 
     public StoryTemplateEntity() {
@@ -73,9 +84,12 @@ public class StoryTemplateEntity extends BaseEntity implements Parcelable {
         this.description = in.readString();
         this.template = in.readString();
         this.recStatus = in.readString();
+        this.type = in.readLong();
+        this.order = in.readInt();
+        this.orderType = in.readString();
     }
 
-    public static final Parcelable.Creator<StoryTemplateEntity> CREATOR = new Parcelable.Creator<StoryTemplateEntity>() {
+    public static final Creator<StoryTemplateEntity> CREATOR = new Creator<StoryTemplateEntity>() {
         public StoryTemplateEntity createFromParcel(Parcel source) {
             return new StoryTemplateEntity(source);
         }

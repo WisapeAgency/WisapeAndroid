@@ -9,12 +9,15 @@ import org.json.JSONObject;
  */
 public class StoryTemplateInfo extends ServerInfo{
     /**
-     "id": "2",
-     "temp_name": "2222222222222",
-     "temp_img": "http://ddddd.com",
-     "temp_description": "adfadfadf",
-     "temp_url": "http://wowowow.com/dddd",
-     "rec_status": "A"
+     "id": "5",
+     "temp_name": "111111111111",
+     "temp_img": "http://loc.wis/uploads/2015071704/82c37406f5e14ba5221605532e306ea3.jpg",
+     "temp_description": "111111111111111111111111111111111111111111111111111",
+     "temp_url": "http://loc.wis/uploads/2015071704/c0ad9aea5579dbd27d1703cd254a02d9.zip",
+     "rec_status": "A",
+     "type": "2",
+     "order": "2",
+     "order_type": "N"
      */
 
     public long id;
@@ -23,6 +26,9 @@ public class StoryTemplateInfo extends ServerInfo{
     public String temp_description;
     public String temp_url;
     public String rec_status;
+    public long type;
+    public int order;
+    public String order_type;
 
     public static StoryTemplateInfo fromJsonObject(JSONObject json){
         if(null == json){
@@ -36,6 +42,9 @@ public class StoryTemplateInfo extends ServerInfo{
         template.temp_description = json.optString("temp_description");
         template.temp_url = json.optString("temp_url");
         template.rec_status = json.optString("rec_status");
+        template.type = json.optLong("type");
+        template.order = json.optInt("order");
+        template.order_type = json.optString("order_type");
         return template;
     }
 
@@ -52,6 +61,9 @@ public class StoryTemplateInfo extends ServerInfo{
         dest.writeString(this.temp_description);
         dest.writeString(this.temp_url);
         dest.writeString(this.rec_status);
+        dest.writeLong(this.type);
+        dest.writeInt(this.order);
+        dest.writeString(this.order_type);
     }
 
     public StoryTemplateInfo() {
@@ -64,6 +76,9 @@ public class StoryTemplateInfo extends ServerInfo{
         this.temp_description = in.readString();
         this.temp_url = in.readString();
         this.rec_status = in.readString();
+        this.type = in.readLong();
+        this.order = in.readInt();
+        this.order_type = in.readString();
     }
 
     public static final Creator<StoryTemplateInfo> CREATOR = new Creator<StoryTemplateInfo>() {

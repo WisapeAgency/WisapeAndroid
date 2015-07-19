@@ -16,6 +16,10 @@
         <param name="android-package" value="com.wisape.android.cordova.PhotoSelectorPlugin"/>
     </feature>
 
+    <feature name="StoryTemplate">
+        <param name="android-package" value="com.wisape.android.cordova.StoryTemplatePlugin"/>
+    </feature>
+
     <feature name="File">
         <param name="android-package" value="com.wisape.android.cordova.FileUtils"/>
     </feature>
