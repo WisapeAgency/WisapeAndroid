@@ -4,115 +4,85 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-
-import okio.Buffer;
-import okio.BufferedSource;
-import okio.ForwardingSink;
-import okio.Okio;
-import okio.Sink;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * Created by LeiGuoting on 15/7/15.
  */
 public class Downloader{
-    public static final String ACTION_DOWNLOAD_DEFAULT = "com.wisape.android.action.DOWNLOADER";
+    private static final String TAG = "Downloader";
+    private static final String ACTION_DOWNLOAD_DEFAULT = "com.wisape.android.action.DOWNLOADER";
     public static final String EXTRA_TOTAL_SIZE = "_total_size";
     public static final String EXTRA_TRANSFERRED_BYTES = "_transferred_bytes";
     public static final String EXTRA_PROGRESS = "_progress";
 
     public static void download(Context context, Uri source, Uri dest, String broadcastAction) throws IOException {
         OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder().url(source.toString()).addHeader("Content-Type", "application/json").build();
+        Request request = new Request.Builder().url(source.toString()).addHeader("Content-Type", "application/octet-stream").build();
         Response response = client.newCall(request).execute();
 
         File destFile = new File(dest.getPath());
-        Sink sink = new ForwardingSinkImpl(Okio.buffer(Okio.sink(destFile)), new ProgressListenerImpl(context, source, broadcastAction));
+        InputStream input = null;
+        OutputStream output = null;
+        long download = 0;
+        LocalBroadcastManager broadcast = null;
         try{
-            BufferedSource bufferedSource = response.body().source();
-            Buffer buffer = bufferedSource.buffer();
-            for(;null != buffer && 0 < buffer.size();){
-                sink.write(buffer, buffer.size());
-                buffer.flush();
-                sink.flush();
-                buffer.close();
-                buffer = bufferedSource.buffer();
+            Log.d(TAG, "#download read and write; response:" + response.toString());
+            String contentLength = response.header("Content-Length", "0");
+            Log.d(TAG, "#download contentLength:" + contentLength);
+            long length;
+            try{
+                length = Long.parseLong(contentLength);
+            }catch (Throwable e){
+                Log.e(TAG, "", e);
+                length = 1024 * 1024 * 1024;
             }
+
+            input = response.body().byteStream();
+            output = new BufferedOutputStream(new FileOutputStream(destFile));
+            final boolean hasBroadcast = null != broadcastAction && 0 < broadcastAction.length();
+            String action = ACTION_DOWNLOAD_DEFAULT;
+            if(hasBroadcast){
+                broadcast = LocalBroadcastManager.getInstance(context);
+                action = broadcastAction;
+            }
+
+            int count;
+            byte[] buffer = new byte[1024 * 5];
+            for(;0 < (count = input.read(buffer));){
+                download += count;
+                output.write(buffer, 0, count);
+
+                if(hasBroadcast){
+                    Intent intent = new Intent();
+                    intent.setAction(action);
+                    intent.setData(source);
+                    intent.putExtra(EXTRA_TOTAL_SIZE, length);
+                    intent.putExtra(EXTRA_TRANSFERRED_BYTES, download);
+                    intent.putExtra(EXTRA_PROGRESS, ((double) download / (double) length));
+                    broadcast.sendBroadcast(intent);
+                }
+                //Log.d(TAG, "#download download:" + download + ", length:" + length);
+            }
+            output.flush();
         }finally {
-            sink.close();
-        }
-    }
-
-    private static class ProgressListenerImpl implements com.android.volley.Response.ProgressListener {
-        private Uri source;
-        private LocalBroadcastManager broadcast;
-        private String action;
-        private volatile boolean ended;
-
-        ProgressListenerImpl(Context context, Uri source, String broadcastAction){
-            this.source = source;
-            this.action = broadcastAction;
-            this.broadcast = LocalBroadcastManager.getInstance(context);
-        }
-
-        @Override
-        public void onProgress(long transferredBytes, long totalSize) {
-            if(ended){
-                return;
+            if(null != input){
+                input.close();
             }
 
-            Intent intent = new Intent();
-            String action;
-            if(null == this.action || 0 == this.action.length()){
-                action = ACTION_DOWNLOAD_DEFAULT;
-            }else{
-                action = this.action;
-            }
-            intent.setAction(action);
-            intent.setData(source);
-            intent.putExtra(EXTRA_TOTAL_SIZE, totalSize);
-            intent.putExtra(EXTRA_TRANSFERRED_BYTES, transferredBytes);
-            intent.putExtra(EXTRA_PROGRESS, ((double) transferredBytes / (double) totalSize));
-
-            broadcast.sendBroadcast(intent);
-            if(transferredBytes == totalSize){
-                ended = true;
-                broadcast = null;
-                source = null;
-            }
-        }
-    }
-
-    private static class ForwardingSinkImpl extends ForwardingSink {
-        private com.android.volley.Response.ProgressListener progressListener;
-        private long totalBytesWritten = 0L;
-
-        ForwardingSinkImpl(Sink delegate, com.android.volley.Response.ProgressListener progressListener){
-            super(delegate);
-            this.progressListener = progressListener;
-        }
-
-        @Override
-        public void write(Buffer source, long byteCount) throws IOException {
-            super.write(source, byteCount);
-            totalBytesWritten += byteCount;
-            if(null != progressListener){
-                progressListener.onProgress(byteCount, totalBytesWritten);
-            }
-        }
-
-        @Override
-        public void close() throws IOException {
-            super.close();
-            if(null != progressListener){
-                progressListener.onProgress(totalBytesWritten, totalBytesWritten);
-                progressListener = null;
+            if(null != output){
+                output.close();
             }
         }
     }

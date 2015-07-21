@@ -98,7 +98,7 @@ public class ApiStory extends ApiBase{
         return templateTypeArray;
     }
 
-    public JSONArray listStoryTemplateTypeJsonString(Context context, Object tag){
+    public JSONArray listStoryTemplateTypeJson(Context context, Object tag){
         Requester.ServerMessage message = doListStoryTemplateType(context, tag);
         Object data = message.data;
         if(data instanceof JSONArray){

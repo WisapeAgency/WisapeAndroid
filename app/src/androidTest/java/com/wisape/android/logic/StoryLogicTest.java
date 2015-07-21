@@ -31,11 +31,12 @@ public class StoryLogicTest extends ApplicationTestCase<WisapeApplication> {
         int count = (null == templateArray ? 0 : templateArray.length);
         assertEquals(4, count);
 
-        StoryTemplateEntity[] templateArrayFromDb = logic.listStoryTemplateLocal(context, tag);
+        StoryTemplateEntity[] templateArrayFromDb = logic.listStoryTemplateLocal(context);
         assertNotNull(templateArrayFromDb);
         int countDb = (null == templateArrayFromDb ? 0 : templateArrayFromDb.length);
         assertEquals(count, countDb);
         assertEquals(templateArray[0].serverId, templateArrayFromDb[0].serverId);
-
     }
+
+
 }

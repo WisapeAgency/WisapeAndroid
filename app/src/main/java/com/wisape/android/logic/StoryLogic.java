@@ -24,6 +24,9 @@ import com.wisape.android.util.EnvironmentUtils;
 import com.wisape.android.util.Utils;
 import com.wisape.android.util.ZipUtils;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
@@ -182,7 +185,6 @@ public class StoryLogic{
     }
 
     public StoryInfo[] listReleaseStory(Context context, Object tag){
-
         return null;
     }
 
@@ -232,7 +234,7 @@ public class StoryLogic{
         return storyMusicArray;
     }
 
-    public StoryTemplateEntity[] listStoryTemplateLocal(Context context, Object tag){
+    public StoryTemplateEntity[] listStoryTemplateLocal(Context context){
         DatabaseHelper helper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
         StoryTemplateEntity storyTemplateArray[];
         Dao<StoryTemplateEntity, Long> dao;
@@ -275,6 +277,8 @@ public class StoryLogic{
             int num;
             storyTemplateArray = new StoryTemplateEntity[count];
             int index = 0;
+            long updateAt = System.currentTimeMillis();
+            StoryTemplateEntity oldEntity;
             for(StoryTemplateInfo info : storyTemplateInfos){
                 entity = StoryTemplateEntity.transform(info);
 
@@ -282,7 +286,15 @@ public class StoryLogic{
                 entities = builder.where().eq("serverId", entity.serverId).query();
                 num = (null == entities ? 0 : entities.size());
                 if(0 < num){
+                    oldEntity = entities.get(0);
                     dao.delete(entities);
+                    entity.updateAt = updateAt;
+                    entity.createAt = oldEntity.createAt;
+                    entity.localThumb = oldEntity.localUri;
+                    entity.localThumb = oldEntity.localThumb;
+                }else{
+                    entity.createAt = updateAt;
+                    entity.updateAt = updateAt;
                 }
                 entity = dao.createIfNotExists(entity);
                 storyTemplateArray[index ++] = entity;
@@ -298,21 +310,51 @@ public class StoryLogic{
         return storyTemplateArray;
     }
 
-    public String listStoryTemplateTypeLocal(Context context){
-
-        return null;
+    public void updateStoryTemplateEntity(Context context, StoryTemplateEntity entity){
+        DatabaseHelper helper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
+        Dao<StoryTemplateEntity, Long> dao;
+        SQLiteDatabase db = helper.getWritableDatabase();
+        db.beginTransaction();
+        try{
+            dao = helper.getDao(StoryTemplateEntity.class);
+            dao.update(entity);
+            db.setTransactionSuccessful();
+        }catch (SQLException e){
+            Log.e(TAG, "", e);
+            throw new IllegalStateException(e);
+        }finally {
+            db.endTransaction();
+        }
     }
 
-    public String listStoryTemplateType(Context context, Object tag){
-        ApiStory api = ApiStory.instance();
-        StoryTemplateTypeInfo[] templateTypeArray = api.listStoryTemplateType(context, tag);
-        int count = (null == templateTypeArray ? 0 : templateTypeArray.length);
-        if(0 == count){
-            return "";
+    public JSONArray listStoryTemplateTypeLocal(Context context){
+        SharedPreferences preferences = getSharedPreferences(context);
+        String templateTypeString = preferences.getString(EXTRA_STORY_TEMPLATE_TYPE, null);
+        if(null == templateTypeString){
+            return null;
         }
 
-        
-        return null;
+        JSONArray jsonArray;
+        try {
+            jsonArray = new JSONArray(templateTypeString);
+        }catch (JSONException e){
+            Log.e(TAG, "", e);
+            throw new IllegalStateException(e);
+        }
+        return jsonArray;
+    }
+
+    public JSONArray listStoryTemplateType(Context context, Object tag){
+        ApiStory api = ApiStory.instance();
+        JSONArray templateTypeJson= api.listStoryTemplateTypeJson(context, tag);
+        if(null == templateTypeJson){
+            return null;
+        }
+
+        //save to local
+        SharedPreferences preferences = getSharedPreferences(context);
+        preferences.edit().putString(EXTRA_STORY_TEMPLATE_TYPE, templateTypeJson.toString()).commit();
+        return templateTypeJson;
     }
 
     private SharedPreferences getSharedPreferences(Context context){

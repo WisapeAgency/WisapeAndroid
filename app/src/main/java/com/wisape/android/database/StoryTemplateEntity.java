@@ -32,6 +32,11 @@ public class StoryTemplateEntity extends BaseEntity implements Parcelable {
     @DatabaseField()
     public String orderType;
 
+    @DatabaseField()
+    public String localUri;
+    @DatabaseField()
+    public String localThumb;
+
     public static StoryTemplateEntity transform(StoryTemplateInfo info){
         if(null == info){
             return null;
@@ -84,6 +89,8 @@ public class StoryTemplateEntity extends BaseEntity implements Parcelable {
         dest.writeLong(this.type);
         dest.writeInt(this.order);
         dest.writeString(this.orderType);
+        dest.writeString(this.localUri);
+        dest.writeString(this.localThumb);
     }
 
     public StoryTemplateEntity() {
@@ -99,6 +106,8 @@ public class StoryTemplateEntity extends BaseEntity implements Parcelable {
         this.type = in.readLong();
         this.order = in.readInt();
         this.orderType = in.readString();
+        this.localUri = in.readString();
+        this.localThumb = in.readString();
     }
 
     public static final Creator<StoryTemplateEntity> CREATOR = new Creator<StoryTemplateEntity>() {

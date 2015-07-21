@@ -8,6 +8,11 @@ import android.test.ApplicationTestCase;
 public class ApplicationTest extends ApplicationTestCase<WisapeApplication> {
     public ApplicationTest() {
         super(WisapeApplication.class);
+    }
+
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
         createApplication();
     }
 }

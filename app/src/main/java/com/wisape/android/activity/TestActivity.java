@@ -7,11 +7,17 @@ import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.wisape.android.R;
 import com.wisape.android.api.ApiStory;
+import com.wisape.android.common.StoryManager;
+import com.wisape.android.database.StoryMusicEntity;
+import com.wisape.android.database.StoryTemplateEntity;
 import com.wisape.android.logic.StoryLogic;
 import com.wisape.android.util.EnvironmentUtils;
 import com.wisape.android.util.ZipUtils;
+
+import org.json.JSONArray;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,13 +46,13 @@ public class TestActivity extends BaseActivity{
     @OnClick(R.id.button)
     @SuppressWarnings("unused")
     protected void doBtnTest(){
-        startLoad(2, null);
+        startLoad(5, null);
     }
 
     @OnClick(R.id.qr_code)
     @SuppressWarnings("unused")
     protected void doQr(){
-        startLoad(3, null);
+        startLoad(6, null);
     }
 
 
@@ -80,6 +86,56 @@ public class TestActivity extends BaseActivity{
             story.storyName = "story_one_1.zip";
             story.storyDescription = "hahahaha";
             StoryLogic.instance().update(getApplicationContext(), story, getCancelableTag());
+        }
+
+        else if(4 == what){
+            //获取模板类型
+            StoryLogic logic = StoryLogic.instance();
+            JSONArray jsonArray = logic.listStoryTemplateTypeLocal(getApplicationContext());
+            if(null == jsonArray){
+                Log.d(TAG, "listStoryTemplateTypeLocal is null.");
+                jsonArray = logic.listStoryTemplateType(getApplicationContext(), getCancelableTag());
+            }
+
+            if(null != jsonArray){
+                Log.d(TAG, "#listStoryTemplateType TemplateType:" + jsonArray.toString());
+            }else{
+                Log.d(TAG, "#listStoryTemplateType jsonArray is null.");
+            }
+        }
+
+        else if(5 == what){
+            StoryLogic logic = StoryLogic.instance();
+            StoryTemplateEntity[] templateEntities = logic.listStoryTemplate(getApplicationContext(), getCancelableTag());
+            if(null == templateEntities){
+                Log.d(TAG, "#listStoryTemplate templateEntities is null");
+            }else{
+                Gson gson = new Gson();
+                for(StoryTemplateEntity entity : templateEntities){
+                    Log.d(TAG, "#listStoryTemplate entity:" + gson.toJson(entity));
+                    if(6 == entity.serverId){
+                        StoryManager.downTemplate(getApplicationContext(), entity, null);
+                    }
+                }
+            }
+        }
+
+        else if(6 == what){
+            //Uri source = Uri.parse("http://106.75.194.11/uploads/2015072108/c93f5445c3304227bb1538493f9c7a0e.zip");
+            //StoryManager.downTemplate(getApplicationContext(), source, null);
+            StoryLogic logic = StoryLogic.instance();
+            StoryTemplateEntity[] templateEntities = logic.listStoryTemplateLocal(getApplicationContext());
+            if(null == templateEntities){
+                Log.d(TAG, "#listStoryTemplate templateEntities is null");
+            }else{
+                Gson gson = new Gson();
+                for(StoryTemplateEntity entity : templateEntities){
+                    Log.d(TAG, "#listStoryTemplate entity:" + gson.toJson(entity));
+                    if(6 == entity.serverId){
+                        StoryManager.createStory(getApplicationContext(), entity);
+                    }
+                }
+            }
         }
         return null;
     }

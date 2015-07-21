@@ -146,6 +146,11 @@ public class ZipUtils{
                     }
                 }else{
                     entryFile = new File(targetDir, entryName);
+                    File parent = entryFile.getParentFile();
+                    if(!parent.exists()){
+                        parent.mkdirs();
+                    }
+
                     if(!entryFile.exists()){
                         entryFile.createNewFile();
                     }

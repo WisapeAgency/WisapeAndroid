@@ -51,6 +51,9 @@ public class StoryEntity extends BaseEntity implements Parcelable{
     @DatabaseField()
     public int shareNum;
 
+    @DatabaseField()
+    public String storyLocal;
+
     public static StoryEntity transform(StoryInfo info){
         StoryEntity entity = new StoryEntity();
         entity.storyServerId = info.id;
@@ -96,6 +99,7 @@ public class StoryEntity extends BaseEntity implements Parcelable{
         dest.writeString(this.storyDesc);
         dest.writeString(this.storyThumbUri);
         dest.writeString(this.storyUri);
+        dest.writeString(this.storyLocal);
         dest.writeString(this.status);
         dest.writeLong(this.userId);
         dest.writeInt(this.likeNum);
@@ -112,6 +116,7 @@ public class StoryEntity extends BaseEntity implements Parcelable{
         this.storyDesc = in.readString();
         this.storyThumbUri = in.readString();
         this.storyUri = in.readString();
+        this.storyLocal = in.readString();
         this.status = in.readString();
         this.userId = in.readLong();
         this.likeNum = in.readInt();
