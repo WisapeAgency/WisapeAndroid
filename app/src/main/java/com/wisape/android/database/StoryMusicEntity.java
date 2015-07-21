@@ -3,14 +3,20 @@ package com.wisape.android.database;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
 import com.wisape.android.model.StoryMusicInfo;
 
 /**
  * Created by LeiGuoting on 15/7/15.
  */
+@DatabaseTable(tableName = "_story_music")
 public class StoryMusicEntity extends BaseEntity implements Parcelable{
+    @DatabaseField()
     public long serverId;
+    @DatabaseField()
     public String name;
+    @DatabaseField()
     public String music; //URL
 
     public static StoryMusicEntity transform(StoryMusicInfo info){

@@ -11,6 +11,7 @@ import com.wisape.android.model.ServerInfo;
 import com.wisape.android.model.StoryInfo;
 import com.wisape.android.model.StoryMusicInfo;
 import com.wisape.android.model.StoryTemplateInfo;
+import com.wisape.android.model.StoryTemplateTypeInfo;
 import com.wisape.android.network.Requester;
 import com.wisape.android.network.WWWConfig;
 
@@ -27,6 +28,7 @@ public class ApiStory extends ApiBase{
     private static final String TAG = ApiStory.class.getSimpleName();
     private static final int WHAT_LIST_STORY_MUSIC = 0x01;
     private static final int WHAT_LIST_STORY_TEMPLATE = 0x02;
+    private static final int WHAT_LIST_STORY_TEMPLATE_TYPE = 0x03;
 
     public static ApiStory instance(){
         return new ApiStory();
@@ -80,7 +82,7 @@ public class ApiStory extends ApiBase{
 
     public StoryTemplateInfo[] listStoryTemplate(Context context, Object tag){
         Uri uri = WWWConfig.acquireUri(context.getString(R.string.uri_template_list));
-        Log.d(TAG, "#StoryTemplateInfo uri:" + uri.toString());
+        Log.d(TAG, "#listStoryTemplate uri:" + uri.toString());
 
         Requester requester = Requester.instance();
         AttributeInfoImpl attr = new AttributeInfoImpl();
@@ -88,6 +90,33 @@ public class ApiStory extends ApiBase{
         Requester.ServerMessage message = requester.post(uri, attr.convert(), tag);
         StoryTemplateInfo storyTemplateArray[] = (StoryTemplateInfo[])convertArray(WHAT_LIST_STORY_TEMPLATE, message);
         return storyTemplateArray;
+    }
+
+    public StoryTemplateTypeInfo[] listStoryTemplateType(Context context, Object tag){
+        Requester.ServerMessage message = doListStoryTemplateType(context, tag);
+        StoryTemplateTypeInfo templateTypeArray[] = (StoryTemplateTypeInfo[]) convertArray(WHAT_LIST_STORY_TEMPLATE_TYPE, message);
+        return templateTypeArray;
+    }
+
+    public JSONArray listStoryTemplateTypeJsonString(Context context, Object tag){
+        Requester.ServerMessage message = doListStoryTemplateType(context, tag);
+        Object data = message.data;
+        if(data instanceof JSONArray){
+            JSONArray jsonArray = (JSONArray) data;
+            return jsonArray;
+        }
+        return null;
+    }
+
+    private Requester.ServerMessage doListStoryTemplateType(Context context, Object tag){
+        Uri uri = WWWConfig.acquireUri(context.getString(R.string.uri_template_gettype));
+        Log.d(TAG, "#listStoryTemplateType uri:" + uri.toString());
+
+        Requester requester = Requester.instance();
+        AttributeInfoImpl attr = new AttributeInfoImpl();
+        setAccessToken(context, attr);
+        Requester.ServerMessage message = requester.post(uri, attr.convert(), tag);
+        return message;
     }
 
     @Override
@@ -178,6 +207,27 @@ public class ApiStory extends ApiBase{
                 if(index < length){
                     int newLength = index;
                     StoryTemplateInfo[] newArray = new StoryTemplateInfo[newLength];
+                    System.arraycopy(infoArray, 0, newArray, 0, newLength);
+                    infoArray = newArray;
+                }
+                break;
+
+            case WHAT_LIST_STORY_TEMPLATE_TYPE :
+                infoArray = new StoryTemplateTypeInfo[length];
+                index = 0;
+                StoryTemplateTypeInfo templateType;
+                for(int i = 0; i < length; i ++){
+                    jsonObj = jsonArray.optJSONObject(i);
+                    templateType = StoryTemplateTypeInfo.fromJsonObject(jsonObj);
+                    if(null == templateType){
+                        continue;
+                    }
+                    infoArray[index ++] = templateType;
+                }
+
+                if(index < length){
+                    int newLength = index;
+                    StoryTemplateTypeInfo[] newArray = new StoryTemplateTypeInfo[newLength];
                     System.arraycopy(infoArray, 0, newArray, 0, newLength);
                     infoArray = newArray;
                 }
@@ -378,6 +428,5 @@ public class ApiStory extends ApiBase{
             this.storyThumb = in.readString();
             this.story = in.readParcelable(Uri.class.getClassLoader());
         }
-
     }
 }

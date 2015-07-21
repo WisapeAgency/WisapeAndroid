@@ -1,6 +1,7 @@
 package com.wisape.android.logic;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.util.Log;
@@ -14,8 +15,10 @@ import com.wisape.android.common.UserManager;
 import com.wisape.android.database.DatabaseHelper;
 import com.wisape.android.database.StoryEntity;
 import com.wisape.android.database.StoryMusicEntity;
+import com.wisape.android.database.StoryTemplateEntity;
 import com.wisape.android.model.StoryInfo;
-import com.wisape.android.model.StoryMusicInfo;
+import com.wisape.android.model.StoryTemplateInfo;
+import com.wisape.android.model.StoryTemplateTypeInfo;
 import com.wisape.android.model.UserInfo;
 import com.wisape.android.util.EnvironmentUtils;
 import com.wisape.android.util.Utils;
@@ -36,6 +39,8 @@ import static com.wisape.android.api.ApiStory.AttrStoryInfo.STORY_STATUS_TEMPORA
 public class StoryLogic{
     private static final String TAG = StoryLogic.class.getSimpleName();
     private static final String SUFFIX_STORY_COMPRESS = "wis";
+    private static final String PREFERENCES = "_story";
+    private static final String EXTRA_STORY_TEMPLATE_TYPE = "_story_template_type";
 
     public static StoryLogic instance(){
         return new StoryLogic();
@@ -227,5 +232,85 @@ public class StoryLogic{
         return storyMusicArray;
     }
 
-    
+    public StoryTemplateEntity[] listStoryTemplateLocal(Context context, Object tag){
+        DatabaseHelper helper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
+        StoryTemplateEntity storyTemplateArray[];
+        Dao<StoryTemplateEntity, Long> dao;
+        try{
+            dao = helper.getDao(StoryTemplateEntity.class);
+            List<StoryTemplateEntity> storyTemplateList = dao.queryForAll();
+            int count = (null == storyTemplateList ? 0 : storyTemplateList.size());
+        }catch (SQLException e){
+            Log.e(TAG, "", e);
+            throw new IllegalStateException(e);
+        }finally {
+            OpenHelperManager.releaseHelper();
+        }
+        return null;
+    }
+
+    public StoryTemplateEntity[] listStoryTemplate(Context context, Object tag){
+        ApiStory api = ApiStory.instance();
+        StoryTemplateInfo[] storyTemplateInfos = api.listStoryTemplate(context, tag);
+        int count = (null == storyTemplateInfos ? 0 : storyTemplateInfos.length);
+        if(0 == count){
+            return null;
+        }
+
+        //insert into database
+        DatabaseHelper helper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
+        Dao<StoryTemplateEntity, Long> dao;
+        StoryTemplateEntity entity;
+        SQLiteDatabase db = helper.getWritableDatabase();
+        db.beginTransaction();
+        StoryTemplateEntity storyTemplateArray[] = null;
+        try{
+            dao = helper.getDao(StoryTemplateEntity.class);
+            List<StoryTemplateEntity> entities;
+            int num;
+            storyTemplateArray = new StoryTemplateEntity[count];
+            int index = 0;
+            for(StoryTemplateInfo info : storyTemplateInfos){
+                entity = StoryTemplateEntity.transform(info);
+
+                QueryBuilder<StoryTemplateEntity, Long> builder = dao.queryBuilder();
+                entities = builder.where().eq("serverId", entity.serverId).query();
+                num = (null == entities ? 0 : entities.size());
+                if(0 < num){
+                    dao.delete(entities);
+                }
+                entity = dao.createIfNotExists(entity);
+                storyTemplateArray[index ++] = entity;
+            }
+            db.setTransactionSuccessful();
+        }catch (SQLException e){
+            Log.e(TAG, "", e);
+            throw new IllegalStateException(e);
+        }finally {
+            db.endTransaction();
+            OpenHelperManager.releaseHelper();
+        }
+        return storyTemplateArray;
+    }
+
+    public String listStoryTemplateTypeLocal(Context context){
+
+        return null;
+    }
+
+    public String listStoryTemplateType(Context context, Object tag){
+        ApiStory api = ApiStory.instance();
+        StoryTemplateTypeInfo[] templateTypeArray = api.listStoryTemplateType(context, tag);
+        int count = (null == templateTypeArray ? 0 : templateTypeArray.length);
+        if(0 == count){
+            return "";
+        }
+
+        
+        return null;
+    }
+
+    private SharedPreferences getSharedPreferences(Context context){
+        return context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE);
+    }
 }

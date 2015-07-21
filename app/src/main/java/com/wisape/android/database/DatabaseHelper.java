@@ -28,6 +28,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             TableUtils.createTableIfNotExists(source, StoryEntity.class);
             TableUtils.createTableIfNotExists(source, UserMessageEntity.class);
             TableUtils.createTableIfNotExists(source, UserActivityEntity.class);
+            TableUtils.createTableIfNotExists(source, StoryTemplateEntity.class);
+            TableUtils.createTableIfNotExists(source, StoryMusicEntity.class);
         }catch (SQLException e){
             throw new IllegalStateException(e);
         }

@@ -3,7 +3,9 @@ package com.wisape.android.cordova;
 import android.os.Bundle;
 import android.os.Message;
 
-import com.wisape.android.activity.AsyncTaskLoaderCallback;
+import com.google.gson.Gson;
+import com.wisape.android.database.StoryTemplateEntity;
+import com.wisape.android.logic.StoryLogic;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaArgs;
@@ -73,6 +75,12 @@ public class StoryTemplatePlugin extends AbsPlugin{
                 break;
 
             case WHAT_LIST_TEMPLATE :
+                StoryLogic logic = StoryLogic.instance();
+                StoryTemplateEntity[] entities = logic.listStoryTemplate(getCurrentActivity().getApplicationContext(), null);
+                CallbackContext callbackContext = callbackContextMap.get(ACTION_LIST_TEMPLATE);
+                Gson gson = new Gson();
+                String jsonStr = gson.toJson(entities);
+                callbackContext.success(jsonStr);
                 break;
         }
         return null;

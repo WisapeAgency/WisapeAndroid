@@ -3,21 +3,33 @@ package com.wisape.android.database;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
 import com.wisape.android.model.StoryTemplateInfo;
 
 /**
  * Created by LeiGuoting on 15/7/15.
  */
+@DatabaseTable(tableName = "_story_template")
 public class StoryTemplateEntity extends BaseEntity implements Parcelable {
 
+    @DatabaseField()
     public long serverId;
+    @DatabaseField()
     public String name;
+    @DatabaseField()
     public String thumb;       //URL
+    @DatabaseField()
     public String description;
+    @DatabaseField()
     public String template;    //URL
+    @DatabaseField()
     public String recStatus;
+    @DatabaseField()
     public long type;
+    @DatabaseField()
     public int order;
+    @DatabaseField()
     public String orderType;
 
     public static StoryTemplateEntity transform(StoryTemplateInfo info){
