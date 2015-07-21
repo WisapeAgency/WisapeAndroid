@@ -36,5 +36,6 @@ public class StoryLogicTest extends ApplicationTestCase<WisapeApplication> {
         int countDb = (null == templateArrayFromDb ? 0 : templateArrayFromDb.length);
         assertEquals(count, countDb);
         assertEquals(templateArray[0].serverId, templateArrayFromDb[0].serverId);
+
     }
 }
