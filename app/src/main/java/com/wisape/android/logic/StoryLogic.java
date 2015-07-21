@@ -240,13 +240,18 @@ public class StoryLogic{
             dao = helper.getDao(StoryTemplateEntity.class);
             List<StoryTemplateEntity> storyTemplateList = dao.queryForAll();
             int count = (null == storyTemplateList ? 0 : storyTemplateList.size());
+            if(0 == count){
+                storyTemplateArray = null;
+            }else{
+                storyTemplateArray = storyTemplateList.toArray(new StoryTemplateEntity[count]);
+            }
         }catch (SQLException e){
             Log.e(TAG, "", e);
             throw new IllegalStateException(e);
         }finally {
             OpenHelperManager.releaseHelper();
         }
-        return null;
+        return storyTemplateArray;
     }
 
     public StoryTemplateEntity[] listStoryTemplate(Context context, Object tag){

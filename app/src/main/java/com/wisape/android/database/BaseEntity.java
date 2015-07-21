@@ -10,7 +10,7 @@ public abstract class BaseEntity {
     public static final int LOCAL_STATUS_NEW = 0x01;
     public static final int LOCAL_STATUS_READ = 0x02;
 
-    @DatabaseField(generatedId = true, id=true)
+    @DatabaseField(generatedId=true)
     public long id;
 
     @DatabaseField()
