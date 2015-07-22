@@ -85,6 +85,17 @@
             android:screenOrientation="portrait"
             android:launchMode="singleTop"/>
 
+        <activity android:name=".activity.StorySettingsActivity"
+            android:label="@string/story_settings_label"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop"/>
+
+        <activity android:name=".activity.StoryMusicActivity"
+            android:label="@string/story_music_label"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop"
+            />
+
         <activity android:name=".activity.TestActivity"
             android:label="Test"
             android:screenOrientation="portrait"
@@ -92,6 +103,7 @@
 
         <service android:name=".service.NanoService"
             android:exported="false"/>
+
         <provider
             android:authorities="com.wisape.photo"
             android:name="com.wisape.android.content.PhotoProvider"

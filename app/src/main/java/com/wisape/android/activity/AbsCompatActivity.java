@@ -112,6 +112,7 @@ public abstract class AbsCompatActivity extends AppCompatActivity implements Loa
     private static class AsyncTaskLoaderImpl extends AsyncTaskLoader<Message>{
         private AsyncTaskLoaderCallback<Message> callback;
         private Bundle args;
+        private boolean used;
 
         public AsyncTaskLoaderImpl(Context context, Bundle args, AsyncTaskLoaderCallback<Message> callback) {
             super(context);
@@ -146,12 +147,16 @@ public abstract class AbsCompatActivity extends AppCompatActivity implements Loa
                     args = null;
                 }
                 callback = null;
+                used = true;
             }
             return msg;
         }
 
         @Override
         protected void onStartLoading() {
+            if(used){
+                return;
+            }
             forceLoad();
         }
     }

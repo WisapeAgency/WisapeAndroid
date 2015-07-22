@@ -20,6 +20,10 @@
         <param name="android-package" value="com.wisape.android.cordova.StoryTemplatePlugin"/>
     </feature>
 
+    <feature name="StorySettings">
+        <param name="android-package" value="com.wisape.android.cordova.StorySettingsPlugin"/>
+    </feature>
+
     <feature name="File">
         <param name="android-package" value="com.wisape.android.cordova.FileUtils"/>
     </feature>

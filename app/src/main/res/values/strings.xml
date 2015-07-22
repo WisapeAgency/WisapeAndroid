@@ -43,4 +43,15 @@
     <string name="about_rate">求给好评</string>
 
     <string name="crop_activity_label">图片剪切</string>
+
+    <!-- Story-->
+    <string name="story_settings_label">故事设置</string>
+    <string name="story_settings_primary_title">发布故事</string>
+    <string name="story_settings_other_title">其他</string>
+    <string name="story_settings_name_hint">设置你的故事默认名字</string>
+    <string name="story_settings_desc_hint">设置你的故事默认描述</string>
+    <string name="story_settings_cover">故事默认封面</string>
+    <string name="story_settings_music_title">背景音乐</string>
+    <string name="story_settings_gesture_title">翻转手势</string>
+    <string name="story_music_label">背景音乐</string>
 </resources>

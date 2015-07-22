@@ -10,6 +10,7 @@ import com.wisape.android.model.AttributeInfo;
 import com.wisape.android.model.ServerInfo;
 import com.wisape.android.model.StoryInfo;
 import com.wisape.android.model.StoryMusicInfo;
+import com.wisape.android.model.StoryMusicTypeInfo;
 import com.wisape.android.model.StoryTemplateInfo;
 import com.wisape.android.model.StoryTemplateTypeInfo;
 import com.wisape.android.network.Requester;
@@ -29,6 +30,7 @@ public class ApiStory extends ApiBase{
     private static final int WHAT_LIST_STORY_MUSIC = 0x01;
     private static final int WHAT_LIST_STORY_TEMPLATE = 0x02;
     private static final int WHAT_LIST_STORY_TEMPLATE_TYPE = 0x03;
+    private static final int WHAT_LIST_STORY_MUSIC_TYPE = 0x04;
 
     public static ApiStory instance(){
         return new ApiStory();
@@ -117,6 +119,17 @@ public class ApiStory extends ApiBase{
         setAccessToken(context, attr);
         Requester.ServerMessage message = requester.post(uri, attr.convert(), tag);
         return message;
+    }
+
+    public StoryMusicTypeInfo[] listStoryMusicType(Context context, Object tag){
+        Uri uri = WWWConfig.acquireUri(context.getString(R.string.uri_music_gettype));
+        Log.d(TAG, "#listStoryMusicType uri:" + uri.toString());
+
+        Requester requester = Requester.instance();
+        AttributeInfoImpl attr = new AttributeInfoImpl();
+        setAccessToken(context, attr);
+        Requester.ServerMessage message = requester.post(uri, attr.convert(), tag);
+        return (StoryMusicTypeInfo[]) convertArray(WHAT_LIST_STORY_MUSIC_TYPE, message);
     }
 
     @Override
@@ -228,6 +241,27 @@ public class ApiStory extends ApiBase{
                 if(index < length){
                     int newLength = index;
                     StoryTemplateTypeInfo[] newArray = new StoryTemplateTypeInfo[newLength];
+                    System.arraycopy(infoArray, 0, newArray, 0, newLength);
+                    infoArray = newArray;
+                }
+                break;
+
+            case WHAT_LIST_STORY_MUSIC_TYPE :
+                infoArray = new StoryMusicTypeInfo[length];
+                index = 0;
+                StoryMusicTypeInfo musicType;
+                for(int i = 0; i < length; i ++){
+                    jsonObj = jsonArray.optJSONObject(i);
+                    musicType = StoryMusicTypeInfo.fromJsonObject(jsonObj);
+                    if(null == musicType){
+                        continue;
+                    }
+                    infoArray[index ++] = musicType;
+                }
+
+                if(index < length){
+                    int newLength = index;
+                    StoryMusicTypeInfo[] newArray = new StoryMusicTypeInfo[newLength];
                     System.arraycopy(infoArray, 0, newArray, 0, newLength);
                     infoArray = newArray;
                 }

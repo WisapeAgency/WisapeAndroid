@@ -46,7 +46,8 @@ public class TestActivity extends BaseActivity{
     @OnClick(R.id.button)
     @SuppressWarnings("unused")
     protected void doBtnTest(){
-        startLoad(5, null);
+        //startLoad(5, null);
+        StorySettingsActivity.launch(this, 0);
     }
 
     @OnClick(R.id.qr_code)
