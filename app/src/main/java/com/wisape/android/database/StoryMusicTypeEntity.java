@@ -1,5 +1,6 @@
 package com.wisape.android.database;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -44,8 +45,29 @@ public class StoryMusicTypeEntity extends BaseEntity implements Parcelable, Stor
     }
 
     @Override
-    public String getDownloadUrl() {
+    public Uri getDownloadUrl() {
         return null;
+    }
+
+    @Override
+    public Uri getMusicLocal() {
+        return null;
+    }
+
+    @Override
+    public void setProgress(int progress) {}
+
+    @Override
+    public int getProgress() {
+        return 0;
+    }
+
+    @Override
+    public void setUiStatus(int status) {}
+
+    @Override
+    public int getUiStatus() {
+        return 0;
     }
 
     @Override

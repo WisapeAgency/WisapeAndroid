@@ -9,6 +9,8 @@ import com.wisape.android.database.DatabaseHelper;
 import com.wisape.android.network.WWWConfig;
 import com.wisape.android.service.NanoService;
 
+import org.cubieline.lplayer.PlayerProxy;
+
 /**
  * @author Duke
  */
@@ -21,5 +23,6 @@ public class WisapeApplication extends Application {
         Fresco.initialize(context);
         WWWConfig.initialize(context);
         NanoService.startNanoServer(context);
+        PlayerProxy.launch(context);
     }
 }

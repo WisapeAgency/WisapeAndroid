@@ -1,8 +1,10 @@
 package com.wisape.android.database;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import com.wisape.android.model.UserActivityInfo;
@@ -18,9 +20,9 @@ public class UserActivityEntity extends BaseEntity implements Parcelable {
     public long serverId;
     @DatabaseField()
     public String title;
-    @DatabaseField()
+    @DatabaseField(dataType= DataType.STRING)
     public String bgImg;
-    @DatabaseField()
+    @DatabaseField(dataType= DataType.STRING)
     public String url;
     @DatabaseField()
     public String recStatus;

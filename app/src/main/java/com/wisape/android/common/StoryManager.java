@@ -3,8 +3,10 @@ package com.wisape.android.common;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Bundle;
 import android.util.Log;
 
+import com.wisape.android.database.StoryMusicEntity;
 import com.wisape.android.database.StoryTemplateEntity;
 import com.wisape.android.logic.StoryLogic;
 import com.wisape.android.model.StorySettingsInfo;
@@ -36,18 +38,19 @@ public class StoryManager{
 
     public static final String EXTRA_STORY_SETTINGS = "_story_settings";
 
-    public static Uri downTemplate(Context context, Uri source, String broadcastAction){
+    public static Uri downTemplate(Context context, Uri source, String broadcastAction, Bundle tag){
         String templateName = source.getLastPathSegment();
         Log.d(TAG, "#downTemplate templateName:" + templateName + ", source:" + source.toString());
         if(!EnvironmentUtils.isMounted()){
             return null;
         }
 
-        Uri downUri = Uri.fromFile(new File(EnvironmentUtils.getAppTemporaryDirectory(), templateName));
+        File downFile = new File(EnvironmentUtils.getAppTemporaryDirectory(), templateName);
+        Uri downUri = Uri.fromFile(downFile);
         Log.d(TAG, "#downTemplate downUri:" + downUri.toString());
         File template;
         try{
-            Downloader.download(context, source, downUri, broadcastAction);
+            Downloader.download(context, source, downUri, broadcastAction, tag);
 
             int index = templateName.lastIndexOf('.');
             String templateDir = templateName;
@@ -58,10 +61,15 @@ public class StoryManager{
 
             template = new File(getStoryTemplateDirectory(), templateDir);
             ZipUtils.unzip(downUri, template);
-            FileUtils.deleteDirectory(new File(downUri.getPath()));
         }catch (IOException e){
             Log.e(TAG, "", e);
             return null;
+        }finally {
+            if(null != downFile){
+                if(!downFile.delete()){
+                    downFile.deleteOnExit();
+                }
+            }
         }
         Log.d(TAG, "#downTemplate completed!!!");
         return Uri.fromFile(template);
@@ -75,27 +83,64 @@ public class StoryManager{
         return new File(EnvironmentUtils.getAppDataDirectory(), STORY_DIRECTORY);
     }
 
-    public static Uri downTemplate(Context context, StoryTemplateEntity entity, String broadcastAction){
+    private static File getStoryMusicDirectory(){
+        return new File(EnvironmentUtils.getAppDataDirectory(), STORY_MUSIC);
+    }
+
+    public static Uri downTemplate(Context context, StoryTemplateEntity entity, String broadcastAction, Bundle tag){
         if(null == entity){
             return null;
         }
 
         Uri source = Uri.parse(entity.template);
-        Uri template = downTemplate(context, source, broadcastAction);
+        Uri template = downTemplate(context, source, broadcastAction, tag);
         if(null != template){
-            entity.localUri = template.toString();
-            StoryLogic.instance().updateStoryTemplateEntity(context, entity);
+            entity.templateLocal = template.toString();
+            StoryLogic.instance().updateStoryTemplate(context, entity);
         }
         return template;
     }
 
+    public static Uri downStoryMusic(Context context, StoryMusicEntity music, String broadcastAction, Bundle tag){
+        if(null == music){
+            return null;
+        }
+
+        Uri source = music.getDownloadUrl();
+        Uri download = downStoryMusic(context, source, broadcastAction, tag);
+        if(null != download){
+            music.musicLocal = download.toString();
+            StoryLogic.instance().updateStoryMusic(context, music);
+        }
+        return download;
+    }
+
+    public static Uri downStoryMusic(Context context, Uri source, String broadcastAction, Bundle tag){
+        if(!EnvironmentUtils.isMounted()){
+            return null;
+        }
+
+        String musicName = source.getLastPathSegment();
+        Uri downUri = Uri.fromFile(new File(getStoryMusicDirectory(), musicName));
+        try {
+            Log.d(TAG, "#downStoryMusic broadcastAction:" + broadcastAction);
+            Log.d(TAG, "#downStoryMusic source:" + source);
+            Log.d(TAG, "#downStoryMusic dest:" + downUri);
+            Downloader.download(context, source, downUri, broadcastAction, tag);
+        }catch (IOException e){
+            Log.e(TAG, "", e);
+            return null;
+        }
+        return downUri;
+    }
+
     public static Uri createStory(Context context, StoryTemplateEntity template){
         Uri templateUri;
-        String localTemplate = template.localUri;
-        if(null == localTemplate || 0 == localTemplate.length()){
-            templateUri = downTemplate(context, template, null);
+        Uri localTemplate = Uri.parse(template.templateLocal);
+        if(null == localTemplate){
+            templateUri = downTemplate(context, template, null, null);
         }else{
-            templateUri = Uri.parse(localTemplate);
+            templateUri = localTemplate;
         }
 
         Uri storyUri;

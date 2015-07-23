@@ -115,7 +115,7 @@ public class TestActivity extends BaseActivity{
                 for(StoryTemplateEntity entity : templateEntities){
                     Log.d(TAG, "#listStoryTemplate entity:" + gson.toJson(entity));
                     if(6 == entity.serverId){
-                        StoryManager.downTemplate(getApplicationContext(), entity, null);
+                        StoryManager.downTemplate(getApplicationContext(), entity, null, null);
                     }
                 }
             }

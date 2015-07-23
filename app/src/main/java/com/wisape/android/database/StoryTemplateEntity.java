@@ -1,8 +1,10 @@
 package com.wisape.android.database;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import com.wisape.android.model.StoryTemplateInfo;
@@ -17,11 +19,11 @@ public class StoryTemplateEntity extends BaseEntity implements Parcelable {
     public long serverId;
     @DatabaseField()
     public String name;
-    @DatabaseField()
+    @DatabaseField(dataType= DataType.STRING)
     public String thumb;       //URL
     @DatabaseField()
     public String description;
-    @DatabaseField()
+    @DatabaseField(dataType= DataType.STRING)
     public String template;    //URL
     @DatabaseField()
     public String recStatus;
@@ -32,10 +34,10 @@ public class StoryTemplateEntity extends BaseEntity implements Parcelable {
     @DatabaseField()
     public String orderType;
 
-    @DatabaseField()
-    public String localUri;
-    @DatabaseField()
-    public String localThumb;
+    @DatabaseField(dataType= DataType.STRING)
+    public String templateLocal;
+    @DatabaseField(dataType= DataType.STRING)
+    public String thumbLocal;
 
     public static StoryTemplateEntity transform(StoryTemplateInfo info){
         if(null == info){
@@ -89,8 +91,8 @@ public class StoryTemplateEntity extends BaseEntity implements Parcelable {
         dest.writeLong(this.type);
         dest.writeInt(this.order);
         dest.writeString(this.orderType);
-        dest.writeString(this.localUri);
-        dest.writeString(this.localThumb);
+        dest.writeString(this.templateLocal);
+        dest.writeString(this.thumbLocal);
     }
 
     public StoryTemplateEntity() {
@@ -106,8 +108,8 @@ public class StoryTemplateEntity extends BaseEntity implements Parcelable {
         this.type = in.readLong();
         this.order = in.readInt();
         this.orderType = in.readString();
-        this.localUri = in.readString();
-        this.localThumb = in.readString();
+        this.templateLocal = in.readString();
+        this.thumbLocal = in.readString();
     }
 
     public static final Creator<StoryTemplateEntity> CREATOR = new Creator<StoryTemplateEntity>() {

@@ -11,7 +11,6 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.Where;
-import com.j256.ormlite.table.TableUtils;
 import com.wisape.android.api.ApiStory;
 import com.wisape.android.common.UserManager;
 import com.wisape.android.database.DatabaseHelper;
@@ -23,7 +22,6 @@ import com.wisape.android.model.StoryInfo;
 import com.wisape.android.model.StoryMusicInfo;
 import com.wisape.android.model.StoryMusicTypeInfo;
 import com.wisape.android.model.StoryTemplateInfo;
-import com.wisape.android.model.StoryTemplateTypeInfo;
 import com.wisape.android.model.UserInfo;
 import com.wisape.android.util.EnvironmentUtils;
 import com.wisape.android.util.Utils;
@@ -440,8 +438,8 @@ public class StoryLogic{
                     dao.delete(entities);
                     entity.updateAt = updateAt;
                     entity.createAt = oldEntity.createAt;
-                    entity.localThumb = oldEntity.localUri;
-                    entity.localThumb = oldEntity.localThumb;
+                    entity.thumbLocal = oldEntity.templateLocal;
+                    entity.thumbLocal = oldEntity.thumbLocal;
                 }else{
                     entity.createAt = updateAt;
                     entity.updateAt = updateAt;
@@ -460,7 +458,7 @@ public class StoryLogic{
         return storyTemplateArray;
     }
 
-    public void updateStoryTemplateEntity(Context context, StoryTemplateEntity entity){
+    public void updateStoryTemplate(Context context, StoryTemplateEntity entity){
         DatabaseHelper helper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
         Dao<StoryTemplateEntity, Long> dao;
         SQLiteDatabase db = helper.getWritableDatabase();
@@ -474,6 +472,24 @@ public class StoryLogic{
             throw new IllegalStateException(e);
         }finally {
             db.endTransaction();
+            OpenHelperManager.releaseHelper();
+        }
+    }
+
+    public void updateStoryMusic(Context context, StoryMusicEntity music){
+        DatabaseHelper helper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
+        Dao<StoryMusicEntity, Long> dao;
+        SQLiteDatabase db = helper.getWritableDatabase();
+        db.beginTransaction();
+        try{
+            dao = helper.getDao(StoryMusicEntity.class);
+            dao.update(music);
+            db.setTransactionSuccessful();
+        }catch (SQLException e){
+            Log.e(TAG, "", e);
+        }finally {
+            db.endTransaction();
+            OpenHelperManager.releaseHelper();
         }
     }
 

@@ -1,9 +1,11 @@
 package com.wisape.android.database;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.SystemClock;
 
+import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import com.wisape.android.model.StoryInfo;
@@ -23,10 +25,10 @@ public class StoryEntity extends BaseEntity implements Parcelable{
     @DatabaseField()
     public String storyDesc;
 
-    @DatabaseField()
+    @DatabaseField(dataType= DataType.STRING)
     public String storyThumbUri;
 
-    @DatabaseField()
+    @DatabaseField(dataType= DataType.STRING)
     public String storyUri;
 
     /**
@@ -51,7 +53,7 @@ public class StoryEntity extends BaseEntity implements Parcelable{
     @DatabaseField()
     public int shareNum;
 
-    @DatabaseField()
+    @DatabaseField(dataType= DataType.STRING)
     public String storyLocal;
 
     public static StoryEntity transform(StoryInfo info){
@@ -99,12 +101,12 @@ public class StoryEntity extends BaseEntity implements Parcelable{
         dest.writeString(this.storyDesc);
         dest.writeString(this.storyThumbUri);
         dest.writeString(this.storyUri);
-        dest.writeString(this.storyLocal);
         dest.writeString(this.status);
         dest.writeLong(this.userId);
         dest.writeInt(this.likeNum);
         dest.writeInt(this.viewNum);
         dest.writeInt(this.shareNum);
+        dest.writeString(this.storyLocal);
     }
 
     public StoryEntity() {
@@ -116,12 +118,12 @@ public class StoryEntity extends BaseEntity implements Parcelable{
         this.storyDesc = in.readString();
         this.storyThumbUri = in.readString();
         this.storyUri = in.readString();
-        this.storyLocal = in.readString();
         this.status = in.readString();
         this.userId = in.readLong();
         this.likeNum = in.readInt();
         this.viewNum = in.readInt();
         this.shareNum = in.readInt();
+        this.storyLocal = in.readString();
     }
 
     public static final Creator<StoryEntity> CREATOR = new Creator<StoryEntity>() {

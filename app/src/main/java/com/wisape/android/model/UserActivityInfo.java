@@ -1,5 +1,6 @@
 package com.wisape.android.model;
 
+import android.net.Uri;
 import android.os.Parcel;
 
 import org.json.JSONObject;
