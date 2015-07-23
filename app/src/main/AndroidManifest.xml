@@ -104,6 +104,15 @@
         <service android:name=".service.NanoService"
             android:exported="false"/>
 
+        <service android:name="org.cubieline.lplayer.app.LPlayerService">
+            <meta-data
+                android:name="org.cubieline.lplayer.plugin.NEED_DEFAULT"
+                android:value="true" />
+            <meta-data
+                android:name="org.cubieline.lplayer.MODE"
+                android:resource="@array/player_mode" />
+        </service>
+
         <provider
             android:authorities="com.wisape.photo"
             android:name="com.wisape.android.content.PhotoProvider"
