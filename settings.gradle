@@ -1,2 +1,2 @@
-include ':app', ':widgets', ':nanohttpd', 'oauth', ":mobihelp_sdk_android_v1_4", 'android-crop', 'cordova', ':VolleyPlus'
+include ':app', ':widgets', ':nanohttpd', 'oauth', ":mobihelp_sdk_android_v1_4", 'android-crop', 'cordova', ':VolleyPlus', ':lplayer'
 

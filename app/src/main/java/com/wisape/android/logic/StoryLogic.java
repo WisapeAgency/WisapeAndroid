@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.Where;
 import com.wisape.android.api.ApiStory;
@@ -15,20 +16,26 @@ import com.wisape.android.common.UserManager;
 import com.wisape.android.database.DatabaseHelper;
 import com.wisape.android.database.StoryEntity;
 import com.wisape.android.database.StoryMusicEntity;
+import com.wisape.android.database.StoryMusicTypeEntity;
 import com.wisape.android.database.StoryTemplateEntity;
 import com.wisape.android.model.StoryInfo;
+import com.wisape.android.model.StoryMusicInfo;
+import com.wisape.android.model.StoryMusicTypeInfo;
 import com.wisape.android.model.StoryTemplateInfo;
-import com.wisape.android.model.StoryTemplateTypeInfo;
 import com.wisape.android.model.UserInfo;
 import com.wisape.android.util.EnvironmentUtils;
 import com.wisape.android.util.Utils;
 import com.wisape.android.util.ZipUtils;
+import com.wisape.android.widget.StoryMusicAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
@@ -42,7 +49,7 @@ import static com.wisape.android.api.ApiStory.AttrStoryInfo.STORY_STATUS_TEMPORA
 public class StoryLogic{
     private static final String TAG = StoryLogic.class.getSimpleName();
     private static final String SUFFIX_STORY_COMPRESS = "wis";
-    private static final String PREFERENCES = "_story";
+    public static final String PREFERENCES = "_story";
     private static final String EXTRA_STORY_TEMPLATE_TYPE = "_story_template_type";
 
     public static StoryLogic instance(){
@@ -216,15 +223,20 @@ public class StoryLogic{
         return storyArray;
     }
 
-    public StoryMusicEntity[] listStoryMusicLocal(Context context, Object tag){
+    public StoryMusicEntity[] listStoryMusicLocal(Context context){
         DatabaseHelper helper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
         StoryMusicEntity storyMusicArray[];
         Dao<StoryMusicEntity, Long> dao;
         try{
             dao = helper.getDao(StoryMusicEntity.class);
             List<StoryMusicEntity> storyMusicList = dao.queryForAll();
-            storyMusicArray = new StoryMusicEntity[storyMusicList.size()];
-            storyMusicArray = storyMusicList.toArray(storyMusicArray);
+            int count = (null == storyMusicList ? 0 : storyMusicList.size());
+            if(0 == count){
+                storyMusicArray = null;
+            }else{
+                storyMusicArray = new StoryMusicEntity[count];
+                storyMusicArray = storyMusicList.toArray(storyMusicArray);
+            }
         }catch (SQLException e){
             Log.e(TAG, "", e);
             throw new IllegalStateException(e);
@@ -232,6 +244,142 @@ public class StoryLogic{
             OpenHelperManager.releaseHelper();
         }
         return storyMusicArray;
+    }
+
+    public StoryMusicTypeEntity[] listStoryMusicTypeLocal(Context context){
+        DatabaseHelper helper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
+        StoryMusicTypeEntity storyMusicTypeArray[];
+        Dao<StoryMusicTypeEntity, Long> dao;
+        try{
+            dao = helper.getDao(StoryMusicTypeEntity.class);
+            List<StoryMusicTypeEntity> storyMusicTypeList = dao.queryForAll();
+            int count = (null == storyMusicTypeList ? 0 : storyMusicTypeList.size());
+            if(0 == count){
+                storyMusicTypeArray = null;
+            }else {
+                storyMusicTypeArray = new StoryMusicTypeEntity[count];
+                storyMusicTypeArray = storyMusicTypeList.toArray(storyMusicTypeArray);
+            }
+        }catch (SQLException e){
+            Log.e(TAG, "", e);
+            throw new IllegalStateException(e);
+        }finally {
+            OpenHelperManager.releaseHelper();
+        }
+        return storyMusicTypeArray;
+    }
+
+    public StoryMusicAdapter.StoryMusicDataInfo[] listMusicUIDataLocal(Context context){
+        DatabaseHelper helper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
+        Dao<StoryMusicTypeEntity, Long> musicTypeDao;
+        Dao<StoryMusicEntity, Long> musicDao;
+
+        StoryMusicAdapter.StoryMusicDataInfo[] musicDataArray;
+        try {
+            musicTypeDao = helper.getDao(StoryMusicTypeEntity.class);
+
+            List<StoryMusicTypeEntity> storyMusicTypeList = musicTypeDao.queryForAll();
+            int count = (null == storyMusicTypeList ? 0 : storyMusicTypeList.size());
+            if(0 == count){
+                return null;
+            }
+
+            musicDao = helper.getDao(StoryMusicEntity.class);
+            QueryBuilder<StoryMusicEntity, Long> queryBuilder;
+            ArrayList<StoryMusicAdapter.StoryMusicDataInfo> storyMusicDataList = new ArrayList(count * 6);
+            List<StoryMusicEntity> musicList;
+            int musicCount;
+            Collections.sort(storyMusicTypeList, new Comparator<StoryMusicTypeEntity>() {
+                @Override
+                public int compare(StoryMusicTypeEntity lhs, StoryMusicTypeEntity rhs) {
+                    int compare;
+                    if (lhs.order < rhs.order) {
+                        compare = -1;
+                    } else if (lhs.order > rhs.order) {
+                        compare = 1;
+                    } else {
+                        compare = 0;
+                    }
+                    return compare;
+                }
+            });
+            for(StoryMusicTypeEntity musicType : storyMusicTypeList){
+                queryBuilder = musicDao.queryBuilder();
+                queryBuilder.where().eq("type", musicType.serverId);
+                queryBuilder.orderBy("name", true);
+                musicList = queryBuilder.query();
+                storyMusicDataList.add(musicType);
+                musicCount = (null == musicList ? 0 : musicList.size());
+                if(0 < musicCount){
+                    storyMusicDataList.addAll(musicList);
+                    musicList.clear();
+                }
+                queryBuilder.reset();
+            }
+
+            musicDataArray = new StoryMusicAdapter.StoryMusicDataInfo[storyMusicDataList.size()];
+            musicDataArray = storyMusicDataList.toArray(musicDataArray);
+        }catch (SQLException e){
+            Log.e(TAG, "", e);
+            throw new IllegalStateException(e);
+        }finally {
+            OpenHelperManager.releaseHelper();
+        }
+        return musicDataArray;
+    }
+
+    public StoryMusicAdapter.StoryMusicDataInfo[] listMusicAndType(Context context, Object tag){
+        ApiStory api = ApiStory.instance();
+        StoryMusicTypeInfo[] storyMusicTypeArray = api.listStoryMusicType(context, tag);
+        int count = (null == storyMusicTypeArray ? 0 : storyMusicTypeArray.length);
+        if(0 == count){
+            return null;
+        }
+
+        StoryMusicInfo[] storyMusicArray = api.listStoryMusic(context, tag);
+        DatabaseHelper helper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
+        Dao<StoryMusicTypeEntity, Long> musicTypeDao;
+        Dao<StoryMusicEntity, Long> musicDao;
+        SQLiteDatabase db = helper.getWritableDatabase();
+        db.beginTransaction();
+        try {
+            musicTypeDao = helper.getDao(StoryMusicTypeEntity.class);
+            long updateAt = System.currentTimeMillis();
+            DeleteBuilder deleteBuilder = musicTypeDao.deleteBuilder();
+            //deleteBuilder.where().eq("1", 1);
+            deleteBuilder.delete();
+            StoryMusicTypeEntity musicTypeEntity;
+            for(StoryMusicTypeInfo musicTypeInfo : storyMusicTypeArray){
+                musicTypeEntity = StoryMusicTypeEntity.transform(musicTypeInfo);
+                musicTypeEntity.createAt = updateAt;
+                musicTypeEntity.updateAt = updateAt;
+                musicTypeDao.createIfNotExists(musicTypeEntity);
+            }
+
+            musicDao = helper.getDao(StoryMusicEntity.class);
+            deleteBuilder = musicDao.deleteBuilder();
+            //deleteBuilder.where().eq("1", 1);
+            deleteBuilder.delete();
+            count = (null == storyMusicArray ? 0 : storyMusicArray.length);
+            if(0 < count){
+                StoryMusicEntity musicEntity;
+                for (StoryMusicInfo storyMusic : storyMusicArray){
+                    musicEntity = StoryMusicEntity.transform(storyMusic);
+                    musicEntity.createAt = updateAt;
+                    musicEntity.updateAt = updateAt;
+                    musicDao.createIfNotExists(musicEntity);
+                }
+            }
+            db.setTransactionSuccessful();
+        }catch (SQLException e){
+            Log.e(TAG, "", e);
+            throw new IllegalStateException(e);
+        }finally {
+            db.endTransaction();
+            OpenHelperManager.releaseHelper();
+        }
+
+        return listMusicUIDataLocal(context);
     }
 
     public StoryTemplateEntity[] listStoryTemplateLocal(Context context){
@@ -290,8 +438,8 @@ public class StoryLogic{
                     dao.delete(entities);
                     entity.updateAt = updateAt;
                     entity.createAt = oldEntity.createAt;
-                    entity.localThumb = oldEntity.localUri;
-                    entity.localThumb = oldEntity.localThumb;
+                    entity.thumbLocal = oldEntity.templateLocal;
+                    entity.thumbLocal = oldEntity.thumbLocal;
                 }else{
                     entity.createAt = updateAt;
                     entity.updateAt = updateAt;
@@ -310,7 +458,7 @@ public class StoryLogic{
         return storyTemplateArray;
     }
 
-    public void updateStoryTemplateEntity(Context context, StoryTemplateEntity entity){
+    public void updateStoryTemplate(Context context, StoryTemplateEntity entity){
         DatabaseHelper helper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
         Dao<StoryTemplateEntity, Long> dao;
         SQLiteDatabase db = helper.getWritableDatabase();
@@ -324,6 +472,24 @@ public class StoryLogic{
             throw new IllegalStateException(e);
         }finally {
             db.endTransaction();
+            OpenHelperManager.releaseHelper();
+        }
+    }
+
+    public void updateStoryMusic(Context context, StoryMusicEntity music){
+        DatabaseHelper helper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
+        Dao<StoryMusicEntity, Long> dao;
+        SQLiteDatabase db = helper.getWritableDatabase();
+        db.beginTransaction();
+        try{
+            dao = helper.getDao(StoryMusicEntity.class);
+            dao.update(music);
+            db.setTransactionSuccessful();
+        }catch (SQLException e){
+            Log.e(TAG, "", e);
+        }finally {
+            db.endTransaction();
+            OpenHelperManager.releaseHelper();
         }
     }
 

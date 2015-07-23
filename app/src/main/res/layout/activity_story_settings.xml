@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="15dp"
+    android:paddingStart="15dp"
+    android:paddingRight="15dp"
+    android:paddingEnd="15dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/story_settings_primary_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="left|start|center_vertical"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:textColor="@color/app_primary_transparent_30p"
+        android:text="@string/story_settings_primary_title" />
+
+    <EditText
+        android:id="@+id/story_settings_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="left|start|center_vertical"
+        android:hint="@string/story_settings_name_hint"/>
+
+    <EditText
+        android:id="@+id/story_settings_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="left|start|center_vertical"
+        android:hint="@string/story_settings_desc_hint"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left|start|center_vertical"
+            android:gravity="left|start|center_vertical"
+            android:layout_weight="1"
+            android:text="@string/story_settings_cover"
+            />
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/story_settings_cover_sdv"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            app:placeholderImage="@drawable/icon_logo_large"
+            />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="center"
+            android:layout_gravity="right|end|center_vertical"
+            android:src="@drawable/icon_down"/>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="left|start|center_vertical"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:layout_marginTop="12dp"
+        android:textColor="@color/app_primary_transparent_30p"
+        android:text="@string/story_settings_other_title"/>
+    
+    <LinearLayout
+        android:id="@+id/story_settings_music_layout"
+        android:layout_width="match_parent"
+        android:layout_height="60dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left|start|center_vertical"
+            android:gravity="left|start|center_vertical"
+            android:textColor="@color/app_fourth"
+            android:text="@string/story_settings_music_title"/>
+
+        <TextView
+            android:id="@+id/story_settings_music"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/app_secondary"
+            android:layout_gravity="right|end|center_vertical"
+            android:gravity="right|end|center_vertical"
+            android:layout_weight="1"
+            android:text="GoGo"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="center"
+            android:layout_gravity="right|end|center_vertical"
+            android:src="@drawable/icon_down"/>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/story_settings_gesture_layout"
+        android:layout_width="match_parent"
+        android:layout_height="60dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left|start|center_vertical"
+            android:gravity="left|start|center_vertical"
+            android:textColor="@color/app_fourth"
+            android:text="@string/story_settings_gesture_title"/>
+
+        <TextView
+            android:id="@+id/story_settings_gesture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/app_secondary"
+            android:layout_gravity="right|end|center_vertical"
+            android:gravity="right|end|center_vertical"
+            android:layout_weight="1"
+            android:text="Left"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="center"
+            android:layout_gravity="right|end|center_vertical"
+            android:src="@drawable/icon_down"/>
+    </LinearLayout>
+</LinearLayout>

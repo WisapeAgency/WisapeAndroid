@@ -9,14 +9,18 @@ import org.json.JSONObject;
  */
 public class StoryMusicInfo extends ServerInfo{
     /**
-     "id": 2,
+     "id": "2",
      "music_name": "rock and roll",
-     "music_url": "http://www.wisape.com/uploads/yyzd.mp3"
+     "music_url": "http://loc.wis/uploads/2015/var/www/html/wis/uploads/yyzd.mp3",
+     "type": "2",
+     "rec_status": "A"
      */
 
     public long id;
     public String music_name;
     public String music_url;
+    public long type;
+    public String rec_status;
 
     public static StoryMusicInfo fromJsonObject(JSONObject json){
         if(null == json){
@@ -27,6 +31,8 @@ public class StoryMusicInfo extends ServerInfo{
         music.id = json.optLong("id");
         music.music_name = json.optString("music_name");
         music.music_url = json.optString("music_url");
+        music.type = json.optInt("type");
+        music.rec_status = json.optString("rec_status");
         return music;
     }
 
@@ -40,6 +46,8 @@ public class StoryMusicInfo extends ServerInfo{
         dest.writeLong(this.id);
         dest.writeString(this.music_name);
         dest.writeString(this.music_url);
+        dest.writeLong(this.type);
+        dest.writeString(this.rec_status);
     }
 
     public StoryMusicInfo() {
@@ -49,6 +57,8 @@ public class StoryMusicInfo extends ServerInfo{
         this.id = in.readLong();
         this.music_name = in.readString();
         this.music_url = in.readString();
+        this.type = in.readLong();
+        this.rec_status = in.readString();
     }
 
     public static final Creator<StoryMusicInfo> CREATOR = new Creator<StoryMusicInfo>() {

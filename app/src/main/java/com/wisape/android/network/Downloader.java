@@ -3,6 +3,7 @@ package com.wisape.android.network;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
@@ -23,11 +24,13 @@ import java.io.OutputStream;
 public class Downloader{
     private static final String TAG = "Downloader";
     private static final String ACTION_DOWNLOAD_DEFAULT = "com.wisape.android.action.DOWNLOADER";
-    public static final String EXTRA_TOTAL_SIZE = "_total_size";
-    public static final String EXTRA_TRANSFERRED_BYTES = "_transferred_bytes";
-    public static final String EXTRA_PROGRESS = "_progress";
+    public static final String EXTRA_TOTAL_SIZE = "extra_total_size";
+    public static final String EXTRA_TRANSFERRED_BYTES = "extra_transferred_bytes";
+    public static final String EXTRA_PROGRESS = "extra_progress";
+    public static final String EXTRA_SOURCE = "extra_source";
+    public static final String EXTRA_TAG = "extra_tag";
 
-    public static void download(Context context, Uri source, Uri dest, String broadcastAction) throws IOException {
+    public static void download(Context context, Uri source, Uri dest, String broadcastAction, Bundle tag) throws IOException {
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder().url(source.toString()).addHeader("Content-Type", "application/octet-stream").build();
         Response response = client.newCall(request).execute();
@@ -49,6 +52,15 @@ public class Downloader{
                 length = 1024 * 1024 * 1024;
             }
 
+            File parent = destFile.getParentFile();
+            if(!parent.exists()){
+                parent.mkdirs();
+            }
+            if(destFile.exists()){
+                destFile.delete();
+            }
+            destFile.createNewFile();
+
             input = response.body().byteStream();
             output = new BufferedOutputStream(new FileOutputStream(destFile));
             final boolean hasBroadcast = null != broadcastAction && 0 < broadcastAction.length();
@@ -57,26 +69,36 @@ public class Downloader{
                 broadcast = LocalBroadcastManager.getInstance(context);
                 action = broadcastAction;
             }
+            Log.d(TAG, "#download action:" + action + ", hasBroadcast:" + hasBroadcast);
 
             int count;
             byte[] buffer = new byte[1024 * 5];
+            double progress;
+            double preProgress = 0d;
             for(;0 < (count = input.read(buffer));){
                 download += count;
                 output.write(buffer, 0, count);
 
                 if(hasBroadcast){
-                    Intent intent = new Intent();
-                    intent.setAction(action);
-                    intent.setData(source);
-                    intent.putExtra(EXTRA_TOTAL_SIZE, length);
-                    intent.putExtra(EXTRA_TRANSFERRED_BYTES, download);
-                    intent.putExtra(EXTRA_PROGRESS, ((double) download / (double) length));
-                    broadcast.sendBroadcast(intent);
+                    progress = ((double) download / (double) length);
+                    if(0.01d <= (progress - preProgress)){
+                        preProgress = progress;
+                        Intent intent = new Intent(action);
+                        intent.putExtra(EXTRA_SOURCE, source);
+                        intent.putExtra(EXTRA_TOTAL_SIZE, length);
+                        intent.putExtra(EXTRA_TRANSFERRED_BYTES, download);
+                        if(null != tag){
+                            intent.putExtra(EXTRA_TAG, tag);
+                        }
+                        intent.putExtra(EXTRA_PROGRESS, progress);
+                        broadcast.sendBroadcast(intent);
+                    }
                 }
                 //Log.d(TAG, "#download download:" + download + ", length:" + length);
             }
+            Log.d(TAG, "#download end !!!");
             output.flush();
-        }finally {
+        } finally {
             if(null != input){
                 input.close();
             }

@@ -1,23 +1,65 @@
 package com.wisape.android.database;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.Gson;
+import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import com.wisape.android.model.StoryMusicInfo;
+import com.wisape.android.widget.StoryMusicAdapter;
+
+import org.cubieline.lplayer.media.StreamPlugin;
+import org.cubieline.lplayer.media.Track;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Created by LeiGuoting on 15/7/15.
  */
 @DatabaseTable(tableName = "_story_music")
-public class StoryMusicEntity extends BaseEntity implements Parcelable{
+public class StoryMusicEntity extends BaseEntity implements Parcelable, StoryMusicAdapter.StoryMusicDataInfo, Track {
     @DatabaseField()
     public long serverId;
     @DatabaseField()
     public String name;
-    @DatabaseField()
+    @DatabaseField(dataType= DataType.STRING)
     public String music; //URL
+    /**
+     * Mapping with {@link StoryMusicTypeEntity#serverId}
+     */
+    @DatabaseField()
+    public long type;
+    @DatabaseField()
+    public String recStatus;
+    @DatabaseField(dataType= DataType.STRING)
+    public String musicLocal;
+
+    //for UI
+    private int progress;
+    private int uiStatus;
+
+    public static StoryMusicEntity fromJsonObject(JSONObject json){
+        if(null == json){
+            return null;
+        }
+
+        StoryMusicEntity entity = new StoryMusicEntity();
+        entity.id = json.optLong("id");
+        entity.createAt = json.optLong("createAt");
+        entity.updateAt = json.optLong("updateAt");
+        entity.reserved = json.optString("reserved");
+        entity.reservedInt = json.optInt("reservedInt");
+        entity.serverId = json.optLong("serverId");
+        entity.name = json.optString("name");
+        entity.music = json.optString("music");
+        entity.type = json.optLong("type");
+        entity.recStatus = json.optString("recStatus");
+        entity.musicLocal = json.optString("musicLocal");
+        return entity;
+    }
 
     public static StoryMusicEntity transform(StoryMusicInfo info){
         if(null == info){
@@ -28,6 +70,8 @@ public class StoryMusicEntity extends BaseEntity implements Parcelable{
         entity.serverId = info.id;
         entity.name = info.music_name;
         entity.music = info.music_url;
+        entity.type = info.type;
+        entity.recStatus = info.rec_status;
         return entity;
     }
 
@@ -40,9 +84,138 @@ public class StoryMusicEntity extends BaseEntity implements Parcelable{
         info.id = entity.serverId;
         info.music_name = entity.name;
         info.music_url = entity.music;
+        info.rec_status = entity.recStatus;
         return info;
     }
 
+    @Override
+    public long getId() {
+        return serverId;
+    }
+
+    @Override
+    public String getDisplayName() {
+        return name;
+    }
+
+    @Override
+    public Uri getDownloadUrl() {
+        return (null == music || 0 == music.length()) ? null : Uri.parse(music);
+    }
+
+    @Override
+    public Uri getMusicLocal() {
+        return (null == musicLocal || 0 == musicLocal.length()) ? null : Uri.parse(musicLocal);
+    }
+
+    @Override
+    public int getItemViewType() {
+        return StoryMusicAdapter.VIEW_TYPE_MUSIC_ENTITY;
+    }
+
+    @Override
+    public void setProgress(int progress) {
+        this.progress = progress;
+    }
+
+    @Override
+    public int getProgress() {
+        return progress;
+    }
+
+    @Override
+    public void setUiStatus(int status) {
+        this.uiStatus = status;
+    }
+
+    @Override
+    public int getUiStatus() {
+        return uiStatus;
+    }
+
+    /**  ********  Track Interface  ********  */
+    @Override
+    public int getType() {
+        return 0;
+    }
+
+    @Override
+    public String toJsonString() {
+        Gson gson = new Gson();
+        return gson.toJson(this);
+    }
+
+    @Override
+    public Track parseFromJson(JSONObject json) throws JSONException {
+        return fromJsonObject(json);
+    }
+
+    @Override
+    public long getTrackId() {
+        return serverId;
+    }
+
+    @Override
+    public String getTrackName() {
+        return name;
+    }
+
+    @Override
+    public String getDataSource() {
+        return musicLocal;
+    }
+
+    @Override
+    public long getDuration() {
+        return 0;
+    }
+
+    @Override
+    public long getAlbumId() {
+        return 0;
+    }
+
+    @Override
+    public String getAlbumName() {
+        return null;
+    }
+
+    @Override
+    public String getAlbumIconPath() {
+        return null;
+    }
+
+    @Override
+    public String getAlbumIconUrl() {
+        return null;
+    }
+
+    @Override
+    public long getArtistId() {
+        return 0;
+    }
+
+    @Override
+    public String getArtistName() {
+        return null;
+    }
+
+    @Override
+    public String getArtistPath() {
+        return null;
+    }
+
+    @Override
+    public String getArtistUrl() {
+        return null;
+    }
+
+    @Override
+    public int getPluginCode() {
+        return StreamPlugin.PLUGIN_CODE_DEFAULT;
+    }
+
+    /**  ********  Track Interface  End ********  */
     @Override
     public int describeContents() {
         return 0;
@@ -53,6 +226,11 @@ public class StoryMusicEntity extends BaseEntity implements Parcelable{
         dest.writeLong(this.serverId);
         dest.writeString(this.name);
         dest.writeString(this.music);
+        dest.writeLong(this.type);
+        dest.writeString(this.recStatus);
+        dest.writeString(this.musicLocal);
+        dest.writeInt(this.progress);
+        dest.writeInt(this.uiStatus);
     }
 
     public StoryMusicEntity() {
@@ -62,6 +240,11 @@ public class StoryMusicEntity extends BaseEntity implements Parcelable{
         this.serverId = in.readLong();
         this.name = in.readString();
         this.music = in.readString();
+        this.type = in.readLong();
+        this.recStatus = in.readString();
+        this.musicLocal = in.readString();
+        this.progress = in.readInt();
+        this.uiStatus = in.readInt();
     }
 
     public static final Creator<StoryMusicEntity> CREATOR = new Creator<StoryMusicEntity>() {

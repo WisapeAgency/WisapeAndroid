@@ -3,6 +3,7 @@ package com.wisape.android.content;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 /**
  * Created by LeiGuoting on 8/7/15.
@@ -21,6 +22,7 @@ public class DynamicBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if(destroyed){
+            Log.d("DynamicReceiver", "#onReceive destroyed:" + destroyed);
             return;
         }
 

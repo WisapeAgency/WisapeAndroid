@@ -20,5 +20,11 @@
         <attr name="android:inputType"/>
     </declare-styleable>
 
+    <declare-styleable name="PlayerStatusView">
+        <attr name="itemWidth" format="reference|dimension" />
+        <attr name="itemColor" format="reference|color" />
+        <attr name="gapWidth" format="reference|dimension" />
+    </declare-styleable>
+
     <attr name="signUpTextCursorDrawable" format="reference|color"/>
 </resources>

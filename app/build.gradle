@@ -66,6 +66,7 @@ dependencies {
     compile project(':widgets')
     compile project(':nanohttpd')
     compile project(':VolleyPlus')
+    compile project(':lplayer')
     compile "com.android.support:appcompat-v7:${ANDROID_SUPPORT_VERSION}"
     compile "com.android.support:recyclerview-v7:${ANDROID_SUPPORT_VERSION}"
     compile "com.android.support:support-v4:${ANDROID_SUPPORT_VERSION}"
