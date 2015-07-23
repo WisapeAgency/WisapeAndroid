@@ -34,6 +34,6 @@
     <string name="wechat_api_callback_uri">http://localhost</string>
 
     <string-array name="player_mode">
-        <item>MODE_LOOP</item>
+        <item>MODE_ORDER</item>
     </string-array>
 </resources>

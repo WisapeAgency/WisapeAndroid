@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.wisape.android.R;
 import com.wisape.android.database.StoryMusicEntity;
@@ -26,7 +27,9 @@ public class StoryMusicAdapter extends RecyclerView.Adapter<RecyclerHolder> impl
     private volatile boolean destroyed;
     private StoryMusicCallback callback;
     private long selectedMusic;
-    private int selectedMusicPosition;
+    private int selectedMusicPosition = -1;
+    private boolean downloading;
+    private int downloadingPosition = -1;
 
     public StoryMusicAdapter(StoryMusicCallback callback, long selectedMusicId){
         this.callback = callback;
@@ -77,7 +80,7 @@ public class StoryMusicAdapter extends RecyclerView.Adapter<RecyclerHolder> impl
         if(VIEW_TYPE_MUSIC_ENTITY == holder.getItemViewType()){
             ImageView flagImgv = (ImageView) view.findViewById(R.id.story_music_flag);
             ProgressBar downloadProgress = (ProgressBar) view.findViewById(R.id.story_music_download_progress);
-            if(STATUS_DOWNLOADING == info.getUiStatus()){
+            if(STATUS_DOWNLOADING == info.getStatus()){
                 if(View.VISIBLE != downloadProgress.getVisibility()){
                     downloadProgress.setVisibility(View.VISIBLE);
                 }
@@ -112,11 +115,17 @@ public class StoryMusicAdapter extends RecyclerView.Adapter<RecyclerHolder> impl
 
             case R.id.story_music_flag :
                 if (null != callback) {
-                    int position = (Integer)view.getTag();
-                    StoryMusicDataInfo info = dataArray[position];
-                    callback.onStoryMusicDownload(position, (StoryMusicEntity) info);
-                    info.setUiStatus(STATUS_DOWNLOADING);
-                    notifyItemChanged(position);
+                    if(downloading){
+                        Toast.makeText(view.getContext(), R.string.story_music_download_toast, Toast.LENGTH_SHORT).show();
+                    }else{
+                        downloading = true;
+                        int position = (Integer)view.getTag();
+                        StoryMusicDataInfo info = dataArray[position];
+                        callback.onStoryMusicDownload(position, (StoryMusicEntity) info);
+                        info.setStatus(STATUS_DOWNLOADING);
+                        notifyItemChanged(position);
+                        downloadingPosition = position;
+                    }
                 }
                 break;
 
@@ -142,14 +151,16 @@ public class StoryMusicAdapter extends RecyclerView.Adapter<RecyclerHolder> impl
     }
 
     public void notifyMusicDownloadCompleted(int position, Uri downloadUri){
+        downloading = false;
+        downloadingPosition =-1;
         StoryMusicDataInfo data = dataArray[position];
-        data.setUiStatus(STATUS_NONE);
+        data.setStatus(STATUS_NONE);
         notifyItemChanged(position);
     }
 
     public void notifyMusicDownloadProgress(int position, int progress, RecyclerView.LayoutManager layoutManager){
         StoryMusicDataInfo data = dataArray[position];
-        if(STATUS_DOWNLOADING == data.getUiStatus()){
+        if(STATUS_DOWNLOADING == data.getStatus()){
             data.setProgress(progress);
             View view = layoutManager.getChildAt(position);
             if(null != view){
@@ -158,6 +169,22 @@ public class StoryMusicAdapter extends RecyclerView.Adapter<RecyclerHolder> impl
                     downloadProgress.setProgress(progress);
                 }
             }
+        }
+    }
+
+    public StoryMusicEntity getDownloadingStoryMusic(){
+        if(!downloading){
+            return null;
+        }else {
+            return (StoryMusicEntity)dataArray[downloadingPosition];
+        }
+    }
+
+    public StoryMusicEntity getSelectedStoryMusic(){
+        if(0 <= selectedMusicPosition){
+            return (StoryMusicEntity) dataArray[selectedMusicPosition];
+        }else{
+            return null;
         }
     }
 
@@ -174,8 +201,8 @@ public class StoryMusicAdapter extends RecyclerView.Adapter<RecyclerHolder> impl
         Uri getMusicLocal();
         void setProgress(int progress);
         int getProgress();
-        void setUiStatus(int status);
-        int getUiStatus();
+        void setStatus(int status);
+        int getStatus();
     }
 
     public interface StoryMusicCallback{

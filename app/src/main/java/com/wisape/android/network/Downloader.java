@@ -17,6 +17,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Created by LeiGuoting on 15/7/15.
@@ -30,7 +31,18 @@ public class Downloader{
     public static final String EXTRA_SOURCE = "extra_source";
     public static final String EXTRA_TAG = "extra_tag";
 
+    private static ConcurrentLinkedQueue<Uri> queue = new ConcurrentLinkedQueue();
+
+    public static boolean containsDownloader(Uri source){
+        return queue.contains(source);
+    }
+
+    public static boolean removeDownloader(Uri source){
+        return queue.remove(source);
+    }
+
     public static void download(Context context, Uri source, Uri dest, String broadcastAction, Bundle tag) throws IOException {
+        queue.add(source);
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder().url(source.toString()).addHeader("Content-Type", "application/octet-stream").build();
         Response response = client.newCall(request).execute();
@@ -107,5 +119,6 @@ public class Downloader{
                 output.close();
             }
         }
+        removeDownloader(source);
     }
 }

@@ -34,6 +34,22 @@ public class StoryMusicTypeEntity extends BaseEntity implements Parcelable, Stor
         return entity;
     }
 
+    public boolean equals(StoryMusicTypeInfo info){
+        return this.serverId == info.id &&
+                this.name == info.name &&
+                this.order == info.order;
+    }
+
+    public void update(StoryMusicTypeInfo info){
+        if(null == this.name || !this.name.equals(info.name)){
+            this.name = info.name;
+        }
+
+        if(this.order != info.order){
+            this.order = info.order;
+        }
+    }
+
     @Override
     public long getId() {
         return serverId;
@@ -63,10 +79,10 @@ public class StoryMusicTypeEntity extends BaseEntity implements Parcelable, Stor
     }
 
     @Override
-    public void setUiStatus(int status) {}
+    public void setStatus(int status) {}
 
     @Override
-    public int getUiStatus() {
+    public int getStatus() {
         return 0;
     }
 
