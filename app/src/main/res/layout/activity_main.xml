@@ -5,11 +5,17 @@
     android:layout_height="match_parent"
     android:background="@drawable/navbg">
     <!--Main -->
-    <fragment
-        android:id="@+id/main_view"
-        android:name="com.wisape.android.fragment.CardGalleryFragment"
+    <RelativeLayout
+        android:id="@+id/drawer_main"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+        <fragment
+            android:id="@+id/main_view"
+            android:name="com.wisape.android.fragment.CardGalleryFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </RelativeLayout>
 
 
     <!--Left menu-->

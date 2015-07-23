@@ -5,6 +5,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
@@ -38,6 +40,9 @@ public class CardGalleryFragment extends AbsFragment {
     AddFloatingActionButton mAddStory;
     @InjectView(R.id.blur_background_image)
     ImageView mBlurBackgroundImage;
+
+    @InjectView(R.id.gift)
+    ImageView mGift;
 
 
     GalleryAdapter mGalleryAdapter;
@@ -77,6 +82,18 @@ public class CardGalleryFragment extends AbsFragment {
     protected void doAddStory(){
         //StoryTemplateActivity.launch(this, 0);
         TestActivity.launch(getActivity(), 0);
+    }
+
+    @OnClick(R.id.gift)
+    public void showGift(){
+
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+
+        FragmentTransaction trans = fm.beginTransaction();
+
+        trans.add(R.id.drawer_main,new GiftFragment());
+
+        trans.commit();
     }
 
     @Override

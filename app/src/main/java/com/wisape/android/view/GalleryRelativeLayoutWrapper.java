@@ -42,7 +42,6 @@ public class GalleryRelativeLayoutWrapper extends RelativeLayout implements Gall
         ButterKnife.inject(this, this);
 
 
-
         mCardAlbum.setScaleType(ImageView.ScaleType.FIT_CENTER);
     }
 
@@ -50,24 +49,24 @@ public class GalleryRelativeLayoutWrapper extends RelativeLayout implements Gall
     public void setShadowViewVisable(boolean flag) {
         if (null != mShadowView) {
             if (flag) {
-                if(mShadowView.getVisibility() != View.VISIBLE)
+                if (mShadowView.getVisibility() != View.VISIBLE)
                     mShadowView.setVisibility(View.VISIBLE);
-            }else {
-                if(View.GONE != mShadowView.getVisibility())
+            } else {
+                if (View.GONE != mShadowView.getVisibility())
                     mShadowView.setVisibility(View.GONE);
             }
         }
     }
 
-    public void bindData(GalleryWrapperData data){
+    public void bindData(GalleryWrapperData data) {
 
         FrescoFactory.bindImage(mCardAlbum, data.album);
         mStoryName.setText(data.name);
     }
 
     @Override
-    public void onCardLevelChanged(int level,int position) {
-        if(GalleryView.LEVEL_PRIMARY == level)
+    public void onCardLevelChanged(int level, int position) {
+        if (GalleryView.LEVEL_PRIMARY == level)
             setShadowViewVisable(false);
         else
             setShadowViewVisable(true);
@@ -79,7 +78,7 @@ public class GalleryRelativeLayoutWrapper extends RelativeLayout implements Gall
     }
 
 
-    public final static class GalleryWrapperData{
+    public final static class GalleryWrapperData {
         public int album;
         public String name;
 
