@@ -10,7 +10,6 @@ import android.os.Message;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 
 import com.wisape.android.R;
 import com.wisape.android.common.StoryManager;
@@ -18,6 +17,7 @@ import com.wisape.android.content.DynamicBroadcastReceiver;
 import com.wisape.android.database.StoryMusicEntity;
 import com.wisape.android.logic.StoryLogic;
 import com.wisape.android.network.Downloader;
+import com.wisape.android.widget.LinearDividerItemDecoration;
 import com.wisape.android.widget.StoryMusicAdapter;
 
 import org.cubieline.lplayer.PlayerProxy;
@@ -30,7 +30,7 @@ public class StoryMusicActivity extends BaseActivity implements StoryMusicAdapte
 
     public static final int REQUEST_CODE_STORY_MUSIC = 11;
 
-    private static final String ACTION_DOWNLOAD_MUSIC = "com.wisape.android.action.DOWNLOAD_MUSIC";
+    public static final String ACTION_DOWNLOAD_MUSIC = "com.wisape.android.action.DOWNLOAD_MUSIC";
 
     public static final String EXTRA_SELECTED_MUSIC = "_selected_music";
     private static final String EXTRA_POSITION = "_position";
@@ -39,7 +39,6 @@ public class StoryMusicActivity extends BaseActivity implements StoryMusicAdapte
     private static final int WHAT_LOAD_MUSIC_LOCAL = 0x01;
     private static final int WHAT_LOAD_MUSIC = 0x02;
     private static final int WHAT_DOWNLOAD_MUSIC = 0x03;
-    private static final int WHAT_SAVE_MUSIC_STATUS = 0x04;
 
     public static void launch(Activity activity, StoryMusicEntity music, int requestCode){
         Intent intent = new Intent(activity.getApplicationContext(), StoryMusicActivity.class);
@@ -65,6 +64,8 @@ public class StoryMusicActivity extends BaseActivity implements StoryMusicAdapte
         setContentView(R.layout.activity_story_music);
         recyclerView = (RecyclerView)findViewById(R.id.story_music_content);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+        LinearDividerItemDecoration divider = new LinearDividerItemDecoration(getResources(), R.drawable.app_divider);
+        recyclerView.addItemDecoration(divider);
         recyclerView.setLayoutManager(layoutManager);
         adapter = new StoryMusicAdapter(this, null == selectedMusic ? 0 : selectedMusic.serverId);
         recyclerView.setAdapter(adapter);
@@ -72,7 +73,6 @@ public class StoryMusicActivity extends BaseActivity implements StoryMusicAdapte
         localBroadcastManager = LocalBroadcastManager.getInstance(getApplicationContext());
         receiver = new DynamicBroadcastReceiver(this);
         localBroadcastManager.registerReceiver(receiver, new IntentFilter(ACTION_DOWNLOAD_MUSIC));
-
         startLoad(WHAT_LOAD_MUSIC_LOCAL, null);
     }
 
@@ -89,11 +89,12 @@ public class StoryMusicActivity extends BaseActivity implements StoryMusicAdapte
 
         if(ACTION_DOWNLOAD_MUSIC.equals(action)){
             Bundle tag = intent.getBundleExtra(Downloader.EXTRA_TAG);
+            StoryMusicEntity music = tag.getParcelable(EXTRA_SELECTED_MUSIC);
             int position = tag.getInt(EXTRA_POSITION);
             int progress = (int)(100 * intent.getDoubleExtra(Downloader.EXTRA_PROGRESS, 0));
             intent.getExtras().clear();
             //Log.d(TAG, "#onReceiveBroadcast progress:" + progress + ", downloadBytes:" + intent.getLongExtra(Downloader.EXTRA_TRANSFERRED_BYTES, 0));
-            adapter.notifyMusicDownloadProgress(position, progress, recyclerView.getLayoutManager());
+            adapter.notifyMusicDownloadProgress(position, music.getId(), progress, recyclerView.getLayoutManager());
         }
     }
 
@@ -169,17 +170,11 @@ public class StoryMusicActivity extends BaseActivity implements StoryMusicAdapte
                 Uri uri = StoryManager.downStoryMusic(getApplicationContext(), music, action, args);
 
                 msg = Message.obtain();
-                msg.obj = uri;
+                music.musicLocal = (null == uri ? null : uri.toString());
+                msg.obj = music;
                 msg.arg2 = args.getInt(EXTRA_POSITION);
                 break;
-
-            case WHAT_SAVE_MUSIC_STATUS :
-                msg = null;
-                music = args.getParcelable(EXTRA_SELECTED_MUSIC);
-                Log.d(TAG, "#onLoadBackgroundRunning ___ WHAT_SAVE_MUSIC_STATUS ___");
-                StoryLogic.instance().updateStoryMusic(getApplicationContext(), music);
         }
-
         return msg;
     }
 
@@ -203,9 +198,10 @@ public class StoryMusicActivity extends BaseActivity implements StoryMusicAdapte
                 break;
 
             case WHAT_DOWNLOAD_MUSIC :
-                Uri download = (Uri)data.obj;
+                StoryMusicEntity music = (StoryMusicEntity) data.obj;
+                Uri download = (null == music.musicLocal ? null : Uri.parse(music.musicLocal));
                 int position = data.arg2;
-                adapter.notifyMusicDownloadCompleted(position, download);
+                adapter.notifyMusicDownloadCompleted(getApplicationContext(), music.getId(), position, download);
                 break;
         }
     }
@@ -214,12 +210,6 @@ public class StoryMusicActivity extends BaseActivity implements StoryMusicAdapte
     protected void onPause() {
         super.onPause();
         PlayerProxy.getLPlayerClient().pause();
-        StoryMusicEntity music = adapter.getDownloadingStoryMusic();
-        if(null != music){
-            Bundle args = new Bundle();
-            args.putParcelable(EXTRA_SELECTED_MUSIC, music);
-            startLoad(WHAT_SAVE_MUSIC_STATUS, args);
-        }
     }
 
     @Override

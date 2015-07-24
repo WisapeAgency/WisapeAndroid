@@ -8,10 +8,11 @@ import android.util.Log;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.Where;
+import com.wisape.android.activity.StoryMusicActivity;
 import com.wisape.android.api.ApiStory;
+import com.wisape.android.common.StoryManager;
 import com.wisape.android.common.UserManager;
 import com.wisape.android.database.DatabaseHelper;
 import com.wisape.android.database.StoryEntity;
@@ -23,6 +24,7 @@ import com.wisape.android.model.StoryMusicInfo;
 import com.wisape.android.model.StoryMusicTypeInfo;
 import com.wisape.android.model.StoryTemplateInfo;
 import com.wisape.android.model.UserInfo;
+import com.wisape.android.network.Downloader;
 import com.wisape.android.util.EnvironmentUtils;
 import com.wisape.android.util.Utils;
 import com.wisape.android.util.ZipUtils;
@@ -311,6 +313,18 @@ public class StoryLogic{
                 storyMusicDataList.add(musicType);
                 musicCount = (null == musicList ? 0 : musicList.size());
                 if(0 < musicCount){
+                    for(StoryMusicEntity music : musicList){
+                        if(StoryMusicEntity.STATUS_DOWNLOADING == music.status){
+                            if(!Downloader.containsDownloader(music.getDownloadUrl())){
+                                music.status = StoryMusicEntity.STATUS_NONE;
+                                music.musicLocal = "";
+                                musicDao.update(music);
+                            }else{
+                                StoryManager.addAction(StoryMusicActivity.ACTION_DOWNLOAD_MUSIC);
+                                music.setProgress(10);
+                            }
+                        }
+                    }
                     storyMusicDataList.addAll(musicList);
                     musicList.clear();
                 }

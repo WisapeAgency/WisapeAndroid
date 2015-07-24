@@ -58,6 +58,8 @@ public class StorySettingsActivity extends BaseActivity{
         setContentView(R.layout.activity_story_settings);
         ButterKnife.inject(this);
         startLoad(WHAT_LOAD_SETTINGS, null);
+        //TODO
+        storySettings = new StorySettingsInfo();
     }
 
     @Override

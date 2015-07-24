@@ -26,6 +26,15 @@
         <item name="android:background">@color/app_primary</item>
     </style>
 
+    <style name="App.TextStyle.Primary" parent="">
+        <item name="android:singleLine">true</item>
+        <item name="android:textColor">@color/app_sixth</item>
+        <item name="android:textSize">@dimen/app_text_size_medium</item>
+    </style>
+
+    <style name="App.TextStyle.Secondary" parent="App.TextStyle.Primary">
+        <item name="android:textColor">@color/app_sixth_transparent_50p</item>
+    </style>
 
     <style name="MenuListItemStyle" parent="">
         <item name="android:clickable">true</item>
@@ -38,7 +47,7 @@
     </style>
     
     <style name="SignUp.Warning" parent="TextAppearance.AppCompat.Small.Inverse">
-        <item name="android:textColor">@color/theme_primary_warning</item>
+        <item name="android:textColor">@color/app_fifth</item>
     </style>
 
     <style name="Divider.ForList" parent="">
@@ -48,5 +57,11 @@
     
     <style name="StorySettings.Title" parent="">
         <item name="android:textColor">@color/app_primary_transparent_30p</item>
+    </style>
+
+    <style name="View.Divider" parent="">
+        <item name="android:background">@color/app_sixth_transparent_50p</item>
+        <item name="android:maxHeight">0.5dp</item>
+        <item name="android:minHeight">0.5dp</item>
     </style>
 </resources>

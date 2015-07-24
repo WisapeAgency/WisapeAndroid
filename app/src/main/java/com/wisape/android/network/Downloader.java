@@ -93,6 +93,7 @@ public class Downloader{
 
                 if(hasBroadcast){
                     progress = ((double) download / (double) length);
+                    //1%
                     if(0.01d <= (progress - preProgress)){
                         preProgress = progress;
                         Intent intent = new Intent(action);
@@ -108,8 +109,8 @@ public class Downloader{
                 }
                 //Log.d(TAG, "#download download:" + download + ", length:" + length);
             }
-            Log.d(TAG, "#download end !!!");
             output.flush();
+            Log.d(TAG, "#download end !!!");
         } finally {
             if(null != input){
                 input.close();

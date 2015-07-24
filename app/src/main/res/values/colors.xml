@@ -5,11 +5,11 @@
     <color name="app_primary_transparent_10p">#1AFFFFFF</color>
     <color name="app_primary_transparent_30p">#4DFFFFFF</color>
     <color name="app_primary_transparent_50p">#80FFFFFF</color>
-    <color name="app_secondary">#1fbc1b</color>
+    <color name="app_secondary">#1FBC1B</color>
 
     <color name="app_tertiary">#666666</color>
     <color name="app_fourth">#000000</color>
-
-    <color name="theme_primary_warning">#FF8800</color>
-
+    <color name="app_fifth">#FF8800</color>
+    <color name="app_sixth">#2D3437</color>
+    <color name="app_sixth_transparent_50p">#802D3437</color>
 </resources>

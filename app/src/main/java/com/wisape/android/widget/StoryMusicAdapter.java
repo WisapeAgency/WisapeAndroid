@@ -1,7 +1,9 @@
 package com.wisape.android.widget;
 
+import android.content.Context;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -11,17 +13,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.wisape.android.R;
+import com.wisape.android.activity.StoryMusicActivity;
+import com.wisape.android.common.StoryManager;
 import com.wisape.android.database.StoryMusicEntity;
 
 /**
  * Created by tony on 2015/7/22.
  */
 public class StoryMusicAdapter extends RecyclerView.Adapter<RecyclerHolder> implements View.OnClickListener{
+    private static final String TAG = StoryMusicAdapter.class.getSimpleName();
     public static final int VIEW_TYPE_MUSIC_ENTITY = 0x01;
     public static final int VIEW_TYPE_MUSIC_TYPE = 0x02;
-
-    private static final int STATUS_DOWNLOADING = 0x01;
-    private static final int STATUS_NONE = 0;
 
     private StoryMusicDataInfo[] dataArray;
     private volatile boolean destroyed;
@@ -29,7 +31,6 @@ public class StoryMusicAdapter extends RecyclerView.Adapter<RecyclerHolder> impl
     private long selectedMusic;
     private int selectedMusicPosition = -1;
     private boolean downloading;
-    private int downloadingPosition = -1;
 
     public StoryMusicAdapter(StoryMusicCallback callback, long selectedMusicId){
         this.callback = callback;
@@ -38,6 +39,7 @@ public class StoryMusicAdapter extends RecyclerView.Adapter<RecyclerHolder> impl
 
     public void update(StoryMusicDataInfo[] dataArray){
         this.dataArray = dataArray;
+        downloading = StoryManager.containsAction(StoryMusicActivity.ACTION_DOWNLOAD_MUSIC);
         notifyDataSetChanged();
     }
 
@@ -73,6 +75,7 @@ public class StoryMusicAdapter extends RecyclerView.Adapter<RecyclerHolder> impl
     @Override
     public void onBindViewHolder(RecyclerHolder holder, int position) {
         StoryMusicDataInfo info = dataArray[position];
+        Log.d(TAG, "#onBindViewHolder [" + info.toString() + "]");
         View view = holder.itemView;
         view.setTag(position);
         TextView titleTxtv = (TextView)view.findViewById(R.id.story_music_title_txtv);
@@ -80,7 +83,7 @@ public class StoryMusicAdapter extends RecyclerView.Adapter<RecyclerHolder> impl
         if(VIEW_TYPE_MUSIC_ENTITY == holder.getItemViewType()){
             ImageView flagImgv = (ImageView) view.findViewById(R.id.story_music_flag);
             ProgressBar downloadProgress = (ProgressBar) view.findViewById(R.id.story_music_download_progress);
-            if(STATUS_DOWNLOADING == info.getStatus()){
+            if(StoryMusicEntity.STATUS_DOWNLOADING == info.getStatus()){
                 if(View.VISIBLE != downloadProgress.getVisibility()){
                     downloadProgress.setVisibility(View.VISIBLE);
                 }
@@ -122,9 +125,8 @@ public class StoryMusicAdapter extends RecyclerView.Adapter<RecyclerHolder> impl
                         int position = (Integer)view.getTag();
                         StoryMusicDataInfo info = dataArray[position];
                         callback.onStoryMusicDownload(position, (StoryMusicEntity) info);
-                        info.setStatus(STATUS_DOWNLOADING);
+                        info.setStatus(StoryMusicEntity.STATUS_DOWNLOADING);
                         notifyItemChanged(position);
-                        downloadingPosition = position;
                     }
                 }
                 break;
@@ -150,17 +152,55 @@ public class StoryMusicAdapter extends RecyclerView.Adapter<RecyclerHolder> impl
         return null == dataArray ? 0 : dataArray.length;
     }
 
-    public void notifyMusicDownloadCompleted(int position, Uri downloadUri){
-        downloading = false;
-        downloadingPosition =-1;
+    private int findData(long musicId, int position){
+        int count = getItemCount();
+        if(0 == count){
+            return -1;
+        }
+
         StoryMusicDataInfo data = dataArray[position];
-        data.setStatus(STATUS_NONE);
-        notifyItemChanged(position);
+        if(musicId != data.getId()){
+            position = -1;
+            int index;
+            for(index = 0; index < count; index++){
+                data = dataArray[index];
+                if(musicId == data.getId()){
+                    position = index;
+                    break;
+                }
+            }
+
+            if(index == (count - 1) && -1 == position){
+                return -1;
+            }
+        }
+        return position;
     }
 
-    public void notifyMusicDownloadProgress(int position, int progress, RecyclerView.LayoutManager layoutManager){
+    public void notifyMusicDownloadCompleted(Context context, long musicId, int position, Uri downloadUri){
+        position = findData(musicId, position);
+        if(0 > position){
+            return;
+        }
+
+        downloading = false;
         StoryMusicDataInfo data = dataArray[position];
-        if(STATUS_DOWNLOADING == data.getStatus()){
+        data.setStatus(StoryMusicEntity.STATUS_NONE);
+        notifyItemChanged(position);
+        //story_music_download_error
+        if(null == downloadUri){
+            Toast.makeText(context, R.string.story_music_download_error, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void notifyMusicDownloadProgress(int position, long musicId, int progress, RecyclerView.LayoutManager layoutManager){
+        position = findData(musicId, position);
+        if(0 > position){
+            return;
+        }
+
+        StoryMusicDataInfo data = dataArray[position];
+        if(StoryMusicEntity.STATUS_DOWNLOADING == data.getStatus()){
             data.setProgress(progress);
             View view = layoutManager.getChildAt(position);
             if(null != view){
@@ -169,14 +209,6 @@ public class StoryMusicAdapter extends RecyclerView.Adapter<RecyclerHolder> impl
                     downloadProgress.setProgress(progress);
                 }
             }
-        }
-    }
-
-    public StoryMusicEntity getDownloadingStoryMusic(){
-        if(!downloading){
-            return null;
-        }else {
-            return (StoryMusicEntity)dataArray[downloadingPosition];
         }
     }
 

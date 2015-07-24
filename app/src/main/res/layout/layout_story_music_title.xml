@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/story_music_title_txtv"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="110dp"
-    android:gravity="left|start|center_vertical"
-    android:textColor="@color/app_tertiary"/>
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        style="@style/App.TextStyle.Secondary"
+        android:id="@+id/story_music_title_txtv"
+        android:layout_width="match_parent"
+        android:layout_height="58dp"
+        android:gravity="left|start|center_vertical"/>
+</LinearLayout>

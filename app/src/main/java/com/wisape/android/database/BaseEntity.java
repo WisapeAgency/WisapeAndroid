@@ -1,5 +1,6 @@
 package com.wisape.android.database;
 
+import com.google.gson.Gson;
 import com.j256.ormlite.field.DatabaseField;
 
 /**
@@ -24,4 +25,9 @@ public abstract class BaseEntity {
 
     @DatabaseField()
     public long updateAt;
+
+    @Override
+    public String toString() {
+        return new Gson().toJson(this);
+    }
 }

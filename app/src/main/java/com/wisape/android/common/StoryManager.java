@@ -23,6 +23,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.SoftReference;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static com.wisape.android.logic.StoryLogic.PREFERENCES;
 
@@ -37,6 +38,24 @@ public class StoryManager{
     private static final String STORY_MUSIC = "music";
 
     public static final String EXTRA_STORY_SETTINGS = "_story_settings";
+    private static final ConcurrentLinkedQueue<String> actionQueue = new ConcurrentLinkedQueue();
+
+    public static void addAction(String action){
+        if(null == action || 0 == action.length()){
+            return;
+        }
+
+        if(!actionQueue.contains(action)){
+            actionQueue.add(action);
+        }
+    }
+
+    public static boolean containsAction(String action){
+        if(null == action || 0 == action.length()){
+            return false;
+        }
+        return actionQueue.contains(action);
+    }
 
     public static Uri downTemplate(Context context, Uri source, String broadcastAction, Bundle tag){
         String templateName = source.getLastPathSegment();
@@ -106,21 +125,39 @@ public class StoryManager{
             return null;
         }
 
-        Uri download = null;
+        Uri download;
         Uri source = music.getDownloadUrl();
+        StoryLogic logic = StoryLogic.instance();
+        boolean addToActionQueue = null != broadcastAction && 0 < broadcastAction.length();
         try{
+            if(addToActionQueue){
+                if(actionQueue.contains(broadcastAction)){
+                    addToActionQueue = false;
+                }else{
+                    actionQueue.add(broadcastAction);
+                }
+            }
+            music.status = StoryMusicEntity.STATUS_DOWNLOADING;
+            logic.updateStoryMusic(context, music);
+
             download = downStoryMusic(context, source, broadcastAction, tag);
-        }catch (IOException e){
+        }catch (Throwable e){
+            Log.e(TAG, "", e);
             Downloader.removeDownloader(source);
             music.status = StoryMusicEntity.STATUS_NONE;
-            music.downloadProgress = 0;
             music.musicLocal = "";
-            StoryLogic.instance().updateStoryMusic(context, music);
+            logic.updateStoryMusic(context, music);
+            return null;
+        }finally {
+            if(addToActionQueue){
+                actionQueue.remove(broadcastAction);
+            }
         }
 
         if(null != download){
+            music.status = StoryMusicEntity.STATUS_NONE;
             music.musicLocal = download.toString();
-            StoryLogic.instance().updateStoryMusic(context, music);
+            logic.updateStoryMusic(context, music);
         }
         return download;
     }

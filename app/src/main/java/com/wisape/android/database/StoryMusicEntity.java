@@ -42,8 +42,8 @@ public class StoryMusicEntity extends BaseEntity implements Parcelable, StoryMus
 
     @DatabaseField()
     public int status;
-    @DatabaseField()
-    public int downloadProgress;
+
+    private int downloadProgress;
 
     public static StoryMusicEntity fromJsonObject(JSONObject json){
         if(null == json){
