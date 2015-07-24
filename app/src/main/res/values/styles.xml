@@ -60,7 +60,7 @@
     </style>
 
     <style name="View.Divider" parent="">
-        <item name="android:background">@color/app_sixth_transparent_50p</item>
+        <item name="android:background">#1A2D3437</item>
         <item name="android:maxHeight">0.5dp</item>
         <item name="android:minHeight">0.5dp</item>
     </style>
