@@ -218,7 +218,7 @@ public class StoryManager{
                     SharedPreferences preferences = getSharedPreferences(context);
                     String storySettingsStr = preferences.getString(EXTRA_STORY_SETTINGS, null);
                     if(null == storySettingsStr){
-                        storySettings = null;
+                        storySettings = new StorySettingsInfo();
                     }else{
                         try {
                             JSONObject jsonObj = new JSONObject(storySettingsStr);
@@ -227,7 +227,7 @@ public class StoryManager{
                         } catch (JSONException e) {
                             Log.e(TAG, "", e);
                             preferences.edit().remove(EXTRA_STORY_SETTINGS).commit();
-                            storySettings = null;
+                            storySettings = new StorySettingsInfo();
                         }
                     }
                 }
@@ -239,7 +239,7 @@ public class StoryManager{
     public static void saveStorySettings(Context context, StorySettingsInfo storySettings){
         SharedPreferences preferences = getSharedPreferences(context);
         synchronized (storySettingsLock){
-            preferences.edit().putString(EXTRA_STORY_SETTINGS, storySettings.toString()).commit();
+            preferences.edit().putString(EXTRA_STORY_SETTINGS, storySettings.toString()).apply();
             storySettingsRef = new SoftReference(storySettings);
         }
     }

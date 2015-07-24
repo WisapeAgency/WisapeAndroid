@@ -6,8 +6,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Message;
-import android.widget.EditText;
-import android.widget.TextView;
+import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.AppCompatTextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.soundcloud.android.crop.Crop;
@@ -39,16 +39,16 @@ public class StorySettingsActivity extends BaseActivity{
     }
 
     @InjectView(R.id.story_settings_name)
-    protected EditText storyNameEdit;
+    protected AppCompatEditText storyNameEdit;
     @InjectView(R.id.story_settings_desc)
-    protected EditText storyDescEdit;
+    protected AppCompatEditText storyDescEdit;
     @InjectView(R.id.story_settings_cover_sdv)
     protected SimpleDraweeView storyBgView;
 
     @InjectView(R.id.story_settings_music)
-    protected TextView storyMusicTxtv;
+    protected AppCompatTextView storyMusicTxtv;
     @InjectView(R.id.story_settings_gesture)
-    protected TextView storyGestureTxtv;
+    protected AppCompatTextView storyGestureTxtv;
 
     private StorySettingsInfo storySettings;
     private Uri storyCoverUri;
@@ -58,8 +58,6 @@ public class StorySettingsActivity extends BaseActivity{
         setContentView(R.layout.activity_story_settings);
         ButterKnife.inject(this);
         startLoad(WHAT_LOAD_SETTINGS, null);
-        //TODO
-        storySettings = new StorySettingsInfo();
     }
 
     @Override
@@ -140,9 +138,9 @@ public class StorySettingsActivity extends BaseActivity{
                     StorySettingsInfo settings = (StorySettingsInfo) data.obj;
                     storyNameEdit.setText(settings.defaultName);
                     storyDescEdit.setText(settings.defaultDesc);
-                    Uri defaultBackground = settings.defaultBackground;
-                    if(null != defaultBackground){
-                        FrescoFactory.bindImageFromUri(storyBgView, defaultBackground.toString());
+                    Uri defaultCover = settings.defaultCover;
+                    if(null != defaultCover){
+                        FrescoFactory.bindImageFromUri(storyBgView, defaultCover.toString());
                     }
 
                     StoryMusicEntity music = settings.defaultMusic;
@@ -159,17 +157,26 @@ public class StorySettingsActivity extends BaseActivity{
         }
     }
 
+    @Override
+    protected boolean onBackNavigation() {
+        doSaveStorySettings();
+        return super.onBackNavigation();
+    }
+
+    @Override
+    public void onBackPressed() {
+        doSaveStorySettings();
+        super.onBackPressed();
+    }
+
     private void doSaveStorySettings(){
-        StorySettingsInfo settings;
-        if(null == storySettings){
-            settings = new StorySettingsInfo();
-        }else{
-            settings = storySettings;
-        }
+        StorySettingsInfo settings = storySettings;
 
         String storyName = storyNameEdit.getText().toString();
         String storyDesc = storyDescEdit.getText().toString();
-
+        settings.defaultName = storyName;
+        settings.defaultDesc = storyDesc;
+        StoryManager.saveStorySettings(getApplicationContext(), settings);
     }
 
     @Override

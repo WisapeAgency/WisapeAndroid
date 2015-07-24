@@ -28,13 +28,13 @@ public class StoryMusicAdapter extends RecyclerView.Adapter<RecyclerHolder> impl
     private StoryMusicDataInfo[] dataArray;
     private volatile boolean destroyed;
     private StoryMusicCallback callback;
-    private long selectedMusic;
-    private int selectedMusicPosition = -1;
+    private long selectedId;
+    private int selectedPosition = -1;
     private boolean downloading;
 
     public StoryMusicAdapter(StoryMusicCallback callback, long selectedMusicId){
         this.callback = callback;
-        this.selectedMusic = selectedMusicId;
+        this.selectedId = selectedMusicId;
     }
 
     public void update(StoryMusicDataInfo[] dataArray){
@@ -75,7 +75,7 @@ public class StoryMusicAdapter extends RecyclerView.Adapter<RecyclerHolder> impl
     @Override
     public void onBindViewHolder(RecyclerHolder holder, int position) {
         StoryMusicDataInfo info = dataArray[position];
-        Log.d(TAG, "#onBindViewHolder [" + info.toString() + "]");
+        Log.d(TAG, "#onBindViewHolder [" + info.toString() + "], position:" + position);
         View view = holder.itemView;
         view.setTag(position);
         TextView titleTxtv = (TextView)view.findViewById(R.id.story_music_title_txtv);
@@ -100,10 +100,17 @@ public class StoryMusicAdapter extends RecyclerView.Adapter<RecyclerHolder> impl
                 Uri musicLocal = info.getMusicLocal();
                 if(null == musicLocal){
                     flagImgVisibility = View.VISIBLE;
+                    flagImgv.setEnabled(true);
                     flagImgv.setImageResource(R.drawable.icon_download);
-                }else if(selectedMusic == info.getId() || selectedMusicPosition == position){
+                }else if(selectedId == info.getId() || selectedPosition == position){
                     flagImgVisibility = View.VISIBLE;
+                    flagImgv.setEnabled(false);
                     flagImgv.setImageResource(R.drawable.icon_selected_flag);
+                    Log.d(TAG, "#onBindViewHolder FlagImageView VISIBLE, position:" + position);
+                }else if(View.VISIBLE == flagImgv.getVisibility()){
+                    Log.d(TAG, "#onBindViewHolder FlagImageView GONE, position:" + position);
+                    flagImgv.setEnabled(true);
+                    flagImgVisibility = View.GONE;
                 }
                 flagImgv.setVisibility(flagImgVisibility);
             }
@@ -133,13 +140,27 @@ public class StoryMusicAdapter extends RecyclerView.Adapter<RecyclerHolder> impl
 
             case R.id.story_music_item :
                 if (null != callback) {
+                    int preSelectedPosition = selectedPosition;
+                    long preSelectedId = selectedId;
                     int position = (Integer)view.getTag();
+                    if(preSelectedPosition == position){
+                        return;
+                    }
+
                     StoryMusicDataInfo info = dataArray[position];
                     Uri track = info.getMusicLocal();
                     if(null != track){
+                        if(preSelectedId == info.getId()){
+                            return;
+                        }
                         callback.onStoryMusicPlay((StoryMusicEntity) info);
-                        selectedMusicPosition = position;
-                        selectedMusic = info.getId();
+                        selectedPosition = position;
+                        selectedId = info.getId();
+                        if(0 > preSelectedPosition){
+                            preSelectedPosition = findData(preSelectedId, 0);
+                        }
+                        Log.d(TAG, "#onClick preSelectedPosition:" + preSelectedPosition + ", position:" + position);
+                        notifyItemChanged(preSelectedPosition);
                         notifyItemChanged(position);
                     }
                 }
@@ -213,8 +234,8 @@ public class StoryMusicAdapter extends RecyclerView.Adapter<RecyclerHolder> impl
     }
 
     public StoryMusicEntity getSelectedStoryMusic(){
-        if(0 <= selectedMusicPosition){
-            return (StoryMusicEntity) dataArray[selectedMusicPosition];
+        if(0 <= selectedPosition){
+            return (StoryMusicEntity) dataArray[selectedPosition];
         }else{
             return null;
         }

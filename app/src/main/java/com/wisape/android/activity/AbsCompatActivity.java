@@ -17,6 +17,7 @@ public abstract class AbsCompatActivity extends AppCompatActivity implements Loa
     private static final int DEFAULT_LOADER_ID = Integer.MAX_VALUE;
     private static final String EXTRA_WHAT = "loader_what";
     protected static final int STATUS_EXCEPTION = Integer.MIN_VALUE;
+    protected static final int STATUS_USER_EXCEPTION = Integer.MIN_VALUE + 1;
     protected static final int STATUS_SUCCESS = 1;
     private boolean destroyed;
     @Override
@@ -139,8 +140,12 @@ public abstract class AbsCompatActivity extends AppCompatActivity implements Loa
                 }
             }catch (AsyncLoaderError error){
                 msg = Message.obtain();
-                msg.arg1 = STATUS_EXCEPTION;
+                msg.arg1 = STATUS_USER_EXCEPTION;
                 msg.obj = error;
+            }catch (Throwable e){
+                msg = Message.obtain();
+                msg.arg1 = STATUS_EXCEPTION;
+                msg.obj = e;
             }finally {
                 if(null != args){
                     args.clear();

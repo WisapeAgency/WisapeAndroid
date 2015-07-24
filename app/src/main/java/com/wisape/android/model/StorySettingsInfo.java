@@ -13,7 +13,7 @@ import org.json.JSONObject;
 public class StorySettingsInfo extends BaseInfo{
     public String defaultName;
     public String defaultDesc;
-    public Uri defaultBackground;
+    public Uri defaultCover;
     public StoryMusicEntity defaultMusic;
     public StoryGestureInfo defaultGesture;
 
@@ -25,7 +25,7 @@ public class StorySettingsInfo extends BaseInfo{
         StorySettingsInfo settings = new StorySettingsInfo();
         settings.defaultName = json.optString("defaultName");
         settings.defaultDesc = json.optString("defaultDesc");
-        settings.defaultBackground = Uri.parse(json.optString("defaultBackground"));
+        settings.defaultCover = Uri.parse(json.optString("defaultCover"));
         settings.defaultMusic = StoryMusicEntity.fromJsonObject(json.optJSONObject("defaultMusic"));
         settings.defaultGesture = StoryGestureInfo.fromJsonObject(json.optJSONObject("defaultGesture"));
         return settings;
@@ -40,7 +40,7 @@ public class StorySettingsInfo extends BaseInfo{
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.defaultName);
         dest.writeString(this.defaultDesc);
-        dest.writeParcelable(this.defaultBackground, 0);
+        dest.writeParcelable(this.defaultCover, 0);
         dest.writeParcelable(this.defaultMusic, 0);
         dest.writeParcelable(this.defaultGesture, 0);
     }
@@ -51,7 +51,7 @@ public class StorySettingsInfo extends BaseInfo{
     protected StorySettingsInfo(Parcel in) {
         this.defaultName = in.readString();
         this.defaultDesc = in.readString();
-        this.defaultBackground = in.readParcelable(Uri.class.getClassLoader());
+        this.defaultCover = in.readParcelable(Uri.class.getClassLoader());
         this.defaultMusic = in.readParcelable(StoryMusicEntity.class.getClassLoader());
         this.defaultGesture = in.readParcelable(StoryGestureInfo.class.getClassLoader());
     }

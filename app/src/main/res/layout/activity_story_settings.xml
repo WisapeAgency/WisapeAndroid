@@ -3,42 +3,52 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="15dp"
-    android:paddingStart="15dp"
-    android:paddingRight="15dp"
-    android:paddingEnd="15dp"
+    android:paddingLeft="24dp"
+    android:paddingStart="24dp"
+    android:paddingRight="24dp"
+    android:paddingEnd="24dp"
     android:orientation="vertical">
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
+        style="@style/App.TextStyle.Secondary"
         android:id="@+id/story_settings_primary_title"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="58dp"
         android:gravity="left|start|center_vertical"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
-        android:textColor="@color/app_primary_transparent_30p"
         android:text="@string/story_settings_primary_title" />
+    <View style="@style/View.Divider"/>
 
-    <EditText
+    <android.support.v7.widget.AppCompatEditText
+        style="@style/App.TextStyle.Primary"
         android:id="@+id/story_settings_name"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="78dp"
         android:gravity="left|start|center_vertical"
-        android:hint="@string/story_settings_name_hint"/>
+        android:hint="@string/story_settings_name_hint"
+        android:background="@null"/>
+    <View style="@style/View.Divider"/>
 
-    <EditText
+    <android.support.v7.widget.AppCompatEditText
+        style="@style/App.TextStyle.Primary"
         android:id="@+id/story_settings_desc"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="78dp"
         android:gravity="left|start|center_vertical"
-        android:hint="@string/story_settings_desc_hint"/>
+        android:hint="@string/story_settings_desc_hint"
+        android:singleLine="false"
+        android:lines="2"
+        android:maxLines="2"
+        android:minLines="2"
+        android:background="@null"/>
+    <View style="@style/View.Divider"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
+            style="@style/App.TextStyle.Primary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="left|start|center_vertical"
@@ -49,88 +59,92 @@
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/story_settings_cover_sdv"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            app:placeholderImage="@drawable/icon_logo_large"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            app:placeholderImage="@drawable/default_user_icon"
             />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:scaleType="center"
+            android:layout_marginLeft="18dp"
+            android:layout_marginStart="18dp"
             android:layout_gravity="right|end|center_vertical"
             android:src="@drawable/icon_down"/>
     </LinearLayout>
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
+        style="@style/App.TextStyle.Secondary"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="58dp"
         android:gravity="left|start|center_vertical"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
-        android:layout_marginTop="12dp"
-        android:textColor="@color/app_primary_transparent_30p"
         android:text="@string/story_settings_other_title"/>
+    <View style="@style/View.Divider"/>
     
     <LinearLayout
         android:id="@+id/story_settings_music_layout"
         android:layout_width="match_parent"
         android:layout_height="60dp">
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
+            style="@style/App.TextStyle.Primary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="left|start|center_vertical"
             android:gravity="left|start|center_vertical"
-            android:textColor="@color/app_fourth"
             android:text="@string/story_settings_music_title"/>
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
+            style="@style/App.TextStyle.Tertiary"
             android:id="@+id/story_settings_music"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/app_secondary"
             android:layout_gravity="right|end|center_vertical"
             android:gravity="right|end|center_vertical"
             android:layout_weight="1"
-            android:text="GoGo"/>
+            android:text="@string/app_none"/>
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:scaleType="center"
+            android:layout_marginLeft="18dp"
+            android:layout_marginStart="18dp"
             android:layout_gravity="right|end|center_vertical"
             android:src="@drawable/icon_down"/>
     </LinearLayout>
-
+    <View style="@style/View.Divider"/>
 
     <LinearLayout
         android:id="@+id/story_settings_gesture_layout"
         android:layout_width="match_parent"
         android:layout_height="60dp">
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
+            style="@style/App.TextStyle.Primary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="left|start|center_vertical"
             android:gravity="left|start|center_vertical"
-            android:textColor="@color/app_fourth"
             android:text="@string/story_settings_gesture_title"/>
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
+            style="@style/App.TextStyle.Tertiary"
             android:id="@+id/story_settings_gesture"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/app_secondary"
             android:layout_gravity="right|end|center_vertical"
             android:gravity="right|end|center_vertical"
             android:layout_weight="1"
-            android:text="Left"/>
+            android:text="@string/app_none"/>
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:scaleType="center"
+            android:layout_marginLeft="18dp"
+            android:layout_marginStart="18dp"
             android:layout_gravity="right|end|center_vertical"
             android:src="@drawable/icon_down"/>
     </LinearLayout>
