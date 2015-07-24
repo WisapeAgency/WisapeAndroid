@@ -27,8 +27,12 @@ public final class FrescoFactory {
     }
 
     public final static void bindImageFromUri(SimpleDraweeView view, String url) {
+        bindImageFromUri(view, Uri.parse(url));
+    }
+
+    public final static void bindImageFromUri(SimpleDraweeView view, Uri uri) {
         ImageRequest imageRequest =
-                ImageRequestBuilder.newBuilderWithSource(Uri.parse(url))
+                ImageRequestBuilder.newBuilderWithSource(uri)
                         .build();
         DraweeController draweeController = Fresco.newDraweeControllerBuilder()
                 .setImageRequest(imageRequest)

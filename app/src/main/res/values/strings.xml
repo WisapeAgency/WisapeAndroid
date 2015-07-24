@@ -57,4 +57,19 @@
     <string name="story_music_label">背景音乐</string>
     <string name="story_music_download_toast">正在下载音乐...</string>
     <string name="story_music_download_error">音乐下载失败</string>
+    <string name="story_release_label">故事发布</string>
+    <string name="story_release_share_title">分享到</string>
+
+    <string name="title_facebook">Facebook</string>
+    <string name="title_twitter">Twitter</string>
+    <string name="title_messenger">Messenger</string>
+    <string name="title_google_plus">Google+</string>
+    <string name="title_email">Email</string>
+    <string name="title_link">Copy URL</string>
+    <string name="title_linkedin">LinkedIn</string>
+    <string name="title_qr_code">QR</string>
+    <string name="title_sms">SMS</string>
+    <string name="title_moments">Moments</string>
+    <string name="title_wechat">WeChat</string>
+    <string name="title_more">More</string>
 </resources>

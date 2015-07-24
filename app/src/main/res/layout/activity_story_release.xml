@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingEnd="24dp"
+    android:paddingLeft="24dp"
+    android:paddingRight="24dp"
+    android:paddingStart="24dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/story_settings_name"
+            style="@style/App.TextStyle.Primary"
+            android:layout_width="match_parent"
+            android:layout_height="78dp"
+            android:background="@null"
+            android:gravity="left|start|center_vertical"
+            android:hint="@string/story_settings_name_hint" />
+
+        <View style="@style/View.Divider" />
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/story_settings_desc"
+            style="@style/App.TextStyle.Primary"
+            android:layout_width="match_parent"
+            android:layout_height="78dp"
+            android:background="@null"
+            android:gravity="left|start|center_vertical"
+            android:hint="@string/story_settings_desc_hint"
+            android:lines="2"
+            android:maxLines="2"
+            android:minLines="2"
+            android:singleLine="false" />
+
+        <View style="@style/View.Divider" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <android.support.v7.widget.AppCompatTextView
+                style="@style/App.TextStyle.Primary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left|start|center_vertical"
+                android:layout_weight="1"
+                android:gravity="left|start|center_vertical"
+                android:text="@string/story_settings_cover" />
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/story_settings_cover_sdv"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                app:placeholderImage="@drawable/default_user_icon" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|end|center_vertical"
+                android:layout_marginLeft="18dp"
+                android:layout_marginStart="18dp"
+                android:scaleType="center"
+                android:src="@drawable/icon_down"/>
+        </LinearLayout>
+
+        <android.support.v7.widget.AppCompatTextView
+            style="@style/App.TextStyle.Secondary"
+            android:layout_width="match_parent"
+            android:layout_height="58dp"
+            android:gravity="left|start|center_vertical"
+            android:text="@string/story_release_share_title" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/story_release_item_padding"
+            android:paddingTop="@dimen/story_release_item_padding"
+            >
+
+            <android.support.v7.widget.AppCompatTextView
+                style="@style/StoryRelease.ItemStyle"
+                android:id="@+id/story_release_fb"
+                android:drawableTop="@drawable/release_fb_selector"
+                android:text="@string/title_facebook"
+                />
+
+            <android.support.v7.widget.AppCompatTextView
+                style="@style/StoryRelease.ItemStyle"
+                android:id="@+id/story_release_messenger"
+                android:drawableTop="@drawable/release_messenger_selector"
+                android:text="@string/title_messenger"
+                />
+
+            <android.support.v7.widget.AppCompatTextView
+                style="@style/StoryRelease.ItemStyle"
+                android:id="@+id/story_release_twitter"
+                android:drawableTop="@drawable/release_t_selector"
+                android:text="@string/title_twitter"
+                />
+
+            <android.support.v7.widget.AppCompatTextView
+                style="@style/StoryRelease.ItemStyle"
+                android:id="@+id/story_release_linkedin"
+                android:drawableTop="@drawable/release_linkedin_selector"
+                android:text="@string/title_linkedin"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/story_release_item_padding"
+            android:paddingTop="@dimen/story_release_item_padding">
+
+            <android.support.v7.widget.AppCompatTextView
+                style="@style/StoryRelease.ItemStyle"
+                android:id="@+id/story_release_wechat"
+                android:drawableTop="@drawable/release_wechat_selector"
+                android:text="@string/title_wechat"
+                />
+
+            <android.support.v7.widget.AppCompatTextView
+                style="@style/StoryRelease.ItemStyle"
+                android:id="@+id/story_release_moments"
+                android:drawableTop="@drawable/release_moments_selector"
+                android:text="@string/title_moments"
+                />
+
+            <android.support.v7.widget.AppCompatTextView
+                style="@style/StoryRelease.ItemStyle"
+                android:id="@+id/story_release_google_plus"
+                android:drawableTop="@drawable/release_g_selector"
+                android:text="@string/title_google_plus"
+                />
+
+            <android.support.v7.widget.AppCompatTextView
+                style="@style/StoryRelease.ItemStyle"
+                android:id="@+id/story_release_link"
+                android:drawableTop="@drawable/release_link_selector"
+                android:text="@string/title_link"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/story_release_item_padding"
+            android:paddingTop="@dimen/story_release_item_padding">
+
+            <android.support.v7.widget.AppCompatTextView
+                style="@style/StoryRelease.ItemStyle"
+                android:id="@+id/story_release_qr"
+                android:drawableTop="@drawable/release_qrcode_selector"
+                android:text="@string/title_qr_code"
+                />
+
+            <android.support.v7.widget.AppCompatTextView
+                style="@style/StoryRelease.ItemStyle"
+                android:id="@+id/story_release_email"
+                android:drawableTop="@drawable/release_email_selector"
+                android:text="@string/title_email"
+                />
+
+            <android.support.v7.widget.AppCompatTextView
+                style="@style/StoryRelease.ItemStyle"
+                android:id="@+id/story_release_sms"
+                android:drawableTop="@drawable/release_sms_selector"
+                android:text="@string/title_sms"
+                />
+
+            <android.support.v7.widget.AppCompatTextView
+                style="@style/StoryRelease.ItemStyle"
+                android:id="@+id/story_release_more"
+                android:drawableTop="@drawable/release_more_selector"
+                android:text="@string/title_more"
+                />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

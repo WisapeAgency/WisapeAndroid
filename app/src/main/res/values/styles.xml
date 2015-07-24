@@ -70,4 +70,15 @@
         <item name="android:padding">0dp</item>
         <item name="android:layout_margin">0dp</item>
     </style>
+
+    <style name="StoryRelease.ItemStyle" parent="">
+        <item name="android:layout_width">@dimen/story_release_share_item_width</item>
+        <item name="android:layout_height">@dimen/story_release_share_item_width</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:gravity">center</item>
+        <item name="android:drawablePadding">6dp</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textColor">@color/app_sixth_transparent_50p</item>
+        <item name="android:textSize">@dimen/app_text_size_medium</item>
+    </style>
 </resources>

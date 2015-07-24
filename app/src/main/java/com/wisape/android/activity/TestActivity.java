@@ -53,7 +53,8 @@ public class TestActivity extends BaseActivity{
     @OnClick(R.id.qr_code)
     @SuppressWarnings("unused")
     protected void doQr(){
-        startLoad(6, null);
+        //startLoad(6, null);
+        StoryReleaseActivity.launch(this, StoryReleaseActivity.REQUEST_CODE_STORY_RELEASE);
     }
 
 

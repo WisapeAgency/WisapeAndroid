@@ -93,8 +93,13 @@
         <activity android:name=".activity.StoryMusicActivity"
             android:label="@string/story_music_label"
             android:screenOrientation="portrait"
-            android:launchMode="singleTop"
-            />
+            android:launchMode="singleTop" />
+
+        <activity android:name=".activity.StoryReleaseActivity"
+            android:label="@string/story_release_label"
+            android:windowSoftInputMode="adjustPan|stateHidden"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop"/>
 
         <activity android:name=".activity.TestActivity"
             android:label="Test"
