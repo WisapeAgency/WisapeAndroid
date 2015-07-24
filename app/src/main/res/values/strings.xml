@@ -54,4 +54,5 @@
     <string name="story_settings_music_title">背景音乐</string>
     <string name="story_settings_gesture_title">翻转手势</string>
     <string name="story_music_label">背景音乐</string>
+    <string name="story_music_download_toast">正在下载音乐...</string>
 </resources>

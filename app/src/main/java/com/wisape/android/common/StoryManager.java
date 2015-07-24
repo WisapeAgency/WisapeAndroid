@@ -106,8 +106,18 @@ public class StoryManager{
             return null;
         }
 
+        Uri download = null;
         Uri source = music.getDownloadUrl();
-        Uri download = downStoryMusic(context, source, broadcastAction, tag);
+        try{
+            download = downStoryMusic(context, source, broadcastAction, tag);
+        }catch (IOException e){
+            Downloader.removeDownloader(source);
+            music.status = StoryMusicEntity.STATUS_NONE;
+            music.downloadProgress = 0;
+            music.musicLocal = "";
+            StoryLogic.instance().updateStoryMusic(context, music);
+        }
+
         if(null != download){
             music.musicLocal = download.toString();
             StoryLogic.instance().updateStoryMusic(context, music);
@@ -115,22 +125,18 @@ public class StoryManager{
         return download;
     }
 
-    public static Uri downStoryMusic(Context context, Uri source, String broadcastAction, Bundle tag){
+    public static Uri downStoryMusic(Context context, Uri source, String broadcastAction, Bundle tag) throws IOException{
         if(!EnvironmentUtils.isMounted()){
             return null;
         }
 
         String musicName = source.getLastPathSegment();
         Uri downUri = Uri.fromFile(new File(getStoryMusicDirectory(), musicName));
-        try {
-            Log.d(TAG, "#downStoryMusic broadcastAction:" + broadcastAction);
-            Log.d(TAG, "#downStoryMusic source:" + source);
-            Log.d(TAG, "#downStoryMusic dest:" + downUri);
-            Downloader.download(context, source, downUri, broadcastAction, tag);
-        }catch (IOException e){
-            Log.e(TAG, "", e);
-            return null;
-        }
+
+        Log.d(TAG, "#downStoryMusic broadcastAction:" + broadcastAction);
+        Log.d(TAG, "#downStoryMusic source:" + source);
+        Log.d(TAG, "#downStoryMusic dest:" + downUri);
+        Downloader.download(context, source, downUri, broadcastAction, tag);
         return downUri;
     }
 

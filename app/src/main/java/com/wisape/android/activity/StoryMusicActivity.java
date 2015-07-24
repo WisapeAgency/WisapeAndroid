@@ -10,6 +10,7 @@ import android.os.Message;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
 import com.wisape.android.R;
 import com.wisape.android.common.StoryManager;
@@ -31,13 +32,14 @@ public class StoryMusicActivity extends BaseActivity implements StoryMusicAdapte
 
     private static final String ACTION_DOWNLOAD_MUSIC = "com.wisape.android.action.DOWNLOAD_MUSIC";
 
-    private static final String EXTRA_SELECTED_MUSIC = "_selected_music";
+    public static final String EXTRA_SELECTED_MUSIC = "_selected_music";
     private static final String EXTRA_POSITION = "_position";
     private static final String EXTRA_ACTION_DOWNLOAD_MUSIC = "_action_download_music";
 
     private static final int WHAT_LOAD_MUSIC_LOCAL = 0x01;
     private static final int WHAT_LOAD_MUSIC = 0x02;
     private static final int WHAT_DOWNLOAD_MUSIC = 0x03;
+    private static final int WHAT_SAVE_MUSIC_STATUS = 0x04;
 
     public static void launch(Activity activity, StoryMusicEntity music, int requestCode){
         Intent intent = new Intent(activity.getApplicationContext(), StoryMusicActivity.class);
@@ -109,6 +111,30 @@ public class StoryMusicActivity extends BaseActivity implements StoryMusicAdapte
         PlayerProxy.getTracksClient().addTrackAndPlay(music, 0, 0);
     }
 
+    private void doSelectedMusic(){
+        StoryMusicEntity selectedMusic = adapter.getSelectedStoryMusic();
+        if(null != selectedMusic){
+            Intent intent = new Intent();
+            intent.putExtra(EXTRA_SELECTED_MUSIC, selectedMusic);
+            setResult(RESULT_OK, intent);
+        }else{
+            setResult(RESULT_CANCELED);
+        }
+    }
+
+    @Override
+    protected boolean onBackNavigation() {
+        doSelectedMusic();
+        finish();
+        return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        doSelectedMusic();
+        finish();
+    }
+
     @Override
     protected Message onLoadBackgroundRunning(int what, Bundle args) throws AsyncLoaderError {
         Message msg;
@@ -146,6 +172,12 @@ public class StoryMusicActivity extends BaseActivity implements StoryMusicAdapte
                 msg.obj = uri;
                 msg.arg2 = args.getInt(EXTRA_POSITION);
                 break;
+
+            case WHAT_SAVE_MUSIC_STATUS :
+                msg = null;
+                music = args.getParcelable(EXTRA_SELECTED_MUSIC);
+                Log.d(TAG, "#onLoadBackgroundRunning ___ WHAT_SAVE_MUSIC_STATUS ___");
+                StoryLogic.instance().updateStoryMusic(getApplicationContext(), music);
         }
 
         return msg;
@@ -165,7 +197,9 @@ public class StoryMusicActivity extends BaseActivity implements StoryMusicAdapte
 
             case WHAT_LOAD_MUSIC :
                 musicDataArray = (StoryMusicAdapter.StoryMusicDataInfo[])data.obj;
-                adapter.update(musicDataArray);
+                if(null != musicDataArray){
+                    adapter.update(musicDataArray);
+                }
                 break;
 
             case WHAT_DOWNLOAD_MUSIC :
@@ -173,6 +207,18 @@ public class StoryMusicActivity extends BaseActivity implements StoryMusicAdapte
                 int position = data.arg2;
                 adapter.notifyMusicDownloadCompleted(position, download);
                 break;
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        PlayerProxy.getLPlayerClient().pause();
+        StoryMusicEntity music = adapter.getDownloadingStoryMusic();
+        if(null != music){
+            Bundle args = new Bundle();
+            args.putParcelable(EXTRA_SELECTED_MUSIC, music);
+            startLoad(WHAT_SAVE_MUSIC_STATUS, args);
         }
     }
 

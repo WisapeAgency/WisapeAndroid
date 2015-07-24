@@ -99,8 +99,15 @@ public class StorySettingsActivity extends BaseActivity{
                     storyBgView.setImageURI(storyCoverUri);
                 }
                 break;
-        }
 
+            case StoryMusicActivity.REQUEST_CODE_STORY_MUSIC :
+                if(RESULT_OK == resultCode){
+                    StoryMusicEntity selectedMusic = data.getParcelableExtra(StoryMusicActivity.EXTRA_SELECTED_MUSIC);
+                    storySettings.defaultMusic = selectedMusic;
+                    storyMusicTxtv.setText(selectedMusic.name);
+                }
+                break;
+        }
     }
 
     @Override

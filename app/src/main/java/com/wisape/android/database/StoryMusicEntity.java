@@ -21,6 +21,9 @@ import org.json.JSONObject;
  */
 @DatabaseTable(tableName = "_story_music")
 public class StoryMusicEntity extends BaseEntity implements Parcelable, StoryMusicAdapter.StoryMusicDataInfo, Track {
+    public static final int STATUS_NONE = 0;
+    public static final int STATUS_DOWNLOADING = 0x01;
+
     @DatabaseField()
     public long serverId;
     @DatabaseField()
@@ -37,9 +40,10 @@ public class StoryMusicEntity extends BaseEntity implements Parcelable, StoryMus
     @DatabaseField(dataType= DataType.STRING)
     public String musicLocal;
 
-    //for UI
-    private int progress;
-    private int uiStatus;
+    @DatabaseField()
+    public int status;
+    @DatabaseField()
+    public int downloadProgress;
 
     public static StoryMusicEntity fromJsonObject(JSONObject json){
         if(null == json){
@@ -88,6 +92,33 @@ public class StoryMusicEntity extends BaseEntity implements Parcelable, StoryMus
         return info;
     }
 
+    public boolean equals(StoryMusicInfo info){
+        return this.serverId == info.id &&
+                this.name == info.music_name &&
+                this.music == info.music_url &&
+                this.type == info.type &&
+                this.recStatus == info.rec_status;
+    }
+
+    public void update(StoryMusicInfo info){
+        if(null == this.name || !this.name.equals(info.music_name)){
+            this.name = info.music_name;
+        }
+
+        if(null == this.music || !this.music.equals(info.music_url)){
+            this.music = info.music_url;
+            this.musicLocal = "";
+        }
+
+        if(this.type != info.type){
+            this.type = info.type;
+        }
+
+        if(null == this.recStatus || !this.recStatus.equals(info.rec_status)){
+            this.recStatus = info.rec_status;
+        }
+    }
+
     @Override
     public long getId() {
         return serverId;
@@ -115,22 +146,22 @@ public class StoryMusicEntity extends BaseEntity implements Parcelable, StoryMus
 
     @Override
     public void setProgress(int progress) {
-        this.progress = progress;
+        this.downloadProgress = progress;
     }
 
     @Override
     public int getProgress() {
-        return progress;
+        return downloadProgress;
     }
 
     @Override
-    public void setUiStatus(int status) {
-        this.uiStatus = status;
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     @Override
-    public int getUiStatus() {
-        return uiStatus;
+    public int getStatus() {
+        return status;
     }
 
     /**  ********  Track Interface  ********  */
@@ -214,8 +245,8 @@ public class StoryMusicEntity extends BaseEntity implements Parcelable, StoryMus
     public int getPluginCode() {
         return StreamPlugin.PLUGIN_CODE_DEFAULT;
     }
-
     /**  ********  Track Interface  End ********  */
+
     @Override
     public int describeContents() {
         return 0;
@@ -229,8 +260,8 @@ public class StoryMusicEntity extends BaseEntity implements Parcelable, StoryMus
         dest.writeLong(this.type);
         dest.writeString(this.recStatus);
         dest.writeString(this.musicLocal);
-        dest.writeInt(this.progress);
-        dest.writeInt(this.uiStatus);
+        dest.writeInt(this.status);
+        dest.writeInt(this.downloadProgress);
     }
 
     public StoryMusicEntity() {
@@ -243,8 +274,8 @@ public class StoryMusicEntity extends BaseEntity implements Parcelable, StoryMus
         this.type = in.readLong();
         this.recStatus = in.readString();
         this.musicLocal = in.readString();
-        this.progress = in.readInt();
-        this.uiStatus = in.readInt();
+        this.status = in.readInt();
+        this.downloadProgress = in.readInt();
     }
 
     public static final Creator<StoryMusicEntity> CREATOR = new Creator<StoryMusicEntity>() {
