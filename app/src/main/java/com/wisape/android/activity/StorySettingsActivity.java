@@ -90,7 +90,11 @@ public class StorySettingsActivity extends BaseActivity{
                 if(RESULT_OK == resultCode){
                     storyCoverUri = PhotoSelectorActivity.buildCropUri(this, 0);
                     Uri imageUri = data.getParcelableExtra(PhotoSelectorActivity.EXTRA_IMAGE_URI);
-                    Crop.of(PhotoProvider.getPhotoUri(imageUri.getPath()), storyCoverUri).asSquare().start(this);
+                    //Intent cropIntent = Crop.of(PhotoProvider.getPhotoUri(imageUri.getPath()), storyCoverUri).asSquare().getIntent(getApplicationContext());
+                    //startActivityForResult(cropIntent, Crop.REQUEST_CROP);
+
+                    Intent cropIntent = ScaleCropImageActivity.getIntent(this, PhotoProvider.getPhotoUri(imageUri.getPath()), storyCoverUri);
+                    startActivityForResult(cropIntent, ScaleCropImageActivity.REQUEST_CODE_CROP);
                 }
                 break;
 

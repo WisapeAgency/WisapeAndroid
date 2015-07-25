@@ -22,6 +22,35 @@
         android:layout_below="@+id/button"
         android:layout_marginTop="13dp" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="List Template"
+        android:id="@+id/list_template"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/qr_code"
+        android:layout_marginTop="13dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Download Template"
+        android:id="@+id/download_template"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/list_template"
+        android:layout_marginTop="13dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Create Story"
+        android:id="@+id/create_story"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/download_template"
+        android:layout_marginTop="13dp" />
+
+
+    <!--
     <com.facebook.drawee.view.SimpleDraweeView
         android:layout_width="300dp"
         android:layout_height="300dp"
@@ -29,4 +58,5 @@
         android:layout_below="@+id/qr_code"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="51dp"/>
+    -->
 </RelativeLayout>

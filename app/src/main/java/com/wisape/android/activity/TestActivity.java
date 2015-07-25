@@ -57,6 +57,21 @@ public class TestActivity extends BaseActivity{
         StoryReleaseActivity.launch(this, StoryReleaseActivity.REQUEST_CODE_STORY_RELEASE);
     }
 
+    @OnClick(R.id.list_template)
+    protected void doListTemplate(){
+        startLoad(5, null);
+    }
+
+    @OnClick(R.id.download_template)
+    protected void doDownloadTemplate(){
+
+    }
+
+    @OnClick(R.id.create_story)
+    protected void doCreateStory(){
+
+    }
+
 
     @Override
     protected Message onLoadBackgroundRunning(int what, Bundle args) throws AsyncLoaderError {
