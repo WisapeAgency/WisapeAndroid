@@ -11,6 +11,7 @@ import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaArgs;
 import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaWebView;
+import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.HashMap;
@@ -19,13 +20,13 @@ import java.util.HashMap;
  * Created by tony on 2015/7/19.
  */
 public class StoryTemplatePlugin extends AbsPlugin{
-    public static final String ACTION_LIST_TEMPLATE_TYPE = "list_template_type";
-    public static final String ACTION_LIST_TEMPLATE = "list_template";
+    public static final String ACTION_GET_STAGE_CATEGORY = "getStageCategory";
+    public static final String ACTION_GET_STAGE_LIST = "getStageList";
 
-    private static final int WHAT_LIST_TEMPLATE_TYPE = 0x01;
-    private static final int WHAT_LIST_TEMPLATE = 0x02;
+    private static final int WHAT_GET_STAGE_CATEGORY = 0x01;
+    private static final int WHAT_GET_STAGE_LIST = 0x02;
 
-
+    private StoryLogic logic = StoryLogic.instance();
     private HashMap<String, CallbackContext> callbackContextMap;
 
     @Override
@@ -39,49 +40,43 @@ public class StoryTemplatePlugin extends AbsPlugin{
             return true;
         }
 
-        if(ACTION_LIST_TEMPLATE_TYPE.equals(action)){
+        if(ACTION_GET_STAGE_CATEGORY.equals(action)){//getStageCategory
             synchronized (callbackContextMap){
                 if(!callbackContextMap.containsKey(action)){
                     callbackContextMap.put(action, callbackContext);
                 }
             }
-
-            startLoad(WHAT_LIST_TEMPLATE_TYPE, null);
-        }
-
-        else if(ACTION_LIST_TEMPLATE.equals(action)){
+            startLoad(WHAT_GET_STAGE_CATEGORY, null);
+        } else if (ACTION_GET_STAGE_LIST.equals(action)){//getStageList
             synchronized (callbackContextMap){
                 if(!callbackContextMap.containsKey(action)){
                     callbackContextMap.put(action, callbackContext);
                 }
             }
-            startLoad(WHAT_LIST_TEMPLATE, null);
+            startLoad(WHAT_GET_STAGE_LIST, null);
         }
-
         return true;
     }
 
     @Override
     protected Message onLoadBackgroundRunning(int what, Bundle args) throws AsyncLoaderError {
-
-        Message msg;
         switch (what){
             default :
                 return null;
-
-            case WHAT_LIST_TEMPLATE_TYPE :
-                msg = Message.obtain();
-
+            case WHAT_GET_STAGE_CATEGORY : {
+                JSONArray jsonStr = logic.listStoryTemplateType(getCurrentActivity().getApplicationContext(), null);
+                CallbackContext callbackContext = callbackContextMap.get(ACTION_GET_STAGE_CATEGORY);
+                callbackContext.success(jsonStr);
                 break;
-
-            case WHAT_LIST_TEMPLATE :
-                StoryLogic logic = StoryLogic.instance();
+            }
+            case WHAT_GET_STAGE_LIST :{
                 StoryTemplateEntity[] entities = logic.listStoryTemplate(getCurrentActivity().getApplicationContext(), null);
-                CallbackContext callbackContext = callbackContextMap.get(ACTION_LIST_TEMPLATE);
+                CallbackContext callbackContext = callbackContextMap.get(ACTION_GET_STAGE_CATEGORY);
                 Gson gson = new Gson();
                 String jsonStr = gson.toJson(entities);
                 callbackContext.success(jsonStr);
                 break;
+            }
         }
         return null;
     }

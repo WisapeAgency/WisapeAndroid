@@ -29,7 +29,8 @@
         <div html-include="stage_select.html"></div>
         <!--Story加载区-->
         <story>
-            ...
+            <button onclick="test(['test','test2']);">Test</button>
+            <button onclick="getStageCategory();">getStageCategory</button>
         </story>
     </div>
     <!--编辑图片-->
@@ -50,5 +51,38 @@
     <script src="../public/js/iscroll-lite.js"></script>
     <script src="../public/js/animation.js"></script>
     <script src="../public/js/app-main.js"></script>
+    <script type="text/javascript">
+        function test(args){
+            /**
+            *调用Android方法，有5个参数
+            *1、回调函数：调用成功后回调
+            *2、回调函数：调用失败后回调
+            *3、插件名称
+            *4、方法名称
+            *5、方法参数(数组)
+            */
+            cordova.exec(function(retval) {
+                alert(retval);
+            }, function(e) {
+                alert("Error: "+e);
+            }, "Test", "test", args);
+        };
+
+        function test2(){
+            alert("test2");
+        }
+
+        /**
+        *
+        *获取模板类型测试
+        */
+        function getStageCategory(){
+            cordova.exec(function(retval) {
+                alert(retval);
+            }, function(e) {
+                alert("Error: "+e);
+            }, "StoryTemplate", "getStageCategory", []);
+        }
+    </script>
 </body>
 </html>

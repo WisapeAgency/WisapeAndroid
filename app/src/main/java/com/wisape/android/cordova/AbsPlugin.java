@@ -28,7 +28,7 @@ public abstract class AbsPlugin extends CordovaPlugin  implements LoaderManager.
     protected static final int STATUS_EXCEPTION = Integer.MIN_VALUE;
     protected static final int STATUS_SUCCESS = 1;
 
-    private CordovaInterface cordova;
+    protected CordovaInterface cordova;
     private volatile boolean destroyed;
 
     private Object cancelableTag;
