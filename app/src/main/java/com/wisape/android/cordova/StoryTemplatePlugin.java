@@ -31,34 +31,22 @@ public class StoryTemplatePlugin extends AbsPlugin{
 
     private static final String EXTRA_CATEGORY_ID = "extra_category_id";
 
+    private CallbackContext callbackContext;
     private StoryLogic logic = StoryLogic.instance();
-    private HashMap<String, CallbackContext> callbackContextMap;
 
     @Override
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
         super.initialize(cordova, webView);
-        callbackContextMap = new HashMap(3);
     }
 
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
         if(null == action || 0 == action.length()){
             return true;
         }
-
+        this.callbackContext = callbackContext;
         if(ACTION_GET_STAGE_CATEGORY.equals(action)){//getStageCategory
-            synchronized (callbackContextMap){
-                if(!callbackContextMap.containsKey(action)){
-                    callbackContextMap.put(action, callbackContext);
-                }
-            }
             startLoad(WHAT_GET_STAGE_CATEGORY, null);
         } else if (ACTION_GET_STAGE_LIST.equals(action)){//getStageList
-            synchronized (callbackContextMap){
-                if(!callbackContextMap.containsKey(action)){
-                    callbackContextMap.put(action, callbackContext);
-                }
-            }
-
             Bundle bundle = new Bundle();
             if(null != args && args.length() != 0){
                 bundle.putInt(EXTRA_CATEGORY_ID, args.getInt(0));
@@ -76,7 +64,6 @@ public class StoryTemplatePlugin extends AbsPlugin{
                 return null;
             case WHAT_GET_STAGE_CATEGORY : {
                 JSONArray jsonStr = logic.listStoryTemplateType(context, null);
-                CallbackContext callbackContext = callbackContextMap.get(ACTION_GET_STAGE_CATEGORY);
                 callbackContext.success(jsonStr);
                 break;
             }
@@ -84,24 +71,11 @@ public class StoryTemplatePlugin extends AbsPlugin{
                 ApiStory.AttrTemplateInfo attr = new ApiStory.AttrTemplateInfo();
                 attr.type = args.getInt(EXTRA_CATEGORY_ID, 0);
                 StoryTemplateEntity[] entities = logic.listStoryTemplate(context, attr, null);
-                CallbackContext callbackContext = callbackContextMap.get(ACTION_GET_STAGE_LIST);
-                Gson gson = new Gson();
-                String jsonStr = gson.toJson(entities);
-                System.out.println(jsonStr);
-                System.out.println(callbackContext);
-                callbackContext.success(jsonStr);
+                callbackContext.success(new Gson().toJson(entities));
                 break;
             }
         }
         return null;
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if(null != callbackContextMap){
-            callbackContextMap.clear();
-            callbackContextMap = null;
-        }
-    }
 }
