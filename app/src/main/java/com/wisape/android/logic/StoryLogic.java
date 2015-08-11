@@ -12,6 +12,7 @@ import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.Where;
 import com.wisape.android.activity.StoryMusicActivity;
 import com.wisape.android.api.ApiStory;
+import com.wisape.android.api.ApiUser;
 import com.wisape.android.common.StoryManager;
 import com.wisape.android.common.UserManager;
 import com.wisape.android.database.DatabaseHelper;
@@ -466,9 +467,9 @@ public class StoryLogic{
         return storyTemplateArray;
     }
 
-    public StoryTemplateEntity[] listStoryTemplate(Context context, Object tag){
+    public StoryTemplateEntity[] listStoryTemplate(Context context, ApiStory.AttrTemplateInfo attrInfo, Object tag){
         ApiStory api = ApiStory.instance();
-        StoryTemplateInfo[] storyTemplateInfos = api.listStoryTemplate(context, tag);
+        StoryTemplateInfo[] storyTemplateInfos = api.listStoryTemplate(context, attrInfo, tag);
         int count = (null == storyTemplateInfos ? 0 : storyTemplateInfos.length);
         if(0 == count){
             return null;

@@ -69,7 +69,7 @@ public class TestActivity extends BaseActivity{
 
     @OnClick(R.id.create_story)
     protected void doCreateStory(){
-
+        StoryTemplateActivity.launch(this,0);
     }
 
 
@@ -123,7 +123,9 @@ public class TestActivity extends BaseActivity{
 
         else if(5 == what){
             StoryLogic logic = StoryLogic.instance();
-            StoryTemplateEntity[] templateEntities = logic.listStoryTemplate(getApplicationContext(), getCancelableTag());
+            ApiStory.AttrTemplateInfo attr = new ApiStory.AttrTemplateInfo();
+            attr.type = args.getInt("type", 0);
+            StoryTemplateEntity[] templateEntities = logic.listStoryTemplate(getApplicationContext(), attr, getCancelableTag());
             if(null == templateEntities){
                 Log.d(TAG, "#listStoryTemplate templateEntities is null");
             }else{

@@ -82,14 +82,13 @@ public class ApiStory extends ApiBase{
         return storyMusicArray;
     }
 
-    public StoryTemplateInfo[] listStoryTemplate(Context context, Object tag){
+    public StoryTemplateInfo[] listStoryTemplate(Context context, AttrTemplateInfo attrInfo, Object tag){
         Uri uri = WWWConfig.acquireUri(context.getString(R.string.uri_template_list));
         Log.d(TAG, "#listStoryTemplate uri:" + uri.toString());
 
         Requester requester = Requester.instance();
-        AttributeInfoImpl attr = new AttributeInfoImpl();
-        setAccessToken(context, attr);
-        Requester.ServerMessage message = requester.post(uri, attr.convert(), tag);
+        setAccessToken(context, attrInfo);
+        Requester.ServerMessage message = requester.post(uri, attrInfo.convert(), tag);
         StoryTemplateInfo storyTemplateArray[] = (StoryTemplateInfo[])convertArray(WHAT_LIST_STORY_TEMPLATE, message);
         return storyTemplateArray;
     }
@@ -273,6 +272,56 @@ public class ApiStory extends ApiBase{
     @Override
     protected ServerInfo[] onConvertArrayError(int what) {
         return null;
+    }
+
+    public static class AttrTemplateInfo extends AttrStoryInfo{
+        public static final String ATTR_TYPE = "type";
+
+        public int type;
+
+        public AttrTemplateInfo(int type){
+            this.type = type;
+        }
+
+        @Override
+        protected void onConvert(Map<String, String> params) {
+            params.put(ATTR_TYPE, Integer.toString(type));
+        }
+
+        @Override
+        protected int acquireAttributeNumber() {
+            return 1;
+        }
+
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            super.writeToParcel(dest, flags);
+            dest.writeLong(this.type);
+        }
+
+        public AttrTemplateInfo() {
+        }
+
+        protected AttrTemplateInfo(Parcel in) {
+            super(in);
+            this.type = in.readInt();
+        }
+
+        public static final Creator<AttrStoryDeleteInfo> CREATOR = new Creator<AttrStoryDeleteInfo>() {
+            public AttrStoryDeleteInfo createFromParcel(Parcel source) {
+                return new AttrStoryDeleteInfo(source);
+            }
+
+            public AttrStoryDeleteInfo[] newArray(int size) {
+                return new AttrStoryDeleteInfo[size];
+            }
+        };
     }
 
     public static class AttrStoryListInfo extends AttributeInfo{

@@ -31,6 +31,8 @@
         <story>
             <button onclick="test(['test','test2']);">Test</button>
             <button onclick="getStageCategory();">getStageCategory</button>
+            <button onclick="getStageList(1);">getStageList</button>
+            <div id="message"></div>
         </story>
     </div>
     <!--编辑图片-->
@@ -78,10 +80,26 @@
         */
         function getStageCategory(){
             cordova.exec(function(retval) {
-                alert(retval);
+                showMessage(retval);
             }, function(e) {
                 alert("Error: "+e);
             }, "StoryTemplate", "getStageCategory", []);
+        }
+
+        /**
+        *
+        *获取模板
+        */
+        function getStageList(id){
+            cordova.exec(function(retval) {
+                showMessage(retval);
+            }, function(e) {
+                alert("Error: "+e);
+            }, "StoryTemplate", "getStageList", [id]);
+        }
+
+        function showMessage(message){
+            jQuery("#message").text(message);
         }
     </script>
 </body>
