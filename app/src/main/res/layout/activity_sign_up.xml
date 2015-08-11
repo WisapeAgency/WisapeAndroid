@@ -83,7 +83,8 @@
         android:layout_marginTop="20dp"
         android:layout_below="@+id/sign_up_password"
         android:background="@drawable/sign_up_btn_bg"
-        android:text="@string/sign_up_btn"/>
+        android:text="@string/sign_up_btn"
+        android:textAllCaps="false"/>
 
     <TextView
         android:id="@+id/sign_up_forget_password"

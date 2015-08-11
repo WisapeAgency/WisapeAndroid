@@ -65,6 +65,18 @@ public class UserLogic {
         return user;
     }
 
+    /**
+     * 重置密码
+     * @param context
+     * @param attrInfo
+     * @param cancleableTag
+     * @return 服务器信息
+     */
+    public Requester.ServerMessage resetPassword(Context context,ApiUser.AttrResetPasswordInfo attrInfo,Object cancleableTag){
+        ApiUser api = ApiUser.instance();
+        return api.resetPassword(context,attrInfo,cancleableTag);
+    }
+
     public UserInfo signUpWith(Context context, ProfileRequester.ProfileInfo profile, Object cancelableTag){
         ApiUser.AttrSignUpInfo attr = new ApiUser.AttrSignUpInfo();
         attr.type = profile.platform;

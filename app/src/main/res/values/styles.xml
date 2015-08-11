@@ -81,4 +81,9 @@
         <item name="android:textColor">@color/app_sixth_transparent_50p</item>
         <item name="android:textSize">@dimen/app_text_size_medium</item>
     </style>
+
+    <style name="password_reset_edit">
+        <item name="android:textColor">@color/app_password_reset_email_edit_text_color</item>
+        <item name="android:textSize">24sp</item>
+    </style>
 </resources>

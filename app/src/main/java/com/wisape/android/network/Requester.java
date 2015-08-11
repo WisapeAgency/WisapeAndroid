@@ -123,7 +123,7 @@ public final class Requester {
         try{
             data = future.get(defaultPolicy.getCurrentTimeout(), TimeUnit.MILLISECONDS);
             JSONObject json = parseResponseAsJSON(data);
-            Log.d(TAG, "#Result data:" + data);
+            Log.w(TAG, "#Result data:" + data);
             msg = verifyResponse(json);
         } catch (InterruptedException e){
             //do nothing

@@ -45,6 +45,23 @@ public class ApiUser extends ApiBase{
         return user;
     }
 
+    /**
+     * 重置秘密
+     * @param context
+     * @param attrInfo
+     * @param tag
+     * @return 服务器端返回的消息
+     */
+    public Requester.ServerMessage resetPassword(Context context,AttrResetPasswordInfo attrInfo,Object tag ){
+        Uri uri = WWWConfig.acquireUri(context.getString(R.string.uri_user_forget_pwd));
+        Log.e(TAG, "#reset password uri:" + uri.toString());
+
+        Requester requester = Requester.instance();
+        setAccessToken(context, attrInfo);
+        return requester.post(uri,attrInfo.convert(),tag);
+    }
+
+
     public UserInfo updateProfile(Context context, AttrUserProfile profile, Object tag){
         Uri uri = WWWConfig.acquireUri(context.getString(R.string.uri_user_profile_update));
         Log.d(TAG, "#updateProfile uri:" + uri.toString());
@@ -55,6 +72,7 @@ public class ApiUser extends ApiBase{
         UserInfo user = (UserInfo)convert(WHAT_USER_INFO, message);
         return user;
     }
+
 
     public UserMessageInfo[] listUserMessages(Context context, Object tag){
         Uri uri = WWWConfig.acquireUri(context.getString(R.string.uri_user_message));
@@ -222,6 +240,36 @@ public class ApiUser extends ApiBase{
                 return new AttrUserProfile[size];
             }
         };
+    }
+
+    /**
+     * 重置密码表单信息
+     */
+    public static class AttrResetPasswordInfo extends AttributeInfo{
+
+        public static final String ATTR_EMAIL = "user_email";
+
+        public String email;
+
+        @Override
+        protected void onConvert(Map<String, String> params) {
+            params.put(ATTR_EMAIL, null == email ? "" : email);
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        protected int acquireAttributeNumber() {
+            return 1;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+
+        }
     }
 
     public static class AttrSignUpInfo extends AttributeInfo {

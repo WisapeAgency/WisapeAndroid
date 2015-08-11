@@ -23,14 +23,19 @@
     <string name="user_profile_label">用户信息</string>
 
     <!--Sign Up-->
-    <string name="sign_up_btn">注册/登录</string>
-    <string name="forget_password">忘记密码?</string>
-    <string name="sign_up_email_not_right">邮箱格式不正确</string>
+    <string name="sign_up_btn">Join in</string>
+    <string name="forget_password">Forget the password?</string>
+    <string name="sign_up_email_not_right">Email address is invalid</string>
     <string name="sign_up_password_can_not_null">密码不能为空</string>
     <string name="sign_up_password_error">密码不正确</string>
-    <string name="password_reset">重置</string>
-    <string name="password_reset_label">重置密码</string>
 
+    <!--Reset Password-->
+    <string name="password_reset">Next</string>
+    <string name="password_reset_label">Password Reset</string>
+    <string name="password_reset_email_account_text">email account:</string>
+    <string name="password_reset_notice_text">Please enter your email acount address,\n password reset link will be sent to \n you by email</string>
+    <string name="password_reset_success_text_start">The password set link has been sent to \n you </string>
+    <string name="password_reset_success_text_end">,\ncheck the email and click the link to reset your password.</string>
     <!--User Profile-->
     <string name="user_profile_icon_title">用户头像</string>
     <string name="user_profile_name_title">昵称</string>
@@ -42,6 +47,7 @@
     <string name="about_privacy_policy">隐私政策</string>
     <string name="about_copyright">版权政策</string>
     <string name="about_rate">求给好评</string>
+    <string name="about_version_text">version:</string>
 
     <string name="crop_activity_label">图片剪切</string>
 
@@ -72,4 +78,7 @@
     <string name="title_moments">Moments</string>
     <string name="title_wechat">WeChat</string>
     <string name="title_more">More</string>
+
+    <!--进度对话框资源-->
+    <string name="progress_dialog_reset_password">正在发送消息</string>
 </resources>

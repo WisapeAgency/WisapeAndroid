@@ -4,6 +4,8 @@
     <string name="uri_user_profile_update">user/editprofile</string>
     <string name="uri_user_message">user/message</string>
     <string name="uri_user_activity">user/active</string>
+    <!--忘记密码-->
+    <string name="uri_user_forget_pwd">user/forget</string>
 
     <string name="uri_story_create">story/create</string>
     <string name="uri_story_del">story/del</string>

@@ -191,7 +191,6 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
         }
     }
 
-
     @OnClick(R.id.sign_up_btn)
     @SuppressWarnings("unused")
     protected void doSignUp(){

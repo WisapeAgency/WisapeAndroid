@@ -60,6 +60,11 @@
             android:screenOrientation="portrait"
             android:launchMode="singleTop"/>
 
+        <activity android:name=".activity.PasswordResetSuccessActivity"
+            android:label="@string/password_reset_success_text_start"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop"/>
+
         <activity android:name=".activity.StoryTemplateActivity"
             android:screenOrientation="portrait"
             android:launchMode="singleTop"

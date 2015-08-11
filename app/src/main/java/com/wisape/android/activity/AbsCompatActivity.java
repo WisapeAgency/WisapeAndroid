@@ -71,7 +71,8 @@ public abstract class AbsCompatActivity extends AppCompatActivity implements Loa
     /**
      * @param data
      */
-    protected void onLoadCompleted(Message data){}
+    protected void onLoadCompleted(Message data){
+    }
 
     protected void onPreLoad(int what){}
 
