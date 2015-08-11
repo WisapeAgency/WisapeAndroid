@@ -4,7 +4,7 @@
     android:id="@+id/sign_up_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/sign_up_bg">
+    android:background="@android:color/white">
 
     <ImageView
         android:id="@+id/sign_up_logo"
@@ -12,19 +12,8 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="60dp"
-        android:src="@drawable/icon_logo_large"
+        android:src="@mipmap/login_logo"
         android:scaleType="center"/>
-
-    <ImageView
-        android:id="@+id/sign_up_logo_character"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/sign_up_logo"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"
-        android:src="@drawable/icon_logo_character"
-        android:scaleType="center"/>
-
 
     <com.wisape.android.widget.SignUpEditText
         android:id="@+id/sign_up_email"
@@ -36,9 +25,9 @@
         android:layout_marginEnd="20dp"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        app:sign_up_icon="@drawable/sign_up_icon_email"
+        app:sign_up_icon="@mipmap/message"
         app:action="@drawable/icon_edit_clear_selector"
-        app:icon_paddingEnd="9dp"
+        app:icon_paddingEnd="-10dp"
         app:show_error="true"
         app:warning_icon="@drawable/icon_warning"
         app:warning_icon_paddingEnd="9dp"
@@ -59,16 +48,17 @@
         android:layout_below="@+id/sign_up_email"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        app:sign_up_icon="@drawable/sign_up_icon_password"
-        app:action="@drawable/icon_password_visibility"
-        app:icon_paddingEnd="9dp"
+        app:sign_up_icon="@mipmap/lock"
+        app:action="@drawable/password_visibility_selector"
+        app:icon_paddingEnd="0dp"
         app:show_error="true"
-        app:warning_icon="@drawable/icon_warning"
+        app:warning_icon="@mipmap/icon_warning"
         app:warning_icon_paddingEnd="9dp"
         app:warning_textStyle="@style/SignUp.Warning"
         app:edit_background="@drawable/sign_up_edit_bg_normal"
         app:edit_height="40dp"
         app:warning_height="24dp"
+        app:edit_textStyle="@style/App.TextStyle.Secondary"
         android:inputType="textPassword"/>
 
     <Button
@@ -94,7 +84,7 @@
         android:layout_marginTop="8dp"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/sign_up_btn"
-        android:textColor="@color/app_primary"
+        android:textColor="@color/app_tertiary"
         android:text="@string/forget_password"/>
 
     <ImageButton
