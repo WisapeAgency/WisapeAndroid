@@ -6,6 +6,7 @@ import android.os.Message;
 import android.os.SystemClock;
 import android.util.Log;
 
+import com.wisape.android.R;
 import com.wisape.android.common.UserManager;
 import com.wisape.android.model.UserInfo;
 
@@ -21,6 +22,7 @@ public class LauncherActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_launch);
         startLoad(LOADER_SIGN_IN, null);
         startTimeInMills = SystemClock.uptimeMillis();
     }

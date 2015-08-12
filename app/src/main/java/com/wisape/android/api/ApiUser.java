@@ -36,7 +36,7 @@ public class ApiUser extends ApiBase{
 
     public UserInfo signUp(Context context, AttrSignUpInfo attrInfo, Object tag){
         Uri uri = WWWConfig.acquireUri(context.getString(R.string.uri_user_login));
-        Log.d(TAG, "#signUp uri:" + uri.toString() + ", port:" + uri.getPort());
+        Log.e(TAG, "#signUp uri:" + uri.toString());
 
         Requester requester = Requester.instance();
         setAccessToken(context, attrInfo);

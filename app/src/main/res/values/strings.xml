@@ -6,10 +6,14 @@
     <string name="login_with_third">"Sign in with the follow apps"</string>
 
     <!--Main menu -->
-    <string name="message_center">Message center</string>
-    <string name="help_center">Help center</string>
-    <string name="clear_buffer">Clear buffer</string>
-    <string name="exit_login">Exit login</string>
+    <string name="message_center">Message Center</string>
+    <string name="help_center">Help Center</string>
+    <string name="clear_buffer">Clear Cache</string>
+    <string name="clear_cache_notice_text">Do you sure remove the cache?\nAre you sure you want to \cn
+        clear your cache? All traces and drafts of your cache will be\nremoved.</string>
+    <string name="exit_login">Logout</string>
+    <string name="exit_login_notice_text">Do you exit the current account?\n
+       Logout will not delete any data.You\ncan still login with this account.</string>
     <string name="all_stores">All Stores</string>
 
 
@@ -42,11 +46,11 @@
     <string name="user_profile_email_title">邮箱</string>
 
     <!-- About -->
-    <string name="about_label">About</string>
-    <string name="about_terms_of_service">服务条款</string>
-    <string name="about_privacy_policy">隐私政策</string>
+    <string name="about_label">About Wisape</string>
+    <string name="about_terms_of_service">Terms of Service</string>
+    <string name="about_privacy_policy">Privacy Policies</string>
     <string name="about_copyright">版权政策</string>
-    <string name="about_rate">求给好评</string>
+    <string name="about_rate">Rate for Wisape</string>
     <string name="about_version_text">version:</string>
 
     <string name="crop_activity_label">图片剪切</string>
@@ -81,4 +85,8 @@
 
     <!--进度对话框资源-->
     <string name="progress_dialog_reset_password">正在发送消息</string>
+
+    <!--确认对话框-->
+    <string name="confirm_dialog_cancle">Cancle</string>
+    <string name="confirm_dialog_confirm">Confirm</string>
 </resources>

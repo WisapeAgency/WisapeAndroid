@@ -131,8 +131,12 @@ public class UserManager {
         String json = new Gson().toJson(user);
         String encode = Base64.encodeToString(json.getBytes(), Base64.DEFAULT);
         SharedPreferences preferences = getPreferences(context);
-        Log.d("UserManager", "#saveUser json:" + json + "\r\n encode:" + encode);
-        preferences.edit().putString(EXTRA_USER_INFO, encode).commit();
+        Log.e("UserManager", "#saveUser json:" + json + "\r\n encode:" + encode);
+        preferences.edit().putString(EXTRA_USER_INFO, encode).apply();
+    }
+
+    public void clearUser(Context context){
+       getPreferences(context).edit().clear().commit();
     }
 
     private SharedPreferences getPreferences(Context context){

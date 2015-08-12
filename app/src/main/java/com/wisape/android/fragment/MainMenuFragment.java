@@ -19,9 +19,12 @@ import com.wisape.android.R;
 import com.wisape.android.activity.AboutActivity;
 import com.wisape.android.activity.MainActivity;
 import com.wisape.android.activity.UserProfileActivity;
+import com.wisape.android.common.UserManager;
 import com.wisape.android.content.DynamicBroadcastReceiver;
 import com.wisape.android.model.UserInfo;
+import com.wisape.android.util.EnvironmentUtils;
 import com.wisape.android.util.FrescoFactory;
+import com.wisape.android.widget.ComfirmDialog;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -30,7 +33,7 @@ import butterknife.OnClick;
 /**
  * @author Duke
  */
-public class MainMenuFragment extends AbsFragment implements DynamicBroadcastReceiver.OnDynamicBroadcastReceiverListener{
+public class MainMenuFragment extends AbsFragment implements DynamicBroadcastReceiver.OnDynamicBroadcastReceiverListener {
     private static final String TAG = MainMenuFragment.class.getSimpleName();
 
     @InjectView(R.id.sdv_user_head_image)
@@ -46,16 +49,16 @@ public class MainMenuFragment extends AbsFragment implements DynamicBroadcastRec
 
     @Override
     public void onReceiveBroadcast(Context context, Intent intent) {
-        if(isDetached()){
+        if (isDetached()) {
             return;
         }
 
         String action = intent.getAction();
-        if(null == action || 0 == action.length()){
+        if (null == action || 0 == action.length()) {
             return;
         }
 
-        if(UserProfileActivity.ACTION_PROFILE_UPDATED.equals(action)){
+        if (UserProfileActivity.ACTION_PROFILE_UPDATED.equals(action)) {
             UserInfo newUser = intent.getParcelableExtra(MainActivity.EXTRA_USER_INFO);
             refreshUI(newUser);
         }
@@ -64,11 +67,11 @@ public class MainMenuFragment extends AbsFragment implements DynamicBroadcastRec
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        if(activity instanceof UserCallback){
+        if (activity instanceof UserCallback) {
             callback = (UserCallback) activity;
         }
 
-        if(null == callback){
+        if (null == callback) {
             throw new IllegalStateException("The UserCallback can not be null.");
         }
     }
@@ -95,10 +98,10 @@ public class MainMenuFragment extends AbsFragment implements DynamicBroadcastRec
         refreshUI(user);
     }
 
-    private void refreshUI(UserInfo user){
+    private void refreshUI(UserInfo user) {
         String icon = user.user_ico_n;
         Log.d(TAG, "#onViewCreated icon:" + icon);
-        if(null != icon && 0 < icon.length()){
+        if (null != icon && 0 < icon.length()) {
             FrescoFactory.bindImageFromUri(sdvUserHeadImage, icon);
         }
 
@@ -115,7 +118,7 @@ public class MainMenuFragment extends AbsFragment implements DynamicBroadcastRec
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if(null != localBroadcastManager){
+        if (null != localBroadcastManager) {
             localBroadcastManager.unregisterReceiver(localReceiver);
             localReceiver.destroy();
             localReceiver = null;
@@ -126,31 +129,65 @@ public class MainMenuFragment extends AbsFragment implements DynamicBroadcastRec
     @Override
     public void onDetach() {
         super.onDetach();
-        if(null != callback){
+        if (null != callback) {
             callback = null;
         }
     }
 
     @OnClick(R.id.help_center)
     @SuppressWarnings("unused")
-    protected void onHelpCenterClick(View view){
+    protected void onHelpCenterClick(View view) {
         Mobihelp.showSupport(getActivity());
     }
 
     @OnClick(R.id.tv_name)
     @SuppressWarnings("unused")
-    protected void onNameClicked(){
+    protected void onNameClicked() {
         UserProfileActivity.launch(this, callback.getUserInfo(), UserProfileActivity.REQUEST_CODE_PROFILE);
+    }
+
+    /**
+     * 清除缓存
+     */
+    @OnClick(R.id.clear_buffer)
+    @SuppressWarnings("unused")
+    protected void onClearBufferClicked() {
+        final ComfirmDialog comfirmDialog = ComfirmDialog.getInstance(getString(R.string.clear_buffer)
+                ,getString(R.string.clear_cache_notice_text));
+        comfirmDialog.show(getFragmentManager(), "clear");
+        comfirmDialog.setOnConfirmClickListener(new ComfirmDialog.OnComfirmClickListener() {
+            @Override
+            public void onConfirmClicked() {
+                //TODO 清除缓存
+                comfirmDialog.dismiss();
+            }
+        });
+    }
+
+    @OnClick(R.id.exit)
+    @SuppressWarnings("unused")
+    protected void onLogoutClicked() {
+        ComfirmDialog comfirmDialog = ComfirmDialog.getInstance(getString(R.string.exit_login),getString(R.string.exit_login_notice_text));
+        comfirmDialog.show(getFragmentManager(), "logout");
+        comfirmDialog.setOnConfirmClickListener(new ComfirmDialog.OnComfirmClickListener() {
+            @Override
+            public void onConfirmClicked() {
+                //TODO 1.清除缓存
+                //TODO 2.退出
+                UserManager.instance().clearUser(getActivity());
+                android.os.Process.killProcess(android.os.Process.myPid());
+            }
+        });
     }
 
     @OnClick(R.id.about)
     @SuppressWarnings("unused")
-    protected void doAboutClicked(){
+    protected void doAboutClicked() {
         AboutActivity.launch(this);
     }
 
 
-    public interface UserCallback{
+    public interface UserCallback {
         UserInfo getUserInfo();
     }
 }

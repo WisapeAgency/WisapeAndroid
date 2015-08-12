@@ -4,6 +4,8 @@
 
     <dimen name="app_divider_height">0.5dp</dimen>
     <dimen name="app_dialog_radius">3dp</dimen>
+
+
     <dimen name="app_text_size_xlarge">20sp</dimen>
     <dimen name="app_text_size_large">18sp</dimen>
     <dimen name="app_text_size_medium">16sp</dimen>

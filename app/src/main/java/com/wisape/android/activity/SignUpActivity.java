@@ -203,6 +203,7 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
             Bundle args = new Bundle();
             args.putString(EXTRA_EMAIL, email);
             args.putString(EXTRA_PASSWORD, password);
+            showProgressDialog(R.string.progress_dialog_reset_password);
             startLoad(LOADER_SIGN_UP, args);
         }
     }
@@ -247,7 +248,6 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
         switch (what){
             default :
                 break;
-
             case LOADER_SIGN_UP :
                 UserLogic logic = UserLogic.instance();
                 ApiUser.AttrSignUpInfo attr = new ApiUser.AttrSignUpInfo();
@@ -300,9 +300,7 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
 
     @Override
     protected void onLoadCompleted(Message data) {
-        if(isDestroyed() || null == data){
-            return;
-        }
+       super.onLoadCompleted(data);
 
         switch (data.what){
             default :
@@ -315,6 +313,7 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
                         MainActivity.launch(this, user, -1);
                     }else{
                         //TODO 注册登录失败
+                        showToast("登陆或者注册失败");
                     }
                 }
                 break;

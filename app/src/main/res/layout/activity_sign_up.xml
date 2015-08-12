@@ -4,7 +4,9 @@
     android:id="@+id/sign_up_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white">
+    android:background="@drawable/activity_sign_up_bg"
+    android:focusableInTouchMode="true"
+    android:focusable="true">
 
     <ImageView
         android:id="@+id/sign_up_logo"
@@ -12,118 +14,119 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="60dp"
-        android:src="@mipmap/login_logo"
-        android:scaleType="center"/>
+        android:scaleType="center"
+        android:src="@mipmap/login_logo" />
 
     <com.wisape.android.widget.SignUpEditText
         android:id="@+id/sign_up_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginRight="20dp"
+        android:layout_below="@+id/sign_up_logo"
         android:layout_marginEnd="20dp"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        app:sign_up_icon="@mipmap/message"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="30dp"
+        android:inputType="text"
         app:action="@drawable/icon_edit_clear_selector"
-        app:icon_paddingEnd="-10dp"
-        app:show_error="true"
-        app:warning_icon="@drawable/icon_warning"
-        app:warning_icon_paddingEnd="9dp"
-        app:warning_textStyle="@style/SignUp.Warning"
         app:edit_background="@drawable/sign_up_edit_bg_normal"
         app:edit_height="40dp"
+        app:edit_textStyle="@style/App.TextStyle.Edit"
+        app:icon_paddingEnd="9dp"
+        app:show_error="true"
+        app:sign_up_icon="@mipmap/message"
         app:warning_height="24dp"
-        android:inputType="text"/>
+        app:warning_icon="@drawable/icon_warning"
+        app:warning_icon_paddingEnd="9dp"
+        app:warning_textStyle="@style/SignUp.Warning" />
 
     <com.wisape.android.widget.SignUpEditText
         android:id="@+id/sign_up_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_below="@+id/sign_up_email"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        app:sign_up_icon="@mipmap/lock"
+        android:layout_below="@+id/sign_up_email"
+        android:layout_marginEnd="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginStart="20dp"
+        android:inputType="textPassword"
         app:action="@drawable/password_visibility_selector"
-        app:icon_paddingEnd="0dp"
-        app:show_error="true"
-        app:warning_icon="@mipmap/icon_warning"
-        app:warning_icon_paddingEnd="9dp"
-        app:warning_textStyle="@style/SignUp.Warning"
         app:edit_background="@drawable/sign_up_edit_bg_normal"
         app:edit_height="40dp"
+        app:edit_textStyle="@style/App.TextStyle.Edit"
+        app:icon_paddingEnd="9dp"
+        app:show_error="true"
+        app:sign_up_icon="@mipmap/lock"
         app:warning_height="24dp"
-        app:edit_textStyle="@style/App.TextStyle.Secondary"
-        android:inputType="textPassword"/>
+        app:warning_icon="@mipmap/icon_warning"
+        app:warning_icon_paddingEnd="9dp"
+        app:warning_textStyle="@style/SignUp.Warning" />
 
     <Button
         android:id="@+id/sign_up_btn"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
         android:layout_below="@+id/sign_up_password"
+        android:layout_centerHorizontal="true"
+        android:layout_marginEnd="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/sign_up_btn_bg"
         android:text="@string/sign_up_btn"
-        android:textAllCaps="false"/>
+        android:textAllCaps="false" />
 
     <TextView
         android:id="@+id/sign_up_forget_password"
+        style="@style/App.TextStyle.Secondary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:singleLine="true"
-        android:layout_marginTop="8dp"
-        android:layout_centerHorizontal="true"
         android:layout_below="@+id/sign_up_btn"
-        android:textColor="@color/app_tertiary"
-        android:text="@string/forget_password"/>
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:singleLine="true"
+        android:text="@string/forget_password" />
 
     <ImageButton
         android:id="@+id/sign_up_with_twitter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="17dp"
-        android:layout_centerHorizontal="true"
         android:layout_below="@+id/sign_up_forget_password"
-        android:src="@drawable/sign_up_with_twitter_selector"
-        android:scaleType="center"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:background="@android:color/transparent"
         android:gravity="center"
-        android:background="@android:color/transparent"/>
+        android:scaleType="center"
+        android:src="@drawable/sign_up_with_twitter_selector" />
 
     <ImageButton
         android:id="@+id/sign_up_with_facebook"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/sign_up_with_facebook_selector"
-        android:scaleType="center"
-        android:gravity="center"
         android:layout_alignTop="@+id/sign_up_with_twitter"
-        android:layout_toLeftOf="@+id/sign_up_with_twitter"
-        android:layout_toStartOf="@+id/sign_up_with_twitter"
         android:layout_marginEnd="17dp"
         android:layout_marginRight="20dp"
-        android:background="@android:color/transparent"/>
+        android:layout_toLeftOf="@+id/sign_up_with_twitter"
+        android:layout_toStartOf="@+id/sign_up_with_twitter"
+        android:background="@android:color/transparent"
+        android:gravity="center"
+        android:scaleType="center"
+        android:src="@drawable/sign_up_with_facebook_selector" />
 
     <ImageButton
         android:id="@+id/sign_up_with_google_plus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/sign_up_with_google_plus_selector"
-        android:scaleType="center"
-        android:gravity="center"
         android:layout_alignTop="@+id/sign_up_with_twitter"
-        android:layout_toRightOf="@+id/sign_up_with_twitter"
-        android:layout_toEndOf="@+id/sign_up_with_twitter"
-        android:layout_marginStart="17dp"
         android:layout_marginLeft="20dp"
-        android:background="@android:color/transparent"/>
+        android:layout_marginStart="17dp"
+        android:layout_toEndOf="@+id/sign_up_with_twitter"
+        android:layout_toRightOf="@+id/sign_up_with_twitter"
+        android:background="@android:color/transparent"
+        android:gravity="center"
+        android:scaleType="center"
+        android:src="@drawable/sign_up_with_google_plus_selector" />
 </RelativeLayout>

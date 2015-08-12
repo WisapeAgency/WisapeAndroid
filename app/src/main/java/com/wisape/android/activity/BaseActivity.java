@@ -1,6 +1,7 @@
 package com.wisape.android.activity;
 
 import android.app.ProgressDialog;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.widget.Toast;
 
@@ -34,6 +35,14 @@ public abstract class BaseActivity extends VolleyActivity{
     protected void closeProgressDialog(){
         if(mProgressDialog != null && mProgressDialog.isShowing()){
             mProgressDialog.dismiss();
+        }
+    }
+
+    @Override
+    protected void onLoadCompleted(Message data) {
+        closeProgressDialog();
+        if(isDestroyed() || null == data){
+            return;
         }
     }
 

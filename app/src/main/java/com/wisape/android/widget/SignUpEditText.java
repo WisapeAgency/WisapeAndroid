@@ -61,7 +61,7 @@ public class SignUpEditText extends LinearLayout implements View.OnFocusChangeLi
             editText.setOnFocusChangeListener(this);
             editText.setIconAndAction(icon, action);
             editText.setCompoundDrawablePadding(iconPaddingEnd > actionPaddingStart ? iconPaddingEnd : actionPaddingStart);
-            //editText.setPadding(iconPaddingStart, 0, actionPaddingEnd, 0);
+            editText.setPadding(iconPaddingStart, 0, actionPaddingEnd, 0);
 
             Drawable background = typed.getDrawable(R.styleable.SignUpEditText_edit_background);
             if(null != background){
