@@ -36,6 +36,6 @@ public class TestPlugin extends AbsPlugin{
 //            getCurrentActivity().
             callbackContext.success("success success!");
             Toast.makeText(cordova.getActivity(), "success success", Toast.LENGTH_LONG).show();
-            ((StoryTemplateActivity)cordova.getActivity()).invodeJavascriptTest();
+            ((StoryTemplateActivity)cordova.getActivity()).invokeJavascriptTest();
         }
  }

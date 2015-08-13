@@ -94,15 +94,15 @@ public class StoryManager{
         return Uri.fromFile(template);
     }
 
-    private static File getStoryTemplateDirectory(){
+    public static File getStoryTemplateDirectory(){
         return new File(EnvironmentUtils.getAppDataDirectory(), TEMPLATE_DIRECTORY);
     }
 
-    private static File getStoryDirectory(){
+    public static File getStoryDirectory(){
         return new File(EnvironmentUtils.getAppDataDirectory(), STORY_DIRECTORY);
     }
 
-    private static File getStoryMusicDirectory(){
+    public static File getStoryMusicDirectory(){
         return new File(EnvironmentUtils.getAppDataDirectory(), STORY_MUSIC);
     }
 

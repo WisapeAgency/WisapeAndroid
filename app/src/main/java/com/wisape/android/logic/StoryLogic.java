@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.util.Log;
 
+import com.google.gson.JsonObject;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.QueryBuilder;
@@ -26,6 +27,7 @@ import com.wisape.android.model.StoryMusicTypeInfo;
 import com.wisape.android.model.StoryTemplateInfo;
 import com.wisape.android.model.UserInfo;
 import com.wisape.android.network.Downloader;
+import com.wisape.android.network.Requester;
 import com.wisape.android.util.EnvironmentUtils;
 import com.wisape.android.util.Utils;
 import com.wisape.android.util.ZipUtils;
@@ -33,6 +35,7 @@ import com.wisape.android.widget.StoryMusicAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -584,6 +587,11 @@ public class StoryLogic{
         SharedPreferences preferences = getSharedPreferences(context);
         preferences.edit().putString(EXTRA_STORY_TEMPLATE_TYPE, templateTypeJson.toString()).commit();
         return templateTypeJson;
+    }
+
+    public Requester.ServerMessage getStoryTemplateUrl(Context context, ApiStory.AttrTemplateInfo attrInfo, Object tag){
+        ApiStory api = ApiStory.instance();
+        return api.getStoryTemplateUrl(context, attrInfo, tag);
     }
 
     private SharedPreferences getSharedPreferences(Context context){

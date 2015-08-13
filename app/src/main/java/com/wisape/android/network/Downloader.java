@@ -41,6 +41,12 @@ public class Downloader{
         return queue.remove(source);
     }
 
+    public interface DownloaderCallback{
+        void onDownloading(double progress);
+        void onCompleted(Uri uri);
+        void onError();
+    }
+
     public static void download(Context context, Uri source, Uri dest, String broadcastAction, Bundle tag) throws IOException {
         queue.add(source);
         OkHttpClient client = new OkHttpClient();
@@ -120,6 +126,74 @@ public class Downloader{
                 output.close();
             }
         }
+        removeDownloader(source);
+    }
+
+    public static void download(Uri source, Uri dest, DownloaderCallback callback) {
+        queue.add(source);
+        try {
+            OkHttpClient client = new OkHttpClient();
+            Request request = new Request.Builder().url(source.toString()).addHeader("Content-Type", "application/octet-stream").build();
+            Response response = client.newCall(request).execute();
+
+            File destFile = new File(dest.getPath());
+            InputStream input = null;
+            OutputStream output = null;
+            long download = 0;
+            try {
+                Log.d(TAG, "#download read and write; response:" + response.toString());
+                String contentLength = response.header("Content-Length", "0");
+                Log.d(TAG, "#download contentLength:" + contentLength);
+                long length;
+                try {
+                    length = Long.parseLong(contentLength);
+                } catch (Throwable e) {
+                    Log.e(TAG, "", e);
+                    length = 1024 * 1024 * 1024;
+                }
+
+                File parent = destFile.getParentFile();
+                if (!parent.exists()) {
+                    parent.mkdirs();
+                }
+                if (destFile.exists()) {
+                    destFile.delete();
+                }
+                destFile.createNewFile();
+
+                input = response.body().byteStream();
+                output = new BufferedOutputStream(new FileOutputStream(destFile));
+
+                int count;
+                byte[] buffer = new byte[1024 * 5];
+                double progress, preProgress = 0d;
+                for (; 0 < (count = input.read(buffer)); ) {
+                    download += count;
+                    output.write(buffer, 0, count);
+
+                    progress = ((double) download / (double) length);
+                    //1%
+                    if (0.01d <= (progress - preProgress)) {
+                        preProgress = progress;
+                        Log.d(TAG, Double.toString(progress));
+                        callback.onDownloading(progress);
+                    }
+                }
+
+                Log.d(TAG, "#download end !!!");
+            } finally {
+                if (null != input) {
+                    input.close();
+                }
+
+                if (null != output) {
+                    output.close();
+                }
+            }
+        }catch (IOException e){
+            callback.onError();
+        }
+        callback.onCompleted(dest);
         removeDownloader(source);
     }
 }

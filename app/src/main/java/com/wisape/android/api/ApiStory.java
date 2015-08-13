@@ -5,6 +5,9 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.wisape.android.R;
 import com.wisape.android.model.AttributeInfo;
 import com.wisape.android.model.ServerInfo;
@@ -17,6 +20,7 @@ import com.wisape.android.network.Requester;
 import com.wisape.android.network.WWWConfig;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -107,6 +111,15 @@ public class ApiStory extends ApiBase{
             return jsonArray;
         }
         return null;
+    }
+
+    public Requester.ServerMessage getStoryTemplateUrl(Context context, ApiStory.AttrTemplateInfo attr, Object tag){
+        Uri uri = WWWConfig.acquireUri(context.getString(R.string.uri_template_download));
+        Log.d(TAG, "#getStoryTemplateUrl uri:" + uri.toString());
+        Requester requester = Requester.instance();
+        setAccessToken(context, attr);
+        return requester.post(uri, attr.convert(), tag);
+
     }
 
     private Requester.ServerMessage doListStoryTemplateType(Context context, Object tag){
@@ -275,22 +288,38 @@ public class ApiStory extends ApiBase{
     }
 
     public static class AttrTemplateInfo extends AttrStoryInfo{
+        public static final String ATTR_ID = "id";
         public static final String ATTR_TYPE = "type";
 
+        public int id;
         public int type;
 
-        public AttrTemplateInfo(int type){
+        public AttrTemplateInfo(int id, int type){
+            this.id = id;
             this.type = type;
         }
 
         @Override
         protected void onConvert(Map<String, String> params) {
-            params.put(ATTR_TYPE, Integer.toString(type));
+            if(0 < id){
+                params.put(ATTR_ID, Integer.toString(id));
+            }
+            if(0 < type){
+                params.put(ATTR_TYPE, Integer.toString(type));
+            }
         }
 
         @Override
         protected int acquireAttributeNumber() {
-            return 1;
+            int count = 0;
+            if(0 < id){
+                count ++;
+            }
+
+            if(0 < type){
+                count ++;
+            }
+            return count;
         }
 
 
@@ -302,7 +331,8 @@ public class ApiStory extends ApiBase{
         @Override
         public void writeToParcel(Parcel dest, int flags) {
             super.writeToParcel(dest, flags);
-            dest.writeLong(this.type);
+            dest.writeInt(this.id);
+            dest.writeInt(this.type);
         }
 
         public AttrTemplateInfo() {
@@ -310,6 +340,7 @@ public class ApiStory extends ApiBase{
 
         protected AttrTemplateInfo(Parcel in) {
             super(in);
+            this.id = in.readInt();
             this.type = in.readInt();
         }
 

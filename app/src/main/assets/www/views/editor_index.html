@@ -32,6 +32,7 @@
             <button onclick="test(['test','test2']);">Test</button>
             <button onclick="getStageCategory();">getStageCategory</button>
             <button onclick="getStageList(1);">getStageList</button>
+            <button onclick="start(16);">Start</button>
             <div id="message"></div>
         </story>
     </div>
@@ -96,6 +97,23 @@
             }, function(e) {
                 alert("Error: "+e);
             }, "StoryTemplate", "getStageList", [id]);
+        }
+
+        /**
+        *
+        *下载模板
+        */
+        function start(id){
+            cordova.exec(function(retval) {
+                showMessage(retval);
+            }, function(e) {
+                alert("Error: "+e);
+            }, "StoryTemplate", "start", [id]);
+        }
+
+        function onDownloading(progress){
+            var message = "progress：" + progress;
+            showMessage(message);
         }
 
         function showMessage(message){
