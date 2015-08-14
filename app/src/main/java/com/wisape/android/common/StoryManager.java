@@ -32,10 +32,11 @@ import static com.wisape.android.logic.StoryLogic.PREFERENCES;
  */
 public class StoryManager{
     private static final String TAG = "StoryManager";
-    private static final String TEMPLATE_DIRECTORY = "template";
-    private static  final String STORY_DIRECTORY = "story";
+    public static final String TEMPLATE_DIRECTORY = "template";
+    public static  final String STORY_DIRECTORY = "story";
     private static final String STORY_SETTINGS = "settings";
     private static final String STORY_MUSIC = "music";
+    private static final String STORY_FONT = "font";
 
     public static final String EXTRA_STORY_SETTINGS = "_story_settings";
     private static final ConcurrentLinkedQueue<String> actionQueue = new ConcurrentLinkedQueue();
@@ -104,6 +105,10 @@ public class StoryManager{
 
     public static File getStoryMusicDirectory(){
         return new File(EnvironmentUtils.getAppDataDirectory(), STORY_MUSIC);
+    }
+
+    public static File getStoryFontDirectory(){
+        return new File(EnvironmentUtils.getAppDataDirectory(), STORY_FONT);
     }
 
     public static Uri downTemplate(Context context, StoryTemplateEntity entity, String broadcastAction, Bundle tag){

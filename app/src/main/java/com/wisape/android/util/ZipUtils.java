@@ -132,7 +132,7 @@ public class ZipUtils{
 
             File entryFile;
             OutputStream output;
-            if(!targetDir.exists()){
+            if(!targetDir.isDirectory()){
                 targetDir.mkdirs();
             }
 
@@ -163,9 +163,17 @@ public class ZipUtils{
                     output.close();
                 }
             }
+        }catch (IOException e) {
+            e.printStackTrace();
+            Log.e("zipUtils",e.getMessage());
+            throw e;
         }finally {
             if(null != zipInput){
-                zipInput.close();
+                try {
+                    zipInput.close();
+                }catch(IOException e){
+
+                }
             }
         }
         return Uri.fromFile(targetDir);

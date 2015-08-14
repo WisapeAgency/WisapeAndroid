@@ -10,6 +10,7 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
+import com.facebook.common.file.FileUtils;
 import com.google.gson.Gson;
 import com.wisape.android.api.ApiStory;
 import com.wisape.android.common.StoryManager;
@@ -20,12 +21,14 @@ import com.wisape.android.model.UserInfo;
 import com.wisape.android.network.Downloader;
 import com.wisape.android.network.Requester;
 import com.wisape.android.util.EnvironmentUtils;
+import com.wisape.android.util.ZipUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Created by LeiGuoting on 7/7/15.
@@ -75,28 +78,49 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
         startLoad(WHAT_DOWNLOAD_TEMPLATE, args);
     }
 
+    /**
+     * 下载字体
+     * @param fontName 字体名称
+     */
+    public void downloadFont(String fontName){
+
+    }
+
     public void invokeJavascriptTest(){
         loadUrl("javascript:test2()");
     }
 
     @Override
     protected Message onLoadBackgroundRunning(int what, Bundle args) throws AsyncLoaderError {
-        Message msg = Message.obtain();
+        final Message msg = Message.obtain();
         msg.what = what;
         switch (what){
             default :
                 return null;
             case WHAT_DOWNLOAD_TEMPLATE:{
                 int id = args.getInt(EXTRA_TEMPLATE_ID, 0);
-                String name = args.getString(EXTRA_TEMPLATE_NAME);
-                String url = args.getString(EXTRA_TEMPLATE_URL);
+                final String name = args.getString(EXTRA_TEMPLATE_NAME);
+                final String url = args.getString(EXTRA_TEMPLATE_URL);
                 Uri dest = Uri.fromFile(new File(StoryManager.getStoryTemplateDirectory(), name));
                 Downloader.download(Uri.parse(url),dest, new Downloader.DownloaderCallback(){
                     public void onDownloading(double progress){
-                        loadUrl("javascript:onDownloading("+progress+")");
+                        loadUrl("javascript:onDownloading(" + progress + ")");
                     }
-                    public void onCompleted(Uri uri){
-                        loadUrl("javascript:onCompleted('"+uri.toString()+"')");
+                    public void onCompleted(Uri downUri){
+                        loadUrl("javascript:onCompleted('" + downUri.toString() + "')");
+                        int index = name.lastIndexOf('.');
+                        String templateDir = name;
+                        if(0 < index){
+                            templateDir = name.substring(0, index);
+                        }
+                        File template = new File(StoryManager.getStoryTemplateDirectory(), templateDir);
+                        try {
+                            org.apache.commons.io.FileUtils.deleteDirectory(template);
+                            ZipUtils.unzip(downUri, template);
+                        }catch (IOException e){
+                            Log.e(TAG, "", e);
+                            loadUrl("javascript:onError('unzip error!')");
+                        }
                     }
                     public void onError(Uri uri){
                         loadUrl("javascript:onError('"+uri.toString()+"!')");
