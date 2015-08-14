@@ -98,7 +98,7 @@ public class StoryTemplatePlugin extends AbsPlugin{
                 if (cordova.getActivity() instanceof StoryTemplateActivity){
                     StoryTemplateActivity activity = (StoryTemplateActivity)cordova.getActivity();
                     try {
-                        activity.downloadTemplate(message.data.toString());
+                        activity.downloadTemplate(message.data.toString(),attr.id);
                     }catch (JSONException e){
                         callbackContext.error(-1);
                     }

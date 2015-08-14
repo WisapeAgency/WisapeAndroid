@@ -112,8 +112,16 @@
         }
 
         function onDownloading(progress){
-            var message = "progress：" + progress;
+            var message = "progress:" + progress;
             showMessage(message);
+        }
+
+        function onCompleted(path){
+            showMessage(path);
+        }
+
+        function onError(){
+            alert("download error!");
         }
 
         function showMessage(message){

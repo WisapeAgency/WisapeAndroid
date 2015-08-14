@@ -32,6 +32,7 @@ import java.io.File;
  */
 public class StoryTemplateActivity extends AbsCordovaActivity{
     private static final String START_URL = "file:///android_asset/www/views/editor_index.html";
+    private static final String EXTRA_TEMPLATE_ID = "temp_id";
     private static final String EXTRA_TEMPLATE_NAME = "temp_name";
     private static final String EXTRA_TEMPLATE_URL = "temp_url";
     private static final int WHAT_DOWNLOAD_TEMPLATE = 0x01;
@@ -61,12 +62,13 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
      * ÏÂÔØÄ£°å
      * @param data json
      */
-    public void downloadTemplate(String data) throws JSONException{
+    public void downloadTemplate(String data,int id) throws JSONException{
         JSONObject json = new JSONObject(data);
         String name = json.getString(EXTRA_TEMPLATE_NAME);
         String url = json.getString(EXTRA_TEMPLATE_URL);
 
         Bundle args = new Bundle();
+        args.putInt(EXTRA_TEMPLATE_ID, id);
         args.putString(EXTRA_TEMPLATE_NAME, name);
         args.putString(EXTRA_TEMPLATE_URL, url);
         args.putString(EXTRA_ACTION_DOWNLOAD_TEMPLATE, ACTION_DOWNLOAD_TEMPLATE);
@@ -85,23 +87,19 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
             default :
                 return null;
             case WHAT_DOWNLOAD_TEMPLATE:{
+                int id = args.getInt(EXTRA_TEMPLATE_ID, 0);
                 String name = args.getString(EXTRA_TEMPLATE_NAME);
                 String url = args.getString(EXTRA_TEMPLATE_URL);
-                String action = args.getString(EXTRA_ACTION_DOWNLOAD_TEMPLATE);
-                if(!EnvironmentUtils.isMounted()){
-                    return null;
-                }
                 Uri dest = Uri.fromFile(new File(StoryManager.getStoryTemplateDirectory(), name));
                 Downloader.download(Uri.parse(url),dest, new Downloader.DownloaderCallback(){
                     public void onDownloading(double progress){
                         loadUrl("javascript:onDownloading("+progress+")");
                     }
                     public void onCompleted(Uri uri){
-                        loadUrl("javascript:alert('Completed!')");
+                        loadUrl("javascript:onCompleted('"+uri.toString()+"')");
                     }
-
-                    public void onError(){
-                        loadUrl("javascript:alert('Error!')");
+                    public void onError(Uri uri){
+                        loadUrl("javascript:onError('"+uri.toString()+"!')");
                     }
                 });
                 break;
