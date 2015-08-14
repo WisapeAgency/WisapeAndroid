@@ -21,6 +21,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
 
 /**
@@ -30,10 +33,13 @@ public class StoryTemplatePlugin extends AbsPlugin{
     public static final String ACTION_GET_STAGE_CATEGORY = "getStageCategory";
     public static final String ACTION_GET_STAGE_LIST = "getStageList";
     public static final String ACTION_START = "start";
+    public static final String ACTION_READ = "read";
+    public static final String ACTION_REPLACE_FILE = "replaceFile";
 
     private static final int WHAT_GET_STAGE_CATEGORY = 0x01;
     private static final int WHAT_GET_STAGE_LIST = 0x02;
     private static final int WHAT_START = 0x03;
+//    private static final int WHAT_READ = 0x04;
 
     private static final String EXTRA_CATEGORY_ID = "extra_category_id";
     private static final String EXTRA_TEMPLATE_ID = "extra_template_id";
@@ -65,6 +71,18 @@ public class StoryTemplatePlugin extends AbsPlugin{
                 bundle.putInt(EXTRA_TEMPLATE_ID, args.getInt(0));//模板id
             }
             startLoad(WHAT_START, bundle);
+        } else if (ACTION_READ.equals(action)) {//read 读取场景文件
+            if(null != args && args.length() != 0){
+                String filePath = args.getString(0);//模板路径
+                String content = readHtml(filePath);
+                callbackContext.success(content);
+            }
+        }else if(ACTION_REPLACE_FILE.equals(action)){//replaceFile
+            if(null != args && args.length() == 2){
+                String newFilePath = args.getString(0);//用户新增资源文件的硬盘路径
+                String oldFilePath = args.getString(1);;//被替换的文件路径
+                replaceFile(newFilePath, oldFilePath);
+            }
         }
         return true;
     }
@@ -108,4 +126,32 @@ public class StoryTemplatePlugin extends AbsPlugin{
         return null;
     }
 
+    private String readHtml(String filePath){
+        StringBuffer content = new StringBuffer();
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new FileReader(filePath));
+            String line = null;
+            while ((line = reader.readLine()) != null){
+                content.append(line);
+            }
+            reader.close();
+            return content.toString();
+        }catch (IOException e){
+            return "";
+        }finally {
+            if(reader != null){
+                try{
+                    reader.close();
+                }catch (IOException e){
+
+                }
+
+            }
+        }
+    }
+
+    private void replaceFile(String newFilePath,String oldFilePath){
+
+    }
 }
