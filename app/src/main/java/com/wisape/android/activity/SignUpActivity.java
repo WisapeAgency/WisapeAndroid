@@ -253,7 +253,7 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
                 ApiUser.AttrSignUpInfo attr = new ApiUser.AttrSignUpInfo();
                 attr.email = args.getString(EXTRA_EMAIL, "");
                 String password = args.getString(EXTRA_PASSWORD, "");
-                attr.password = SecurityUtils.md5(password);
+                attr.password = password;
                 attr.type = UserManager.SIGN_UP_WITH_EMAIL;
                 args.clear();
 
