@@ -96,19 +96,35 @@ public class StoryManager{
     }
 
     public static File getStoryTemplateDirectory(){
-        return new File(EnvironmentUtils.getAppDataDirectory(), TEMPLATE_DIRECTORY);
+        File templateDirectory = new File(EnvironmentUtils.getAppDataDirectory(), TEMPLATE_DIRECTORY);
+        if (!templateDirectory.exists()){
+            templateDirectory.mkdirs();
+        }
+        return templateDirectory;
     }
 
     public static File getStoryDirectory(){
-        return new File(EnvironmentUtils.getAppDataDirectory(), STORY_DIRECTORY);
+        File storyDirectory = new File(EnvironmentUtils.getAppDataDirectory(), STORY_DIRECTORY);
+        if (!storyDirectory.exists()){
+            storyDirectory.mkdirs();
+        }
+        return storyDirectory;
     }
 
     public static File getStoryMusicDirectory(){
-        return new File(EnvironmentUtils.getAppDataDirectory(), STORY_MUSIC);
+        File musicDirectory = new File(EnvironmentUtils.getAppDataDirectory(), STORY_MUSIC);
+        if (!musicDirectory.exists()){
+            musicDirectory.mkdirs();
+        }
+        return musicDirectory;
     }
 
     public static File getStoryFontDirectory(){
-        return new File(EnvironmentUtils.getAppDataDirectory(), STORY_FONT);
+        File fontDirectory = new File(EnvironmentUtils.getAppDataDirectory(), STORY_FONT);
+        if (!fontDirectory.exists()){
+            fontDirectory.mkdirs();
+        }
+        return fontDirectory;
     }
 
     public static Uri downTemplate(Context context, StoryTemplateEntity entity, String broadcastAction, Bundle tag){

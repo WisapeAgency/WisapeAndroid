@@ -37,12 +37,15 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
     private static final String DOWNLOAD_PROGRESS = "progress";
     private static final String EXTRA_TEMPLATE_ID = "temp_id";
     private static final String EXTRA_TEMPLATE_NAME = "temp_name";
+    private static final String EXTRA_TEMPLATE_PATH = "temp_path";
     private static final String EXTRA_TEMPLATE_URL = "temp_url";
     private static final String EXTRA_FONT_NAME = "font_name";
 
     private static final int WHAT_DOWNLOAD_TEMPLATE = 0x01;
     private static final int WHAT_DOWNLOAD_FONT = 0x02;
     private static final int WHAT_DOWNLOAD_PROGRESS = 0x03;
+    private static final int WHAT_DOWNLOAD_COMPLETED = 0x04;
+    private static final int WHAT_DOWNLOAD_ERROR = 0x05;
 
     public static void launch(Activity activity, int requestCode){
         Intent intent = new Intent(activity.getApplicationContext(), StoryTemplateActivity.class);
@@ -61,9 +64,33 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
             switch (msg.what){
                 case WHAT_DOWNLOAD_PROGRESS:{
                     int id = msg.getData().getInt(EXTRA_TEMPLATE_ID,0);
-                    double progress = msg.getData().getDouble(DOWNLOAD_PROGRESS,0);
-                    loadUrl("javascript:onDownloading(" + progress + ")");
+                    double progress = msg.getData().getDouble(DOWNLOAD_PROGRESS, 0);
+                    try{
+                        JSONObject json = new JSONObject();
+                        json.put("id",id);
+                        json.put("progress",progress);
+                        loadUrl("javascript:onDownloading(" + json.toString() + ")");
+                    }catch(JSONException e){
+
+                    }
+                    break;
                 }
+                case WHAT_DOWNLOAD_COMPLETED:{
+                    int id = msg.getData().getInt(EXTRA_TEMPLATE_ID,0);
+                    String name = msg.getData().getString(EXTRA_TEMPLATE_NAME);
+                    String path = msg.getData().getString(EXTRA_TEMPLATE_PATH);
+                    loadUrl("javascript:onCompleted('" + id + "')");
+                    File template = getUnzipDirectory(name);
+                    unzipTemplate(Uri.fromFile(new File(path)), template);
+                    downloadFont(template);
+                    break;
+                }
+                case WHAT_DOWNLOAD_ERROR:{
+                    int id = msg.getData().getInt(EXTRA_TEMPLATE_ID,0);
+                    loadUrl("javascript:onError('"  +id + "!')");
+                    break;
+                }
+
             }
         }
     };
@@ -71,7 +98,9 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Uri uri = new Uri.Builder().scheme(ContentResolver.SCHEME_FILE).encodedPath(EnvironmentUtils.getAppDataDirectory().getPath()).appendEncodedPath("template_light/index.html").build();
+        Uri uri = new Uri.Builder().scheme(ContentResolver.SCHEME_FILE)
+                .encodedPath(EnvironmentUtils.getAppDataDirectory().getPath())
+                .appendEncodedPath("template_light/index.html").build();
         String url = uri.toString();
         Log.d(TAG, "#onCreate url:" + url);
         loadUrl(START_URL);
@@ -99,6 +128,9 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
      */
     public void downloadFont(File template){
         List<String> fontList = parseFont(template);
+        if (fontList.size() == 0){
+            return;
+        }
         File fontDirectory = StoryManager.getStoryFontDirectory();
         for(File file : fontDirectory.listFiles()){
             if(!fontList.contains(file.getName())){
@@ -164,20 +196,29 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
                         Message msg = Message.obtain();
                         Bundle bundle = new Bundle();
                         bundle.putInt(EXTRA_TEMPLATE_ID, id);
-                        bundle.putDouble(DOWNLOAD_PROGRESS,progress);
+                        bundle.putDouble(DOWNLOAD_PROGRESS, progress);
                         msg.what = WHAT_DOWNLOAD_PROGRESS;
                         msg.setData(bundle);
                         downloadHandler.sendMessage(msg);
                     }
                     public void onCompleted(Uri downUri){
-//                        loadUrl("javascript:onCompleted('" + downUri.toString() + "')");
-//                        File template = getUnzipDirectory(name);
-//                        unzipTemplate(downUri, template);
-//                        downloadFont(template);
+                        Message msg = Message.obtain();
+                        msg.what = WHAT_DOWNLOAD_COMPLETED;
+                        Bundle bundle = new Bundle();
+                        bundle.putInt(EXTRA_TEMPLATE_ID, id);
+                        bundle.putString(EXTRA_TEMPLATE_NAME, name);
+                        bundle.putString(EXTRA_TEMPLATE_PATH,downUri.getPath());
+                        msg.setData(bundle);
+                        downloadHandler.sendMessage(msg);
                     }
 
                     public void onError(Uri uri){
-//                        loadUrl("javascript:onError('"+uri.toString()+"!')");
+                        Message msg = Message.obtain();
+                        msg.what = WHAT_DOWNLOAD_ERROR;
+                        Bundle bundle = new Bundle();
+                        bundle.putInt(EXTRA_TEMPLATE_ID, id);
+                        msg.setData(bundle);
+                        downloadHandler.sendMessage(msg);
                     }
                 });
                 break;
@@ -233,9 +274,6 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
             case WHAT_DOWNLOAD_TEMPLATE:{
 
                 break;
-            }
-            case WHAT_DOWNLOAD_PROGRESS:{
-
             }
         }
     }
