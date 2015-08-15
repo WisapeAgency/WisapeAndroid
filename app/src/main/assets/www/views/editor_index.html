@@ -33,6 +33,7 @@
             <button onclick="getStageCategory();">getStageCategory</button>
             <button onclick="getStageList(1);">getStageList</button>
             <button onclick="start(16);">Start</button>
+            <button onclick="read('dddddddddddd');">read</button>
             <div id="message"></div>
         </story>
     </div>
@@ -109,6 +110,14 @@
             }, function(e) {
                 alert("Error: "+e);
             }, "StoryTemplate", "start", [id]);
+        }
+
+        function read(tempName){
+            cordova.exec(function(retval) {
+                showMessage(retval);
+            }, function(e) {
+                alert("Error: "+e);
+            }, "StoryTemplate", "read", [tempName]);
         }
 
         function onDownloading(progress){

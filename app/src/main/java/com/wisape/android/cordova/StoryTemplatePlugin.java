@@ -9,6 +9,7 @@ import com.google.gson.JsonObject;
 import com.wisape.android.activity.StoryTemplateActivity;
 import com.wisape.android.api.ApiStory;
 import com.wisape.android.api.ApiUser;
+import com.wisape.android.common.StoryManager;
 import com.wisape.android.database.StoryTemplateEntity;
 import com.wisape.android.logic.StoryLogic;
 import com.wisape.android.network.Requester;
@@ -22,6 +23,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
@@ -30,6 +32,8 @@ import java.util.HashMap;
  * Created by tony on 2015/7/19.
  */
 public class StoryTemplatePlugin extends AbsPlugin{
+    private static final String TEMPLATE_NAME = "stage.html";
+
     public static final String ACTION_GET_STAGE_CATEGORY = "getStageCategory";
     public static final String ACTION_GET_STAGE_LIST = "getStageList";
     public static final String ACTION_START = "start";
@@ -73,8 +77,8 @@ public class StoryTemplatePlugin extends AbsPlugin{
             startLoad(WHAT_START, bundle);
         } else if (ACTION_READ.equals(action)) {//read 读取场景文件
             if(null != args && args.length() != 0){
-                String filePath = args.getString(0);//模板路径
-                String content = readHtml(filePath);
+                String templateName = args.getString(0);//模板名称
+                String content = readHtml(templateName);
                 callbackContext.success(content);
             }
         }else if(ACTION_REPLACE_FILE.equals(action)){//replaceFile
@@ -126,11 +130,12 @@ public class StoryTemplatePlugin extends AbsPlugin{
         return null;
     }
 
-    private String readHtml(String filePath){
+    private String readHtml(String templateName){
+        File file = new File(StoryManager.getStoryFontDirectory(), templateName);
         StringBuffer content = new StringBuffer();
         BufferedReader reader = null;
         try {
-            reader = new BufferedReader(new FileReader(filePath));
+            reader = new BufferedReader(new FileReader(new File(file, TEMPLATE_NAME)));
             String line = null;
             while ((line = reader.readLine()) != null){
                 content.append(line);
