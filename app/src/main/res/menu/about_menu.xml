@@ -4,6 +4,6 @@
 
     <item
         android:title="@string/photo_menu_buckets"
-        android:icon="@drawable/release_email"
+        android:icon="@mipmap/icon_shareabout"
         app:showAsAction="always"/>
 </menu>

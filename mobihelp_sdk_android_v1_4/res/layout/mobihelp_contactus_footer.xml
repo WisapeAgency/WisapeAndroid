@@ -11,9 +11,12 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="32dp"
         android:layout_marginRight="32dp"
+        android:layout_marginTop="32dp"
         android:paddingLeft="32dp"
         android:paddingRight="32dp"
-        android:text="@string/mobihelp_label_contact_us" />
+        android:text="@string/mobihelp_label_contact_us"
+        android:textAllCaps="false"
+        android:background="@drawable/sign_up_btn_bg"/>
 
     <TextView
         android:layout_width="match_parent"

@@ -259,7 +259,7 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
 
                 UserInfo user = logic.signUp(getApplicationContext(), attr, getCancelableTag());
                 msg.obj = user;
-                msg.arg1 = STATUS_SUCCESS;
+                msg.arg1 = user.status;
                 break;
 
             case LOADER_SIGN_UP_WITH_FACEBOOK :

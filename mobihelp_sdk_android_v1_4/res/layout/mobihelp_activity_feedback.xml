@@ -23,7 +23,9 @@
             android:inputType="textLongMessage|textMultiLine|textAutoCorrect|textCapSentences"
             android:maxLines="8"
             android:minLines="4"
-            android:singleLine="false" >
+            android:singleLine="false"
+            android:textSize="@dimen/app_text_size_xlarge"
+            android:textColor="@color/app_sixth">
 
             <requestFocus />
         </EditText>
@@ -74,7 +76,9 @@
             android:inputType="textPersonName|textCapWords"
             android:hint="@string/mobihelp_hint_name"
             android:minHeight="48dp"
-            android:singleLine="true" >
+            android:singleLine="true"
+            android:textSize="@dimen/app_text_size_xlarge"
+            android:textColor="@color/app_sixth">
         </EditText>
 
         <AutoCompleteTextView
@@ -86,7 +90,9 @@
             android:minHeight="48dp"
             android:hint="@string/mobihelp_hint_email"
             android:inputType="textEmailAddress"
-            android:singleLine="true" />
+            android:singleLine="true"
+            android:textSize="@dimen/app_text_size_xlarge"
+            android:textColor="@color/app_sixth"/>
         
         <ProgressBar
             android:id="@+id/mobihelp_feedback_progressbar"

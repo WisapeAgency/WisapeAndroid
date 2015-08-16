@@ -9,8 +9,8 @@
     <string name="message_center">Message Center</string>
     <string name="help_center">Help Center</string>
     <string name="clear_buffer">Clear Cache</string>
-    <string name="clear_cache_notice_text">Do you sure remove the cache?\nAre you sure you want to \cn
-        clear your cache? All traces and drafts of your cache will be\nremoved.</string>
+    <string name="clear_cache_notice_text">Do you sure remove the cache?\nAre you sure you want to
+        clear your cache? \n All traces and drafts of your cache will be removed.</string>
     <string name="exit_login">Logout</string>
     <string name="exit_login_notice_text">Do you exit the current account?\n
        Logout will not delete any data.You\ncan still login with this account.</string>
@@ -36,10 +36,11 @@
     <!--Reset Password-->
     <string name="password_reset">Next</string>
     <string name="password_reset_label">Password Reset</string>
+    <string name="password_reset_success_label">Password Rest Success</string>
     <string name="password_reset_email_account_text">email account:</string>
     <string name="password_reset_notice_text">Please enter your email acount address,\n password reset link will be sent to \n you by email</string>
     <string name="password_reset_success_text_start">The password set link has been sent to \n you </string>
-    <string name="password_reset_success_text_end">,\ncheck the email and click the link to reset your password.</string>
+    <string name="password_reset_success_text_end">,\n check the email and click the link to reset your password.</string>
     <!--User Profile-->
     <string name="user_profile_icon_title">用户头像</string>
     <string name="user_profile_name_title">昵称</string>
@@ -82,6 +83,9 @@
     <string name="title_moments">Moments</string>
     <string name="title_wechat">WeChat</string>
     <string name="title_more">More</string>
+
+    <!--消息中心-->
+    <string name="message_center_label">Message Center</string>
 
     <!--进度对话框资源-->
     <string name="progress_dialog_reset_password">正在发送消息</string>

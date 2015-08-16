@@ -61,30 +61,30 @@ public class StoryTemplatePlugin extends AbsPlugin{
             return true;
         }
         this.callbackContext = callbackContext;
-        if(ACTION_GET_STAGE_CATEGORY.equals(action)){//getStageCategory  获取列表类型
+        if(ACTION_GET_STAGE_CATEGORY.equals(action)){//getStageCategory
             startLoad(WHAT_GET_STAGE_CATEGORY, null);
-        } else if (ACTION_GET_STAGE_LIST.equals(action)){//getStageList  获取模板列表
+        } else if (ACTION_GET_STAGE_LIST.equals(action)){//getStageList
             Bundle bundle = new Bundle();
             if(null != args && args.length() != 0){
-                bundle.putInt(EXTRA_CATEGORY_ID, args.getInt(0));//模板类型id
+                bundle.putInt(EXTRA_CATEGORY_ID, args.getInt(0));//
             }
             startLoad(WHAT_GET_STAGE_LIST, bundle);
-        } else if (ACTION_START.equals(action)) {//start   下载模板
+        } else if (ACTION_START.equals(action)) {//start
             Bundle bundle = new Bundle();
             if(null != args && args.length() != 0){
-                bundle.putInt(EXTRA_TEMPLATE_ID, args.getInt(0));//模板id
+                bundle.putInt(EXTRA_TEMPLATE_ID, args.getInt(0));//
             }
             startLoad(WHAT_START, bundle);
-        } else if (ACTION_READ.equals(action)) {//read 读取场景文件
+        } else if (ACTION_READ.equals(action)) {//read
             if(null != args && args.length() != 0){
-                String templateName = args.getString(0);//模板名称
+                String templateName = args.getString(0);//
                 String content = readHtml(templateName);
                 callbackContext.success(content);
             }
         }else if(ACTION_REPLACE_FILE.equals(action)){//replaceFile
             if(null != args && args.length() == 2){
-                String newFilePath = args.getString(0);//用户新增资源文件的硬盘路径
-                String oldFilePath = args.getString(1);;//被替换的文件路径
+                String newFilePath = args.getString(0);//
+                String oldFilePath = args.getString(1);//
                 replaceFile(newFilePath, oldFilePath);
             }
         }

@@ -25,7 +25,9 @@
         android:hint="@string/mobihelp_hint_enter_text_here"
         android:inputType="textMultiLine|textCapSentences"
         android:maxLines="4"
-        android:singleLine="false" />
+        android:singleLine="false"
+        android:textSize="@dimen/app_text_size_xlarge"
+        android:textColor="@color/app_sixth"/>
 
     <ImageView
         android:id="@+id/mobihelp_conversation_send_image_view"

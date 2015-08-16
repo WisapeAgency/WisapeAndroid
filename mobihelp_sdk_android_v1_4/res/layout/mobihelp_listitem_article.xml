@@ -11,4 +11,5 @@
     android:paddingTop="10dp"
     android:singleLine="false"
     android:text="Medium Text"
-    android:textAppearance="?android:attr/textAppearanceMedium" />
+    android:textAppearance="?android:attr/textAppearanceMedium"
+    />

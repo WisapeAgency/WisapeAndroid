@@ -34,7 +34,7 @@
         app:edit_textStyle="@style/App.TextStyle.Edit"
         app:icon_paddingEnd="9dp"
         app:show_error="true"
-        app:sign_up_icon="@mipmap/message"
+        app:sign_up_icon="@mipmap/login_email"
         app:warning_height="24dp"
         app:warning_icon="@drawable/icon_warning"
         app:warning_icon_paddingEnd="9dp"

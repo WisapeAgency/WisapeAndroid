@@ -89,9 +89,11 @@ public class PasswordResetActivity extends BaseActivity implements SignUpEditTex
 
     @Override
     protected void onLoadCompleted(Message data) {
+        super.onLoadCompleted(data);
         if(RESET_USER_EMAIL == data.what){
             if(STATUS_OK == data.arg1){
                 PasswordResetSuccessActivity.launch(this,mPasswordRestEmailEdit.getText().toString());
+                PasswordResetActivity.this.finish();
             }else{
                showToast("请求错误");
             }

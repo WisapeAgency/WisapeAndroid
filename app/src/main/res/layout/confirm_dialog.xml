@@ -41,7 +41,8 @@
             android:layout_height="wrap_content"
             android:text="@string/confirm_dialog_cancle"
             style="@style/App.TextStyle.Secondary"
-            android:background="@null"/>
+            android:background="@null"
+            android:textAllCaps="false"/>
 
         <Button
             android:id="@+id/confirm_dialog_btn_confirm"
@@ -51,7 +52,8 @@
             android:text="@string/confirm_dialog_confirm"
             android:background="@null"
             android:textColor="@color/app_secondary"
-            style="@style/App.TextStyle.Secondary"/>
+            style="@style/App.TextStyle.Secondary"
+            android:textAllCaps="false"/>
     </LinearLayout>
 
 

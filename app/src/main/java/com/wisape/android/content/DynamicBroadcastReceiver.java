@@ -9,6 +9,7 @@ import android.util.Log;
  * Created by LeiGuoting on 8/7/15.
  */
 public class DynamicBroadcastReceiver extends BroadcastReceiver {
+    private static final String MESSAGE_RECEIVER_ACTION = "com.wisape.android.content.MessageCenterReceiver";
     private volatile boolean destroyed;
     private OnDynamicBroadcastReceiverListener listener;
 

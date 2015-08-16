@@ -21,9 +21,9 @@
     <View
         android:id="@+id/mobihelp_conversation_divider"
         android:layout_width="match_parent"
-        android:layout_height="2dp"
+        android:layout_height="0.5dp"
         android:layout_above="@+id/mobihelp_conversation_reply_group"
-        android:background="@android:color/darker_gray" />
+        android:color="@color/mobihelp_divider_dark" />
 
     <include layout="@layout/mobihelp_partial_reply_frame" 
         android:layout_width="match_parent"

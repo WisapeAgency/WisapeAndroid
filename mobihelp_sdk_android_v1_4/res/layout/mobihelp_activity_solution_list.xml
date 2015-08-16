@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:background="#ffffff">
 
     <RelativeLayout
         android:id="@+id/mobihelp_support_my_conversations_group"
@@ -22,7 +23,9 @@
             android:paddingRight="8dp"
             android:paddingTop="8dp"
             android:text="@string/mobihelp_label_my_conversations"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/app_sixth"
+            android:textSize="@dimen/app_text_size_medium"/>
 
         <ImageView
             android:id="@+id/mobihelp_support_my_conversations_image"
@@ -59,7 +62,7 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="2dp"
+            android:layout_height="0.5dp"
             android:layout_below="@id/mobihelp_support_my_conversations"
             android:background="@color/mobihelp_divider_dark" />
     </RelativeLayout>
@@ -75,13 +78,23 @@
         android:paddingTop="8dp"
         android:text="@string/mobihelp_label_support_solutions_list_label"
         android:textAppearance="?android:attr/textAppearance"
-        android:textStyle="bold" />
+        android:textColor="@color/app_sixth"
+        android:textSize="@dimen/app_text_size_medium"
+        android:textStyle="bold"
+        android:visibility="gone"/>
+
+    <View
+        android:id="@+id/diver"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_below="@id/mobihelp_support_solutions_label"
+        android:background="@color/mobihelp_divider_dark" />
 
     <RelativeLayout
         android:id="@+id/mobihelp_support_solutions_group"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/mobihelp_support_solutions_label" >
+        android:layout_below="@id/diver" >
 
         <ListView
             android:id="@+id/list"
@@ -91,7 +104,7 @@
             android:dividerHeight="1px"
             android:minHeight="?android:attr/listPreferredItemHeight"
             android:paddingLeft="8dp"
-            android:paddingRight="8dp" />
+            android:paddingRight="8dp"/>
 
         <TextView
             android:id="@+id/empty"

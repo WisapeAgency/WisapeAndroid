@@ -5,7 +5,7 @@
     <color name="mobihelp_ticket_unread_count_bubble_text">@color/mobihelp_white</color>
     
     <!-- Background Color of unread ticket count text -->
-    <color name="mobihelp_unread_count_indicator_bg">#cc1500</color>
+    <color name="mobihelp_unread_count_indicator_bg">#ff8800</color>
 
     <!-- Color for conversation list item -->
     <!-- Color for all text entered by user in the conversation view -->
@@ -19,9 +19,28 @@
 
     <!-- Divider colors -->
     <color name="mobihelp_divider_light">#c7c7c7</color>
-    <color name="mobihelp_divider_dark">#bbb</color>
+    <color name="mobihelp_divider_dark">#eaeaeb</color>
 
     <!-- Misc -->
     <color name="mobihelp_white">#EFEFEF</color>
+
+    <color name="app_primary">#FFFFFF</color>
+    <color name="app_edit_bottom">@android:color/darker_gray</color>
+    <color name="app_primary_transparent_10p">#1AFFFFFF</color>
+    <color name="app_primary_transparent_30p">#4DFFFFFF</color>
+    <color name="app_primary_transparent_50p">#80FFFFFF</color>
+    <color name="app_secondary">#1FBC1B</color>
+
+    <color name="app_tertiary">#666666</color>
+    <color name="app_fourth">#000000</color>
+    <color name="app_fifth">#FF8800</color>
+    <color name="app_edit_normal">#96999B</color>
+    <color name="app_text_pressed">#f5f5f5</color>
+
+    <color name="app_sixth">#2D3437</color>
+
+    <color name="app_sixth_transparent_50p">#802D3437</color>
+
+
 
 </resources>
