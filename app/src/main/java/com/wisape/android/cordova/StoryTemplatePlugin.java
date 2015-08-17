@@ -16,6 +16,7 @@ import com.wisape.android.logic.StoryLogic;
 import com.wisape.android.model.StoryTemplateInfo;
 import com.wisape.android.network.Requester;
 
+import org.apache.commons.io.*;
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaArgs;
 import org.apache.cordova.CordovaInterface;
@@ -91,7 +92,7 @@ public class StoryTemplatePlugin extends AbsPlugin{
         }else if(ACTION_REPLACE_FILE.equals(action)){//replaceFile
             if(null != args && args.length() == 2){
                 String newFilePath = args.getString(0);//用户新增资源文件的硬盘路径
-                String oldFilePath = args.getString(1);;//被替换的文件路径
+                String oldFilePath = args.getString(1);//被替换的文件路径
                 replaceFile(newFilePath, oldFilePath);
             }
         }else if (ACTION_FINISH.equals(action)){//finish
@@ -147,7 +148,7 @@ public class StoryTemplatePlugin extends AbsPlugin{
     }
 
     private String readHtml(String templateName){
-        File file = new File(StoryManager.getStoryFontDirectory(), templateName);
+        File file = new File(StoryManager.getStoryTemplateDirectory(), templateName);
         StringBuffer content = new StringBuffer();
         BufferedReader reader = null;
         try {
@@ -173,6 +174,16 @@ public class StoryTemplatePlugin extends AbsPlugin{
     }
 
     private void replaceFile(String newFilePath,String oldFilePath){
-
+        File newFile = new File(newFilePath);
+        if (!newFile.exists()){
+            callbackContext.error("new File Path does not exists!");
+        }
+        File oldFile = new File(oldFilePath);
+        try {
+            org.apache.commons.io.FileUtils.copyFile(newFile, oldFile);
+        }catch (IOException e){
+            callbackContext.error("copy file error!" + e.getMessage());
+        }
+        callbackContext.success();
     }
 }
