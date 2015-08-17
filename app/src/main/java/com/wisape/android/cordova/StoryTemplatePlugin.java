@@ -122,7 +122,7 @@ public class StoryTemplatePlugin extends AbsPlugin{
                 if(entities == null){
                     entities = new ArrayList<>();
                 }
-                callbackContext.success(new JSONArray(entities));
+                callbackContext.success(new Gson().toJson(entities));
                 break;
             }
             case WHAT_START: {
