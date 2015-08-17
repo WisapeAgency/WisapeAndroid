@@ -13,7 +13,7 @@ public class StoryTemplateTypeInfo extends ServerInfo{
      "name": "大",
      "order": 1
      */
-    public long id;
+    public int id;
     public String name;
     public int order;
 
@@ -23,7 +23,7 @@ public class StoryTemplateTypeInfo extends ServerInfo{
         }
 
         StoryTemplateTypeInfo info = new StoryTemplateTypeInfo();
-        info.id = jsonObj.optLong("id");
+        info.id = jsonObj.optInt("id");
         info.name = jsonObj.optString("name");
         info.order = jsonObj.optInt("order");
         return info;
@@ -36,7 +36,7 @@ public class StoryTemplateTypeInfo extends ServerInfo{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(this.id);
+        dest.writeInt(this.id);
         dest.writeString(this.name);
         dest.writeInt(this.order);
     }
@@ -45,7 +45,7 @@ public class StoryTemplateTypeInfo extends ServerInfo{
     }
 
     protected StoryTemplateTypeInfo(Parcel in) {
-        this.id = in.readLong();
+        this.id = in.readInt();
         this.name = in.readString();
         this.order = in.readInt();
     }

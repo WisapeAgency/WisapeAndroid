@@ -6,12 +6,14 @@ import android.os.Message;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.wisape.android.WisapeApplication;
 import com.wisape.android.activity.StoryTemplateActivity;
 import com.wisape.android.api.ApiStory;
 import com.wisape.android.api.ApiUser;
 import com.wisape.android.common.StoryManager;
 import com.wisape.android.database.StoryTemplateEntity;
 import com.wisape.android.logic.StoryLogic;
+import com.wisape.android.model.StoryTemplateInfo;
 import com.wisape.android.network.Requester;
 
 import org.apache.cordova.CallbackContext;
@@ -26,7 +28,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by tony on 2015/7/19.
@@ -51,6 +56,7 @@ public class StoryTemplatePlugin extends AbsPlugin{
 
     private CallbackContext callbackContext;
     private StoryLogic logic = StoryLogic.instance();
+    private WisapeApplication app = WisapeApplication.getInstance();
 
     @Override
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
@@ -101,15 +107,22 @@ public class StoryTemplatePlugin extends AbsPlugin{
             default :
                 return null;
             case WHAT_GET_STAGE_CATEGORY : {
-                JSONArray jsonStr = logic.listStoryTemplateType(context, null);
+//                JSONArray jsonStr = logic.listStoryTemplateType(context, null);
+                JSONArray jsonStr = logic.listStoryTemplateTypeLocal(context);
                 callbackContext.success(jsonStr);
                 break;
             }
             case WHAT_GET_STAGE_LIST: {
-                ApiStory.AttrTemplateInfo attr = new ApiStory.AttrTemplateInfo();
-                attr.type = args.getInt(EXTRA_CATEGORY_ID, 0);
-                StoryTemplateEntity[] entities = logic.listStoryTemplate(context, attr, null);
-                callbackContext.success(new Gson().toJson(entities));
+//                ApiStory.AttrTemplateInfo attr = new ApiStory.AttrTemplateInfo();
+//                attr.type = args.getInt(EXTRA_CATEGORY_ID, 0);
+//                StoryTemplateEntity[] entities = logic.listStoryTemplate(context, attr, null);
+//                callbackContext.success(new Gson().toJson(entities));
+                int type = args.getInt(EXTRA_CATEGORY_ID, 0);
+                List<StoryTemplateInfo> entities = app.getTemplateMap().get(type);
+                if(entities == null){
+                    entities = new ArrayList<>();
+                }
+                callbackContext.success(new JSONArray(entities));
                 break;
             }
             case WHAT_START: {

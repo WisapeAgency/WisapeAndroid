@@ -9,7 +9,7 @@ import com.wisape.android.model.StoryTemplateTypeInfo;
  * Created by tony on 2015/7/20.
  */
 public class StoryTemplateTypeEntity extends BaseEntity implements Parcelable{
-    public long serverId;
+    public int serverId;
     public String name;
     public int order;
 
@@ -44,7 +44,7 @@ public class StoryTemplateTypeEntity extends BaseEntity implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(this.serverId);
+        dest.writeInt(this.serverId);
         dest.writeString(this.name);
         dest.writeInt(this.order);
     }
@@ -53,7 +53,7 @@ public class StoryTemplateTypeEntity extends BaseEntity implements Parcelable{
     }
 
     protected StoryTemplateTypeEntity(Parcel in) {
-        this.serverId = in.readLong();
+        this.serverId = in.readInt();
         this.name = in.readString();
         this.order = in.readInt();
     }

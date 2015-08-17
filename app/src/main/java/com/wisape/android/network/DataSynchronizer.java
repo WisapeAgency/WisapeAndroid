@@ -7,6 +7,7 @@ import android.util.Log;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
+import com.wisape.android.WisapeApplication;
 import com.wisape.android.api.ApiStory;
 import com.wisape.android.common.StoryManager;
 import com.wisape.android.database.StoryTemplateEntity;
@@ -39,15 +40,16 @@ import java.util.concurrent.TimeUnit;
  * Created by William on 2015/8/16.
  */
 public class DataSynchronizer {
+    private static final String THUMB_NAME = "thumb.jpg";
+    private static final String STAGE_NAME = "stage.html";
     private static DataSynchronizer instance = new DataSynchronizer();
     public static DataSynchronizer getInstance(){
         return instance;
     }
 
     private Context context;
+    private WisapeApplication application;
     private StoryLogic logic = StoryLogic.instance();
-    private List<StoryTemplateTypeInfo> templateTypeList = new ArrayList<>();
-    private Map<Long,List<StoryTemplateInfo>> templateMap = new HashMap<>();
     private BlockingQueue<StoryTemplateInfo> downloadQueue = new LinkedBlockingQueue<>();
     private DataSynchronizer(){
 
@@ -55,6 +57,7 @@ public class DataSynchronizer {
 
     public void synchronous(Context context){
         this.context = context;
+        this.application = WisapeApplication.getInstance();
         ExecutorService service = Executors.newCachedThreadPool();
         service.execute(new Downloader(downloadQueue));
         service.execute(new Downloader(downloadQueue));
@@ -78,32 +81,28 @@ public class DataSynchronizer {
         StoryTemplateTypeInfo templateType = new StoryTemplateTypeInfo();
         templateType.id = obj.getInt("id");
         templateType.name = obj.getString("name");
-        try{
-            templateType.order = obj.getInt("order");
-        }catch (JSONException e){
-            templateType.order = 0;
-        }
-        templateTypeList.add(templateType);
+        templateType.order = obj.optInt("order");
+        application.getTemplateTypeList().add(templateType);
 
         ApiStory.AttrTemplateInfo attr = new ApiStory.AttrTemplateInfo();
         attr.type = templateType.id;
         StoryTemplateEntity[] entities = logic.listStoryTemplate(context, attr, null);
         for (StoryTemplateEntity template : entities){
             StoryTemplateInfo templateInfo = StoryTemplateEntity.convert(template);
-            templateInfo.temp_img_local = new File(StoryManager.getStoryTemplateDirectory(),
-                    templateInfo.temp_name).getAbsolutePath();
-            List<StoryTemplateInfo> storyTemplateInfoList = templateMap.get(templateType.id);
+            File temp_dir = new File(StoryManager.getStoryTemplateDirectory(), templateInfo.temp_name);
+            templateInfo.temp_img_local = new File(temp_dir, THUMB_NAME).getAbsolutePath();
+            templateInfo.exists = new File(temp_dir, STAGE_NAME).exists();
+            List<StoryTemplateInfo> storyTemplateInfoList = application.getTemplateMap().get(templateType.id);
             if (storyTemplateInfoList == null){
                 storyTemplateInfoList = new ArrayList<>();
             }
             storyTemplateInfoList.add(templateInfo);
-            templateMap.put(templateType.id, storyTemplateInfoList);
+            application.getTemplateMap().put(templateType.id, storyTemplateInfoList);
             downloadQueue.offer(templateInfo);
         }
     }
 
     public static class Downloader implements Runnable{
-        private static final String THUMB_NAME = "thumb.jpg";
         private BlockingQueue<StoryTemplateInfo> downloadQueue;
 
         public Downloader(BlockingQueue<StoryTemplateInfo> downloadQueue){
@@ -133,7 +132,7 @@ public class DataSynchronizer {
             if(!EnvironmentUtils.isMounted()){
                 return;
             }
-            File destFile = new File(templateInfo.temp_img_local,THUMB_NAME);
+            File destFile = new File(templateInfo.temp_img_local);
             File parent = destFile.getParentFile();
             if (!parent.exists()) {
                 parent.mkdirs();
@@ -159,7 +158,7 @@ public class DataSynchronizer {
                     output.write(buffer, 0, count);
                 }
             }catch (IOException e){
-
+                Log.e("DataSynchronizer", "œ¬‘ÿƒ£∞ÂÀı¬‘Õº ß∞‹!", e);
             } finally {
                 if (null != input) {
                     try {

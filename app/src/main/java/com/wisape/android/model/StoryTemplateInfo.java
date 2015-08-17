@@ -13,10 +13,12 @@ public class StoryTemplateInfo extends ServerInfo{
      "id": "5",
      "temp_name": "111111111111",
      "temp_img": "http://loc.wis/uploads/2015071704/82c37406f5e14ba5221605532e306ea3.jpg",
+     "temp_img_local":/xxxx/ss/dd/thumb.jpg,
      "temp_description": "111111111111111111111111111111111111111111111111111",
      "temp_url": "http://loc.wis/uploads/2015071704/c0ad9aea5579dbd27d1703cd254a02d9.zip",
      "rec_status": "A",
      "type": "2",
+     "exists": "0",
      "order": "2",
      "order_type": "N"
      */
@@ -29,6 +31,7 @@ public class StoryTemplateInfo extends ServerInfo{
     public String temp_url;
     public String rec_status;
     public long type;
+    public boolean exists;
     public int order;
     public String order_type;
 

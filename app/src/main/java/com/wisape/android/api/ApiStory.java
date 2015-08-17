@@ -291,8 +291,8 @@ public class ApiStory extends ApiBase{
         public static final String ATTR_ID = "id";
         public static final String ATTR_TYPE = "type";
 
-        public long id;
-        public long type;
+        public int id;
+        public int type;
 
         public AttrTemplateInfo(int id, int type){
             this.id = id;
@@ -302,10 +302,10 @@ public class ApiStory extends ApiBase{
         @Override
         protected void onConvert(Map<String, String> params) {
             if(0 < id){
-                params.put(ATTR_ID, Long.toString(id));
+                params.put(ATTR_ID, Integer.toString(id));
             }
             if(0 < type){
-                params.put(ATTR_TYPE, Long.toString(type));
+                params.put(ATTR_TYPE, Integer.toString(type));
             }
         }
 
@@ -331,8 +331,8 @@ public class ApiStory extends ApiBase{
         @Override
         public void writeToParcel(Parcel dest, int flags) {
             super.writeToParcel(dest, flags);
-            dest.writeLong(this.id);
-            dest.writeLong(this.type);
+            dest.writeInt(this.id);
+            dest.writeInt(this.type);
         }
 
         public AttrTemplateInfo() {

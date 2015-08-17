@@ -39,7 +39,7 @@ public class StoryManager{
     private static final String STORY_FONT = "font";
 
     public static final String EXTRA_STORY_SETTINGS = "_story_settings";
-    private static final ConcurrentLinkedQueue<String> actionQueue = new ConcurrentLinkedQueue();
+    private static final ConcurrentLinkedQueue<String> actionQueue = new ConcurrentLinkedQueue<>();
 
     public static void addAction(String action){
         if(null == action || 0 == action.length()){

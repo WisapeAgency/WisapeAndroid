@@ -10,19 +10,35 @@ import com.parse.ParseInstallation;
 import com.parse.PushService;
 import com.wisape.android.activity.MainActivity;
 import com.wisape.android.database.DatabaseHelper;
+import com.wisape.android.model.StoryTemplateInfo;
+import com.wisape.android.model.StoryTemplateTypeInfo;
 import com.wisape.android.network.WWWConfig;
 import com.wisape.android.service.NanoService;
 
 import org.cubieline.lplayer.PlayerProxy;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Duke
  */
 public class WisapeApplication extends Application {
 
+    private static WisapeApplication instance;
+    public static WisapeApplication getInstance() {
+        return instance;
+    }
+
+    private List<StoryTemplateTypeInfo> templateTypeList = new ArrayList<>();
+    private Map<Integer,List<StoryTemplateInfo>> templateMap = new HashMap<>();
+
     @Override
     public void onCreate() {
         super.onCreate();
+        instance = this;
         final Context context = getApplicationContext();
         Fresco.initialize(context);
         WWWConfig.initialize(context);
@@ -34,5 +50,13 @@ public class WisapeApplication extends Application {
         PushService.subscribe(this, "", MainActivity.class);
         PushService.setDefaultPushCallback(this, MainActivity.class);
         ParseInstallation.getCurrentInstallation().saveInBackground();
+    }
+
+    public List<StoryTemplateTypeInfo> getTemplateTypeList() {
+        return templateTypeList;
+    }
+
+    public Map<Integer, List<StoryTemplateInfo>> getTemplateMap() {
+        return templateMap;
     }
 }

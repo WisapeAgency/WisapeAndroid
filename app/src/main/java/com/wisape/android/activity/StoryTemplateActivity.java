@@ -111,13 +111,13 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
      * ÏÂÔØÄ£°å
      * @param data json
      */
-    public void downloadTemplate(String data,long id) throws JSONException{
+    public void downloadTemplate(String data,int id) throws JSONException{
         JSONObject json = new JSONObject(data);
         String name = json.getString(EXTRA_TEMPLATE_NAME);
         String url = json.getString(EXTRA_TEMPLATE_URL);
 
         Bundle args = new Bundle();
-        args.putLong(EXTRA_TEMPLATE_ID, id);
+        args.putInt(EXTRA_TEMPLATE_ID, id);
         args.putString(EXTRA_TEMPLATE_NAME, name);
         args.putString(EXTRA_TEMPLATE_URL, url);
         startLoad(WHAT_DOWNLOAD_TEMPLATE, args);
