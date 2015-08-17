@@ -9,6 +9,7 @@ import android.util.Log;
 import com.wisape.android.R;
 import com.wisape.android.common.UserManager;
 import com.wisape.android.model.UserInfo;
+import com.wisape.android.network.DataSynchronizer;
 
 /**
  * Created by LeiGuoting on 29/6/15.
@@ -29,6 +30,7 @@ public class LauncherActivity extends BaseActivity {
 
     @Override
     protected Message onLoadBackgroundRunning(int what, Bundle args) throws AsyncLoaderError {
+        DataSynchronizer.getInstance().synchronous(getApplicationContext());//数据同步
         Message msg = Message.obtain();
         msg.what = what;
         msg.obj = UserManager.instance().signIn(getApplicationContext());

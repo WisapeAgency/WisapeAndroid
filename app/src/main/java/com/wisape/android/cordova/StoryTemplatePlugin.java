@@ -39,6 +39,7 @@ public class StoryTemplatePlugin extends AbsPlugin{
     public static final String ACTION_START = "start";
     public static final String ACTION_READ = "read";
     public static final String ACTION_REPLACE_FILE = "replaceFile";
+    public static final String ACTION_FINISH = "finish";
 
     private static final int WHAT_GET_STAGE_CATEGORY = 0x01;
     private static final int WHAT_GET_STAGE_LIST = 0x02;
@@ -61,32 +62,34 @@ public class StoryTemplatePlugin extends AbsPlugin{
             return true;
         }
         this.callbackContext = callbackContext;
-        if(ACTION_GET_STAGE_CATEGORY.equals(action)){//getStageCategory
+        if(ACTION_GET_STAGE_CATEGORY.equals(action)){//getStageCategory  获取列表类型
             startLoad(WHAT_GET_STAGE_CATEGORY, null);
-        } else if (ACTION_GET_STAGE_LIST.equals(action)){//getStageList
+        } else if (ACTION_GET_STAGE_LIST.equals(action)){//getStageList  获取模板列表
             Bundle bundle = new Bundle();
             if(null != args && args.length() != 0){
-                bundle.putInt(EXTRA_CATEGORY_ID, args.getInt(0));//
+                bundle.putInt(EXTRA_CATEGORY_ID, args.getInt(0));//模板类型id
             }
             startLoad(WHAT_GET_STAGE_LIST, bundle);
-        } else if (ACTION_START.equals(action)) {//start
+        } else if (ACTION_START.equals(action)) {//start   下载模板
             Bundle bundle = new Bundle();
             if(null != args && args.length() != 0){
-                bundle.putInt(EXTRA_TEMPLATE_ID, args.getInt(0));//
+                bundle.putInt(EXTRA_TEMPLATE_ID, args.getInt(0));//模板id
             }
             startLoad(WHAT_START, bundle);
-        } else if (ACTION_READ.equals(action)) {//read
+        } else if (ACTION_READ.equals(action)) {//read 读取场景文件
             if(null != args && args.length() != 0){
-                String templateName = args.getString(0);//
+                String templateName = args.getString(0);//模板名称
                 String content = readHtml(templateName);
                 callbackContext.success(content);
             }
         }else if(ACTION_REPLACE_FILE.equals(action)){//replaceFile
             if(null != args && args.length() == 2){
-                String newFilePath = args.getString(0);//
-                String oldFilePath = args.getString(1);//
+                String newFilePath = args.getString(0);//用户新增资源文件的硬盘路径
+                String oldFilePath = args.getString(1);;//被替换的文件路径
                 replaceFile(newFilePath, oldFilePath);
             }
+        }else if (ACTION_FINISH.equals(action)){//finish
+            cordova.getActivity().finish();
         }
         return true;
     }

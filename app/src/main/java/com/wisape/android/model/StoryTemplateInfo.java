@@ -24,6 +24,7 @@ public class StoryTemplateInfo extends ServerInfo{
     public long id;
     public String temp_name;
     public String temp_img;
+    public String temp_img_local;
     public String temp_description;
     public String temp_url;
     public String rec_status;

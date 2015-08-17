@@ -46,6 +46,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
     private static final int WHAT_DOWNLOAD_PROGRESS = 0x03;
     private static final int WHAT_DOWNLOAD_COMPLETED = 0x04;
     private static final int WHAT_DOWNLOAD_ERROR = 0x05;
+    private static final int WHAT_DOWNLOAD_FONT_COMPLETED = 0x06;
 
     public static void launch(Activity activity, int requestCode){
         Intent intent = new Intent(activity.getApplicationContext(), StoryTemplateActivity.class);
@@ -80,7 +81,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
                     String name = msg.getData().getString(EXTRA_TEMPLATE_NAME);
                     String path = msg.getData().getString(EXTRA_TEMPLATE_PATH);
                     loadUrl("javascript:onCompleted('" + id + "')");
-                    File template = getUnzipDirectory(name);
+                    File template = getTemplateUnzipDirectory(name);
                     unzipTemplate(Uri.fromFile(new File(path)), template);
                     downloadFont(template);
                     break;
@@ -110,13 +111,13 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
      * ÏÂÔØÄ£°å
      * @param data json
      */
-    public void downloadTemplate(String data,int id) throws JSONException{
+    public void downloadTemplate(String data,long id) throws JSONException{
         JSONObject json = new JSONObject(data);
         String name = json.getString(EXTRA_TEMPLATE_NAME);
         String url = json.getString(EXTRA_TEMPLATE_URL);
 
         Bundle args = new Bundle();
-        args.putInt(EXTRA_TEMPLATE_ID, id);
+        args.putLong(EXTRA_TEMPLATE_ID, id);
         args.putString(EXTRA_TEMPLATE_NAME, name);
         args.putString(EXTRA_TEMPLATE_URL, url);
         startLoad(WHAT_DOWNLOAD_TEMPLATE, args);
@@ -233,7 +234,8 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
 
                     }
                     public void onCompleted(Uri downUri){
-
+                        File template = getFontUnzipDirectory(name);
+                        unzipTemplate(downUri, template);
                     }
 
                     public void onError(Uri uri){
@@ -246,13 +248,22 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
         return msg;
     }
 
-    private File getUnzipDirectory(String name) {
+    private File getTemplateUnzipDirectory(String name) {
         int index = name.lastIndexOf('.');
         String templateDir = name;
         if(0 < index){
             templateDir = name.substring(0, index);
         }
         return new File(StoryManager.getStoryTemplateDirectory(), templateDir);
+    }
+
+    private File getFontUnzipDirectory(String name) {
+        int index = name.lastIndexOf('.');
+        String templateDir = name;
+        if(0 < index){
+            templateDir = name.substring(0, index);
+        }
+        return new File(StoryManager.getStoryFontDirectory(), templateDir);
     }
 
     private void unzipTemplate(Uri downUri, File template) {

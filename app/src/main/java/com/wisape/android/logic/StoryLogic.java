@@ -475,7 +475,7 @@ public class StoryLogic{
         StoryTemplateInfo[] storyTemplateInfos = api.listStoryTemplate(context, attrInfo, tag);
         int count = (null == storyTemplateInfos ? 0 : storyTemplateInfos.length);
         if(0 == count){
-            return null;
+            return new StoryTemplateEntity[]{};
         }
 
         //insert into database
@@ -563,7 +563,7 @@ public class StoryLogic{
         SharedPreferences preferences = getSharedPreferences(context);
         String templateTypeString = preferences.getString(EXTRA_STORY_TEMPLATE_TYPE, null);
         if(null == templateTypeString){
-            return null;
+            return new JSONArray();
         }
 
         JSONArray jsonArray;
@@ -580,7 +580,7 @@ public class StoryLogic{
         ApiStory api = ApiStory.instance();
         JSONArray templateTypeJson= api.listStoryTemplateTypeJson(context, tag);
         if(null == templateTypeJson){
-            return null;
+            return new JSONArray();
         }
 
         //save to local
