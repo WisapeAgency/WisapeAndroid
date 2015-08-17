@@ -14,7 +14,7 @@
     <string name="exit_login">Logout</string>
     <string name="exit_login_notice_text">Do you exit the current account?\n
        Logout will not delete any data.You\ncan still login with this account.</string>
-    <string name="all_stores">All Stores</string>
+    <string name="my_stores">My Stores</string>
 
 
     <!-- Photo Selector -->
@@ -93,4 +93,12 @@
     <!--确认对话框-->
     <string name="confirm_dialog_cancle">Cancle</string>
     <string name="confirm_dialog_confirm">Confirm</string>
+
+    <!--弹出对话框-->
+    <string name="popup_window_result">Result</string>
+    <string name="popup_window_priview">Priview</string>
+    <string name="popup_window_publish">Publish</string>
+    <string name="popup_window_edit">Edit</string>
+    <string name="popup_window_delete">Delete</string>
+
 </resources>

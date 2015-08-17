@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@android:color/white">
+
+    <TextView
+        android:id="@+id/text_result"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:paddingLeft="15dp"
+        android:drawableLeft="@mipmap/icon_result"
+        android:drawablePadding="20dp"
+        android:gravity="left|center"
+        android:text="@string/popup_window_result"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/text_preview"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:paddingLeft="15dp"
+        android:drawableLeft="@mipmap/icon_preview"
+        android:drawablePadding="20dp"
+        android:gravity="left|center"
+        android:text="@string/popup_window_priview"
+        style="@style/MenuListItemStyle"
+        android:layout_marginTop="15dp"
+        />
+
+    <TextView
+        android:id="@+id/text_publish"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:paddingLeft="15dp"
+        android:drawableLeft="@mipmap/icon_publish"
+        android:drawablePadding="20dp"
+        android:gravity="left|center"
+        android:text="@string/popup_window_publish"
+        style="@style/MenuListItemStyle"
+        android:layout_marginTop="15dp"
+        />
+
+    <TextView
+        android:id="@+id/text_edit"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:paddingLeft="15dp"
+        android:drawableLeft="@mipmap/icon_edit"
+        android:drawablePadding="20dp"
+        android:gravity="left|center"
+        android:text="@string/popup_window_edit"
+        style="@style/MenuListItemStyle"
+        android:layout_marginTop="15dp"
+        />
+
+    <TextView
+        android:id="@+id/text_delete"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:paddingLeft="15dp"
+        android:drawableLeft="@mipmap/icon_delete"
+        android:drawablePadding="20dp"
+        android:gravity="left|center"
+        android:text="@string/popup_window_delete"
+        style="@style/MenuListItemStyle"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="20dp"
+        />
+
+
+</LinearLayout>

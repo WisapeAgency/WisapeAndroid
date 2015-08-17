@@ -10,12 +10,17 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.PopupWindow;
 
 import com.wisape.android.R;
 import com.wisape.android.content.DynamicBroadcastReceiver;
+import com.wisape.android.fragment.CardGalleryFragment;
 import com.wisape.android.fragment.MainMenuFragment;
 import com.wisape.android.model.UserInfo;
+import com.wisape.android.widget.PopupWindowMenu;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -30,6 +35,7 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
 
     @InjectView(R.id.drawer)
     DrawerLayout drawer;
+
 
     public static void launch(Activity activity, UserInfo user, int requestCode){
         Intent intent = new Intent(activity.getApplicationContext(), MainActivity.class);
@@ -87,6 +93,7 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         localReceiver = new DynamicBroadcastReceiver(this);
         localBroadcastManager.registerReceiver(localReceiver, new IntentFilter(UserProfileActivity.ACTION_PROFILE_UPDATED));
     }
+
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -193,4 +200,5 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         }
         user = null;
     }
+
 }

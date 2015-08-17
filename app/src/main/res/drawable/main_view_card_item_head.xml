@@ -14,7 +14,7 @@
             <corners
                 android:topLeftRadius="@dimen/app_dialog_radius"
                 android:topRightRadius="@dimen/app_dialog_radius" />
-            <solid android:color="@color/app_primary_transparent_30p" />
+            <solid android:color="@color/app_main_first_bg" />
         </shape>
     </item>
 
@@ -26,7 +26,7 @@
             <corners
                 android:topLeftRadius="@dimen/app_dialog_radius"
                 android:topRightRadius="@dimen/app_dialog_radius" />
-            <solid android:color="@color/app_primary_transparent_50p" />
+            <solid android:color="@color/app_main_first_bg" />
         </shape>
     </item>
 </layer-list>

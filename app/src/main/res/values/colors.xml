@@ -19,4 +19,10 @@
     <color name="app_about_text_color">#354147</color>
 
     <color name="app_password_reset_email_edit_text_color">#000000</color>
+
+    <color name="app_float_btn_pressed">#171c1f</color>
+    <color name="app_float_btn_normal">#2c3437</color>
+
+    <color name="app_main_first_bg">#F2F2F2</color>
+    <color name="app_main_second_bg">#DDDDDD</color>
 </resources>

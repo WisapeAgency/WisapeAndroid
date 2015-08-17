@@ -19,7 +19,7 @@ import com.facebook.drawee.generic.RoundingParams;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.wisape.android.R;
 import com.wisape.android.util.FrescoFactory;
-import com.wisape.android.view.GalleryRelativeLayoutWrapper;
+//import com.wisape.android.view.GalleryRelativeLayoutWrapper;
 import com.wisape.android.view.GalleryView;
 
 import butterknife.ButterKnife;

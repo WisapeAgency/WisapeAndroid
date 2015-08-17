@@ -2,13 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#ffffff">
 
-    <ImageView
-        android:id="@+id/blur_background_image"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="fitStart" />
 
     <RelativeLayout
         android:id="@+id/head_bar_layout"
@@ -25,7 +21,7 @@
                 android:layout_width="18dp"
                 android:layout_height="12dp"
                 android:layout_centerInParent="true"
-                android:background="@drawable/menu_switch_bg" />
+                android:background="@mipmap/icon_nav" />
         </RelativeLayout>
 
 
@@ -42,7 +38,21 @@
                 android:layout_centerVertical="true"
                 android:layout_gravity="left"
                 android:layout_marginRight="30dp"
-                android:background="@drawable/gift" />
+                android:background="@mipmap/activity" />
+
+            <TextView
+                android:id="@+id/gift_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/active_message_count_bg"
+                android:text="12"
+                android:textSize="12sp"
+                android:paddingLeft="2dp"
+                android:paddingRight="2dp"
+                android:layout_alignTop="@+id/gift"
+                android:layout_toRightOf="@+id/gift"
+                android:layout_marginLeft="-34dp"
+                android:layout_marginTop="-3dp"/>
         </RelativeLayout>
 
 
@@ -52,8 +62,8 @@
             android:layout_toLeftOf="@id/info_board"
             android:layout_toRightOf="@id/menu_switch"
             android:gravity="center_vertical"
-            android:text="@string/all_stores"
-            android:textColor="@color/app_primary"
+            android:text="@string/my_stores"
+            android:textColor="@color/app_sixth"
             android:textSize="@dimen/app_text_size_xlarge" />
     </RelativeLayout>
 
@@ -73,7 +83,7 @@
         android:layout_alignParentRight="true"
         android:layout_marginBottom="@dimen/span_space"
         android:layout_marginRight="@dimen/span_space"
-        fab:fab_colorNormal="@color/app_primary"
-        fab:fab_colorPressed="@color/app_primary"
-        fab:fab_plusIconColor="#414141" />
+        fab:fab_colorNormal="@color/app_float_btn_normal"
+        fab:fab_colorPressed="@color/app_float_btn_pressed"
+        fab:fab_plusIconColor="@color/app_primary" />
 </RelativeLayout>
