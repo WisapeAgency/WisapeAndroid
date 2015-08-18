@@ -23,6 +23,7 @@ import com.wisape.android.R;
  * Created by LeiGuoting on 3/7/15.
  */
 public class SignUpEditText extends LinearLayout implements View.OnFocusChangeListener{
+
     private static final String TAG = SignUpEditText.class.getSimpleName();
 
     private InnerEditText editText;

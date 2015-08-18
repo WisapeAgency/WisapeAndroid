@@ -1,9 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <corners android:bottomLeftRadius="30dp"
-        android:bottomRightRadius="30dp"
-        android:topLeftRadius="30dp"
-        android:topRightRadius="30dp"/>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <solid android:color="@color/app_secondary"/>
-</shape>
+    <item android:state_pressed="false">
+        <shape>
+            <corners android:radius="8dp"/>
+
+            <solid android:color="@color/app_btn_green_normal"/>
+        </shape>
+    </item>
+
+    <item android:state_pressed="false">
+        <shape>
+            <corners android:radius="8dp"/>
+
+            <solid android:color="@color/app_btn_green_pressed"/>
+        </shape>
+    </item>
+
+</selector>

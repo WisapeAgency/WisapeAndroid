@@ -41,7 +41,7 @@
     </style>
 
     <style name="App.TextStyle.Tertiary" parent="App.TextStyle.Primary">
-        <item name="android:textColor">@color/app_secondary</item>
+        <item name="android:textColor">@color/app_btn_green_normal</item>
     </style>
 
     <style name="MenuListItemStyle" parent="">

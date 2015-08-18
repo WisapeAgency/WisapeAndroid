@@ -16,6 +16,7 @@
         android:paddingRight="32dp"
         android:text="@string/mobihelp_label_contact_us"
         android:textAllCaps="false"
+        android:textColor="@android:color/white"
         android:background="@drawable/sign_up_btn_bg"/>
 
     <TextView

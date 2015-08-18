@@ -6,7 +6,8 @@
     <color name="app_primary_transparent_10p">#1AFFFFFF</color>
     <color name="app_primary_transparent_30p">#4DFFFFFF</color>
     <color name="app_primary_transparent_50p">#80FFFFFF</color>
-    <color name="app_secondary">#1FBC1B</color>
+    <color name="app_btn_green_normal">#19c702</color>
+    <color name="app_btn_green_pressed">#34c234</color>
 
     <color name="app_tertiary">#666666</color>
     <color name="app_fourth">#000000</color>

@@ -51,7 +51,7 @@
             android:layout_marginLeft="16dp"
             android:text="@string/confirm_dialog_confirm"
             android:background="@null"
-            android:textColor="@color/app_secondary"
+            android:textColor="@color/app_btn_green_normal"
             style="@style/App.TextStyle.Secondary"
             android:textAllCaps="false"/>
     </LinearLayout>

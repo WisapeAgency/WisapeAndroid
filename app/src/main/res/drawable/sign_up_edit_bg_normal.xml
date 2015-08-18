@@ -14,7 +14,7 @@
         <layer-list>
             <item android:top="50dp">
                 <shape>
-                    <solid android:color="@color/app_secondary"/>
+                    <solid android:color="@color/app_btn_green_normal"/>
                     <size android:width="10000dp" android:height="2dp"/>
                 </shape>
             </item>
