@@ -229,6 +229,19 @@ public class StoryLogic{
         return storyArray;
     }
 
+    public StoryEntity getStoryLocalById(Context context, int id){
+        DatabaseHelper helper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
+        try{
+            Dao<StoryEntity, Integer> storyDao = helper.getDao(StoryEntity.class);
+            return storyDao.queryForId(id);
+        }catch (SQLException e){
+            Log.e(TAG, "", e);
+            throw new IllegalStateException(e);
+        }finally {
+            OpenHelperManager.releaseHelper();
+        }
+    }
+
     public StoryMusicEntity[] listStoryMusicLocal(Context context){
         DatabaseHelper helper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
         StoryMusicEntity storyMusicArray[];
@@ -250,6 +263,20 @@ public class StoryLogic{
             OpenHelperManager.releaseHelper();
         }
         return storyMusicArray;
+    }
+
+    public StoryMusicEntity getStoryMusicLocalById(Context context,int id){
+        DatabaseHelper helper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
+        Dao<StoryMusicEntity, Integer> dao;
+        try{
+            dao = helper.getDao(StoryMusicEntity.class);
+            return dao.queryForId(id);
+        }catch (SQLException e){
+            Log.e(TAG, "", e);
+            throw new IllegalStateException(e);
+        }finally {
+            OpenHelperManager.releaseHelper();
+        }
     }
 
     public StoryMusicTypeEntity[] listStoryMusicTypeLocal(Context context){
@@ -468,6 +495,20 @@ public class StoryLogic{
             OpenHelperManager.releaseHelper();
         }
         return storyTemplateArray;
+    }
+
+    public StoryTemplateEntity getStoryTemplateLocalById(Context context,int id){
+        DatabaseHelper helper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
+        Dao<StoryTemplateEntity, Integer> dao;
+        try{
+            dao = helper.getDao(StoryTemplateEntity.class);
+            return dao.queryForId(id);
+        }catch (SQLException e){
+            Log.e(TAG, "", e);
+            throw new IllegalStateException(e);
+        }finally {
+            OpenHelperManager.releaseHelper();
+        }
     }
 
     public StoryTemplateEntity[] listStoryTemplate(Context context, ApiStory.AttrTemplateInfo attrInfo, Object tag){

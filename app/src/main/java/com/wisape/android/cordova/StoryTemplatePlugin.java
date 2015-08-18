@@ -11,6 +11,8 @@ import com.wisape.android.activity.StoryTemplateActivity;
 import com.wisape.android.api.ApiStory;
 import com.wisape.android.api.ApiUser;
 import com.wisape.android.common.StoryManager;
+import com.wisape.android.database.StoryEntity;
+import com.wisape.android.database.StoryMusicEntity;
 import com.wisape.android.database.StoryTemplateEntity;
 import com.wisape.android.logic.StoryLogic;
 import com.wisape.android.model.StoryTemplateInfo;
@@ -45,7 +47,10 @@ public class StoryTemplatePlugin extends AbsPlugin{
     public static final String ACTION_START = "start";
     public static final String ACTION_READ = "read";
     public static final String ACTION_REPLACE_FILE = "replaceFile";
-    public static final String ACTION_FINISH = "finish";
+    public static final String ACTION_STORY_PATH = "getStoryPath";
+    public static final String ACTION_STAGE_PATH = "getStagePath";
+    public static final String ACTION_MUSIC_PATH = "getMusicPath";
+    public static final String ACTION_SAVE = "save";
 
     private static final int WHAT_GET_STAGE_CATEGORY = 0x01;
     private static final int WHAT_GET_STAGE_LIST = 0x02;
@@ -95,8 +100,23 @@ public class StoryTemplatePlugin extends AbsPlugin{
                 String oldFilePath = args.getString(1);//被替换的文件路径
                 replaceFile(newFilePath, oldFilePath);
             }
-        }else if (ACTION_FINISH.equals(action)){//finish
-            cordova.getActivity().finish();
+        }else if (ACTION_STORY_PATH.equals(action)){
+            if(null != args && args.length() != 0){
+                int id = args.getInt(0);
+                getStoryPath(id);
+            }
+        }else if (ACTION_STAGE_PATH.equals(action)){
+            if(null != args && args.length() != 0){
+                int id = args.getInt(0);
+                getStagePath(id);
+            }
+        }else if (ACTION_MUSIC_PATH.equals(action)){
+            if(null != args && args.length() != 0){
+                int id = args.getInt(0);
+                getMusicPath(id);
+            }
+        }else if (ACTION_SAVE.equals(action)){//save
+
         }
         return true;
     }
@@ -117,7 +137,6 @@ public class StoryTemplatePlugin extends AbsPlugin{
 //                ApiStory.AttrTemplateInfo attr = new ApiStory.AttrTemplateInfo();
 //                attr.type = args.getInt(EXTRA_CATEGORY_ID, 0);
 //                StoryTemplateEntity[] entities = logic.listStoryTemplate(context, attr, null);
-//                callbackContext.success(new Gson().toJson(entities));
                 int type = args.getInt(EXTRA_CATEGORY_ID, 0);
                 List<StoryTemplateInfo> entities = app.getTemplateMap().get(type);
                 if(entities == null){
@@ -153,7 +172,7 @@ public class StoryTemplatePlugin extends AbsPlugin{
         BufferedReader reader = null;
         try {
             reader = new BufferedReader(new FileReader(new File(file, TEMPLATE_NAME)));
-            String line = null;
+            String line;
             while ((line = reader.readLine()) != null){
                 content.append(line);
             }
@@ -176,7 +195,7 @@ public class StoryTemplatePlugin extends AbsPlugin{
     private void replaceFile(String newFilePath,String oldFilePath){
         File newFile = new File(newFilePath);
         if (!newFile.exists()){
-            callbackContext.error("new File Path does not exists!");
+            callbackContext.error("New file does not exists!");
         }
         File oldFile = new File(oldFilePath);
         try {
@@ -185,5 +204,35 @@ public class StoryTemplatePlugin extends AbsPlugin{
             callbackContext.error("copy file error!" + e.getMessage());
         }
         callbackContext.success();
+    }
+
+    private void getStoryPath(int id){
+        Context context = getCurrentActivity().getApplicationContext();
+        StoryEntity story = logic.getStoryLocalById(context, id);
+        if(story != null){
+            callbackContext.success(story.storyLocal);
+        }else{
+            callbackContext.error(1);//not fond
+        }
+    }
+
+    private void getStagePath(int id){
+        Context context = getCurrentActivity().getApplicationContext();
+        StoryTemplateEntity template = logic.getStoryTemplateLocalById(context,id);
+        if(template != null){
+            callbackContext.success(template.templateLocal);
+        }else{
+            callbackContext.error(1);//not fond
+        }
+    }
+
+    private void getMusicPath(int id){
+        Context context = getCurrentActivity().getApplicationContext();
+        StoryMusicEntity music = logic.getStoryMusicLocalById(context, id);
+        if(music != null){
+            callbackContext.success(music.musicLocal);
+        }else{
+            callbackContext.error(1);//not fond
+        }
     }
 }
