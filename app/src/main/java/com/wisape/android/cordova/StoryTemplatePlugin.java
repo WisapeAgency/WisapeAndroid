@@ -51,14 +51,19 @@ public class StoryTemplatePlugin extends AbsPlugin{
     public static final String ACTION_STAGE_PATH = "getStagePath";
     public static final String ACTION_MUSIC_PATH = "getMusicPath";
     public static final String ACTION_SAVE = "save";
+    public static final String ACTION_PUBLISH = "publish";
 
     private static final int WHAT_GET_STAGE_CATEGORY = 0x01;
     private static final int WHAT_GET_STAGE_LIST = 0x02;
     private static final int WHAT_START = 0x03;
-//    private static final int WHAT_READ = 0x04;
+    private static final int WHAT_SAVE = 0x04;
+    private static final int WHAT_PUBLISH = 0x05;
 
     private static final String EXTRA_CATEGORY_ID = "extra_category_id";
     private static final String EXTRA_TEMPLATE_ID = "extra_template_id";
+    private static final String EXTRA_STORY_ID = "extra_story_id";
+    private static final String EXTRA_STORY_HTML = "extra_story_html";
+    private static final String EXTRA_FILE_PATH = "extra_file_path";
 
     private CallbackContext callbackContext;
     private StoryLogic logic = StoryLogic.instance();
@@ -116,7 +121,19 @@ public class StoryTemplatePlugin extends AbsPlugin{
                 getMusicPath(id);
             }
         }else if (ACTION_SAVE.equals(action)){//save
-
+            Bundle bundle = new Bundle();
+            if(null != args && args.length() != 3){
+                bundle.putInt(EXTRA_STORY_ID, args.getInt(0));//story_id
+                bundle.putString(EXTRA_STORY_HTML, args.getString(1));
+                bundle.putString(EXTRA_FILE_PATH,args.getString(2));
+            }
+            startLoad(WHAT_SAVE, bundle);
+        }else if (ACTION_PUBLISH.equals(action)){//publish
+            Bundle bundle = new Bundle();
+            if(null != args && args.length() != 0){
+                bundle.putInt(EXTRA_STORY_ID, args.getInt(0));//story_id
+            }
+            startLoad(WHAT_PUBLISH, bundle);
         }
         return true;
     }
