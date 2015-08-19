@@ -30,7 +30,7 @@ public class LauncherActivity extends BaseActivity {
 
     @Override
     protected Message onLoadBackgroundRunning(int what, Bundle args) throws AsyncLoaderError {
-        DataSynchronizer.getInstance().synchronous(getApplicationContext());//数据同步
+        DataSynchronizer.getInstance().synchronous(getApplicationContext());//
         Message msg = Message.obtain();
         msg.what = what;
         msg.obj = UserManager.instance().signIn(getApplicationContext());
@@ -43,18 +43,23 @@ public class LauncherActivity extends BaseActivity {
         long costMills = SystemClock.uptimeMillis() - startTimeInMills;
         long diffMills = LAUNCH_TIME_MILLS - costMills;
 
-        final UserInfo user = (UserInfo)data.obj;
-        Log.d("LauncherActivity", "#onLoadCompleted diffMills:" + diffMills);
-        if(0 < diffMills){
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    redirect(user);
-                }
-            }, diffMills);
+        if(data.obj instanceof UserInfo){
+            final UserInfo user = (UserInfo)data.obj;
+            Log.e("LauncherActivity", "#onLoadCompleted diffMills:" + diffMills);
+            if(0 < diffMills){
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        redirect(user);
+                    }
+                }, diffMills);
+            }else{
+                redirect(user);
+            }
         }else{
-            redirect(user);
+            redirect(null);
         }
+
     }
 
     private void redirect(UserInfo user){
