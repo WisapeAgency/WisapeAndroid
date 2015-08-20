@@ -204,13 +204,12 @@ public class StoryTemplatePlugin extends AbsPlugin{
                 }
                 if(!saveStory(storyDirectory,html,paths)){
                     callbackContext.error(-1);
+                    return null;
                 }
-                //保存本地数据库
-                if (storyId == 0){
-                    StoryEntity story = new StoryEntity();
-                    story.storyName = storyName;
-                    logic.saveStoryLocal(context,story);
-                }
+                //保存或更新本地数据库
+                StoryEntity story = new StoryEntity();
+                story.storyName = storyName;
+                logic.saveStoryLocal(context,story);
                 break;
             }
             case WHAT_PUBLISH:{
@@ -232,20 +231,20 @@ public class StoryTemplatePlugin extends AbsPlugin{
                 }
                 if(!saveStory(storyDirectory,html,paths)){
                     callbackContext.error(-1);
+                    return null;
                 }
-                //保存本地数据库
-                if (storyId == 0){
-                    StoryEntity story = new StoryEntity();
-                    story.storyName = storyName;
-                    logic.saveStoryLocal(context,story);
-                }
-                ApiStory.AttrStoryInfo story = new ApiStory.AttrStoryInfo();
-                story.attrStoryThumb = Uri.fromFile(new File(storyDirectory, FILE_NAME_THUMB));
-                story.storyStatus = ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE;
-                story.story = Uri.fromFile(storyDirectory);
+                //保存或更新本地数据库
+                StoryEntity story = new StoryEntity();
                 story.storyName = storyName;
-                story.storyDescription = "hahahaha";
-                logic.update(context,story,null);
+                logic.saveStoryLocal(context,story);
+
+                ApiStory.AttrStoryInfo storyInfo = new ApiStory.AttrStoryInfo();
+                storyInfo.attrStoryThumb = Uri.fromFile(new File(storyDirectory, FILE_NAME_THUMB));
+                storyInfo.storyStatus = ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE;
+                storyInfo.story = Uri.fromFile(storyDirectory);
+                storyInfo.storyName = storyName;
+                storyInfo.storyDescription = "hahahaha";
+                logic.update(context,storyInfo,null);
                 break;
             }
         }

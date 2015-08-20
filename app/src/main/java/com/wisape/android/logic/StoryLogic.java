@@ -6,14 +6,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.util.Log;
 
-import com.google.gson.JsonObject;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.Where;
 import com.wisape.android.activity.StoryMusicActivity;
 import com.wisape.android.api.ApiStory;
-import com.wisape.android.api.ApiUser;
 import com.wisape.android.common.StoryManager;
 import com.wisape.android.common.UserManager;
 import com.wisape.android.database.DatabaseHelper;
@@ -35,7 +33,6 @@ import com.wisape.android.widget.StoryMusicAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -242,12 +239,13 @@ public class StoryLogic{
         }
     }
 
-    public int saveStoryLocal(Context context, StoryEntity story){
+    public boolean saveStoryLocal(Context context, StoryEntity story){
         DatabaseHelper helper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
         try{
             Dao<StoryEntity, Integer> storyDao = helper.getDao(StoryEntity.class);
-            return storyDao.create(story);
-        }catch (SQLException e){
+            Dao.CreateOrUpdateStatus status = storyDao.createOrUpdate(story);
+            return status.isCreated();
+        }catch (Exception e){
             Log.e(TAG, "", e);
             throw new IllegalStateException(e);
         }finally {
