@@ -72,6 +72,15 @@ public class TestActivity extends BaseActivity{
         StoryTemplateActivity.launch(this,0);
     }
 
+    @OnClick(R.id.share)
+    protected void doShare(){
+        Intent intent = new Intent(Intent.ACTION_SEND); // 启动分享发送的属性
+        intent.setType("text/plain"); // 分享发送的数据类型
+        String msg = "推荐给大家，http://www.wisape.com/demo/playstory/index.html";
+        intent.putExtra(Intent.EXTRA_TEXT, msg); // 分享的内容
+        startActivity(Intent.createChooser(intent, "选择分享"));
+    }
+
 
     @Override
     protected Message onLoadBackgroundRunning(int what, Bundle args) throws AsyncLoaderError {
