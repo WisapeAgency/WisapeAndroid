@@ -1,15 +1,16 @@
 package com.wisape.android.cordova;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Message;
+import android.util.Log;
 
+import com.alibaba.fastjson.JSON;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.wisape.android.WisapeApplication;
 import com.wisape.android.activity.StoryTemplateActivity;
 import com.wisape.android.api.ApiStory;
-import com.wisape.android.api.ApiUser;
 import com.wisape.android.common.StoryManager;
 import com.wisape.android.database.StoryEntity;
 import com.wisape.android.database.StoryMusicEntity;
@@ -17,30 +18,32 @@ import com.wisape.android.database.StoryTemplateEntity;
 import com.wisape.android.logic.StoryLogic;
 import com.wisape.android.model.StoryTemplateInfo;
 import com.wisape.android.network.Requester;
+import com.wisape.android.util.EnvironmentUtils;
 
-import org.apache.commons.io.*;
+import org.apache.commons.io.FileUtils;
 import org.apache.cordova.CallbackContext;
-import org.apache.cordova.CordovaArgs;
 import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaWebView;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by tony on 2015/7/19.
  */
 public class StoryTemplatePlugin extends AbsPlugin{
-    private static final String TEMPLATE_NAME = "stage.html";
+    private static final String FILE_NAME_THUMB = "thumb.jpg";
+    private static final String FILE_NAME_STORY = "story.html";
+    private static final String FILE_NAME_TEMPLATE = "stage.html";
+    private static final String DIR_NAME_IMAGE = "img";
 
     public static final String ACTION_GET_STAGE_CATEGORY = "getStageCategory";
     public static final String ACTION_GET_STAGE_LIST = "getStageList";
@@ -106,32 +109,34 @@ public class StoryTemplatePlugin extends AbsPlugin{
                 replaceFile(newFilePath, oldFilePath);
             }
         }else if (ACTION_STORY_PATH.equals(action)){
-            if(null != args && args.length() != 0){
+            if(null != args && args.length() == 1){
                 int id = args.getInt(0);
                 getStoryPath(id);
             }
         }else if (ACTION_STAGE_PATH.equals(action)){
-            if(null != args && args.length() != 0){
+            if(null != args && args.length() == 1){
                 int id = args.getInt(0);
                 getStagePath(id);
             }
         }else if (ACTION_MUSIC_PATH.equals(action)){
-            if(null != args && args.length() != 0){
+            if(null != args && args.length() == 1){
                 int id = args.getInt(0);
                 getMusicPath(id);
             }
         }else if (ACTION_SAVE.equals(action)){//save
             Bundle bundle = new Bundle();
-            if(null != args && args.length() != 3){
-                bundle.putInt(EXTRA_STORY_ID, args.getInt(0));//story_id
+            if(null != args && args.length() == 3){
+                bundle.putInt(EXTRA_STORY_ID, args.optInt(0));//story_id
                 bundle.putString(EXTRA_STORY_HTML, args.getString(1));
                 bundle.putString(EXTRA_FILE_PATH,args.getString(2));
             }
             startLoad(WHAT_SAVE, bundle);
         }else if (ACTION_PUBLISH.equals(action)){//publish
             Bundle bundle = new Bundle();
-            if(null != args && args.length() != 0){
-                bundle.putInt(EXTRA_STORY_ID, args.getInt(0));//story_id
+            if(null != args && args.length() == 3){
+                bundle.putInt(EXTRA_STORY_ID, args.optInt(0));//story_id
+                bundle.putString(EXTRA_STORY_HTML, args.getString(1));
+                bundle.putString(EXTRA_FILE_PATH, args.getString(2));
             }
             startLoad(WHAT_PUBLISH, bundle);
         }
@@ -178,9 +183,108 @@ public class StoryTemplatePlugin extends AbsPlugin{
                         callbackContext.error(-1);
                     }
                 }
+                break;
+            }
+            case WHAT_SAVE:{
+                //保存本地文件系统
+                int storyId = args.getInt(EXTRA_STORY_ID,0);
+                String html = args.getString(EXTRA_STORY_HTML);
+                String path = args.getString(EXTRA_FILE_PATH);
+                com.alibaba.fastjson.JSONArray paths = JSON.parseArray(path);
+                String storyName;
+                if (storyId == 0){
+                    storyName = UUID.randomUUID().toString().substring(0,8);
+                }else{
+                    StoryEntity story = logic.getStoryLocalById(context,storyId);
+                    storyName = story.storyName;
+                }
+                File storyDirectory = new File(StoryManager.getStoryDirectory(), storyName);
+                if (!storyDirectory.exists()){
+                    storyDirectory.mkdirs();
+                }
+                if(!saveStory(storyDirectory,html,paths)){
+                    callbackContext.error(-1);
+                }
+                //保存本地数据库
+                if (storyId == 0){
+                    StoryEntity story = new StoryEntity();
+                    story.storyName = storyName;
+                    logic.saveStoryLocal(context,story);
+                }
+                break;
+            }
+            case WHAT_PUBLISH:{
+                //保存本地文件系统
+                int storyId = args.getInt(EXTRA_STORY_ID,0);
+                String html = args.getString(EXTRA_STORY_HTML);
+                String path = args.getString(EXTRA_FILE_PATH);
+                com.alibaba.fastjson.JSONArray paths = JSON.parseArray(path);
+                String storyName;
+                if (storyId == 0){
+                    storyName = UUID.randomUUID().toString().substring(0,8);
+                }else{
+                    StoryEntity story = logic.getStoryLocalById(context,storyId);
+                    storyName = story.storyName;
+                }
+                File storyDirectory = new File(StoryManager.getStoryDirectory(), storyName);
+                if (!storyDirectory.exists()){
+                    storyDirectory.mkdirs();
+                }
+                if(!saveStory(storyDirectory,html,paths)){
+                    callbackContext.error(-1);
+                }
+                //保存本地数据库
+                if (storyId == 0){
+                    StoryEntity story = new StoryEntity();
+                    story.storyName = storyName;
+                    logic.saveStoryLocal(context,story);
+                }
+                ApiStory.AttrStoryInfo story = new ApiStory.AttrStoryInfo();
+                story.attrStoryThumb = Uri.fromFile(new File(storyDirectory, FILE_NAME_THUMB));
+                story.storyStatus = ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE;
+                story.story = Uri.fromFile(storyDirectory);
+                story.storyName = storyName;
+                story.storyDescription = "hahahaha";
+                logic.update(context,story,null);
+                break;
             }
         }
         return null;
+    }
+
+    private boolean saveStory(File storyDirectory,String html,com.alibaba.fastjson.JSONArray paths){
+        File storyHTML = new File(storyDirectory,FILE_NAME_STORY);
+        PrintWriter writer = null;
+        try{
+            writer = new PrintWriter(storyHTML);
+            writer.write(html);
+            writer.close();
+        }catch (IOException e){
+            Log.e("saveStory","",e);
+            return false;
+        }finally {
+            if (writer != null){
+                writer.close();
+            }
+        }
+        File storyImg = new File(storyDirectory,DIR_NAME_IMAGE);
+        if (storyImg.exists()){
+            try{
+                FileUtils.deleteDirectory(storyImg);
+            }catch (IOException e){
+                Log.e("saveStory","",e);
+            }
+        }
+        storyImg.mkdirs();
+        try{
+            for (int i=0;i<paths.size();i++){
+                File file = new File(paths.getString(i));
+                FileUtils.copyFile(file,new File(storyImg,file.getName()));
+            }
+        }catch (IOException e){
+            Log.e("saveStory","",e);
+        }
+        return true;
     }
 
     private String readHtml(String templateName){
@@ -188,7 +292,7 @@ public class StoryTemplatePlugin extends AbsPlugin{
         StringBuffer content = new StringBuffer();
         BufferedReader reader = null;
         try {
-            reader = new BufferedReader(new FileReader(new File(file, TEMPLATE_NAME)));
+            reader = new BufferedReader(new FileReader(new File(file, FILE_NAME_TEMPLATE)));
             String line;
             while ((line = reader.readLine()) != null){
                 content.append(line);

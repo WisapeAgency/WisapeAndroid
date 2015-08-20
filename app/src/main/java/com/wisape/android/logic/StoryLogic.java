@@ -242,6 +242,19 @@ public class StoryLogic{
         }
     }
 
+    public int saveStoryLocal(Context context, StoryEntity story){
+        DatabaseHelper helper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
+        try{
+            Dao<StoryEntity, Integer> storyDao = helper.getDao(StoryEntity.class);
+            return storyDao.create(story);
+        }catch (SQLException e){
+            Log.e(TAG, "", e);
+            throw new IllegalStateException(e);
+        }finally {
+            OpenHelperManager.releaseHelper();
+        }
+    }
+
     public StoryMusicEntity[] listStoryMusicLocal(Context context){
         DatabaseHelper helper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
         StoryMusicEntity storyMusicArray[];

@@ -35,6 +35,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
     private static final String START_URL = "file:///android_asset/www/views/editor_index.html";
     private static final String TEMPLATE_NAME = "stage.html";
     private static final String DOWNLOAD_PROGRESS = "progress";
+    private static final String EXTRA_STORY_ID = "story_id";
     private static final String EXTRA_TEMPLATE_ID = "temp_id";
     private static final String EXTRA_TEMPLATE_NAME = "temp_name";
     private static final String EXTRA_TEMPLATE_PATH = "temp_path";
@@ -50,14 +51,17 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
 
     public static void launch(Activity activity, int requestCode){
         Intent intent = new Intent(activity.getApplicationContext(), StoryTemplateActivity.class);
+//        intent.putExtra(EXTRA_STORY_ID,storyId);
         activity.startActivityForResult(intent, requestCode);
     }
 
     public static void launch(Fragment fragment, int requestCode){
         Intent intent = new Intent(fragment.getActivity().getApplicationContext(), StoryTemplateActivity.class);
+//        intent.putExtra(EXTRA_STORY_ID,storyId);
         fragment.startActivityForResult(intent, requestCode);
     }
 
+    private int storyId;
     private Handler downloadHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
