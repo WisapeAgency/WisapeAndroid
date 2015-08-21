@@ -3,6 +3,7 @@ package com.wisape.android.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Message;
@@ -13,6 +14,9 @@ import com.wisape.android.R;
 import com.wisape.android.common.StoryManager;
 import com.wisape.android.model.StorySettingsInfo;
 import com.wisape.android.util.FrescoFactory;
+
+import java.io.File;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -83,7 +87,8 @@ public class StoryReleaseActivity extends BaseActivity{
 
             case WHAT_RELEASE_STORY :
                 msg = Message.obtain();
-
+                msg.what = WHAT_RELEASE_STORY;
+                msg.setData(args);
                 break;
         }
         return msg;
@@ -108,7 +113,8 @@ public class StoryReleaseActivity extends BaseActivity{
                 break;
 
             case WHAT_RELEASE_STORY :
-                int channel = 0;
+                Bundle bundle = data.getData();
+                int channel = bundle.getInt(EXTRA_STORY_CHANNEL,0);
                 share2Platform(channel);
                 break;
         }
@@ -121,79 +127,137 @@ public class StoryReleaseActivity extends BaseActivity{
     }
 
     private void share2Platform(int channel){
+        switch (channel){
+            case CHANNEL_MORE:{
+                File template = new File(StoryManager.getStoryTemplateDirectory(),"mingpian01");
+                File thumb = new File(template,"thumb.jpg");
+                String msg = "推荐给大家，http://www.wisape.com/demo/playstory/index.html";
+                shareMessage("标题", "消息标题", msg, thumb.getAbsolutePath());
+                break;
+            }
+            default:{
+                initShareIntent("com.sina.weibo");
+                break;
+            }
+        }
+    }
 
+    public void shareMessage(String activityTitle, String msgTitle, String msgText,
+                             String imgPath) {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        if ("".equals(imgPath)) {
+            intent.setType("text/plain"); // 纯文本
+        } else {
+            File image = new File(imgPath);
+            if (image.exists() && image.isFile()) {
+                intent.setType("image/jpg");
+                Uri uri = Uri.fromFile(image);
+                intent.putExtra(Intent.EXTRA_STREAM, uri);
+            }
+        }
+        intent.putExtra(Intent.EXTRA_SUBJECT, msgTitle);
+        intent.putExtra(Intent.EXTRA_TEXT, msgText);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(Intent.createChooser(intent, activityTitle));
+    }
+
+    private void initShareIntent(String type) {
+        File template = new File(StoryManager.getStoryTemplateDirectory(),"mingpian01");
+        File thumb = new File(template,"thumb.jpg");
+        String msg = "推荐给大家，http://www.wisape.com/demo/playstory/index.html";
+        boolean found = false;
+        Intent share = new Intent(android.content.Intent.ACTION_SEND);
+        share.setType("image/jpeg");
+        // gets the list of intents that can be loaded.
+        List<ResolveInfo> resInfo = getPackageManager().queryIntentActivities(share, 0);
+        if (!resInfo.isEmpty()){
+            for (ResolveInfo info : resInfo) {
+                if (info.activityInfo.packageName.toLowerCase().contains(type) ||
+                        info.activityInfo.name.toLowerCase().contains(type) ) {
+                    share.putExtra(Intent.EXTRA_SUBJECT,  "subject");
+                    share.putExtra(Intent.EXTRA_TEXT,     msg);
+                    share.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(thumb) ); // Optional, just if you wanna share an image.
+                    share.setPackage(info.activityInfo.packageName);
+                    found = true;
+                    break;
+                }
+            }
+            if (!found)
+                return;
+            startActivity(Intent.createChooser(share, "Select"));
+        }
     }
 
     @OnClick(R.id.story_release_fb)
     @SuppressWarnings("unused")
     protected void doShare2Facebook(){
-        releaseStory(CHANNEL_FACEBOOK);
+        share2Platform(CHANNEL_FACEBOOK);
     }
 
     @OnClick(R.id.story_release_messenger)
     @SuppressWarnings("unused")
     protected void doShare2Messenger(){
-        releaseStory(CHANNEL_MESSENGER);
+        share2Platform(CHANNEL_MESSENGER);
     }
 
     @OnClick(R.id.story_release_twitter)
     @SuppressWarnings("unused")
     protected void doShare2Twitter(){
-        releaseStory(CHANNEL_TWITTER);
+        share2Platform(CHANNEL_TWITTER);
     }
 
     @OnClick(R.id.story_release_linkedin)
     @SuppressWarnings("unused")
     protected void doShare2LinkedIn(){
-        releaseStory(CHANNEL_LINKEDIN);
+        share2Platform(CHANNEL_LINKEDIN);
     }
 
     @OnClick(R.id.story_release_wechat)
     @SuppressWarnings("unused")
     protected void doShare2WeChat(){
-        releaseStory(CHANNEL_WECHAT);
+        share2Platform(CHANNEL_WECHAT);
     }
 
     @OnClick(R.id.story_release_moments)
     @SuppressWarnings("unused")
     protected void doShare2Moments(){
-        releaseStory(CHANNEL_MOMENTS);
+        share2Platform(CHANNEL_MOMENTS);
     }
 
     @OnClick(R.id.story_release_google_plus)
     @SuppressWarnings("unused")
     protected void doShare2GooglePlus(){
-        releaseStory(CHANNEL_GOOGLE_PLUS);
+        share2Platform(CHANNEL_GOOGLE_PLUS);
     }
 
     @OnClick(R.id.story_release_link)
     @SuppressWarnings("unused")
     protected void doShare2CopyUrl(){
-        releaseStory(CHANNEL_COPY_URL);
+        share2Platform(CHANNEL_COPY_URL);
     }
 
     @OnClick(R.id.story_release_qr)
     @SuppressWarnings("unused")
     protected void doShare2QR(){
-        releaseStory(CHANNEL_QR_CODE);
+        share2Platform(CHANNEL_QR_CODE);
     }
 
     @OnClick(R.id.story_release_email)
     @SuppressWarnings("unused")
     protected void doShare2Email(){
-        releaseStory(CHANNEL_EMAIL);
+        share2Platform(CHANNEL_EMAIL);
     }
 
     @OnClick(R.id.story_release_sms)
     @SuppressWarnings("unused")
     protected void doShare2SMS(){
-        releaseStory(CHANNEL_SMS);
+        share2Platform(CHANNEL_SMS);
     }
 
     @OnClick(R.id.story_release_more)
     @SuppressWarnings("unused")
     protected void doShare2More(){
-        releaseStory(CHANNEL_MORE);
+        share2Platform(CHANNEL_MORE);
     }
 
     @Override

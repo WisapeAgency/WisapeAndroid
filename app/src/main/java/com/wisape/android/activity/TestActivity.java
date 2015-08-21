@@ -2,6 +2,7 @@ package com.wisape.android.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Message;
@@ -21,6 +22,7 @@ import org.json.JSONArray;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -74,11 +76,78 @@ public class TestActivity extends BaseActivity{
 
     @OnClick(R.id.share)
     protected void doShare(){
-        Intent intent = new Intent(Intent.ACTION_SEND); // 启动分享发送的属性
-        intent.setType("text/plain"); // 分享发送的数据类型
+//        Intent intent = new Intent(Intent.ACTION_SEND); // 启动分享发送的属性
+//        intent.setType("text/plain"); // 分享发送的数据类型
+//        String msg = "推荐给大家，http://www.wisape.com/demo/playstory/index.html";
+//        intent.putExtra(Intent.EXTRA_TEXT, msg); // 分享的内容
+//        startActivity(Intent.createChooser(intent, "选择分享"));
+
+//        File template = new File(StoryManager.getStoryTemplateDirectory(),"mingpian01");
+//        File thumb = new File(template,"thumb.jpg");
+//        String msg = "推荐给大家，http://www.wisape.com/demo/playstory/index.html";
+//        shareMessage("标题", "消息标题", msg, thumb.getAbsolutePath());
+
+        initShareIntent("com.sina.weibo");
+    }
+
+    /**
+     * 分享功能
+     *
+     * @param context
+     *            上下文
+     * @param activityTitle
+     *            Activity的名字
+     * @param msgTitle
+     *            消息标题
+     * @param msgText
+     *            消息内容
+     * @param imgPath
+     *            图片路径，不分享图片则传null
+     */
+    public void shareMessage(String activityTitle, String msgTitle, String msgText,
+                         String imgPath) {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        if ("".equals(imgPath)) {
+            intent.setType("text/plain"); // 纯文本
+        } else {
+            File image = new File(imgPath);
+            if (image.exists() && image.isFile()) {
+                intent.setType("image/jpg");
+                Uri uri = Uri.fromFile(image);
+                intent.putExtra(Intent.EXTRA_STREAM, uri);
+            }
+        }
+        intent.putExtra(Intent.EXTRA_SUBJECT, msgTitle);
+        intent.putExtra(Intent.EXTRA_TEXT, msgText);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(Intent.createChooser(intent, activityTitle));
+    }
+
+    private void initShareIntent(String type) {
+        File template = new File(StoryManager.getStoryTemplateDirectory(),"mingpian01");
+        File thumb = new File(template,"thumb.jpg");
         String msg = "推荐给大家，http://www.wisape.com/demo/playstory/index.html";
-        intent.putExtra(Intent.EXTRA_TEXT, msg); // 分享的内容
-        startActivity(Intent.createChooser(intent, "选择分享"));
+        boolean found = false;
+        Intent share = new Intent(android.content.Intent.ACTION_SEND);
+        share.setType("image/jpeg");
+        // gets the list of intents that can be loaded.
+        List<ResolveInfo> resInfo = getPackageManager().queryIntentActivities(share, 0);
+        if (!resInfo.isEmpty()){
+            for (ResolveInfo info : resInfo) {
+                if (info.activityInfo.packageName.toLowerCase().contains(type) ||
+                        info.activityInfo.name.toLowerCase().contains(type) ) {
+                    share.putExtra(Intent.EXTRA_SUBJECT,  "subject");
+                    share.putExtra(Intent.EXTRA_TEXT,     msg);
+                    share.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(thumb) ); // Optional, just if you wanna share an image.
+                    share.setPackage(info.activityInfo.packageName);
+                    found = true;
+                    break;
+                }
+            }
+            if (!found)
+                return;
+            startActivity(Intent.createChooser(share, "Select"));
+        }
     }
 
 

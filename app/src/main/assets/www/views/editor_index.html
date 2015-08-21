@@ -22,7 +22,7 @@
                     <li><a class="icon-play"></a></li>
                     <li><a class="icon-layout"></a></li>
                     <li><a class="icon-list"></a></li>
-                    <li><a class="icon-settings"></a></li>
+                    <li><a class="icon-settings" onclick="setting(1);"></a></li>
                 </ul>
             </div>
         </div>
@@ -119,6 +119,14 @@
             }, function(e) {
                 alert("Error: "+e);
             }, "StoryTemplate", "read", [tempName]);
+        }
+
+        function setting(id){
+            cordova.exec(function(retval) {
+                <!--showMessage(retval);-->
+            }, function(e) {
+                alert("Error: "+e);
+            }, "StoryTemplate", "setting", [id]);
         }
 
         function onDownloading(progress){

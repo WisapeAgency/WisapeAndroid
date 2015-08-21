@@ -9,6 +9,7 @@ import android.util.Log;
 import com.alibaba.fastjson.JSON;
 import com.google.gson.Gson;
 import com.wisape.android.WisapeApplication;
+import com.wisape.android.activity.StorySettingsActivity;
 import com.wisape.android.activity.StoryTemplateActivity;
 import com.wisape.android.api.ApiStory;
 import com.wisape.android.common.StoryManager;
@@ -55,6 +56,7 @@ public class StoryTemplatePlugin extends AbsPlugin{
     public static final String ACTION_MUSIC_PATH = "getMusicPath";
     public static final String ACTION_SAVE = "save";
     public static final String ACTION_PUBLISH = "publish";
+    public static final String ACTION_SETTING = "setting";
 
     private static final int WHAT_GET_STAGE_CATEGORY = 0x01;
     private static final int WHAT_GET_STAGE_LIST = 0x02;
@@ -139,6 +141,8 @@ public class StoryTemplatePlugin extends AbsPlugin{
                 bundle.putString(EXTRA_FILE_PATH, args.getString(2));
             }
             startLoad(WHAT_PUBLISH, bundle);
+        }else if (ACTION_SETTING.equals(action)){
+            StorySettingsActivity.launch(getCurrentActivity(), 0);
         }
         return true;
     }
