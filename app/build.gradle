@@ -99,6 +99,6 @@ dependencies {
     compile 'com.j256.ormlite:ormlite-core:4.48'
     compile 'com.j256.ormlite:ormlite-android:4.48'
     compile 'de.greenrobot:eventbus:2.4.0'
-//    compile 'com.google.android.gms:play-services:7.5.0'
+    compile 'com.google.android.gms:play-services:7.5.0'
     compile 'com.android.support:multidex:1.0.0'
 }

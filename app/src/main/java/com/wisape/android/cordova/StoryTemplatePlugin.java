@@ -100,8 +100,8 @@ public class StoryTemplatePlugin extends AbsPlugin{
             startLoad(WHAT_START, bundle);
         } else if (ACTION_READ.equals(action)) {//read
             if(null != args && args.length() != 0){
-                String templateName = args.getString(0);//
-                String content = readHtml(templateName);
+                String path = args.getString(0);//
+                String content = readHtml(path);
                 callbackContext.success(content);
             }
         }else if(ACTION_REPLACE_FILE.equals(action)){//replaceFile
@@ -286,12 +286,11 @@ public class StoryTemplatePlugin extends AbsPlugin{
         return true;
     }
 
-    private String readHtml(String templateName){
-        File file = new File(StoryManager.getStoryTemplateDirectory(), templateName);
+    private String readHtml(String path){
         StringBuffer content = new StringBuffer();
         BufferedReader reader = null;
         try {
-            reader = new BufferedReader(new FileReader(new File(file, FILE_NAME_TEMPLATE)));
+            reader = new BufferedReader(new FileReader(new File(path)));
             String line;
             while ((line = reader.readLine()) != null){
                 content.append(line);
