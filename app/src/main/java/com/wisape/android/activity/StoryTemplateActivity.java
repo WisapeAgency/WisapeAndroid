@@ -28,7 +28,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by LeiGuoting on 7/7/15.
@@ -43,6 +45,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
     private static final String EXTRA_TEMPLATE_PATH = "temp_path";
     private static final String EXTRA_TEMPLATE_URL = "temp_url";
     private static final String EXTRA_FONT_NAME = "font_name";
+    private static final String FONT_FAMILY = "font-family";
 
     private static final int WHAT_DOWNLOAD_TEMPLATE = 0x01;
     private static final int WHAT_DOWNLOAD_FONT = 0x02;
@@ -113,10 +116,6 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
         loadUrl(START_URL);
     }
 
-    /**
-     * 下载模板
-     * @param data json
-     */
     public void downloadTemplate(String data,int id) throws JSONException{
         JSONObject json = new JSONObject(data);
         String name = json.getString(EXTRA_TEMPLATE_NAME);
@@ -129,18 +128,14 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
         startLoad(WHAT_DOWNLOAD_TEMPLATE, args);
     }
 
-    /**
-     * 下载字体
-     * @param template 模板路径
-     */
     public void downloadFont(File template){
-        List<String> fontList = parseFont(template);
-        if (fontList.size() == 0){
+        Set<String> fontSet = parseFont(template);
+        if (fontSet.size() == 0){
             return;
         }
         File fontDirectory = StoryManager.getStoryFontDirectory();
         for(File file : fontDirectory.listFiles()){
-            if(!fontList.contains(file.getName())){
+            if(!fontSet.contains(file.getName())){
                 Bundle args = new Bundle();
                 args.putString(EXTRA_FONT_NAME, file.getName());
                 startLoad(WHAT_DOWNLOAD_FONT, args);
@@ -148,23 +143,22 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
         }
     }
 
-    private List<String> parseFont(File template){
-        List<String> fontList = new ArrayList<String>();
+    private Set<String> parseFont(File template){
+        Set<String> fontSet = new HashSet<>();
         File file = new File(template, TEMPLATE_NAME);
         if (!file.exists()){
-            return fontList;
+            return fontSet;
         }
         BufferedReader reader = null;
         try{
             reader = new BufferedReader(new FileReader(file));
-            String header = reader.readLine();
-            header = header.replace("<!--", "").trim();
-            header = header.replace("-->", "").trim();
-            String[] segments = header.split(":");
-            if(segments.length == 2 && segments[0].equalsIgnoreCase("font")){
-                String[] fonts = segments[1].split(",");
-                for(String font : fonts){
-                    fontList.add(font);
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.contains(FONT_FAMILY)) {
+                    line = line.substring(line.indexOf(FONT_FAMILY));
+                    line = line.substring(0, line.indexOf(";"));
+                    String font = line.split(":")[1].trim();
+                    fontSet.add(font);
                 }
             }
             reader.close();
@@ -179,7 +173,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
                 }
             }
         }
-        return fontList;
+        return fontSet;
     }
 
     public void invokeJavascriptTest(){
