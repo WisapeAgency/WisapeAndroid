@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.soundcloud.android.crop.Crop;
-import com.wisape.android.message.UserProfileMessage;
+import com.wisape.android.msg.UserProfileMessage;
 import com.wisape.android.R;
 import com.wisape.android.logic.UserLogic;
 import com.wisape.android.api.ApiUser;

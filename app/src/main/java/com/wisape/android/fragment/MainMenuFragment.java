@@ -10,11 +10,11 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.freshdesk.mobihelp.Mobihelp;
-import com.wisape.android.message.Message;
-import com.wisape.android.message.OperateMessage;
-import com.wisape.android.message.SystemMessage;
-import com.wisape.android.message.UserProfileErrorMessage;
-import com.wisape.android.message.UserProfileMessage;
+import com.wisape.android.msg.Message;
+import com.wisape.android.msg.OperateMessage;
+import com.wisape.android.msg.SystemMessage;
+import com.wisape.android.msg.UserProfileErrorMessage;
+import com.wisape.android.msg.UserProfileMessage;
 import com.wisape.android.R;
 import com.wisape.android.WisapeApplication;
 import com.wisape.android.activity.AboutActivity;

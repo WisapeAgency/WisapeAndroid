@@ -21,7 +21,7 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.request.ImageRequest;
-import com.wisape.android.message.ActiveMessage;
+import com.wisape.android.msg.ActiveMessage;
 import com.wisape.android.R;
 import com.wisape.android.WisapeApplication;
 import com.wisape.android.activity.BaseActivity;
@@ -33,6 +33,7 @@ import com.wisape.android.http.DefaultHttpRequestListener;
 import com.wisape.android.http.HttpRequest;
 import com.wisape.android.logic.StoryLogic;
 import com.wisape.android.model.StoryInfo;
+import com.wisape.android.msg.Message;
 import com.wisape.android.network.Downloader;
 import com.wisape.android.network.WWWConfig;
 import com.wisape.android.view.GalleryView;
@@ -371,7 +372,7 @@ public class CardGalleryFragment extends AbsFragment {
     /**
      * eventbus消息处理
      */
-    public void onEventMainThread(com.wisape.android.message.Message message) {
+    public void onEventMainThread(Message message) {
         if (message instanceof ActiveMessage) {
             if (mTextGifCount.getVisibility() == View.GONE) {
                 mTextGifCount.setVisibility(View.VISIBLE);

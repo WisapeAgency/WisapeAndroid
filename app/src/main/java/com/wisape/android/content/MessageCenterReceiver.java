@@ -9,9 +9,9 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSONObject;
-import com.wisape.android.message.ActiveMessage;
-import com.wisape.android.message.OperateMessage;
-import com.wisape.android.message.SystemMessage;
+import com.wisape.android.msg.ActiveMessage;
+import com.wisape.android.msg.OperateMessage;
+import com.wisape.android.msg.SystemMessage;
 import com.wisape.android.R;
 import com.wisape.android.activity.MainActivity;
 import com.wisape.android.activity.MessageCenterDetailActivity;

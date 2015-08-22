@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.wisape.android.message.UserProfileMessage;
+import com.wisape.android.msg.UserProfileMessage;
 import com.wisape.android.R;
 import com.wisape.android.util.Utils;
 import com.wisape.android.widget.SignUpEditText;
