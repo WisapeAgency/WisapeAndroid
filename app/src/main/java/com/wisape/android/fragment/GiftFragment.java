@@ -1,11 +1,9 @@
 package com.wisape.android.fragment;
 
-import android.app.FragmentManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -19,9 +17,7 @@ import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
 import com.facebook.drawee.generic.RoundingParams;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.wisape.android.Message.SystemMessage;
 import com.wisape.android.R;
-import com.wisape.android.WisapeApplication;
 import com.wisape.android.activity.BaseActivity;
 import com.wisape.android.http.DefaultHttpRequestListener;
 import com.wisape.android.http.HttpRequest;
@@ -32,10 +28,7 @@ import com.wisape.android.util.FrescoFactory;
 import com.wisape.android.view.GalleryView;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;

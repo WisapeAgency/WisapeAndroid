@@ -1,15 +1,7 @@
 package com.wisape.android.fragment;
 
-import android.app.Activity;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.PointF;
 import android.os.Bundle;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,22 +10,18 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.freshdesk.mobihelp.Mobihelp;
-import com.freshdesk.mobihelp.MobihelpConfig;
-import com.wisape.android.Message.ActiveMessage;
-import com.wisape.android.Message.Message;
-import com.wisape.android.Message.OperateMessage;
-import com.wisape.android.Message.SystemMessage;
-import com.wisape.android.Message.UserProfileErrorMessage;
-import com.wisape.android.Message.UserProfileMessage;
+import com.wisape.android.message.Message;
+import com.wisape.android.message.OperateMessage;
+import com.wisape.android.message.SystemMessage;
+import com.wisape.android.message.UserProfileErrorMessage;
+import com.wisape.android.message.UserProfileMessage;
 import com.wisape.android.R;
 import com.wisape.android.WisapeApplication;
 import com.wisape.android.activity.AboutActivity;
 import com.wisape.android.activity.BaseActivity;
-import com.wisape.android.activity.MainActivity;
 import com.wisape.android.activity.MessageCenterActivity;
 import com.wisape.android.activity.UserProfileActivity;
 import com.wisape.android.common.UserManager;
-import com.wisape.android.content.DynamicBroadcastReceiver;
 import com.wisape.android.model.UserInfo;
 import com.wisape.android.util.EnvironmentUtils;
 import com.wisape.android.util.FileUtils;
@@ -41,7 +29,6 @@ import com.wisape.android.util.FrescoFactory;
 import com.wisape.android.widget.ComfirmDialog;
 
 import java.io.File;
-import java.util.Random;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;

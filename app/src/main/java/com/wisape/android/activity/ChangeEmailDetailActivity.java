@@ -4,18 +4,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.wisape.android.Message.Message;
-import com.wisape.android.Message.UserProfileMessage;
+import com.wisape.android.message.UserProfileMessage;
 import com.wisape.android.R;
-import com.wisape.android.WisapeApplication;
-import com.wisape.android.http.DefaultHttpRequestListener;
-import com.wisape.android.http.HttpRequest;
-import com.wisape.android.http.HttpRequestListener;
 import com.wisape.android.util.Utils;
 import com.wisape.android.widget.SignUpEditText;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;

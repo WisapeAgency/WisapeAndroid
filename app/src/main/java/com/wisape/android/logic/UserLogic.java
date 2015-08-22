@@ -1,29 +1,20 @@
 package com.wisape.android.logic;
 
 import android.content.Context;
-import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.DeleteBuilder;
-import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
-import com.j256.ormlite.stmt.Where;
-import com.wisape.android.Message.UserProfileErrorMessage;
-import com.wisape.android.Message.UserProfileMessage;
+import com.wisape.android.message.UserProfileErrorMessage;
+import com.wisape.android.message.UserProfileMessage;
 import com.wisape.android.WisapeApplication;
-import com.wisape.android.activity.MainActivity;
-import com.wisape.android.activity.UserProfileActivity;
-import com.wisape.android.api.ApiStory;
 import com.wisape.android.common.ProfileRequester;
 import com.wisape.android.common.UserManager;
-import com.wisape.android.database.BaseEntity;
 import com.wisape.android.database.DatabaseHelper;
-import com.wisape.android.database.StoryEntity;
 import com.wisape.android.database.UserActivityEntity;
 import com.wisape.android.database.UserMessageEntity;
 import com.wisape.android.model.UserActivityInfo;

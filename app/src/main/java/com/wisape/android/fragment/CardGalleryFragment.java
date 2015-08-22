@@ -2,9 +2,6 @@ package com.wisape.android.fragment;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.PointF;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -17,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
@@ -25,15 +21,12 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.request.ImageRequest;
-import com.wisape.android.Message.ActiveMessage;
-import com.wisape.android.Message.OperateMessage;
+import com.wisape.android.message.ActiveMessage;
 import com.wisape.android.R;
 import com.wisape.android.WisapeApplication;
 import com.wisape.android.activity.BaseActivity;
 import com.wisape.android.activity.MainActivity;
-import com.wisape.android.activity.StoryTemplateActivity;
 import com.wisape.android.activity.TestActivity;
-import com.wisape.android.api.ApiStory;
 import com.wisape.android.common.StoryManager;
 import com.wisape.android.database.StoryEntity;
 import com.wisape.android.http.DefaultHttpRequestListener;
@@ -42,7 +35,6 @@ import com.wisape.android.logic.StoryLogic;
 import com.wisape.android.model.StoryInfo;
 import com.wisape.android.network.Downloader;
 import com.wisape.android.network.WWWConfig;
-import com.wisape.android.util.FrescoFactory;
 import com.wisape.android.view.GalleryView;
 import com.wisape.android.widget.PopupWindowMenu;
 
@@ -379,7 +371,7 @@ public class CardGalleryFragment extends AbsFragment {
     /**
      * eventbus消息处理
      */
-    public void onEventMainThread(com.wisape.android.Message.Message message) {
+    public void onEventMainThread(com.wisape.android.message.Message message) {
         if (message instanceof ActiveMessage) {
             if (mTextGifCount.getVisibility() == View.GONE) {
                 mTextGifCount.setVisibility(View.VISIBLE);
