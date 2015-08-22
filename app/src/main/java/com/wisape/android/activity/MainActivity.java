@@ -1,26 +1,22 @@
 package com.wisape.android.activity;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
-import android.widget.PopupWindow;
 
+import com.freshdesk.mobihelp.Mobihelp;
+import com.freshdesk.mobihelp.MobihelpConfig;
+import com.parse.Parse;
+import com.parse.ParseInstallation;
+import com.parse.PushService;
 import com.wisape.android.R;
-import com.wisape.android.content.DynamicBroadcastReceiver;
-import com.wisape.android.fragment.CardGalleryFragment;
-import com.wisape.android.fragment.MainMenuFragment;
+import com.wisape.android.WisapeApplication;
 import com.wisape.android.model.UserInfo;
-import com.wisape.android.widget.PopupWindowMenu;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -28,8 +24,7 @@ import butterknife.InjectView;
 /**
  * @author Duke
  */
-public class MainActivity extends BaseActivity implements DrawerLayout.DrawerListener, MainMenuFragment.UserCallback,
-        DynamicBroadcastReceiver.OnDynamicBroadcastReceiverListener{
+public class MainActivity extends BaseActivity implements DrawerLayout.DrawerListener {
     private static final String TAG = MainActivity.class.getSimpleName();
     public static final String EXTRA_USER_INFO = "_user_info";
 
@@ -37,35 +32,14 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
     DrawerLayout drawer;
 
 
-    public static void launch(Activity activity, UserInfo user, int requestCode){
+    public static void launch(Activity activity, UserInfo user, int requestCode) {
         Intent intent = new Intent(activity.getApplicationContext(), MainActivity.class);
         intent.putExtra(EXTRA_USER_INFO, user);
-        if(-1 == requestCode){
+        if (-1 == requestCode) {
             activity.startActivity(intent);
             activity.finish();
-        }else {
+        } else {
             activity.startActivityForResult(intent, requestCode);
-        }
-    }
-
-    private UserInfo user;
-    private LocalBroadcastManager localBroadcastManager;
-    private DynamicBroadcastReceiver localReceiver;
-
-    @Override
-    public void onReceiveBroadcast(Context context, Intent intent) {
-        if(isDestroyed()){
-            return;
-        }
-
-        String action = intent.getAction();
-        if(null == action || 0 == action.length()){
-            return;
-        }
-
-        if(UserProfileActivity.ACTION_PROFILE_UPDATED.equals(action)){
-            UserInfo newUser = intent.getParcelableExtra(EXTRA_USER_INFO);
-            user = newUser;
         }
     }
 
@@ -73,32 +47,31 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle args;
-        if(null == savedInstanceState){
+        if (null == savedInstanceState) {
             args = getIntent().getExtras();
-        }else{
+        } else {
             args = savedInstanceState;
         }
-        user = args.getParcelable(EXTRA_USER_INFO);
-        if(null == user && 0 < user.user_id){
+        UserInfo user = args.getParcelable(EXTRA_USER_INFO);
+        if (null == user && 0 < user.user_id) {
             SignUpActivity.launch(this, -1);
             return;
         }
+        WisapeApplication.getInstance().setUserInfo(user);
+        Mobihelp.init(this, new MobihelpConfig(getString(R.string.freshdesk_domain), getString(R.string.freshdesk_key), getString(R.string.freshdesk_secret)));
 
         Log.d(TAG, "#onCreate this:" + hashCode() + ", user:" + user.toString());
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
         initStyle();
         drawer.setDrawerListener(this);
-        localBroadcastManager = LocalBroadcastManager.getInstance(getApplicationContext());
-        localReceiver = new DynamicBroadcastReceiver(this);
-        localBroadcastManager.registerReceiver(localReceiver, new IntentFilter(UserProfileActivity.ACTION_PROFILE_UPDATED));
     }
 
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable(EXTRA_USER_INFO, user);
+        outState.putParcelable(EXTRA_USER_INFO, WisapeApplication.getInstance().getUserInfo());
     }
 
     private void initStyle() {
@@ -106,14 +79,9 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
     }
 
-    @Override
-    public UserInfo getUserInfo() {
-        return user;
-    }
-
     /*
-        * DrawerLayout.DrawerListener
-        */
+     * DrawerLayout.DrawerListener
+     */
     @Override
     public void onDrawerSlide(View drawerView, float slideOffset) {
         View contentView = drawer.findViewById(R.id.main_view);
@@ -164,11 +132,11 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
 
     }
 
-    public final void openOrCloseMainMenu(){
-        if(null != drawer){
-            if(drawer.isDrawerOpen(Gravity.LEFT)){
+    public final void openOrCloseMainMenu() {
+        if (null != drawer) {
+            if (drawer.isDrawerOpen(Gravity.LEFT)) {
                 drawer.closeDrawer(Gravity.LEFT);
-            }else{
+            } else {
                 drawer.openDrawer(Gravity.LEFT);
             }
         }
@@ -176,9 +144,9 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
 
     @Override
     public void onBackPressed() {
-        if(drawer.isDrawerOpen(Gravity.LEFT)){
+        if (drawer.isDrawerOpen(Gravity.LEFT)) {
             openOrCloseMainMenu();
-        }else{
+        } else {
             super.onBackPressed();
         }
     }
@@ -187,18 +155,9 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
     protected void onDestroy() {
         super.onDestroy();
         ButterKnife.reset(this);
-        if(null != drawer){
+        if (null != drawer) {
             drawer.setOnDragListener(null);
             drawer = null;
         }
-
-        if(null != localBroadcastManager){
-            localBroadcastManager.unregisterReceiver(localReceiver);
-            localReceiver.destroy();
-            localReceiver = null;
-            localBroadcastManager = null;
-        }
-        user = null;
     }
-
 }

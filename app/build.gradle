@@ -59,6 +59,7 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile files('libs/libammsdk.jar')
     compile files('libs/Parse-1.2.0.jar')
+    compile files('libs/universal-image-loader-1.9.4.jar')
     compile project(':oauth')
     //compile project(':volley')
     compile project(':mobihelp_sdk_android_v1_4')

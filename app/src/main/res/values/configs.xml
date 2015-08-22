@@ -4,9 +4,9 @@
     <!--域名 结尾不能有斜杠-->
     <string name="app_domain">wisdemo.sinaapp.com</string>
     <string name="www_schema">http</string>
-    <string name="www_host">wisdemo.sinaapp.com</string>
+    <string name="www_host">106.75.196.189</string>
     <string name="www_port">80</string>
-    <string name="www_path">wis/index.php/v1</string>
+    <string name="www_path">index.php/v1</string>
     <string name="www_version">v1</string>
     <string name="www_timeout_mills">3000</string>
 

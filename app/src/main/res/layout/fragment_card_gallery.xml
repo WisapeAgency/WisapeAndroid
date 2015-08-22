@@ -45,14 +45,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/active_message_count_bg"
-                android:text="12"
+                android:text="0"
                 android:textSize="12sp"
                 android:paddingLeft="2dp"
                 android:paddingRight="2dp"
                 android:layout_alignTop="@+id/gift"
                 android:layout_toRightOf="@+id/gift"
                 android:layout_marginLeft="-34dp"
-                android:layout_marginTop="-3dp"/>
+                android:layout_marginTop="-3dp"
+                android:visibility="gone"/>
         </RelativeLayout>
 
 

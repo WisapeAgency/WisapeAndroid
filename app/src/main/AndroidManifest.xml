@@ -160,6 +160,17 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
 
+        <activity android:name=".activity.AddEmailAccoutActivity"
+            android:label="@string/add_email"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name=".activity.ChangeEamilActivity"
+            android:label="@string/add_email"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activity.ChangeEmailDetailActivity"
+            android:label="@string/name_change_email_detail_label"
+            android:screenOrientation="portrait"/>
+
         <service
             android:name=".service.NanoService"
             android:exported="false" />

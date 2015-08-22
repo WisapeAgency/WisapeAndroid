@@ -42,7 +42,6 @@ public class AboutActivity extends BaseActivity {
         try {
             PackageManager pm = context.getPackageManager();
             pi = pm.getPackageInfo(context.getPackageName(),PackageManager.GET_CONFIGURATIONS);
-            return pi;
         } catch (Exception e) {
             e.printStackTrace();
         }

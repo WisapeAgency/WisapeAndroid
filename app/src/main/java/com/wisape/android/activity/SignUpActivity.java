@@ -25,7 +25,6 @@ import com.wisape.android.logic.UserLogic;
 import com.wisape.android.model.UserInfo;
 import com.wisape.android.api.ApiUser;
 import com.wisape.android.network.Requester;
-import com.wisape.android.util.SecurityUtils;
 import com.wisape.android.util.Utils;
 import com.wisape.android.widget.SignUpEditText;
 
@@ -34,6 +33,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 /**
+ * 登录界面
  * Created by LeiGuoting on 3/7/15.
  */
 public class SignUpActivity extends BaseActivity implements SignUpEditText.OnActionListener{
@@ -54,7 +54,6 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
     protected SignUpEditText emailEdit;
     @InjectView(R.id.sign_up_password)
     protected SignUpEditText passwordEdit;
-
     @InjectView(R.id.sign_up_forget_password)
     protected TextView forgetPassword;
 
@@ -73,12 +72,29 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
         ButterKnife.inject(this);
+
         emailEdit.setOnActionListener(this);
         passwordEdit.setOnActionListener(this);
 
         SpannableString string = new SpannableString(forgetPassword.getText());
         string.setSpan(new UnderlineSpan(), 0, string.length(), 0);
         forgetPassword.setText(string);
+    }
+
+    @OnClick(R.id.sign_up_btn)
+    @SuppressWarnings("unused")
+    protected void doSignUp(){
+        String email = emailEdit.getText();
+        String password = passwordEdit.getText();
+        if(verifyEMail(email) && verifyPassword(password)){
+            email = email.trim();
+            password = password.trim();
+            Bundle args = new Bundle();
+            args.putString(EXTRA_EMAIL, email);
+            args.putString(EXTRA_PASSWORD, password);
+            showProgressDialog(R.string.progress_dialog_reset_password);
+            startLoad(LOADER_SIGN_UP, args);
+        }
     }
 
     @OnClick(R.id.sign_up_with_twitter)
@@ -143,7 +159,7 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
                     args.putParcelable(EXTRA_PROFILE_PARAM, param);
                     startLoad(LOADER_SIGN_UP_WITH_FACEBOOK, args);
                 }else{
-                    //TODO OAuth failed
+                    showToast("登录失败");
                 }
                 break;
 
@@ -170,7 +186,7 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
                     args.putParcelable(EXTRA_PROFILE_PARAM, twParam);
                     startLoad(LOADER_SIGN_UP_WITH_TWITTER, args);
                 }else{
-                    //TODO OAuth failed
+                    showToast("登录失败");
                 }
                 break;
 
@@ -185,26 +201,9 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
                     args.putParcelable(EXTRA_PROFILE_PARAM, param);
                     startLoad(LOADER_SIGN_UP_WITH_GOOGLE_PLUS, args);
                 }else{
-                    //TODO OAuth failed
+                    showToast("登录失败");
                 }
                 break;
-        }
-    }
-
-    @OnClick(R.id.sign_up_btn)
-    @SuppressWarnings("unused")
-    protected void doSignUp(){
-        String email = emailEdit.getText();
-        String password = passwordEdit.getText();
-        if(verifyEMail(email) && verifyPassword(password)){
-            email = email.trim();
-            password = password.trim();
-
-            Bundle args = new Bundle();
-            args.putString(EXTRA_EMAIL, email);
-            args.putString(EXTRA_PASSWORD, password);
-            showProgressDialog(R.string.progress_dialog_reset_password);
-            startLoad(LOADER_SIGN_UP, args);
         }
     }
 
@@ -246,17 +245,13 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
         Message msg = Message.obtain();
         msg.what = what;
         switch (what){
-            default :
-                break;
             case LOADER_SIGN_UP :
                 UserLogic logic = UserLogic.instance();
                 ApiUser.AttrSignUpInfo attr = new ApiUser.AttrSignUpInfo();
                 attr.email = args.getString(EXTRA_EMAIL, "");
-                String password = args.getString(EXTRA_PASSWORD, "");
-                attr.password = password;
+                attr.password = args.getString(EXTRA_PASSWORD, "");
                 attr.type = UserManager.SIGN_UP_WITH_EMAIL;
                 args.clear();
-
                 UserInfo user = logic.signUp(getApplicationContext(), attr, getCancelableTag());
                 msg.obj = user;
                 msg.arg1 = user.status;
@@ -294,6 +289,8 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
                 msg.obj = user;
                 msg.arg1 = STATUS_SUCCESS;
                 break;
+            default :
+                break;
         }
         return msg;
     }
@@ -303,16 +300,12 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
        super.onLoadCompleted(data);
 
         switch (data.what){
-            default :
-                return;
-
             case LOADER_SIGN_UP :
                 if(STATUS_SUCCESS == data.arg1){
                     UserInfo user = (UserInfo) data.obj;
                     if(Requester.ServerMessage.STATUS_SUCCESS == user.status){
                         MainActivity.launch(this, user, -1);
                     }else{
-                        //TODO 注册登录失败
                         showToast("登陆或者注册失败");
                     }
                 }
@@ -326,9 +319,11 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
                     if(Requester.ServerMessage.STATUS_SUCCESS == user.status){
                         MainActivity.launch(this, user, -1);
                     }else{
-                        //TODO 注册登录失败
+                        showToast("登录失败");
                     }
                 }
+                break;
+            default :
                 break;
         }
     }

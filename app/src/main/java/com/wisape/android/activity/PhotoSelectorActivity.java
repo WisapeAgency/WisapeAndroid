@@ -192,12 +192,8 @@ public class PhotoSelectorActivity extends AppCompatActivity implements LoaderMa
         if (isFinishing() || null == data) {
             return;
         }
-
         try {
             switch (loader.getId()) {
-                default:
-                    break;
-
                 case WHAT_PHOTOS:
                     AppPhotoInfo[] photos = (AppPhotoInfo[]) data.obj;
                     Fragment fragment = getSupportFragmentManager().findFragmentById(/*R.id.photo_walls*/CONTENT_ID);
@@ -228,6 +224,8 @@ public class PhotoSelectorActivity extends AppCompatActivity implements LoaderMa
 
                 case WHAT_ERROR:
                     Log.e(TAG, "", (Throwable) data.obj);
+                    break;
+                default:
                     break;
             }
         } finally {

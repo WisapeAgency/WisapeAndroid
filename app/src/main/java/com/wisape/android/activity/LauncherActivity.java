@@ -12,9 +12,13 @@ import com.wisape.android.model.UserInfo;
 import com.wisape.android.network.DataSynchronizer;
 
 /**
+ * 启动界面
  * Created by LeiGuoting on 29/6/15.
  */
 public class LauncherActivity extends BaseActivity {
+
+    private static final String TAG = LauncherActivity.class.getSimpleName();
+
     private static final int LOADER_SIGN_IN = 1;
     private static final long LAUNCH_TIME_MILLS = 1000;
 
@@ -43,23 +47,18 @@ public class LauncherActivity extends BaseActivity {
         long costMills = SystemClock.uptimeMillis() - startTimeInMills;
         long diffMills = LAUNCH_TIME_MILLS - costMills;
 
-        if(data.obj instanceof UserInfo){
-            final UserInfo user = (UserInfo)data.obj;
-            Log.e("LauncherActivity", "#onLoadCompleted diffMills:" + diffMills);
-            if(0 < diffMills){
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        redirect(user);
-                    }
-                }, diffMills);
-            }else{
-                redirect(user);
-            }
+        final UserInfo user = (UserInfo)data.obj;
+        Log.e(TAG, "#onLoadCompleted diffMills:" + diffMills);
+        if(0 < diffMills){
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    redirect(user);
+                }
+            }, diffMills);
         }else{
-            redirect(null);
+            redirect(user);
         }
-
     }
 
     private void redirect(UserInfo user){

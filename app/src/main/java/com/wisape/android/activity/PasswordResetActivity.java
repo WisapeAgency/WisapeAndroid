@@ -26,23 +26,14 @@ import butterknife.OnClick;
  */
 public class PasswordResetActivity extends BaseActivity implements SignUpEditText.OnActionListener {
 
-    private static final String TAG = PasswordResetActivity.class.getSimpleName();
-
     /**已经向邮箱发送验证信息*/
     private static final int STATUS_OK = 1;
-    /**服务器端发生错误*/
-    private static final int STATUS_SERVER_ERROR=500;
-    /**需要验证的邮箱不存在*/
-    private static final int STATUS_EMAIL_NOT_HAVE=401;
 
     private static final String USER_EMAIL = "user_email";
     private static final int RESET_USER_EMAIL = 1;
 
     @InjectView(R.id.password_reset_email_edit)
     protected SignUpEditText mPasswordRestEmailEdit;
-    @InjectView(R.id.password_reset_btn)
-    @SuppressWarnings("unused")
-    protected Button mPasswordRestSubmitBtn;
 
     public static void launch(Activity activity, int requestCode) {
         Intent intent = new Intent(activity.getApplicationContext(), PasswordResetActivity.class);

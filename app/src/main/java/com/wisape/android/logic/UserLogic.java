@@ -13,6 +13,8 @@ import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.Where;
+import com.wisape.android.Message.UserProfileMessage;
+import com.wisape.android.WisapeApplication;
 import com.wisape.android.activity.MainActivity;
 import com.wisape.android.activity.UserProfileActivity;
 import com.wisape.android.api.ApiStory;
@@ -33,6 +35,8 @@ import com.wisape.android.util.Utils;
 import java.lang.ref.WeakReference;
 import java.sql.SQLException;
 import java.util.List;
+
+import de.greenrobot.event.EventBus;
 
 /**
  * Created by LeiGuoting on 3/7/15.
@@ -106,12 +110,10 @@ public class UserLogic {
         UserInfo user = api.updateProfile(context, profile, cancelableTag);
 
         if(Requester.ServerMessage.STATUS_SUCCESS == user.status){
+            Log.e(TAG,user.toString());
             UserManager.instance().saveUser(context, user);
-
-            LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(context);
-            Intent intent = new Intent(UserProfileActivity.ACTION_PROFILE_UPDATED);
-            intent.putExtra(MainActivity.EXTRA_USER_INFO, user);
-            broadcastManager.sendBroadcast(intent);
+            WisapeApplication.getInstance().setUserInfo(user);
+            EventBus.getDefault().post(new UserProfileMessage());
         }
         return user;
     }

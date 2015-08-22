@@ -35,6 +35,7 @@ public class ApiUser extends ApiBase{
     private ApiUser(){}
 
     public UserInfo signUp(Context context, AttrSignUpInfo attrInfo, Object tag){
+
         Uri uri = WWWConfig.acquireUri(context.getString(R.string.uri_user_login));
         Log.e(TAG, "#signUp uri:" + uri.toString());
 
@@ -64,7 +65,7 @@ public class ApiUser extends ApiBase{
 
     public UserInfo updateProfile(Context context, AttrUserProfile profile, Object tag){
         Uri uri = WWWConfig.acquireUri(context.getString(R.string.uri_user_profile_update));
-        Log.d(TAG, "#updateProfile uri:" + uri.toString());
+        Log.e(TAG, "#updateProfile uri:" + uri.toString());
 
         Requester requester = Requester.instance();
         setAccessToken(context, profile);

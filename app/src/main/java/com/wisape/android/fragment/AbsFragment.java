@@ -16,7 +16,6 @@ import android.view.View;
  */
 public abstract class AbsFragment extends Fragment {
     public DisplayMetrics mDisplayMetrics;
-    public Handler mHandler = new Handler();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

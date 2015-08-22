@@ -1,9 +1,14 @@
 package com.wisape.android.activity;
 
 import android.app.ProgressDialog;
+import android.os.Bundle;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.widget.Toast;
+
+import com.wisape.android.WisapeApplication;
+
+import butterknife.ButterKnife;
 
 /**
  * Created by LeiGuoting on 3/7/15.
@@ -11,13 +16,19 @@ import android.widget.Toast;
 public abstract class BaseActivity extends VolleyActivity{
 
     private ProgressDialog mProgressDialog;
+    protected WisapeApplication wisapeApplication;
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        wisapeApplication = WisapeApplication.getInstance();
+    }
 
     /**
      * 显示进度对话框
      * @param resId  显示的字符串资源ID
      */
-    protected void showProgressDialog(@Nullable int resId){
+    public void showProgressDialog(@Nullable int resId){
         if(mProgressDialog == null){
             mProgressDialog = new ProgressDialog(this);
         }
@@ -32,7 +43,7 @@ public abstract class BaseActivity extends VolleyActivity{
     /**
      * 关闭进度对话框
      */
-    protected void closeProgressDialog(){
+    public void closeProgressDialog(){
         if(mProgressDialog != null && mProgressDialog.isShowing()){
             mProgressDialog.dismiss();
         }
@@ -46,7 +57,13 @@ public abstract class BaseActivity extends VolleyActivity{
         }
     }
 
-    protected void showToast(String msg){
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ButterKnife.reset(this);
+    }
+
+    public void showToast(String msg){
         Toast.makeText(this,msg,Toast.LENGTH_SHORT).show();
     }
 

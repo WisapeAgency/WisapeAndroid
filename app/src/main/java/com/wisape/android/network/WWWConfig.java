@@ -22,8 +22,9 @@ public class WWWConfig{
         String host = res.getString(R.string.www_host);
         String port = res.getString(R.string.www_port);
         PATH = res.getString(R.string.www_path);
-        authority = String.format("%1$s:%2$s", host, port);
+//        authority = String.format("%1$s:%2$s", host, port);
 
+        authority = host;
         version = res.getString(R.string.www_version);
         timeoutMills = Integer.parseInt(res.getString(R.string.www_timeout_mills));
 

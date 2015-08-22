@@ -2,7 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_marginLeft="20dp"
+    android:layout_marginRight="20dp">
 
     <TextView
         android:id="@+id/user_profile_icon_title"
@@ -28,13 +30,16 @@
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/user_profile_icon"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_alignParentTop="true"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_alignRight="@+id/icon_down"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="25dp"
+        app:roundAsCircle="true"
         app:placeholderImage="@drawable/default_user_icon"
-        app:failureImage="@drawable/default_user_icon"
-        app:actualImageScaleType="center"/>
+        app:failureImage="@mipmap/icon_menu_default_head"
+        app:placeholderImageScaleType="focusCrop"
+        app:actualImageScaleType="focusCrop"/>
     
     <View
         android:id="@+id/divider_icon"
@@ -65,18 +70,19 @@
         android:layout_alignParentEnd="true"
         android:src="@drawable/icon_down"/>
 
-    <com.widgets.EditableTextView
+    <TextView
         android:id="@+id/user_profile_name_edit"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:textColor="@android:color/black"
+        android:textColor="@color/app_btn_green_normal"
         android:layout_toRightOf="@+id/user_profile_name_title"
         android:layout_toEndOf="@+id/user_profile_name_title"
         android:layout_toLeftOf="@+id/name_down"
         android:layout_toStartOf="@+id/name_down"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="25dp"
         android:layout_below="@+id/user_profile_icon"
-        android:gravity="right|end|center_vertical"
-        app:etv_editable="false"/>
+        android:gravity="right|end|center_vertical"/>
 
     <View
         android:id="@+id/divider_name"
@@ -107,18 +113,19 @@
         android:layout_alignParentEnd="true"
         android:src="@drawable/icon_down"/>
 
-    <com.widgets.EditableTextView
+    <TextView
         android:id="@+id/user_profile_email_edit"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:textColor="@android:color/black"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="5dp"
+        android:textColor="@color/app_btn_green_normal"
         android:layout_toRightOf="@+id/user_profile_email_title"
         android:layout_toEndOf="@+id/user_profile_email_title"
         android:layout_toLeftOf="@+id/email_down"
         android:layout_toStartOf="@+id/email_down"
         android:layout_below="@+id/user_profile_name_edit"
-        android:gravity="right|end|center_vertical"
-        app:etv_editable="false"/>
+        android:gravity="right|end|center_vertical" />
 
 
 </RelativeLayout>

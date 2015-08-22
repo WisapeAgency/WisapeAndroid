@@ -7,6 +7,8 @@
     <!--忘记密码-->
     <string name="uri_user_forget_pwd">user/forget</string>
 
+    <!--Story-->
+    <string name="uri_story_default">story/default</string>
     <string name="uri_story_create">story/create</string>
     <string name="uri_story_del">story/del</string>
     <string name="uri_story_list">story/list</string>
@@ -15,6 +17,13 @@
     <string name="uri_template_download">template/download</string>
     <string name="uri_music_download">music/download</string>
     <string name="uri_font_download">fonts/DLbyName</string>
+
+    <!--active-->
+    <string name="uri_active_list">user/active</string>
+
+    <string name="uri_message_list">message/list</string>
+    <string name="uri_message_read">message/read</string>
+
     <!--获取模板类型列表-->
     <string name="uri_template_gettype">template/gettype</string>
     <string name="uri_music_gettype">music/gettype</string>

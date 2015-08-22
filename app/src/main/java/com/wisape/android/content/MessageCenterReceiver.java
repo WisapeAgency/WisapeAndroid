@@ -6,50 +6,126 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
+import com.alibaba.fastjson.JSONObject;
+import com.wisape.android.Message.ActiveMessage;
+import com.wisape.android.Message.OperateMessage;
+import com.wisape.android.Message.SystemMessage;
 import com.wisape.android.R;
 import com.wisape.android.activity.MainActivity;
 import com.wisape.android.activity.MessageCenterDetailActivity;
-import com.wisape.android.fragment.MainMenuFragment;
+
+import de.greenrobot.event.EventBus;
 
 /**
  * 消息中心，消息接收处理
- * Created by lenovo on 2015/8/15.
+ * Created by hm on 2015/8/15.
  */
 public class MessageCenterReceiver extends BroadcastReceiver{
 
-    private static final String MESSAGE_RECEIVER_ACTION = "com.wisape.android.content.MessageCenterReceiver";
+    private static final String TAG = MessageCenterReceiver.class.getSimpleName();
+
+    /**
+     * 运营消息
+     */
+    private static final int OPERATION_MESSAGE = 2;
+    /**
+     * 系统消息
+     */
+    private static final int SYSTEM_MESSAGE = 1;
+    /**
+     * 活动中心消息
+     */
+    private static final int ACTIVE_MESSAGE = 3;
+
+
+    private static final String MESSAGE_RECEIVER_ACTION_OPERATE = "com.wisape.android.content.MessageCenterReceiver";
+
+    /**
+     * 消息类型的key
+     */
+    private static final String MESSAGE_TYPE_KEY = "type";
+
+
+    /**
+     *  消息标题
+     */
+    private static final String MESSAGE_TITILE = "message_title";
+
+    /**
+     * 消息简介
+     */
+    private static final String MESSAGE_SUBJECT = "message_subject";
+
+    /**
+     * 消息ID
+     */
+    private static final String MESSAGE_ID = "message_id";
+    /**
+     * 获取消息内容的key
+     */
+    private static final String DATA_KEY = "com.parse.Data";
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if(null != context && MESSAGE_RECEIVER_ACTION == intent.getAction()){
-            sendNotifacation(context);
-            MainMenuFragment.updataMsgCount();
+
+        if(null != context && MESSAGE_RECEIVER_ACTION_OPERATE.equals(intent.getAction())){
+            JSONObject jsonObject = JSONObject.parseObject(intent.getExtras().getString(DATA_KEY));
+            Log.e(TAG, "#messageReciver:" + jsonObject.toString());
+
+            //运营消息
+            if(OPERATION_MESSAGE == jsonObject.getInteger(MESSAGE_TYPE_KEY)){
+                Log.e(TAG,"发送运营消息");
+                EventBus.getDefault().post(new OperateMessage());
+                sendNotifacation(context, jsonObject, OPERATION_MESSAGE);
+            }
+
+            //活动中心消息
+            if (ACTIVE_MESSAGE == jsonObject.getInteger(MESSAGE_TYPE_KEY)){
+                Log.e(TAG,"发送活动中心消息");
+                EventBus.getDefault().post(new ActiveMessage());
+                sendNotifacation(context, jsonObject, ACTIVE_MESSAGE);
+            }
+
+            //系统消息
+            if(SYSTEM_MESSAGE == jsonObject.getInteger(MESSAGE_TYPE_KEY)){
+                Log.e(TAG,"发送系统消息");
+                EventBus.getDefault().post(new SystemMessage());
+                sendNotifacation(context,jsonObject, SYSTEM_MESSAGE);
+            }
         }
     }
 
-    private void sendNotifacation(Context context){
-        // 在Android进行通知处理，首先需要重系统哪里获得通知管理器NotificationManager，它是一个系统Service。
+    private void sendNotifacation(Context context,JSONObject jsonObject,int messageType){
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        PendingIntent pendingIntent2 = PendingIntent.getActivity(context, 0,
-                new Intent(context, MessageCenterDetailActivity.class).setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
-        // 通过Notification.Builder来创建通知，注意API Level
-        // API11之后才支持
-        Notification notify2 = new Notification.Builder(context)
-                .setSmallIcon(R.mipmap.logo) // 设置状态栏中的小图片，尺寸一般建议在24×24，这个图片同样也是在下拉状态栏中所显示，如果在那里需要更换更大的图片，可以使用setLargeIcon(Bitmap
-                        // icon)
-                .setTicker("TickerText:" + "您有新短消息，请注意查收！")// 设置在status
-                        // bar上显示的提示文字
-                .setContentTitle("Notification Title")// 设置在下拉status
-                        // bar后Activity，本例子中的NotififyMessage的TextView中显示的标题
-                .setContentText("This is the notification message")// TextView中显示的详细内容
-                .setContentIntent(pendingIntent2) // 关联PendingIntent
-                .setNumber(1) // 在TextView的右方显示的数字，可放大图片看，在最右侧。这个number同时也起到一个序列号的左右，如果多个触发多个通知（同一ID），可以指定显示哪一个。
-                .getNotification(); // 需要注意build()是在API level
-        // 16及之后增加的，在API11中可以使用getNotificatin()来代替
-        notify2.flags |= Notification.FLAG_AUTO_CANCEL;
-        notify2.defaults = Notification.DEFAULT_ALL;
-        manager.notify(1, notify2);
+
+        Intent intent = getIntent(context,messageType);
+        intent.putExtra(MessageCenterDetailActivity.MESSAGE_ID, jsonObject.getIntValue(MESSAGE_ID));
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(context,0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Notification notify = new Notification.Builder(context)
+                .setSmallIcon(R.mipmap.logo)
+                .setTicker(jsonObject.getString(MESSAGE_TITILE))
+                .setContentTitle(jsonObject.getString(MESSAGE_TITILE))
+                .setContentText(jsonObject.getString(MESSAGE_SUBJECT))
+                .setContentIntent(pendingIntent)
+                .setNumber(1)
+                .getNotification();
+        notify.flags |= Notification.FLAG_AUTO_CANCEL;
+        notify.defaults = Notification.DEFAULT_ALL;
+        manager.notify(1, notify);
     }
 
+    private Intent getIntent(Context context,int messageTeype){
+        Intent intent = null;
+        if(SYSTEM_MESSAGE == (messageTeype) || OPERATION_MESSAGE == messageTeype){
+            intent = new Intent(context,MessageCenterDetailActivity.class);
+        }
+        if(ACTIVE_MESSAGE == messageTeype){
+             intent  = new Intent(context, MainActivity.class);
+        }
+        return intent;
+    }
 }

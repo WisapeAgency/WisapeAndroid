@@ -8,90 +8,92 @@ import android.os.Bundle;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.widget.TextView;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
+import com.facebook.drawee.generic.RoundingParams;
+import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.common.ResizeOptions;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
+import com.parse.ParseFacebookUtils;
 import com.soundcloud.android.crop.Crop;
-import com.widgets.EditableTextView;
+import com.wisape.android.Message.UserProfileMessage;
 import com.wisape.android.R;
 import com.wisape.android.content.PhotoProvider;
 import com.wisape.android.logic.UserLogic;
-import com.wisape.android.model.UserInfo;
 import com.wisape.android.api.ApiUser;
 import com.wisape.android.util.FrescoFactory;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import de.greenrobot.event.EventBus;
 
 import static com.wisape.android.activity.MainActivity.EXTRA_USER_INFO;
 
 /**
+ * 用户信息修改
  * Created by LeiGuoting on 6/7/15.
  */
 public class UserProfileActivity extends BaseActivity{
     private static final String TAG = UserProfileActivity.class.getSimpleName();
+
     public static final int REQUEST_CODE_PROFILE = 0x102;
     public static final String EXTRA_PROFILE_ICON_URI = "_profile_icon_uri";
     public static final String ACTION_PROFILE_UPDATED = "action_profile_updated";
 
     private static final int LOADER_WHAT_PROFILE_UPDATE = 0x01;
 
-    public static void launch(Fragment fragment, UserInfo user, int requestCode){
-        fragment.startActivityForResult(getIntent(fragment.getActivity().getApplicationContext(), user), requestCode);
+    public static void launch(Fragment fragment, int requestCode){
+        fragment.startActivityForResult(getIntent(fragment.getActivity().getApplicationContext()), requestCode);
     }
 
-    public static Intent getIntent(Context context, UserInfo user){
-        Intent intent = new Intent(context, UserProfileActivity.class);
-        intent.putExtra(EXTRA_USER_INFO, user);
-        return intent;
+    public static Intent getIntent(Context context){
+        return  new Intent(context, UserProfileActivity.class);
     }
-
-    private UserInfo user;
 
     @InjectView(R.id.user_profile_icon)
     protected SimpleDraweeView iconView;
 
     @InjectView(R.id.user_profile_name_edit)
-    protected EditableTextView nameEdit;
+    protected TextView nameEdit;
 
     @InjectView(R.id.user_profile_email_edit)
-    protected EditableTextView emailEdit;
+    protected TextView emailEdit;
 
     private Uri userIconUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Bundle args;
-        if(null == savedInstanceState){
-            args = getIntent().getExtras();
-        }else{
-            args = savedInstanceState;
-        }
-        user = args.getParcelable(EXTRA_USER_INFO);
 
         setContentView(R.layout.activity_user_profile);
         ButterKnife.inject(this);
 
-        nameEdit.setText(user.nick_name);
-        emailEdit.setText(user.user_email);
-        String iconUrl = user.user_ico_n;
+        nameEdit.setText(wisapeApplication.getUserInfo().nick_name);
+        emailEdit.setText(wisapeApplication.getUserInfo().user_email);
+        String iconUrl = wisapeApplication.getUserInfo().user_ico_n;
         if(null != iconUrl && 0 < iconUrl.length()){
+            Log.e(TAG,"firstIconUrl:" + iconUrl);
             iconView.getHierarchy().setActualImageFocusPoint(new PointF(0.5f, 0.5f));
             FrescoFactory.bindImageFromUri(iconView, iconUrl);
         }
+        EventBus.getDefault().register(this);
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelable(EXTRA_USER_INFO, user);
-    }
 
-    @OnClick(R.id.user_profile_name_edit)
+    @OnClick(R.id.user_profile_email_edit)
     @SuppressWarnings("unused")
-    protected void doNameEditClicked(){
-        Log.d(TAG, "#doNameEditClicked ___");
+    protected void onEmailTextOnClicked(){
+        String email = emailEdit.getText().toString();
+        if("".equals(email)){
+            AddEmailAccoutActivity.launch(this,AddEmailAccoutActivity.REQEUST_CODE);
+        }else{
+            ChangeEamilActivity.Launche(this);
+        }
     }
 
     @OnClick(R.id.user_profile_icon)
@@ -109,9 +111,10 @@ public class UserProfileActivity extends BaseActivity{
 
             case PhotoSelectorActivity.REQUEST_CODE_PHOTO :
                 if(RESULT_OK == resultCode){
-                    userIconUri = PhotoSelectorActivity.buildCropUri(this, 0);
-                    Uri imageUri = data.getParcelableExtra(PhotoSelectorActivity.EXTRA_IMAGE_URI);
-                    Crop.of(PhotoProvider.getPhotoUri(imageUri.getPath()), userIconUri).asSquare().start(this);
+                    userIconUri= data.getParcelableExtra(PhotoSelectorActivity.EXTRA_IMAGE_URI);
+                    Log.e(TAG,"iconUrl:" + userIconUri.toString());
+                    iconView.getHierarchy().setActualImageFocusPoint(new PointF(0.5f, 0.5f));
+                    FrescoFactory.bindImageFromUri(iconView, "file://" + userIconUri.toString());
                 }
                 break;
 
@@ -120,6 +123,10 @@ public class UserProfileActivity extends BaseActivity{
                     iconView.setImageURI(userIconUri);
                 }
                 break;
+            case AddEmailAccoutActivity.REQEUST_CODE:
+                if(RESULT_OK == resultCode){
+                    emailEdit.setText(data.getStringExtra(AddEmailAccoutActivity.EMAIL_ACCOUNT));
+                }
         }
 
     }
@@ -142,21 +149,9 @@ public class UserProfileActivity extends BaseActivity{
 
         String newName = nameEdit.getText().toString();
         String newEmail = emailEdit.getText().toString();
-        if(null == newName){
-            newName = "";
-        }
-        if(null == newEmail){
-            newEmail = "";
-        }
 
-        String oldName = user.nick_name;
-        String oldEmail = user.user_email;
-        if(null == oldName){
-            oldName = "";
-        }
-        if(null == oldEmail){
-            oldEmail = "";
-        }
+        String oldName = wisapeApplication.getUserInfo().nick_name;
+        String oldEmail = wisapeApplication.getUserInfo().user_email;
 
         if(newName.equals(oldName) && newEmail.equals(oldEmail) && null == userIconUri){
             return;
@@ -187,6 +182,7 @@ public class UserProfileActivity extends BaseActivity{
     protected void onDestroy() {
         super.onDestroy();
         ButterKnife.reset(this);
+        EventBus.getDefault().unregister(this);
         if(null != nameEdit){
             nameEdit.setOnTouchListener(null);
             emailEdit = null;
@@ -196,6 +192,9 @@ public class UserProfileActivity extends BaseActivity{
             emailEdit.setOnTouchListener(null);
             emailEdit = null;
         }
-        user = null;
+    }
+
+    public void onEventMainThread(UserProfileMessage message){
+            emailEdit.setText(message.getUserEmail());
     }
 }

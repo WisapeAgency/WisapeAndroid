@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.PointF;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -18,7 +19,13 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.freshdesk.mobihelp.Mobihelp;
 import com.freshdesk.mobihelp.MobihelpConfig;
+import com.wisape.android.Message.ActiveMessage;
+import com.wisape.android.Message.Message;
+import com.wisape.android.Message.OperateMessage;
+import com.wisape.android.Message.SystemMessage;
+import com.wisape.android.Message.UserProfileMessage;
 import com.wisape.android.R;
+import com.wisape.android.WisapeApplication;
 import com.wisape.android.activity.AboutActivity;
 import com.wisape.android.activity.MainActivity;
 import com.wisape.android.activity.MessageCenterActivity;
@@ -37,11 +44,12 @@ import java.util.Random;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import de.greenrobot.event.EventBus;
 
 /**
  * @author Duke
  */
-public class MainMenuFragment extends AbsFragment implements DynamicBroadcastReceiver.OnDynamicBroadcastReceiverListener {
+public class MainMenuFragment extends AbsFragment{
     private static final String TAG = MainMenuFragment.class.getSimpleName();
 
     @InjectView(R.id.sdv_user_head_image)
@@ -53,70 +61,25 @@ public class MainMenuFragment extends AbsFragment implements DynamicBroadcastRec
     @InjectView(R.id.message_count)
     TextView tvMsgAccount;
 
-    private UserCallback callback;
-    private LocalBroadcastManager localBroadcastManager;
-    private DynamicBroadcastReceiver localReceiver;
-
-    @Override
-    public void onReceiveBroadcast(Context context, Intent intent) {
-        if (isDetached()) {
-            return;
-        }
-
-        String action = intent.getAction();
-        if (null == action || 0 == action.length()) {
-            return;
-        }
-
-        if (UserProfileActivity.ACTION_PROFILE_UPDATED.equals(action)) {
-            UserInfo newUser = intent.getParcelableExtra(MainActivity.EXTRA_USER_INFO);
-            refreshUI(newUser);
-        }
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        if (activity instanceof UserCallback) {
-            callback = (UserCallback) activity;
-        }
-
-        if (null == callback) {
-            throw new IllegalStateException("The UserCallback can not be null.");
-        }
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Mobihelp.init(getActivity(), new MobihelpConfig(getString(R.string.freshdesk_domain), getString(R.string.freshdesk_key), getString(R.string.freshdesk_secret)));
-        localBroadcastManager = LocalBroadcastManager.getInstance(getActivity());
-        localReceiver = new DynamicBroadcastReceiver(this);
-        localBroadcastManager.registerReceiver(localReceiver, new IntentFilter(UserProfileActivity.ACTION_PROFILE_UPDATED));
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main_menu, null, false);
         ButterKnife.inject(this, rootView);
+        EventBus.getDefault().register(this);
+        setUserInfodata();
         return rootView;
     }
 
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        UserInfo user = callback.getUserInfo();
-        refreshUI(user);
-    }
-
-    private void refreshUI(UserInfo user) {
-        String icon = user.user_ico_n;
-        Log.d(TAG, "#onViewCreated icon:" + icon);
-        if (null != icon && 0 < icon.length()) {
-            FrescoFactory.bindImageFromUri(sdvUserHeadImage, icon);
+    private void setUserInfodata(){
+        tvName.setText(WisapeApplication.getInstance().getUserInfo().nick_name);
+        tvMail.setText(WisapeApplication.getInstance().getUserInfo().user_email);
+        String iconUrl = WisapeApplication.getInstance().getUserInfo().user_ico_n;
+        if(null != iconUrl && 0 < iconUrl.length()){
+            Log.e(TAG,"iconUrl:" + iconUrl);
+            sdvUserHeadImage.getHierarchy().setActualImageFocusPoint(new PointF(0.5f, 0.5f));
+            FrescoFactory.bindImageFromUri(sdvUserHeadImage, iconUrl);
         }
-
-        tvName.setText(user.nick_name);
-        tvMail.setText(user.user_email);
     }
 
     @Override
@@ -128,20 +91,7 @@ public class MainMenuFragment extends AbsFragment implements DynamicBroadcastRec
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (null != localBroadcastManager) {
-            localBroadcastManager.unregisterReceiver(localReceiver);
-            localReceiver.destroy();
-            localReceiver = null;
-            localBroadcastManager = null;
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        if (null != callback) {
-            callback = null;
-        }
+        EventBus.getDefault().unregister(this);
     }
 
     @OnClick(R.id.help_center)
@@ -153,7 +103,7 @@ public class MainMenuFragment extends AbsFragment implements DynamicBroadcastRec
     @OnClick(R.id.tv_name)
     @SuppressWarnings("unused")
     protected void onNameClicked() {
-        UserProfileActivity.launch(this, callback.getUserInfo(), UserProfileActivity.REQUEST_CODE_PROFILE);
+        UserProfileActivity.launch(this, UserProfileActivity.REQUEST_CODE_PROFILE);
     }
 
     /**
@@ -177,9 +127,9 @@ public class MainMenuFragment extends AbsFragment implements DynamicBroadcastRec
     /**
      * 清楚缓存
      */
-    private void clearCache(){
+    private void clearCache() {
         Mobihelp.clearUserData(getActivity());
-        File file =  EnvironmentUtils.getAppCacheDirectory();
+        File file = EnvironmentUtils.getAppCacheDirectory();
         FileUtils.deleteFileInDir(file);
     }
 
@@ -206,40 +156,34 @@ public class MainMenuFragment extends AbsFragment implements DynamicBroadcastRec
 
     @OnClick(R.id.message_center)
     @SuppressWarnings("unused")
-    protected void onMessageCenterClicked(){
+    protected void onMessageCenterClicked() {
         MessageCenterActivity.launch(getActivity());
+        clearMsgCount();
     }
 
     public interface UserCallback {
         UserInfo getUserInfo();
     }
 
-    //测试方法
-    public static void updataMsgCount(){
-       Log.e(TAG,"更新消息数量");
+    public void onEventMainThread(Message message) {
+        if(message instanceof OperateMessage || message instanceof SystemMessage){
+            updataMsgCount();
+        }
+        if(message instanceof UserProfileMessage){
+            setUserInfodata();
+        }
     }
 
-    private void sendNotifacation(Context context){
-        // 在Android进行通知处理，首先需要重系统哪里获得通知管理器NotificationManager，它是一个系统Service。
-        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        PendingIntent pendingIntent2 = PendingIntent.getActivity(context, 0,
-                new Intent(context, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
-        // 通过Notification.Builder来创建通知，注意API Level
-        // API11之后才支持
-        Notification notify2 = new Notification.Builder(context)
-                .setSmallIcon(R.mipmap.logo) // 设置状态栏中的小图片，尺寸一般建议在24×24，这个图片同样也是在下拉状态栏中所显示，如果在那里需要更换更大的图片，可以使用setLargeIcon(Bitmap
-                        // icon)
-                .setTicker("TickerText:" + "您有新短消息，请注意查收！")// 设置在status
-                        // bar上显示的提示文字
-                .setContentTitle("Notification Title")// 设置在下拉status
-                        // bar后Activity，本例子中的NotififyMessage的TextView中显示的标题
-                .setContentText("This is the notification message")// TextView中显示的详细内容
-                .setContentIntent(pendingIntent2) // 关联PendingIntent
-                .setNumber(1) // 在TextView的右方显示的数字，可放大图片看，在最右侧。这个number同时也起到一个序列号的左右，如果多个触发多个通知（同一ID），可以指定显示哪一个。
-                .getNotification(); // 需要注意build()是在API level
-        // 16及之后增加的，在API11中可以使用getNotificatin()来代替
-        notify2.flags |= Notification.FLAG_AUTO_CANCEL;
-        notify2.defaults = Notification.DEFAULT_ALL;
-        manager.notify(1, notify2);
+    private void updataMsgCount() {
+        Log.e(TAG, "更新消息数量");
+        if(tvMsgAccount.getVisibility() == View.GONE){
+            tvMsgAccount.setVisibility(View.VISIBLE);
+        }
+        tvMsgAccount.setText(Integer.parseInt(tvMsgAccount.getText().toString()) + 1 + "");
+    }
+
+    private void clearMsgCount(){
+        tvMsgAccount.setText("0");
+        tvMsgAccount.setVisibility(View.GONE);
     }
 }

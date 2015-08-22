@@ -10,16 +10,21 @@
         android:layout_height="16dp"
         android:background="@drawable/main_view_card_item_head" />
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/gallery_item_story_bg">
+    <FrameLayout
+        android:layout_width="@dimen/card_gallery_item_size_w"
+        android:layout_height="390dp"
+        android:background="@drawable/gallery_item_shadow_bg"
+        >
+
+        <ImageView
+            android:id="@+id/main_story_bg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
         <RelativeLayout
-            android:id="@+id/main_story_bg"
-            android:layout_width="@dimen/card_gallery_item_size_w"
-            android:layout_height="390dp"
-            android:background="@drawable/navbg">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="1">
 
             <TextView
                 android:id="@+id/text_story_state"
@@ -27,15 +32,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 android:background="@mipmap/icon_label"
-                android:gravity="center"
-                android:text="publish" />
+                android:gravity="center"/>
 
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:layout_alignParentBottom="true"
                 android:alpha="0.5"
+                android:layout_alignParentBottom="true"
                 android:background="@drawable/gallery_item_shadow_bg"
                 android:orientation="horizontal">
 
@@ -48,7 +52,6 @@
                     android:drawableLeft="@mipmap/icon_eye"
                     android:drawablePadding="3dp"
                     android:gravity="center|left"
-                    android:text="126"
                     android:textColor="@color/app_primary"
                     android:textSize="12sp" />
 
@@ -56,24 +59,22 @@
                     android:id="@+id/text_zan_count"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_marginLeft="5dp"
                     android:layout_weight="1"
                     android:drawableLeft="@mipmap/icon_zan"
                     android:drawablePadding="3dp"
                     android:gravity="center|left"
-                    android:layout_marginLeft="10dp"
-                    android:text="126"
                     android:textSize="12sp" />
 
                 <TextView
                     android:id="@+id/text_share_count"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_marginLeft="5dp"
                     android:layout_weight="1"
                     android:drawableLeft="@mipmap/icon_share"
                     android:drawablePadding="3dp"
                     android:gravity="center|left"
-                    android:layout_marginLeft="10dp"
-                    android:text="126"
                     android:textSize="12sp" />
 
                 <ImageView
@@ -86,18 +87,22 @@
                 <ImageView
                     android:id="@+id/main_story_more"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
-                    android:scaleType="center"
                     android:layout_marginLeft="10dp"
+                    android:layout_weight="1"
+                    android:scaleType="center"
                     android:src="@mipmap/icon_more" />
 
             </LinearLayout>
 
+
         </RelativeLayout>
 
-    </LinearLayout>
+
+    </FrameLayout>
+
+    <!--</LinearLayout>-->
 
     <TextView
         android:id="@+id/story_name"

@@ -3,6 +3,7 @@ package com.wisape.android.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.webkit.WebView;
 
 import com.wisape.android.R;
@@ -28,7 +29,11 @@ public class AboutWebViewActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about_web_view);
         ButterKnife.inject(this);
-        getSupportActionBar().setTitle(getIntent().getStringExtra(ACTIVITY_TITLE));
+        ActionBar actionBar = getSupportActionBar();
+        String title = getIntent().getStringExtra(ACTIVITY_TITLE);
+        if(null != actionBar && null != title){
+            actionBar.setTitle(title);
+        }
         mWebView.loadUrl(getIntent().getStringExtra(WEB_URL));
     }
 

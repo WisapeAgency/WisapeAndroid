@@ -2,6 +2,7 @@ package com.wisape.android.widget;
 
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -18,6 +19,10 @@ import butterknife.OnClick;
  */
 public class PopupWindowMenu extends PopupWindow {
 
+    private static final String TAG = PopupWindowMenu.class.getSimpleName();
+
+    private static int storyId;
+
     public PopupWindowMenu(Context context){
         View view = LayoutInflater.from(context).inflate(R.layout.popup_window_layout,null);
         setContentView(view);
@@ -29,8 +34,13 @@ public class PopupWindowMenu extends PopupWindow {
         setBackgroundDrawable(new ColorDrawable(000000));
     }
 
+    public static void setStoryId(int id){
+        storyId = id;
+    }
+
     @OnClick(R.id.text_edit)
     public void onEditClicked(){
+        Log.e(TAG,"#onEdit:" + storyId);
         dismiss();
     }
     @OnClick(R.id.text_result)

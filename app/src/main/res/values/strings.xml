@@ -24,14 +24,16 @@
     <string name="photo_menu_buckets">相切模式</string>
 
     <!-- User Profile -->
-    <string name="user_profile_label">用户信息</string>
+    <string name="user_profile_label">User Profile</string>
+
+    <string name="add_email">Email Accout</string>
 
     <!--Sign Up-->
     <string name="sign_up_btn">Join in</string>
     <string name="forget_password">Forget the password?</string>
     <string name="sign_up_email_not_right">Email address is invalid</string>
-    <string name="sign_up_password_can_not_null">密码不能为空</string>
-    <string name="sign_up_password_error">密码不正确</string>
+    <string name="sign_up_password_can_not_null">Password not null</string>
+    <string name="sign_up_password_error">Password in invalid</string>
 
     <!--Reset Password-->
     <string name="password_reset">Next</string>
@@ -42,10 +44,17 @@
     <string name="password_reset_success_text_start">The password set link has been sent to \n you </string>
     <string name="password_reset_success_text_end">,\n check the email and click the link to reset your password.</string>
     <!--User Profile-->
-    <string name="user_profile_icon_title">用户头像</string>
-    <string name="user_profile_name_title">昵称</string>
-    <string name="user_profile_email_title">邮箱</string>
-
+    <string name="user_profile_icon_title">Photo</string>
+    <string name="user_profile_name_title">User Name</string>
+    <string name="user_profile_email_title">Email Account</string>
+    <string name="btn_change_email_address">Change email address</string>
+    <string name="btn_logout_email_account">Logout email account</string>
+    <string name="change_main_text">The information relaled to Wisape and your account will be sent to you.\n\nChange email account,the information will be sent your new email address.\n\nLogout email account,you may miss important account information.
+    </string>
+    <string name="name_change_email_detail_label">Change Email Address</string>
+    <string name="logout_email_account">Logout email account</string>
+    <string name="logout_emial_account_content">You may miss important account infomation,and will lower the account</string>
+    <string name="change_email_title">Please enter the email address,the information related wo Wisape and your account will be sent to you,and we won\'t send spam</string>
     <!-- About -->
     <string name="about_label">About Wisape</string>
     <string name="about_terms_of_service">Terms of Service</string>
@@ -88,7 +97,11 @@
     <string name="message_center_label">Message Center</string>
 
     <!--进度对话框资源-->
-    <string name="progress_dialog_reset_password">正在发送消息</string>
+    <string name="progress_dialog_reset_password">Message Sending</string>
+    <string name="network_error">Network Error</string>
+    <string name="loading_default_story">Loading DefaultStory</string>
+    <string name="loading_user_story">Loading UserStory</string>
+    <string name="loading_active">Loading active</string>
 
     <!--确认对话框-->
     <string name="confirm_dialog_cancle">Cancle</string>

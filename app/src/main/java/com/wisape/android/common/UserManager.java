@@ -72,10 +72,6 @@ public class UserManager {
     }
 
     public UserInfo signIn(Context context){
-        if(Looper.getMainLooper() == Looper.myLooper()){
-            throw new IllegalStateException("The saveUser can not be invoked in UI thread");
-        }
-
         return loadUser(context);
     }
 

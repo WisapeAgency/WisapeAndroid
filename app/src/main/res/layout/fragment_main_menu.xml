@@ -62,13 +62,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/message_center_menu_number_bg"
-            android:text="12"
             android:paddingTop="2dp"
+            android:text="0"
             android:paddingBottom="2dp"
             android:paddingLeft="12dp"
             android:paddingRight="12dp"
             android:layout_gravity="center"
             android:layout_marginLeft="90dp"
+            android:visibility="gone"
             />
 
     </FrameLayout>
