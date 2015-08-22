@@ -14,7 +14,7 @@
     <string name="exit_login">Logout</string>
     <string name="exit_login_notice_text">Do you exit the current account?\n
        Logout will not delete any data.You\ncan still login with this account.</string>
-    <string name="my_stores">My Stores</string>
+    <string name="my_stores">My Stories</string>
 
 
     <!-- Photo Selector -->

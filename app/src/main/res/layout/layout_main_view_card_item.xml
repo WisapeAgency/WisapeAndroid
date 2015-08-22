@@ -12,9 +12,9 @@
 
     <FrameLayout
         android:layout_width="@dimen/card_gallery_item_size_w"
-        android:layout_height="390dp"
-        android:background="@drawable/gallery_item_shadow_bg"
-        >
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@drawable/gallery_item_shadow_bg">
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/main_story_bg"
@@ -95,11 +95,7 @@
                     android:src="@mipmap/icon_more" />
 
             </LinearLayout>
-
-
         </RelativeLayout>
-
-
     </FrameLayout>
 
     <!--</LinearLayout>-->
