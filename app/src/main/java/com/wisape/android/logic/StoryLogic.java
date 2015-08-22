@@ -649,4 +649,31 @@ public class StoryLogic{
     private SharedPreferences getSharedPreferences(Context context){
         return context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE);
     }
+
+    /**
+     * 查询用户所有的story
+     * @param context
+     * @param userId  用户ID
+     * @return  story集合
+     */
+    public List<StoryEntity> getIndexStoryList(Context context,long userId){
+        DatabaseHelper databaseHelper = OpenHelperManager.getHelper(context,DatabaseHelper.class);
+        Dao<StoryEntity,Log> dao;
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+        db.beginTransaction();
+        List<StoryEntity> storyEntityList = null;
+
+        try{
+            dao = databaseHelper.getDao(StoryEntity.class);
+            storyEntityList =  dao.queryBuilder().where().eq("userId",userId).query();
+        }catch (SQLException e){
+            Log.e(TAG,"",e);
+        }finally {
+            db.endTransaction();
+            OpenHelperManager.releaseHelper();
+        }
+
+        return storyEntityList;
+    }
+
 }
