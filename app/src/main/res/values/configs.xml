@@ -2,7 +2,7 @@
 <resources>
 
     <!--域名 结尾不能有斜杠-->
-    <string name="app_domain">wisdemo.sinaapp.com</string>
+    <string name="app_domain">106.75.196.189</string>
     <string name="www_schema">http</string>
     <string name="www_host">106.75.196.189</string>
     <string name="www_port">80</string>
