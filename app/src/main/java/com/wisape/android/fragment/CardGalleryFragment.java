@@ -20,8 +20,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.wisape.android.Message.OperateMessage;
 import com.wisape.android.R;
 import com.wisape.android.WisapeApplication;
@@ -38,6 +37,7 @@ import com.wisape.android.logic.StoryLogic;
 import com.wisape.android.model.StoryInfo;
 import com.wisape.android.network.Downloader;
 import com.wisape.android.network.WWWConfig;
+import com.wisape.android.util.FrescoFactory;
 import com.wisape.android.view.GalleryView;
 import com.wisape.android.widget.PopupWindowMenu;
 
@@ -72,7 +72,6 @@ public class CardGalleryFragment extends AbsFragment {
 
     private PopupWindowMenu popupWindow;
     private GalleryAdapter mGalleryAdapter;
-    private DisplayImageOptions options;
 
 
     @Override
@@ -80,20 +79,8 @@ public class CardGalleryFragment extends AbsFragment {
         View rootView = inflater.inflate(R.layout.fragment_card_gallery, container, false);
         ButterKnife.inject(this, rootView);
         EventBus.getDefault().register(this);
-        initImageLoader();
         initView();
         return rootView;
-    }
-
-    private void initImageLoader(){
-        //显示图片的配置
-         options = new DisplayImageOptions.Builder()
-                .showImageOnLoading(R.drawable.navbg)
-                .showImageOnFail(R.drawable.navbg)
-                .cacheInMemory(true)
-                .cacheOnDisk(true)
-                .bitmapConfig(Bitmap.Config.RGB_565)
-                .build();
     }
 
 
@@ -230,8 +217,6 @@ public class CardGalleryFragment extends AbsFragment {
         }
         ((BaseActivity) getActivity()).closeProgressDialog();
         storyInfoList.add(0, defaultStroy);
-        storyInfoList.add(1,defaultStroy);
-        storyInfoList.add(2,defaultStroy);
         mGalleryAdapter.setData(storyInfoList);
     }
 
@@ -309,10 +294,10 @@ public class CardGalleryFragment extends AbsFragment {
             holder.mTextEyecount.setText(storyEntity.view_num+"");
             holder.mTextStoryState.setText(storyEntity.status+"");
             holder.mTextZanCount.setText(storyEntity.like_num+"");
-            holder.mTextShareCount.setText(storyEntity.share_num+"");
+            holder.mTextShareCount.setText(storyEntity.share_num + "");
 
             Log.e(TAG, "image_url:" + storyEntity.small_img);
-            ImageLoader.getInstance().displayImage(storyEntity.small_img, holder.mStoryBg, options);
+            FrescoFactory.bindImageFromUri(holder.mStoryBg, storyEntity.story_url);
             holder.mTextStoryName.setText(storyEntity.story_name);
         }
 
@@ -331,7 +316,7 @@ public class CardGalleryFragment extends AbsFragment {
 
     public class GHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @InjectView(R.id.main_story_bg)
-        ImageView mStoryBg;
+        SimpleDraweeView mStoryBg;
 
         @InjectView(R.id.text_story_state)
         TextView mTextStoryState;

@@ -16,7 +16,7 @@
         android:background="@drawable/gallery_item_shadow_bg"
         >
 
-        <ImageView
+        <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/main_story_bg"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
