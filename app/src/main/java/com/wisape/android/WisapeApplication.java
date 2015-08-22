@@ -2,6 +2,7 @@ package com.wisape.android;
 
 import android.app.Application;
 import android.content.Context;
+import android.support.multidex.MultiDex;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
@@ -55,6 +56,11 @@ public class WisapeApplication extends Application {
 
     }
 
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
 
     public void setUserInfo(UserInfo userInfo){
         this.userInfo = userInfo;

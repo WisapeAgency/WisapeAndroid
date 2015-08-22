@@ -23,6 +23,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -58,6 +59,12 @@ public class SystemWebView extends WebView implements CordovaWebViewEngine.Engin
         if (this.chromeClient == null) {
             setWebChromeClient(new SystemWebChromeClient(parentEngine));
         }
+        WebSettings settings = getSettings();
+        setVerticalScrollbarOverlay(true); //指定的垂直滚动条有叠加样式
+        settings.setUseWideViewPort(true);//设定支持viewport
+        settings.setLoadWithOverviewMode(true);
+        settings.setBuiltInZoomControls(true);
+        settings.setSupportZoom(true);//设定支持缩放
     }
 
     @Override

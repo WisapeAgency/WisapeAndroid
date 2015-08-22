@@ -10,7 +10,24 @@ android {
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
     }
+    dexOptions {
+        jumboMode = true
+//        javaMaxHeapSize "2g"
+    }
+
+    afterEvaluate {
+        tasks.matching {
+            it.name.startsWith('dex')
+        }.each { dx ->
+            if (dx.additionalParameters == null) {
+                dx.additionalParameters = []
+            }
+            dx.additionalParameters += '--multi-dex'
+        }
+    }
+
     lintOptions {
         // set to true to turn off analysis progress reporting by lint
         quiet true
@@ -82,5 +99,6 @@ dependencies {
     compile 'com.j256.ormlite:ormlite-core:4.48'
     compile 'com.j256.ormlite:ormlite-android:4.48'
     compile 'de.greenrobot:eventbus:2.4.0'
-
+//    compile 'com.google.android.gms:play-services:7.5.0'
+    compile 'com.android.support:multidex:1.0.0'
 }

@@ -46,6 +46,8 @@ public class StoryReleaseActivity extends BaseActivity{
     public static final int CHANNEL_SMS = 0x0b;
     public static final int CHANNEL_MORE = 0x0c;
 
+    public static final String PACKAGE_FACEBOOK = "";
+
     public static void launch(Activity activity, int requestCode){
         activity.startActivityForResult(getIntent(activity), requestCode);
     }
@@ -127,28 +129,26 @@ public class StoryReleaseActivity extends BaseActivity{
     }
 
     private void share2Platform(int channel){
+        File template = new File(StoryManager.getStoryTemplateDirectory(),"mingpian01");
+        File thumb = new File(template,"thumb.jpg");
+        String msg = "推荐给大家，http://www.wisape.com/demo/playstory/index.html";
         switch (channel){
             case CHANNEL_MORE:{
-                File template = new File(StoryManager.getStoryTemplateDirectory(),"mingpian01");
-                File thumb = new File(template,"thumb.jpg");
-                String msg = "推荐给大家，http://www.wisape.com/demo/playstory/index.html";
-                shareMessage("标题", "消息标题", msg, thumb.getAbsolutePath());
+                shareMessage("标题", "消息标题", msg, thumb);
                 break;
             }
             default:{
-                initShareIntent("com.sina.weibo");
+                shareMessage("com.sina.weibo","标题", "消息标题", msg, thumb);
                 break;
             }
         }
     }
 
-    public void shareMessage(String activityTitle, String msgTitle, String msgText,
-                             String imgPath) {
+    public void shareMessage(String activityTitle, String msgTitle, String msgText, File image) {
         Intent intent = new Intent(Intent.ACTION_SEND);
-        if ("".equals(imgPath)) {
+        if (null == image) {
             intent.setType("text/plain"); // 纯文本
         } else {
-            File image = new File(imgPath);
             if (image.exists() && image.isFile()) {
                 intent.setType("image/jpg");
                 Uri uri = Uri.fromFile(image);
@@ -161,10 +161,9 @@ public class StoryReleaseActivity extends BaseActivity{
         startActivity(Intent.createChooser(intent, activityTitle));
     }
 
-    private void initShareIntent(String type) {
-        File template = new File(StoryManager.getStoryTemplateDirectory(),"mingpian01");
-        File thumb = new File(template,"thumb.jpg");
-        String msg = "推荐给大家，http://www.wisape.com/demo/playstory/index.html";
+
+    private void shareMessage(String type,String activityTitle, String msgTitle, String msgText,
+                              File imgPath) {
         boolean found = false;
         Intent share = new Intent(android.content.Intent.ACTION_SEND);
         share.setType("image/jpeg");
@@ -174,9 +173,9 @@ public class StoryReleaseActivity extends BaseActivity{
             for (ResolveInfo info : resInfo) {
                 if (info.activityInfo.packageName.toLowerCase().contains(type) ||
                         info.activityInfo.name.toLowerCase().contains(type) ) {
-                    share.putExtra(Intent.EXTRA_SUBJECT,  "subject");
-                    share.putExtra(Intent.EXTRA_TEXT,     msg);
-                    share.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(thumb) ); // Optional, just if you wanna share an image.
+                    share.putExtra(Intent.EXTRA_SUBJECT,  msgTitle);
+                    share.putExtra(Intent.EXTRA_TEXT,     msgText);
+                    share.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(imgPath) ); // Optional, just if you wanna share an image.
                     share.setPackage(info.activityInfo.packageName);
                     found = true;
                     break;

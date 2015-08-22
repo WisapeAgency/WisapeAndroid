@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.webkit.WebSettings;
 
 import com.wisape.android.R;
 import com.wisape.android.common.StoryManager;
@@ -18,6 +19,7 @@ import com.wisape.android.util.EnvironmentUtils;
 import com.wisape.android.util.ZipUtils;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.cordova.CordovaPreferences;
 import org.json.JSONException;
 import org.json.JSONObject;
 
