@@ -61,7 +61,7 @@ public class MessageCenterReceiver extends BroadcastReceiver{
     /**
      * 消息ID
      */
-    private static final String MESSAGE_ID = "message_id";
+    private static final String MESSAGE_ID = "id";
     /**
      * 获取消息内容的key
      */
@@ -100,7 +100,7 @@ public class MessageCenterReceiver extends BroadcastReceiver{
     private void sendNotifacation(Context context,JSONObject jsonObject,int messageType){
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        Intent intent = getIntent(context,messageType);
+        Intent intent = getIntent(context,messageType,jsonObject.getInteger(MESSAGE_ID));
         intent.putExtra(MessageCenterDetailActivity.MESSAGE_ID, jsonObject.getIntValue(MESSAGE_ID));
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
@@ -118,10 +118,11 @@ public class MessageCenterReceiver extends BroadcastReceiver{
         manager.notify(1, notify);
     }
 
-    private Intent getIntent(Context context,int messageTeype){
+    private Intent getIntent(Context context,int messageTeype,int messageID){
         Intent intent = null;
         if(SYSTEM_MESSAGE == (messageTeype) || OPERATION_MESSAGE == messageTeype){
             intent = new Intent(context,MessageCenterDetailActivity.class);
+            intent.putExtra(MessageCenterDetailActivity.MESSAGE_ID,messageID);
         }
         if(ACTIVE_MESSAGE == messageTeype){
              intent  = new Intent(context, MainActivity.class);

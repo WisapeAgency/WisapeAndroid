@@ -79,7 +79,8 @@ public class GiftFragment extends AbsFragment {
                     @Override
                     public void onError(String message) {
                         ((BaseActivity) getActivity()).closeProgressDialog();
-                        ((BaseActivity) getActivity()).showToast(null == message?"加载数据出错":message);
+                        closeFragment();
+                        ((BaseActivity) getActivity()).showToast(null == message ? "加载数据出错" : message);
                     }
 
                     @Override
@@ -87,10 +88,10 @@ public class GiftFragment extends AbsFragment {
                         Log.e(TAG, "onReqeustSuccess:" + data);
                         ((BaseActivity) getActivity()).closeProgressDialog();
                         List<ActiveInfo> activeInfos = JSONObject.parseArray(data, ActiveInfo.class);
-                        if(null == activeInfos || activeInfos.size() == 0){
-                            giftGallery.setVisibility(View.GONE);
-                            imageNoActive.setVisibility(View.VISIBLE);
-                        }else{
+                        if (null == activeInfos || activeInfos.size() == 0) {
+                            closeFragment();
+                            ((BaseActivity) getActivity()).showToast("No Active Data");
+                        } else {
                             mGalleryAdapter.setData(activeInfos);
                         }
                     }
@@ -99,6 +100,10 @@ public class GiftFragment extends AbsFragment {
 
     @OnClick(R.id.btn_close)
     public void onCloseClick(View view) {
+        closeFragment();
+    }
+
+    private void closeFragment(){
         FragmentTransaction trans = getWisapeFragmentManager().beginTransaction();
         trans.remove(this);
         trans.commit();

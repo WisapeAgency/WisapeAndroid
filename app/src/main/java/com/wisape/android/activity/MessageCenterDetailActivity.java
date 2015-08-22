@@ -62,6 +62,9 @@ public class MessageCenterDetailActivity extends BaseActivity {
             @Override
             public void onReqeustSuccess(String data) {
                 Log.e(TAG,"#getData:" + data);
+                if(null == data || "".equals(data)){
+                    messageTietle.setText("获取消息失败!");
+                }
                 MessageInfo messageInfo = JSONObject.parseObject(data,MessageInfo.class);
                 messageTietle.setText(messageInfo.getTitle());
                 messageTime.setText(messageInfo.getParsetime());

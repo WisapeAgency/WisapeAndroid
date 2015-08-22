@@ -3,6 +3,7 @@ package com.wisape.android.fragment;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,7 +21,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.wisape.android.Message.ActiveMessage;
 import com.wisape.android.Message.OperateMessage;
 import com.wisape.android.R;
 import com.wisape.android.WisapeApplication;
@@ -232,7 +237,7 @@ public class CardGalleryFragment extends AbsFragment {
     @OnClick(R.id.add_story)
     @SuppressWarnings("unused")
     protected void doAddStory() {
-        StoryTemplateActivity.launch(this, 0);
+        TestActivity.launch(getActivity(), 0);
     }
 
     @OnClick(R.id.gift)
@@ -295,10 +300,14 @@ public class CardGalleryFragment extends AbsFragment {
             holder.mTextStoryState.setText(storyEntity.status+"");
             holder.mTextZanCount.setText(storyEntity.like_num+"");
             holder.mTextShareCount.setText(storyEntity.share_num + "");
-
-            Log.e(TAG, "image_url:" + storyEntity.small_img);
-            FrescoFactory.bindImageFromUri(holder.mStoryBg, storyEntity.story_url);
             holder.mTextStoryName.setText(storyEntity.story_name);
+
+            Log.e(TAG, "image_url:" + Uri.parse(storyEntity.small_img).toString());
+            DraweeController controller = Fresco.newDraweeControllerBuilder()
+                    .setImageRequest(ImageRequest.fromUri(Uri.parse(storyEntity.small_img)))
+                    .setOldController(holder.mStoryBg.getController())
+                    .build();
+            holder.mStoryBg.setController(controller);
         }
 
         @Override
@@ -371,7 +380,7 @@ public class CardGalleryFragment extends AbsFragment {
      * eventbus消息处理
      */
     public void onEventMainThread(com.wisape.android.Message.Message message) {
-        if (message instanceof OperateMessage) {
+        if (message instanceof ActiveMessage) {
             if (mTextGifCount.getVisibility() == View.GONE) {
                 mTextGifCount.setVisibility(View.VISIBLE);
             }

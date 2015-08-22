@@ -13,6 +13,7 @@ import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.Where;
+import com.wisape.android.Message.UserProfileErrorMessage;
 import com.wisape.android.Message.UserProfileMessage;
 import com.wisape.android.WisapeApplication;
 import com.wisape.android.activity.MainActivity;
@@ -78,7 +79,7 @@ public class UserLogic {
      */
     public Requester.ServerMessage resetPassword(Context context,ApiUser.AttrResetPasswordInfo attrInfo,Object cancleableTag){
         ApiUser api = ApiUser.instance();
-        return api.resetPassword(context,attrInfo,cancleableTag);
+        return api.resetPassword(context, attrInfo, cancleableTag);
     }
 
     public UserInfo signUpWith(Context context, ProfileRequester.ProfileInfo profile, Object cancelableTag){
@@ -114,6 +115,8 @@ public class UserLogic {
             UserManager.instance().saveUser(context, user);
             WisapeApplication.getInstance().setUserInfo(user);
             EventBus.getDefault().post(new UserProfileMessage());
+        }else{
+            EventBus.getDefault().post(new UserProfileErrorMessage());
         }
         return user;
     }

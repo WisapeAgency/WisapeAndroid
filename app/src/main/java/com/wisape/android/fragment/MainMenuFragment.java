@@ -23,10 +23,12 @@ import com.wisape.android.Message.ActiveMessage;
 import com.wisape.android.Message.Message;
 import com.wisape.android.Message.OperateMessage;
 import com.wisape.android.Message.SystemMessage;
+import com.wisape.android.Message.UserProfileErrorMessage;
 import com.wisape.android.Message.UserProfileMessage;
 import com.wisape.android.R;
 import com.wisape.android.WisapeApplication;
 import com.wisape.android.activity.AboutActivity;
+import com.wisape.android.activity.BaseActivity;
 import com.wisape.android.activity.MainActivity;
 import com.wisape.android.activity.MessageCenterActivity;
 import com.wisape.android.activity.UserProfileActivity;
@@ -170,7 +172,11 @@ public class MainMenuFragment extends AbsFragment{
             updataMsgCount();
         }
         if(message instanceof UserProfileMessage){
+            ((BaseActivity)getActivity()).showToast("信息修改成功!");
             setUserInfodata();
+        }
+        if(message instanceof UserProfileErrorMessage){
+            ((BaseActivity)getActivity()).showToast("信息修改失败!");
         }
     }
 
