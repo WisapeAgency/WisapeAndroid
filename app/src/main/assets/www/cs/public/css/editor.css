@@ -1,0 +1,71 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+ul,li{
+    outline: none;
+    list-style: none;
+}
+.hide{
+    display: none;
+}
+.pull-right {
+    float: right !important;
+}
+.pull-left {
+    float: left !important;
+}
+.list-inline:before,
+.list-inline:after,
+.clearfix:before,
+.clearfix:after,
+.row:before,
+.row:after{
+    content: " ";
+    display: table;
+}
+.list-inline:after,
+.clearfix:after,
+.row:after{
+    clear: both;
+}
+.list-inline>li{
+    float: left;
+}
+[class*="icon-"]{
+    display: inline-block;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+.icon-arrow-left{
+    background-image: url(../img/icon-arrow-left.png);
+}
+.icon-play{
+    background-image: url(../img/icon-play.png);
+}
+.icon-layout{
+    background-image: url(../img/icon-layout.png);
+}
+.icon-list{
+    background-image: url(../img/icon-list.png);
+}
+.icon-settings{
+    background-image: url(../img/icon-settings.png);
+}
+.header{
+    padding: 20px 0;
+}
+.header [class*="icon-"]{
+    width: 56px;
+    height: 56px;
+}
+.header .pull-left{
+    margin-left: 20px;
+}
+.header .pull-right{
+    margin-right: 20px;
+}
+.header .pull-right [class*="icon-"]{
+    margin-left: 30px;
+}

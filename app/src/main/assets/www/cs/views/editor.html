@@ -1,0 +1,42 @@
+<!doctype html>
+<html ng-app="WisapeEditor">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,minimum-scale=0.5,maximum-scale=1.0,user-scalable=no"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <link href="../public/css/editor.css" rel="stylesheet"/>
+    <style>
+        button{
+            font-size: 36px;
+            padding: 12px 24px;
+        }
+    </style>
+</head>
+<body class="hide" ng-controller="angularTest">
+    <div class="header clearfix">
+        <div class="pull-left">
+            <a class="icon-arrow-left"></a>
+        </div>
+        <div class="pull-right">
+            <ul class="list-inline">
+                <li><a class="icon-play"></a></li>
+                <li><a class="icon-layout"></a></li>
+                <li><a class="icon-list"></a></li>
+                <li><a class="icon-settings"></a></li>
+            </ul>
+        </div>
+    </div>
+    <button onclick="getStageCategory();">getStageCategory</button><br/>
+    <button onclick="getStageList(1);">getStageList</button><br/>
+    <button onclick="getStagePath(56);">getStagePath</button><br/>
+    <button onclick="getStoryPath(1);">getStoryPath</button><br/>
+    <button onclick="start(56);">Start</button><br/>
+    <button onclick="read('mingpian01');">read{{text}}</button><br/>
+
+    <script src="../public/js/cordova.js"></script>
+    <script src="../public/js/jquery.js"></script>
+    <script src="../public/js/angular.min.js"></script>
+    <script src="../public/js/native.js"></script>
+    <script src="../public/js/editor.js"></script>
+</body>
+</html>

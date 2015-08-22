@@ -34,7 +34,7 @@ import java.util.List;
  * Created by LeiGuoting on 7/7/15.
  */
 public class StoryTemplateActivity extends AbsCordovaActivity{
-    private static final String START_URL = "file:///android_asset/www/views/editor_index.html";
+    private static final String START_URL = "file:///android_asset/www/cs/views/editor.html";
     private static final String TEMPLATE_NAME = "stage.html";
     private static final String DOWNLOAD_PROGRESS = "progress";
     private static final String EXTRA_STORY_ID = "story_id";
@@ -114,7 +114,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
     }
 
     /**
-     * ÏÂÔØÄ£°å
+     * ï¿½ï¿½ï¿½ï¿½Ä£ï¿½ï¿½
      * @param data json
      */
     public void downloadTemplate(String data,int id) throws JSONException{
@@ -130,8 +130,8 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
     }
 
     /**
-     * ÏÂÔØ×ÖÌå
-     * @param template Ä£°åÂ·¾¶
+     * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+     * @param template Ä£ï¿½ï¿½Â·ï¿½ï¿½
      */
     public void downloadFont(File template){
         List<String> fontList = parseFont(template);
