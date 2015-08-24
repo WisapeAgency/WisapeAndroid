@@ -118,7 +118,6 @@ public class DataSynchronizer {
                     if (null != templateInfo) {
                         download(templateInfo);
                     } else {
-                        // 超过30s还没数据，自动退出下载线程。
                         isRunning = false;
                     }
                 }
@@ -158,7 +157,7 @@ public class DataSynchronizer {
                     output.write(buffer, 0, count);
                 }
             }catch (IOException e){
-                Log.e("DataSynchronizer", "下载模板缩略图失败!", e);
+                Log.e("DataSynchronizer", "", e);
             } finally {
                 if (null != input) {
                     try {
