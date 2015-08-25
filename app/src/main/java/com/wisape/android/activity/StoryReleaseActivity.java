@@ -137,6 +137,10 @@ public class StoryReleaseActivity extends BaseActivity{
                 shareMessage("标题", "消息标题", msg, thumb);
                 break;
             }
+            case CHANNEL_FACEBOOK:{
+                shareMessage("com.facebook.katana","标题", "消息标题", msg, thumb);
+                break;
+            }
             default:{
                 shareMessage("com.sina.weibo","标题", "消息标题", msg, thumb);
                 break;
