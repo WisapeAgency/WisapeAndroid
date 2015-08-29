@@ -170,6 +170,7 @@ public class StoryTemplatePlugin extends AbsPlugin{
                     entities = new ArrayList<>();
                 }
                 System.out.println(entities.toString());
+//                System.out.println(entities.toString());
                 callbackContext.success(new Gson().toJson(entities));
                 break;
             }
