@@ -157,6 +157,7 @@ public class StoryTemplatePlugin extends AbsPlugin{
 //                JSONArray jsonStr = logic.listStoryTemplateType(context, null);
                 JSONArray jsonStr = logic.listStoryTemplateTypeLocal(context);
                 callbackContext.success(jsonStr);
+                System.out.println(jsonStr.toString());
                 break;
             }
             case WHAT_GET_STAGE_LIST: {
@@ -168,6 +169,7 @@ public class StoryTemplatePlugin extends AbsPlugin{
                 if(entities == null){
                     entities = new ArrayList<>();
                 }
+                System.out.println(entities.toString());
                 callbackContext.success(new Gson().toJson(entities));
                 break;
             }
