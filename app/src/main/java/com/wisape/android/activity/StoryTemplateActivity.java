@@ -268,7 +268,11 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
 
     private void unzipTemplate(Uri downUri, File template) {
         try {
-            FileUtils.deleteDirectory(template);
+            if(template.isFile()){
+                FileUtils.forceDelete(template);
+            } else {
+                FileUtils.deleteDirectory(template);
+            }
             ZipUtils.unzip(downUri, template);
         }catch (IOException e){
             Log.e(TAG, "", e);

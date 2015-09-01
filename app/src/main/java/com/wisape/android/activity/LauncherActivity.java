@@ -46,7 +46,10 @@ public class LauncherActivity extends BaseActivity {
     protected void onLoadCompleted(Message data) {
         long costMills = SystemClock.uptimeMillis() - startTimeInMills;
         long diffMills = LAUNCH_TIME_MILLS - costMills;
-
+        if(!(data.obj instanceof UserInfo)){
+            redirect(null);
+            return;
+        }
         final UserInfo user = (UserInfo)data.obj;
         Log.e(TAG, "#onLoadCompleted diffMills:" + diffMills);
         if(0 < diffMills){
