@@ -156,6 +156,7 @@ public class MessageCenterActivity extends BaseActivity {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    messageInfo.getId();
                     onRecycleViewClickListener.onItemClick(messageInfo.getId());
                 }
             });

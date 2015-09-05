@@ -46,8 +46,9 @@ public class MessageCenterDetailActivity extends BaseActivity {
         setContentView(R.layout.activity_message_center_detail);
         ButterKnife.inject(this);
 
+        int messagId = getIntent().getExtras().getInt(MESSAGE_ID);
         Bundle args = new Bundle();
-        args.putInt(EXTRAS_MESAGE_ID,getIntent().getIntExtra(MESSAGE_ID,0));
+        args.putInt(EXTRAS_MESAGE_ID,messagId);
         args.putLong(EXTRAS_USER_ID,wisapeApplication.getUserInfo().user_id);
         startLoad(LOADER_MESSAGE_READ, args);
     }
@@ -55,7 +56,7 @@ public class MessageCenterDetailActivity extends BaseActivity {
     @Override
     protected Message onLoadBackgroundRunning(int what, Bundle args) throws AsyncLoaderError {
         Message msg = MessageCenterLogic.getInstance().getMessageById(args.getLong(EXTRAS_USER_ID),
-                args.getInt(EXTRAS_USER_ID));
+                args.getInt(EXTRAS_MESAGE_ID));
         msg.what = what;
         return msg;
     }
