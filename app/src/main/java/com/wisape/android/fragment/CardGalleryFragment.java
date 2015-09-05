@@ -2,8 +2,8 @@ package com.wisape.android.fragment;
 
 import android.app.Activity;
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
+import android.os.Message;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
@@ -16,39 +16,27 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSONObject;
-import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.interfaces.DraweeController;
-import com.facebook.drawee.view.SimpleDraweeView;
-import com.facebook.imagepipeline.request.ImageRequest;
-import com.wisape.android.msg.ActiveMessage;
+import com.squareup.picasso.Picasso;
 import com.wisape.android.R;
-import com.wisape.android.WisapeApplication;
 import com.wisape.android.activity.BaseActivity;
 import com.wisape.android.activity.MainActivity;
 import com.wisape.android.activity.TestActivity;
-import com.wisape.android.common.StoryManager;
-import com.wisape.android.database.StoryEntity;
-import com.wisape.android.http.DefaultHttpRequestListener;
-import com.wisape.android.http.HttpRequest;
+import com.wisape.android.common.OnRecycleViewClickListener;
+import com.wisape.android.cordova.StorySettingsPlugin;
+import com.wisape.android.event.Event;
+import com.wisape.android.event.EventType;
+import com.wisape.android.http.HttpUrlConstancts;
 import com.wisape.android.logic.StoryLogic;
 import com.wisape.android.model.StoryInfo;
-import com.wisape.android.msg.Message;
-import com.wisape.android.network.Downloader;
-import com.wisape.android.network.WWWConfig;
 import com.wisape.android.view.GalleryView;
 import com.wisape.android.widget.PopupWindowMenu;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
 
 /**
  * @author Duke
@@ -57,173 +45,93 @@ public class CardGalleryFragment extends AbsFragment {
 
     private static final String TAG = CardGalleryFragment.class.getSimpleName();
 
-    private static final String DEFAULT_STORY_ID_KEY = "id";
-    private static final String DEFAULT_STORY_NAME_KEY = "name";
-    private static final String DEFAULT_STORY_URL_KEY = "zip_url";
-    private static final String DEFAUTL_STORY_IMAGE_URL_KEY = "small_img";
+    private static final int LOADER_STORY = 1;
+
+    private static final String EXTRAS_ACCESS_TOKEN = "access_token";
 
     @InjectView(R.id.card_gallery)
     GalleryView mCardGallery;
     @InjectView(R.id.gift_count)
     TextView mTextGifCount;
-    private StoryInfo defaultStroy;
 
     private PopupWindowMenu popupWindow;
     private GalleryAdapter mGalleryAdapter;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_card_gallery, container, false);
         ButterKnife.inject(this, rootView);
-        EventBus.getDefault().register(this);
         initView();
         return rootView;
     }
 
-
     private void initView() {
-        popupWindow = new PopupWindowMenu(getActivity());
+        popupWindow = new PopupWindowMenu((BaseActivity)getActivity());
         mCardGallery.setSpace((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 30, mDisplayMetrics));
-        mCardGallery.setAdapter(mGalleryAdapter = new GalleryAdapter(getActivity()));
-        defaultStroy = new StoryInfo();
-        getDefaultStoryInfo();
-    }
-
-    /**
-     * 获取默认模版信息
-     */
-    private void getDefaultStoryInfo() {
-        ((BaseActivity) getActivity()).showProgressDialog(R.string.loading_user_story);
-        HttpRequest.addRequest(WWWConfig.acquireUri(getResources().getString(R.string.uri_story_default)).toString()
-                ,this, new DefaultHttpRequestListener() {
+        mGalleryAdapter = new GalleryAdapter(getActivity());
+        mGalleryAdapter.setOnRecycleViewClickListener(new OnRecycleViewClickListener() {
             @Override
-            public void onReqeustSuccess(String data) {
-                ((BaseActivity) getActivity()).closeProgressDialog();
-                Log.e(TAG, "#getDefaultStory:" + data);
-                JSONObject jsonObject = JSONObject.parseObject(data);
-                defaultStroy.id = jsonObject.getInteger(DEFAULT_STORY_ID_KEY);
-                defaultStroy.story_name = jsonObject.getString(DEFAULT_STORY_NAME_KEY);
-                defaultStroy.story_url = jsonObject.getString(DEFAULT_STORY_URL_KEY);
-                defaultStroy.small_img =jsonObject.getString(DEFAUTL_STORY_IMAGE_URL_KEY);
-                downloadStroy();
-                showDataInView();
+            public void onItemClick(long storyId) {
+                // TODO: 15/8/26 调用接口
+                Log.e(TAG, "onItemClick:" + storyId);
             }
 
             @Override
-            public void onError(String message) {
-                ((BaseActivity) getActivity()).closeProgressDialog();
-                ((BaseActivity) getActivity()).showToast("加载默认Story出错");
+            public void onItemSubViewClick(long storyId) {
+                Log.e(TAG, "onItemSubViewClick:" + storyId);
+                showPopupWindow(storyId);
+
             }
         });
+        mCardGallery.setAdapter(mGalleryAdapter);
+
+        Bundle bundle = new Bundle();
+        bundle.putString(EXTRAS_ACCESS_TOKEN,wisapeApplication.getUserInfo().access_token);
+        startLoad(LOADER_STORY, bundle);
     }
 
-    /**
-     * 下载默认Story
-     */
-    private void downloadStroy() {
-        final File file = new File(StoryManager.getStoryDirectory(), defaultStroy.story_name + ".zip");
-        Log.e(TAG, "默认模版是否存在：" + file.exists());
-        if (!file.exists()) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    Log.e(TAG, "开始下载默认stotry");
-                    Downloader.download(Uri.parse(defaultStroy.story_url),
-                            Uri.fromFile(file), new Downloader.DownloaderCallback() {
-                                @Override
-                                public void onDownloading(double progress) {
-                                }
+    @Override
+    public Message loadingInbackground(int what, Bundle args) {
+        Message msg = StoryLogic.instance().getUserStory(args.getString(EXTRAS_ACCESS_TOKEN));
+        msg.what = what;
+        return msg;
+    }
 
-                                @Override
-                                public void onCompleted(Uri uri) {
-                                    Log.e(TAG, "#downLoadStory:" + uri.toString());
-                                }
-
-                                @Override
-                                public void onError(Uri uri) {
-                                }
-                            });
-                }
-            }).start();
+    @Override
+    protected void onLoadComplete(Message data) {
+        super.onLoadComplete(data);
+        if(HttpUrlConstancts.STATUS_SUCCESS == data.arg1){
+            mGalleryAdapter.setData((List<StoryInfo>)data.obj);
+        }else {
+            showToast((String)data.obj);
         }
     }
 
+    private void showPopupWindow(long storyid){
+        if(!popupWindow.isShowing()){
+            PopupWindowMenu.setStoryId(storyid);
+            popupWindow.showAtLocation(getView(), Gravity.BOTTOM|Gravity.CENTER_HORIZONTAL,0,0);
+        }
+    }
+
+
     /**
-     * 显示数据
+     * eventbus消息处理
      */
-    private void showDataInView() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                List<StoryEntity> storyEntities = StoryLogic.instance().getIndexStoryList(getActivity(),
-                        WisapeApplication.getInstance().getUserInfo().user_id);
-                getStroyFromServer(storyEntities);
+    @SuppressWarnings("unused")
+    public void onEventMainThread(Event event) {
+        if (EventType.UPDATE_ACTIVE_COUNT.equals(event.getEventType())) {
+            if (mTextGifCount.getVisibility() == View.GONE) {
+                mTextGifCount.setVisibility(View.VISIBLE);
             }
-        }).start();
-    }
-
-    /**
-     * 从服务端获取数据
-     *
-     * @param storyEntityList 数据库查处得数据
-     */
-    private void getStroyFromServer(final List<StoryEntity> storyEntityList) {
-        Map<String, String> params = new HashMap<>();
-        String url = WWWConfig.acquireUri(getResources().getString(R.string.uri_story_list)).toString()+"?access_token="+ WisapeApplication.getInstance().getUserInfo().access_token;
-        HttpRequest.addRequest(url,
-                this, new DefaultHttpRequestListener() {
-                    @Override
-                    public void onReqeustSuccess(String responseJson) {
-                        Log.e(TAG, "#showDataInView:" + responseJson);
-                        List<StoryInfo> storyEntities = JSONObject.parseArray(responseJson, StoryInfo.class);
-                        getAllStory(storyEntityList, storyEntities);
-                    }
-
-                    @Override
-                    public void onError(String message) {
-                        getAllStory(storyEntityList,null);
-                    }
-                });
-    }
-
-    /**
-     * 数据整合
-     *
-     * @param storyEntityList 本地数据库数据
-     * @param storyInfoList   服务器端数据
-     */
-    private void getAllStory(List<StoryEntity> storyEntityList, List<StoryInfo> storyInfoList) {
-        if(storyInfoList == null){
-            storyInfoList = new ArrayList<>();
+            mTextGifCount.setText(Integer.parseInt(mTextGifCount.getText().toString()) + 1 + "");
         }
-        if (null != storyEntityList) {
-            int size = storyEntityList.size();
-            for (int i = 0; i < size; i++) {
-                StoryEntity storyEntity = storyEntityList.get(i);
-
-                StoryInfo storyInfo = new StoryInfo();
-                storyInfo.story_name = storyEntity.storyName;
-                storyInfo.view_num = storyEntity.viewNum;
-                storyInfo.like_num = storyEntity.likeNum;
-                storyInfo.share_num = storyEntity.shareNum;
-                storyInfo.id = storyEntity.id;//可能会有问题
-                storyInfo.small_img = storyEntity.storyThumbUri;
-                storyInfo.uid = storyEntity.userId;
-                storyInfoList.add(storyInfo);
-            }
-        }
-        ((BaseActivity) getActivity()).closeProgressDialog();
-        storyInfoList.add(0, defaultStroy);
-        mGalleryAdapter.setData(storyInfoList);
     }
-
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.reset(this);
-        EventBus.getDefault().unregister(this);
         popupWindow.dismiss();
     }
 
@@ -243,6 +151,14 @@ public class CardGalleryFragment extends AbsFragment {
         trans.commit();
     }
 
+    /**
+     * 清除活动数字
+     */
+    private void clearMsgCount() {
+        mTextGifCount.setText("0");
+        mTextGifCount.setVisibility(View.GONE);
+    }
+
     @OnClick(R.id.menu_switch)
     @SuppressWarnings("unused")
     public void onClickMenuSwitch(View view) {
@@ -260,47 +176,49 @@ public class CardGalleryFragment extends AbsFragment {
 
         private Context mContext;
         private List<StoryInfo> storyEntityList = new ArrayList<>();
+        private OnRecycleViewClickListener onRecycleViewClickListener;
 
         public GalleryAdapter(Context c) {
             this.mContext = c;
         }
 
-        @Override
-        public GHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
-            final View view = LayoutInflater.from(mContext).inflate(R.layout.layout_main_view_card_item, parent, false);
-            return new GHolder(view, new MyClickeListener() {
-                @Override
-                public void onItemClick(int positonId) {
-                    Log.e(TAG, "#oncreateViewHoder:" + positonId);
-                }
-
-                @Override
-                public void onShareClicked(int position) {
-                    Log.e(TAG, "#oncreateViewHoder:" + position);
-                    if (!popupWindow.isShowing()) {
-                        PopupWindowMenu.setStoryId(position);
-                        popupWindow.showAtLocation(parent, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
-                    }
-                }
-            });
+        public void setOnRecycleViewClickListener(OnRecycleViewClickListener onRecycleViewClickListener) {
+            this.onRecycleViewClickListener = onRecycleViewClickListener;
         }
 
         @Override
-        public void onBindViewHolder(GHolder holder, int position) {
-            StoryInfo storyEntity = storyEntityList.get(position);
+        public GHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
+            final View view = LayoutInflater.from(mContext).inflate(R.layout.layout_main_view_card_item,
+                    parent, false);
+            return new GHolder(view);
+        }
 
-            holder.mTextEyecount.setText(storyEntity.view_num+"");
-            holder.mTextStoryState.setText(storyEntity.status+"");
-            holder.mTextZanCount.setText(storyEntity.like_num+"");
+        @Override
+        public void onBindViewHolder(GHolder holder, final int position) {
+            final StoryInfo storyEntity = storyEntityList.get(position);
+
+            holder.mTextEyecount.setText(storyEntity.view_num + "");
+            holder.mTextStoryState.setText(storyEntity.status + "");
+            holder.mTextZanCount.setText(storyEntity.like_num + "");
             holder.mTextShareCount.setText(storyEntity.share_num + "");
             holder.mTextStoryName.setText(storyEntity.story_name);
+            Picasso.with(getActivity()).load(storyEntity.small_img)
+                    .into(holder.mStoryBg);
 
-            Log.e(TAG, "image_url:" + Uri.parse(storyEntity.small_img).toString());
-            DraweeController controller = Fresco.newDraweeControllerBuilder()
-                    .setImageRequest(ImageRequest.fromUri(Uri.parse(storyEntity.small_img)))
-                    .setOldController(holder.mStoryBg.getController())
-                    .build();
-            holder.mStoryBg.setController(controller);
+            //设置事件监听
+            holder.mStoryBg.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onRecycleViewClickListener.onItemClick(storyEntity.id);
+                }
+            });
+
+            holder.imageShare.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onRecycleViewClickListener.onItemSubViewClick(storyEntity.id);
+                }
+            });
         }
 
         @Override
@@ -308,81 +226,31 @@ public class CardGalleryFragment extends AbsFragment {
             return storyEntityList.size();
         }
 
-
         public void setData(List<StoryInfo> storyEntities) {
             storyEntityList = storyEntities;
             notifyDataSetChanged();
         }
-
     }
 
-    public class GHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class GHolder extends RecyclerView.ViewHolder{
         @InjectView(R.id.main_story_bg)
-        SimpleDraweeView mStoryBg;
-
+        ImageView mStoryBg;
         @InjectView(R.id.text_story_state)
         TextView mTextStoryState;
-
         @InjectView(R.id.text_eye_count)
         TextView mTextEyecount;
-
         @InjectView(R.id.text_zan_count)
         TextView mTextZanCount;
-
         @InjectView(R.id.text_share_count)
         TextView mTextShareCount;
-
         @InjectView(R.id.story_name)
         TextView mTextStoryName;
-
         @InjectView(R.id.main_story_more)
         ImageView imageShare;
-        private MyClickeListener clickeListener;
 
-
-        public GHolder(View itemView, MyClickeListener myClickeListener) {
+        public GHolder(View itemView) {
             super(itemView);
             ButterKnife.inject(this, itemView);
-            clickeListener = myClickeListener;
-            mStoryBg.setOnClickListener(this);
-            imageShare.setOnClickListener(this);
-
         }
-
-        @Override
-        public void onClick(View v) {
-
-            if (R.id.main_story_bg == v.getId()) {
-                clickeListener.onItemClick(getPosition());
-            }
-            if (R.id.main_story_more == v.getId()) {
-                clickeListener.onShareClicked(getPosition());
-            }
-
-        }
-    }
-
-    interface MyClickeListener {
-        void onItemClick(int postionId);
-
-        void onShareClicked(int postionId);
-    }
-
-
-    /**
-     * eventbus消息处理
-     */
-    public void onEventMainThread(Message message) {
-        if (message instanceof ActiveMessage) {
-            if (mTextGifCount.getVisibility() == View.GONE) {
-                mTextGifCount.setVisibility(View.VISIBLE);
-            }
-            mTextGifCount.setText(Integer.parseInt(mTextGifCount.getText().toString()) + 1 + "");
-        }
-    }
-
-    private void clearMsgCount() {
-        mTextGifCount.setText("0");
-        mTextGifCount.setVisibility(View.GONE);
     }
 }

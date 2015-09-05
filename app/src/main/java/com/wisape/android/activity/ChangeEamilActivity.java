@@ -16,8 +16,13 @@ import butterknife.OnClick;
  */
 public class ChangeEamilActivity extends BaseActivity{
 
-    public static void Launche(Activity activity){
-        activity.startActivity(new Intent(activity.getApplicationContext(),ChangeEamilActivity.class));
+    public static final int REQUEST_CODE_CHANGE_EMAIL = 0x03;
+
+    public static final String EXTRA_EMAIL_ACCOUNT = "email_account";
+
+    public static void Launch(Activity activity, int requestCode){
+        Intent intent = new Intent(activity.getApplicationContext(),ChangeEamilActivity.class);
+        activity.startActivityForResult(intent, requestCode);
     }
 
     @Override
@@ -28,12 +33,27 @@ public class ChangeEamilActivity extends BaseActivity{
     }
 
     @OnClick(R.id.btn_change_email_address)
+    @SuppressWarnings("unused")
     public void onChangeEmailAddressOnClicked(){
-        ChangeEmailDetailActivity.launch(this);
-        finish();
+        ChangeEmailDetailActivity.launch(this, ChangeEmailDetailActivity.REQEUST_CODE_CHANGE_EMAIL_DETAIL);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(RESULT_OK == resultCode){
+            Bundle extras = data.getExtras();
+            if(ChangeEmailDetailActivity.REQEUST_CODE_CHANGE_EMAIL_DETAIL == requestCode){
+                String email = extras.getString(ChangeEmailDetailActivity.EXTRA_EMAIL_ACCOUNT);
+                Intent intent = new Intent();
+                intent.putExtra(EXTRA_EMAIL_ACCOUNT,email);
+                setResult(RESULT_OK, intent);
+                finish();
+            }
+        }
     }
 
     @OnClick(R.id.btn_logout_email_account)
+    @SuppressWarnings("unused")
     public void onLogoutEmaiAccountOnClicked(){
         final ComfirmDialog comfirmDialog = ComfirmDialog.getInstance(getString(R.string.logout_email_account),
                 getString(R.string.logout_emial_account_content));
@@ -42,7 +62,10 @@ public class ChangeEamilActivity extends BaseActivity{
             @Override
             public void onConfirmClicked() {
                 comfirmDialog.dismiss();
-                ChangeEamilActivity.this.finish();
+                Intent intent = new Intent();
+                intent.putExtra(EXTRA_EMAIL_ACCOUNT,"");
+                setResult(RESULT_OK, intent);
+                finish();
             }
         });
     }

@@ -27,7 +27,7 @@ public class StoryInfo extends ServerInfo{
     public long uid;
     public String story_name;
     public String description;
-    public long createtime;
+    public String createtime;
 
     /**
      * Story Status
@@ -55,7 +55,7 @@ public class StoryInfo extends ServerInfo{
         story.uid = json.optLong("uid");
         story.story_name = json.optString("story_name");
         story.description = json.optString("description");
-        story.createtime = json.optLong("createtime");
+        story.createtime = json.optString("createtime");
         story.rec_status = json.optString("rec_status");
         story.like_num = json.optInt("like_num");
         story.view_num = json.optInt("view_num");
@@ -76,7 +76,7 @@ public class StoryInfo extends ServerInfo{
         dest.writeLong(this.uid);
         dest.writeString(this.story_name);
         dest.writeString(this.description);
-        dest.writeLong(this.createtime);
+        dest.writeString(this.createtime);
         dest.writeString(this.rec_status);
         dest.writeInt(this.like_num);
         dest.writeInt(this.view_num);
@@ -93,7 +93,7 @@ public class StoryInfo extends ServerInfo{
         this.uid = in.readLong();
         this.story_name = in.readString();
         this.description = in.readString();
-        this.createtime = in.readLong();
+        this.createtime = in.readString();
         this.rec_status = in.readString();
         this.like_num = in.readInt();
         this.view_num = in.readInt();

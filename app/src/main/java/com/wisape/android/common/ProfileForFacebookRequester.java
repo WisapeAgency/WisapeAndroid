@@ -8,6 +8,7 @@ import com.android.volley.Response;
 import com.android.volley.RetryPolicy;
 import com.android.volley.error.VolleyError;
 import com.android.volley.request.StringRequest;
+import com.wisape.android.activity.SignUpActivity;
 import com.wisape.android.network.Requester;
 import com.wisape.android.network.VolleyHelper;
 
@@ -62,7 +63,7 @@ public class ProfileForFacebookRequester implements ProfileRequester<ProfileRequ
             latch.await();
 
             if(profileListener.isSuccess() && iconListener.isSuccess()){
-                profile = new ProfileInfo(UserManager.SIGN_UP_WITH_FACE_BOOK);
+                profile = new ProfileInfo(SignUpActivity.SIGN_UP_WITH_FACE_BOOK);
                 try{
                     setProfile(profileListener.getData(), profile);
                     setIcon(iconListener.getData(), profile);

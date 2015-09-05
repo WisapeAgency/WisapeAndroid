@@ -1,9 +1,9 @@
 package com.wisape.android.api;
 
 import android.content.Context;
+import android.os.UserManager;
 import android.util.Log;
 
-import com.wisape.android.common.UserManager;
 import com.wisape.android.model.AttributeInfo;
 import com.wisape.android.model.ServerInfo;
 import com.wisape.android.model.UserInfo;
@@ -20,9 +20,9 @@ import java.util.Objects;
 public abstract class ApiBase{
 
     protected final void setAccessToken(Context context, AttributeInfo attr){
-        String accessToken = UserManager.instance().acquireAccessToken(context);
-        Log.d("ApiBase", "#setAccessToken accessToken:" + accessToken);
-        attr.setAccessToken(accessToken);
+//        String accessToken = UserManager.instance().acquireAccessToken(context);
+//        Log.d("ApiBase", "#setAccessToken accessToken:" + "");
+        attr.setAccessToken("");
     }
 
     protected ServerInfo convert(int what, Requester.ServerMessage message){

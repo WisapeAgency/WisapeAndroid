@@ -100,8 +100,7 @@
         android:background="@android:color/transparent"
         android:gravity="center"
         android:scaleType="center"
-        android:src="@drawable/sign_up_with_twitter_selector"
-        android:visibility="gone"/>
+        android:src="@drawable/sign_up_with_twitter_selector" />
 
     <ImageButton
         android:id="@+id/sign_up_with_facebook"
@@ -115,8 +114,7 @@
         android:background="@android:color/transparent"
         android:gravity="center"
         android:scaleType="center"
-        android:src="@drawable/sign_up_with_facebook_selector"
-        android:visibility="gone"/>
+        android:src="@drawable/sign_up_with_facebook_selector" />
 
     <ImageButton
         android:id="@+id/sign_up_with_google_plus"
@@ -130,6 +128,5 @@
         android:background="@android:color/transparent"
         android:gravity="center"
         android:scaleType="center"
-        android:src="@drawable/sign_up_with_google_plus_selector"
-        android:visibility="gone"/>
+        android:src="@drawable/sign_up_with_google_plus_selector" />
 </RelativeLayout>

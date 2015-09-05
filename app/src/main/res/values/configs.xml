@@ -2,7 +2,7 @@
 <resources>
 
     <!--域名 结尾不能有斜杠-->
-    <string name="app_domain">106.75.197.204</string>
+    <string name="app_domain">106.75.196.189</string>
     <string name="www_schema">http</string>
     <string name="www_host">106.75.197.204</string>
     <string name="www_port">80</string>
@@ -15,8 +15,8 @@
     <string name="freshdesk_key">wisape-1-2603967d3512a971d25f1de35ceb178e</string>
     <string name="freshdesk_secret">1a763b087768ca7c6f05172c0527f3a4cd82ac10</string>
 
-    <string name="facebook_api_key">900883746624807</string>
-    <string name="facebook_api_secret_key">3c4d60f743ca8b81b40bbe73d7120e45</string>
+    <string name="facebook_api_key">305010149669435</string>
+    <string name="facebook_api_secret_key">b9f5da0846a5523ed88649d6024de077</string>
     <string name="facebook_api_callback_uri">http://www.wisape.com/</string>
 
     <string name="twitter_api_key">Qzjiy8jHRAm5G5aulx0jqJXEw</string>

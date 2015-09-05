@@ -4,19 +4,17 @@
     android:layout_width="100dp"
     android:layout_height="100dp">
 
-    <com.facebook.drawee.view.SimpleDraweeView
+    <ImageView
         android:id="@+id/photo_thumb"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:actualImageScaleType="focusCrop"
-        app:failureImage="@mipmap/ic_launcher"
-        app:placeholderImage="@mipmap/ic_launcher"/>
+        android:scaleType="centerCrop"
+        android:src="@mipmap/ic_launcher"/>
 
-    <com.facebook.drawee.view.SimpleDraweeView
+    <ImageView
         android:id="@+id/photo_selected_flag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right|end"
-        app:actualImageScaleType="center"
-        app:failureImage="@drawable/icon_selected_flag"/>
+        android:scaleType="center"/>
 </FrameLayout>

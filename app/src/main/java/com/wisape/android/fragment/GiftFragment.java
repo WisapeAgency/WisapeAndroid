@@ -2,6 +2,7 @@ package com.wisape.android.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Message;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -12,19 +13,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-import com.alibaba.fastjson.JSONObject;
-import com.facebook.drawee.generic.GenericDraweeHierarchy;
-import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
-import com.facebook.drawee.generic.RoundingParams;
-import com.facebook.drawee.view.SimpleDraweeView;
+import com.squareup.picasso.Picasso;
 import com.wisape.android.R;
-import com.wisape.android.activity.BaseActivity;
-import com.wisape.android.http.DefaultHttpRequestListener;
-import com.wisape.android.http.HttpRequest;
+import com.wisape.android.common.OnActivityClickListener;
+import com.wisape.android.http.HttpUrlConstancts;
+import com.wisape.android.logic.ActiveLogic;
 import com.wisape.android.model.ActiveInfo;
-import com.wisape.android.network.WWWConfig;
-import com.wisape.android.util.FrescoFactory;
-//import com.wisape.android.view.GalleryRelativeLayoutWrapper;
+import com.wisape.android.util.Utils;
 import com.wisape.android.view.GalleryView;
 
 import java.util.ArrayList;
@@ -33,25 +28,27 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import de.greenrobot.event.EventBus;
 
 /**
  * @author limit
  */
 public class GiftFragment extends AbsFragment {
 
-    private static final String REQEUST_PARAM_KEY = "country_code";
-
     private static final String TAG = GiftFragment.class.getSimpleName();
+
+    private static final int LOADER_USER_ACTIVE = 1;
+
+    private static final String EXTRAS_COUNTRY_CODE = "country_code";
+    private static final String EXTRAS_NOW = "now";
 
     @InjectView(R.id.gift_gallery)
     GalleryView giftGallery;
-    @InjectView(R.id.img_no_active)
-    ImageView imageNoActive;
     GalleryAdapter mGalleryAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_gift, null, false);
+        View rootView = inflater.inflate(R.layout.fragment_gift, container, false);
         rootView.setLayoutParams(
                 new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
         handleEventCross(rootView);
@@ -61,37 +58,49 @@ public class GiftFragment extends AbsFragment {
     }
 
     private void init() {
-        giftGallery.setAdapter(mGalleryAdapter = new GalleryAdapter(getActivity()));
+        mGalleryAdapter = new GalleryAdapter(getActivity());
+        giftGallery.setAdapter(mGalleryAdapter);
+        mGalleryAdapter.setOnRecycleViewClickListener(new OnActivityClickListener() {
+            @Override
+            public void onItemClickListener(String url) {
+                //TODO 跳转至相对应的界面
+            }
+        });
         giftGallery.setSpace((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 30, mDisplayMetrics));
 
-        ((BaseActivity) getActivity()).showProgressDialog(R.string.loading_user_story);
-        String url = WWWConfig.acquireUri(getString(R.string.uri_active_list)).toString() + "?"+REQEUST_PARAM_KEY+"="+getResources().getConfiguration().locale.getCountry()+
-        "&now=" + System.currentTimeMillis()+"";
-        HttpRequest.addRequest(url, this,
-                new DefaultHttpRequestListener() {
-                    @Override
-                    public void onError(String message) {
-                        ((BaseActivity) getActivity()).closeProgressDialog();
-                        closeFragment();
-                        ((BaseActivity) getActivity()).showToast(null == message ? "加载数据出错" : message);
-                    }
-
-                    @Override
-                    public void onReqeustSuccess(String data) {
-                        Log.e(TAG, "onReqeustSuccess:" + data);
-                        ((BaseActivity) getActivity()).closeProgressDialog();
-                        List<ActiveInfo> activeInfos = JSONObject.parseArray(data, ActiveInfo.class);
-                        if (null == activeInfos || activeInfos.size() == 0) {
-                            closeFragment();
-                            ((BaseActivity) getActivity()).showToast("No Active Data");
-                        } else {
-                            mGalleryAdapter.setData(activeInfos);
-                        }
-                    }
-                });
+        Bundle args = new Bundle();
+        args.putString(EXTRAS_COUNTRY_CODE, Utils.getCountry(getActivity()));
+        args.putLong(EXTRAS_NOW, Utils.acquireUTCTimestamp());
+        startLoad(LOADER_USER_ACTIVE, args);
     }
 
+    @Override
+    public Message loadingInbackground(int what, Bundle args) {
+        Message msg = ActiveLogic.getInstance().activeList(args.getString(EXTRAS_COUNTRY_CODE), args.getInt(EXTRAS_NOW));
+        msg.what = what;
+        return msg;
+    }
+
+    @Override
+    protected void onLoadComplete(Message data) {
+        super.onLoadComplete(data);
+        if(HttpUrlConstancts.STATUS_SUCCESS == data.arg1){
+            List<ActiveInfo> activeInfoList = (List<ActiveInfo>)data.obj;
+            if(null != activeInfoList && activeInfoList.size() > 0){
+                mGalleryAdapter.setData(activeInfoList);
+            }else{
+//                closeFragment();
+                showToast("No Active");
+            }
+        }else{
+//            closeFragment();
+            showToast((String)data.obj);
+        }
+    }
+
+
     @OnClick(R.id.btn_close)
+    @SuppressWarnings("unused")
     public void onCloseClick(View view) {
         closeFragment();
     }
@@ -106,6 +115,7 @@ public class GiftFragment extends AbsFragment {
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.reset(this);
+        EventBus.getDefault().unregister(this);
     }
 
 
@@ -113,40 +123,37 @@ public class GiftFragment extends AbsFragment {
 
         private Context mContext;
         private List<ActiveInfo> activeInfoList = new ArrayList<>();
+        private OnActivityClickListener onRecycleViewClickListener;
 
         public GalleryAdapter(Context c) {
             this.mContext = c;
         }
 
+        public void setOnRecycleViewClickListener(OnActivityClickListener onRecycleViewClickListener) {
+            this.onRecycleViewClickListener = onRecycleViewClickListener;
+        }
+
         @Override
         public GHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            SimpleDraweeView view = new SimpleDraweeView(mContext);
-
-            GenericDraweeHierarchyBuilder builder = new GenericDraweeHierarchyBuilder(parent.getContext().getResources());
-            GenericDraweeHierarchy hierarchy = builder
-                    .setFadeDuration(100)
-                    .setRoundingParams(new RoundingParams().setCornersRadius(parent.getResources().getDimensionPixelSize(R.dimen.app_dialog_radius)))
-                    .build();
-            view.setHierarchy(hierarchy);
-
-            view.setLayoutParams(new GalleryView.LayoutParams(
-                    mContext.getResources().getDimensionPixelOffset(R.dimen.card_gallery_item_size_w),
-                    GalleryView.LayoutParams.MATCH_PARENT));
-
-            GHolder holder = new GHolder(view, new GHolder.OnViewClickListener() {
-                @Override
-                public void onItemClicked(int postion) {
-                    Log.e(TAG,"onItemClicked:" + postion);
-                    //TODO 进入查看活动界面
-                }
-            });
-            return holder;
+            return new GHolder(LayoutInflater.from(mContext).inflate(R.layout.item_gift,parent,false));
         }
 
         @Override
         public void onBindViewHolder(GHolder holder, int position) {
-            holder.wrapperView.setId(position);
-            FrescoFactory.bindImageFromUri(holder.wrapperView, activeInfoList.get(position).getUrl());
+            final ActiveInfo activeInfo = activeInfoList.get(position);
+            holder.imgContent.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.e(TAG,activeInfo.getId()+"");
+                }
+            });
+            Picasso.with(mContext).load(activeInfo.getUrl()).centerCrop().resize(80,80).into(holder.imgContent);
+            holder.imgContent.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onRecycleViewClickListener.onItemClickListener(activeInfo.getUrl());
+                }
+            });
         }
 
         @Override
@@ -160,23 +167,14 @@ public class GiftFragment extends AbsFragment {
         }
     }
 
-    public static class GHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        public SimpleDraweeView wrapperView;
-        private OnViewClickListener onViewClickListener;
+    public static class GHolder extends RecyclerView.ViewHolder{
 
-        public GHolder(SimpleDraweeView itemView,OnViewClickListener clickListener) {
+        @InjectView(R.id.img_content)
+        protected ImageView imgContent;
+
+        public GHolder(View itemView) {
             super(itemView);
-            wrapperView = itemView;
-            onViewClickListener = clickListener;
-        }
-
-        @Override
-        public void onClick(View v) {
-            onViewClickListener.onItemClicked(getPosition());
-        }
-
-        interface OnViewClickListener{
-            void onItemClicked(int postion);
+            ButterKnife.inject(this,itemView);
         }
     }
 }

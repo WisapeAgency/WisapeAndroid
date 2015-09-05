@@ -9,6 +9,7 @@ import android.util.Log;
 import com.wisape.android.database.StoryMusicEntity;
 import com.wisape.android.database.StoryTemplateEntity;
 import com.wisape.android.logic.StoryLogic;
+import com.wisape.android.logic.UserLogic;
 import com.wisape.android.model.StorySettingsInfo;
 import com.wisape.android.model.UserInfo;
 import com.wisape.android.network.Downloader;
@@ -223,7 +224,7 @@ public class StoryManager{
     }
 
     private static String makeStoryDirectoryName(Context context){
-        UserInfo user = UserManager.instance().signIn(context);
+        UserInfo user = UserLogic.instance().loaderUserFromLocal();
         String primary = new StringBuffer(64).append(user.user_id).append(System.currentTimeMillis()).toString();
         String md5 = SecurityUtils.md5(primary);
         return md5;
@@ -231,6 +232,7 @@ public class StoryManager{
 
     private static SoftReference<StorySettingsInfo> storySettingsRef;
     private static Object storySettingsLock = new Object();
+
     public static StorySettingsInfo acquireStorySettings(Context context){
         StorySettingsInfo storySettings;
         if(null == storySettingsRef || null == (storySettings = storySettingsRef.get())){

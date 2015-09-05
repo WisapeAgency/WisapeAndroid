@@ -18,8 +18,8 @@ import butterknife.OnClick;
  */
 public class AddEmailAccoutActivity extends BaseActivity{
 
-    public static final String EMAIL_ACCOUNT = "email_account";
-    public static final int REQEUST_CODE = 1;
+    public static final String EXTRA_EMAIL_ACCOUNT = "email_account";
+    public static final int REQEUST_CODE_ADD_EMAIL = 0x02;
 
     @InjectView(R.id.add_emai_edit)
     protected SignUpEditText editEamil;
@@ -44,7 +44,7 @@ public class AddEmailAccoutActivity extends BaseActivity{
         String email = editEamil.getText().toString();
         if(verifyEMail(email)){
             Intent intent = new Intent();
-            intent.putExtra(EMAIL_ACCOUNT,email);
+            intent.putExtra(EXTRA_EMAIL_ACCOUNT,email);
             setResult(RESULT_OK,intent);
             finish();
         }

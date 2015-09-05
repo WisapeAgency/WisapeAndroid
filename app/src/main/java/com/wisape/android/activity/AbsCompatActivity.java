@@ -8,12 +8,16 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 
 /**
  * @author LeiGuoting
  */
 public abstract class AbsCompatActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Message>, AsyncTaskLoaderCallback<Message>{
+
+    private static final String TAG = AbsCompatActivity.class.getSimpleName();
+
     private static final int DEFAULT_LOADER_ID = Integer.MAX_VALUE;
     private static final String EXTRA_WHAT = "loader_what";
     protected static final int STATUS_EXCEPTION = Integer.MIN_VALUE;
@@ -88,6 +92,7 @@ public abstract class AbsCompatActivity extends AppCompatActivity implements Loa
     @Override
     public final void onLoadFinished(Loader<Message> loader, Message data) {
         if(isDestroyed() || null == data){
+            Log.e(TAG,"loadFinished,no data return");
             return;
         }
         try{
@@ -111,7 +116,7 @@ public abstract class AbsCompatActivity extends AppCompatActivity implements Loa
         return null;
     }
 
-    private static class AsyncTaskLoaderImpl extends AsyncTaskLoader<Message>{
+    public static class AsyncTaskLoaderImpl extends AsyncTaskLoader<Message>{
         private AsyncTaskLoaderCallback<Message> callback;
         private Bundle args;
         private boolean used;
@@ -137,7 +142,7 @@ public abstract class AbsCompatActivity extends AppCompatActivity implements Loa
                 msg = callback.onAsyncLoad(what, args);
                 if(null != msg){
                     msg.what = what;
-                    msg.arg1 = STATUS_SUCCESS;
+//                    msg.arg1 = STATUS_SUCCESS;
                 }
             }catch (AsyncLoaderError error){
                 msg = Message.obtain();

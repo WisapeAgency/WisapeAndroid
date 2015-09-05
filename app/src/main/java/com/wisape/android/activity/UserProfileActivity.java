@@ -1,56 +1,51 @@
 package com.wisape.android.activity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.PointF;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
-import com.soundcloud.android.crop.Crop;
-import com.wisape.android.msg.UserProfileMessage;
+import com.squareup.picasso.Picasso;
 import com.wisape.android.R;
 import com.wisape.android.logic.UserLogic;
-import com.wisape.android.api.ApiUser;
-import com.wisape.android.util.FrescoFactory;
+import com.wisape.android.model.UserInfo;
+import com.wisape.android.view.CircleTransform;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
-
-import static com.wisape.android.activity.MainActivity.EXTRA_USER_INFO;
 
 /**
  * 用户信息修改
  * Created by LeiGuoting on 6/7/15.
  */
-public class UserProfileActivity extends BaseActivity{
+public class UserProfileActivity extends BaseActivity {
+
     private static final String TAG = UserProfileActivity.class.getSimpleName();
 
     public static final int REQUEST_CODE_PROFILE = 0x102;
-    public static final String EXTRA_PROFILE_ICON_URI = "_profile_icon_uri";
-    public static final String ACTION_PROFILE_UPDATED = "action_profile_updated";
 
-    private static final int LOADER_WHAT_PROFILE_UPDATE = 0x01;
+    private static final int LOADER_WHAT_PROFILE_UPDATE = 1;
 
-    public static void launch(Fragment fragment, int requestCode){
-        fragment.startActivityForResult(getIntent(fragment.getActivity().getApplicationContext()), requestCode);
+    public static final String EXTRAS_EMAIL = "email";
+    public static final String EXTRAS_NAME = "nickName";
+    public static final String EXTRAS_ICON_URI = "icon_uri";
+
+    public static void launch(Fragment fragment, int requestCode) {
+        Intent intent = new Intent(fragment.getActivity().getApplicationContext(), UserProfileActivity.class);
+        fragment.startActivityForResult(intent, requestCode);
     }
 
-    public static Intent getIntent(Context context){
-        return  new Intent(context, UserProfileActivity.class);
-    }
 
     @InjectView(R.id.user_profile_icon)
-    protected SimpleDraweeView iconView;
+    protected ImageView iconView;
 
     @InjectView(R.id.user_profile_name_edit)
-    protected TextView nameEdit;
+    protected android.widget.EditText nameEdit;
 
     @InjectView(R.id.user_profile_email_edit)
     protected TextView emailEdit;
@@ -67,74 +62,45 @@ public class UserProfileActivity extends BaseActivity{
         nameEdit.setText(wisapeApplication.getUserInfo().nick_name);
         emailEdit.setText(wisapeApplication.getUserInfo().user_email);
         String iconUrl = wisapeApplication.getUserInfo().user_ico_n;
-        if(null != iconUrl && 0 < iconUrl.length()){
-            Log.e(TAG,"firstIconUrl:" + iconUrl);
-            iconView.getHierarchy().setActualImageFocusPoint(new PointF(0.5f, 0.5f));
-            FrescoFactory.bindImageFromUri(iconView, iconUrl);
+        if (null != iconUrl && 0 < iconUrl.length()) {
+            Picasso.with(this).load(iconUrl)
+                    .resize(150, 150)
+                    .transform(new CircleTransform())
+                    .centerCrop()
+                    .into(iconView);
         }
-        EventBus.getDefault().register(this);
     }
 
 
     @OnClick(R.id.user_profile_email_edit)
     @SuppressWarnings("unused")
-    protected void onEmailTextOnClicked(){
+    protected void onEmailTextOnClicked() {
         String email = emailEdit.getText().toString();
-        if("".equals(email)){
-            AddEmailAccoutActivity.launch(this,AddEmailAccoutActivity.REQEUST_CODE);
-        }else{
-            ChangeEamilActivity.Launche(this);
+        if ("".equals(email)) {
+            AddEmailAccoutActivity.launch(this, AddEmailAccoutActivity.REQEUST_CODE_ADD_EMAIL);
+        } else {
+            ChangeEamilActivity.Launch(this, ChangeEamilActivity.REQUEST_CODE_CHANGE_EMAIL);
         }
     }
 
     @OnClick(R.id.user_profile_icon)
     @SuppressWarnings("unused")
-    protected void doIconClicked(){
+    protected void doIconClicked() {
         PhotoSelectorActivity.launch(this, PhotoSelectorActivity.REQUEST_CODE_PHOTO);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode){
-            default :
-                super.onActivityResult(requestCode, resultCode, data);
-                return;
-
-            case PhotoSelectorActivity.REQUEST_CODE_PHOTO :
-                if(RESULT_OK == resultCode){
-                    userIconUri= data.getParcelableExtra(PhotoSelectorActivity.EXTRA_IMAGE_URI);
-                    Log.e(TAG,"iconUrl:" + userIconUri.toString());
-                    iconView.getHierarchy().setActualImageFocusPoint(new PointF(0.5f, 0.5f));
-                    FrescoFactory.bindImageFromUri(iconView, "file://" + userIconUri.toString());
-                }
-                break;
-
-            case Crop.REQUEST_CROP :
-                if(RESULT_OK == resultCode){
-                    iconView.setImageURI(userIconUri);
-                }
-                break;
-            case AddEmailAccoutActivity.REQEUST_CODE:
-                if(RESULT_OK == resultCode){
-                    emailEdit.setText(data.getStringExtra(AddEmailAccoutActivity.EMAIL_ACCOUNT));
-                }
-        }
-
-    }
 
     @Override
     protected boolean onBackNavigation() {
         doSaveProfile();
-        return super.onBackNavigation();
+        return true;
     }
 
-    @Override
-    public void onBackPressed() {
-        onBackNavigation();
-    }
+    private void doSaveProfile() {
 
-    private void doSaveProfile(){
-        if(isDestroyed()){
+        if (isDestroyed()) {
+            setResult(RESULT_CANCELED);
+            finish();
             return;
         }
 
@@ -144,48 +110,90 @@ public class UserProfileActivity extends BaseActivity{
         String oldName = wisapeApplication.getUserInfo().nick_name;
         String oldEmail = wisapeApplication.getUserInfo().user_email;
 
-        if(newName.equals(oldName) && newEmail.equals(oldEmail) && null == userIconUri){
+        if (newName.equals(oldName) && newEmail.equals(oldEmail) && null == userIconUri) {
+            setResult(RESULT_CANCELED);
+            finish();
             return;
         }
 
-        if(0 != oldName.length() && 0 == newName.length() || 0 != oldEmail.length() && 0 == newEmail.length()){
+        if (0 != oldName.length() && 0 == newName.length() || 0 != oldEmail.length() && 0 == newEmail.length()) {
+            setResult(RESULT_CANCELED);
+            finish();
             return;
         }
-
+        Log.e(TAG, "更新用户信息!");
         Bundle args = new Bundle();
-        ApiUser.AttrUserProfile profile = new ApiUser.AttrUserProfile();
-        profile.nickName = newName;
-        profile.userEmail = newEmail;
-        args.putParcelable(EXTRA_USER_INFO, profile);
-        args.putParcelable(EXTRA_PROFILE_ICON_URI, userIconUri);
+        args.putString(EXTRAS_NAME, newName);
+        args.putString(EXTRAS_EMAIL, newEmail);
+        args.putParcelable(EXTRAS_ICON_URI, userIconUri);
         startLoad(LOADER_WHAT_PROFILE_UPDATE, args);
     }
 
     @Override
     protected Message onLoadBackgroundRunning(int what, Bundle args) throws AsyncLoaderError {
-        ApiUser.AttrUserProfile profile = args .getParcelable(EXTRA_USER_INFO);
-        Uri iconUri = args.getParcelable(EXTRA_PROFILE_ICON_URI);
-        UserLogic.instance().updateProfile(getApplicationContext(), profile, iconUri, null);
-        return null;
+        Message msg = UserLogic.instance().updateProfile(args.getString(EXTRAS_NAME),
+                (Uri) args.getParcelable(EXTRAS_ICON_URI),
+                args.getString(EXTRAS_NAME), wisapeApplication.getUserInfo().access_token);
+        msg.what = what;
+        return msg;
+    }
+
+    @Override
+    protected void onLoadCompleted(Message data) {
+        super.onLoadCompleted(data);
+        if(STATUS_SUCCESS == data.arg1){
+            wisapeApplication.setUserInfo((UserInfo) data.obj);
+            setResult(RESULT_OK);
+        }else{
+            showToast((String) data.obj);
+            setResult(RESULT_CANCELED);
+        }
+        finish();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         ButterKnife.reset(this);
-        EventBus.getDefault().unregister(this);
-        if(null != nameEdit){
+        if (null != nameEdit) {
             nameEdit.setOnTouchListener(null);
             emailEdit = null;
         }
 
-        if(null != emailEdit){
+        if (null != emailEdit) {
             emailEdit.setOnTouchListener(null);
             emailEdit = null;
         }
     }
 
-    public void onEventMainThread(UserProfileMessage message){
-            emailEdit.setText(message.getUserEmail());
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+
+            switch (requestCode) {
+                case PhotoSelectorActivity.REQUEST_CODE_PHOTO:
+                    Uri imgUri = extras.getParcelable(PhotoSelectorActivity.EXTRA_IMAGE_URI);
+                    CutActivity.launch(this, imgUri, CutActivity.RQEUST_CODE_CROP_IMG);
+                    break;
+                case CutActivity.RQEUST_CODE_CROP_IMG:
+                    userIconUri = extras.getParcelable(CutActivity.EXTRA_IMAGE_URI);
+                    if (null != userIconUri) {
+                        Picasso.with(this).load(userIconUri)
+                                .resize(150, 150)
+                                .transform(new CircleTransform())
+                                .centerCrop()
+                                .into(iconView);
+                    }
+
+                    break;
+                case AddEmailAccoutActivity.REQEUST_CODE_ADD_EMAIL:
+                    emailEdit.setText(extras.getString(AddEmailAccoutActivity.EXTRA_EMAIL_ACCOUNT));
+                    break;
+                case ChangeEamilActivity.REQUEST_CODE_CHANGE_EMAIL:
+                    emailEdit.setText(extras.getString(ChangeEamilActivity.EXTRA_EMAIL_ACCOUNT));
+                    break;
+            }
+        }
     }
 }

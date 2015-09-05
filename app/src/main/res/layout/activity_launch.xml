@@ -7,7 +7,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@mipmap/icon_launch"
+        android:background="@mipmap/icon_launcher_logo"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"/>
 

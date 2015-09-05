@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:oneshot="false" >
+    <item
+        android:drawable="@mipmap/progress1"
+        android:duration="60" />
+    <item
+        android:drawable="@mipmap/progress2"
+        android:duration="60" />
+    <item
+        android:drawable="@mipmap/progress3"
+        android:duration="60" />
+    <item
+        android:drawable="@mipmap/progress4"
+        android:duration="60" />
+    <item
+        android:drawable="@mipmap/progress5"
+        android:duration="60" />
+    <item
+        android:drawable="@mipmap/progress6"
+        android:duration="60" />
+    <item
+        android:drawable="@mipmap/progress7"
+        android:duration="60" />
+    <item
+        android:drawable="@mipmap/progress8"
+        android:duration="60" />
+    <item
+        android:drawable="@mipmap/progress9"
+        android:duration="60" />
+    <item
+        android:drawable="@mipmap/progress10"
+        android:duration="60" />
+    <item
+        android:drawable="@mipmap/progress11"
+        android:duration="60" />
+    <item
+        android:drawable="@mipmap/progress12"
+        android:duration="60" />
+    <item
+        android:drawable="@mipmap/progress13"
+        android:duration="60" />
+    <item
+        android:drawable="@mipmap/progress14"
+        android:duration="60" />
+    <item
+        android:drawable="@mipmap/progress15"
+        android:duration="60" />
+    <item
+        android:drawable="@mipmap/progress16"
+        android:duration="60" />
+    <item
+        android:drawable="@mipmap/progress17"
+        android:duration="60" />
+    <item
+        android:drawable="@mipmap/progress18"
+        android:duration="60" />
+    <item
+        android:drawable="@mipmap/progress19"
+        android:duration="60" />
+    <item
+        android:drawable="@mipmap/progress20"
+        android:duration="60" />
+    <item
+        android:drawable="@mipmap/progress21"
+        android:duration="60" />
+    <item
+        android:drawable="@mipmap/progress22"
+        android:duration="60" />
+    <item
+        android:drawable="@mipmap/progress23"
+        android:duration="60" />
+    <item
+        android:drawable="@mipmap/progress24"
+        android:duration="60" />
+    <item
+        android:drawable="@mipmap/progress25"
+        android:duration="60" />
+    <item
+        android:drawable="@mipmap/progress26"
+        android:duration="60" />
+    <item
+        android:drawable="@mipmap/progress27"
+        android:duration="60" />
+    <item
+        android:drawable="@mipmap/progress28"
+        android:duration="60" />
+</animation-list>

@@ -4,14 +4,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 
 import com.wisape.android.R;
-import com.wisape.android.api.ApiUser;
 import com.wisape.android.logic.UserLogic;
-import com.wisape.android.network.Requester;
 import com.wisape.android.util.Utils;
 import com.wisape.android.widget.SignUpEditText;
 
@@ -26,18 +22,16 @@ import butterknife.OnClick;
  */
 public class PasswordResetActivity extends BaseActivity implements SignUpEditText.OnActionListener {
 
-    /**已经向邮箱发送验证信息*/
-    private static final int STATUS_OK = 1;
+    private static final int LOADER_PASSWORD_RESET = 1;
 
-    private static final String USER_EMAIL = "user_email";
-    private static final int RESET_USER_EMAIL = 1;
+    private static final String EXTARS_EMAIL_ACCOUNT = "email_account";
 
     @InjectView(R.id.password_reset_email_edit)
     protected SignUpEditText mPasswordRestEmailEdit;
 
-    public static void launch(Activity activity, int requestCode) {
+    public static void launch(Activity activity) {
         Intent intent = new Intent(activity.getApplicationContext(), PasswordResetActivity.class);
-        activity.startActivityForResult(intent, requestCode);
+        activity.startActivity(intent);
     }
 
     @Override
@@ -53,41 +47,25 @@ public class PasswordResetActivity extends BaseActivity implements SignUpEditTex
     protected void doResetPassword() {
         String email = mPasswordRestEmailEdit.getText().toString();
         if (verifyEMail(email)) {
-            showProgressDialog(R.string.progress_dialog_reset_password);
             Bundle args = new Bundle();
-            args.putString(USER_EMAIL, email.trim());
-            startLoad(RESET_USER_EMAIL, args);
+            args.putString(EXTARS_EMAIL_ACCOUNT, email.trim());
+            startLoad(LOADER_PASSWORD_RESET, args);
         }
     }
 
     @Override
     protected Message onLoadBackgroundRunning(int what, Bundle args) throws AsyncLoaderError {
-        Message message = Message.obtain();
-        message.what = what;
-        if (RESET_USER_EMAIL == what) {
-            UserLogic userLogic = UserLogic.instance();
-            ApiUser.AttrResetPasswordInfo attr = new ApiUser.AttrResetPasswordInfo();
-            attr.email = args.getString(USER_EMAIL, "");
-            args.clear();
-
-            Requester.ServerMessage serverMessage = userLogic.resetPassword(getApplicationContext(), attr, getCancelableTag());
-            message.obj = serverMessage;
-            message.arg1 = serverMessage.status;
-        }
-
-       return message;
+        return UserLogic.instance().passwordRest(args.getString(EXTARS_EMAIL_ACCOUNT));
     }
 
     @Override
     protected void onLoadCompleted(Message data) {
         super.onLoadCompleted(data);
-        if(RESET_USER_EMAIL == data.what){
-            if(STATUS_OK == data.arg1){
-                PasswordResetSuccessActivity.launch(this,mPasswordRestEmailEdit.getText().toString());
-                PasswordResetActivity.this.finish();
-            }else{
-               showToast("请求错误");
-            }
+        if(STATUS_SUCCESS == data.arg1){
+            PasswordResetSuccessActivity.launch(this,mPasswordRestEmailEdit.getText().toString());
+            finish();
+        }else{
+            showToast((String)data.obj);
         }
     }
 

@@ -2,6 +2,8 @@
     <string name="app_name">Wisape</string>
     <string name="app_none">无</string>
 
+    <string name="gestor_activity_label">Slide Motion</string>
+
     <!--Login-->
     <string name="login_with_third">"Sign in with the follow apps"</string>
 
@@ -93,11 +95,14 @@
     <string name="title_wechat">WeChat</string>
     <string name="title_more">More</string>
 
+    <string name="slide_motion_left">Slide left to next page</string>
+    <string name="slide_motion_top">Slide top to next page</string>
+
     <!--消息中心-->
     <string name="message_center_label">Message Center</string>
 
     <!--进度对话框资源-->
-    <string name="progress_dialog_reset_password">Message Sending</string>
+    <string name="progress_loading_data">Loading Data</string>
     <string name="network_error">Network Error</string>
     <string name="loading_default_story">Loading DefaultStory</string>
     <string name="loading_user_story">Loading UserStory</string>

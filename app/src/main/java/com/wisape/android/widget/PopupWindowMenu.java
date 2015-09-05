@@ -9,6 +9,9 @@ import android.view.WindowManager;
 import android.widget.PopupWindow;
 
 import com.wisape.android.R;
+import com.wisape.android.WisapeApplication;
+import com.wisape.android.activity.BaseActivity;
+import com.wisape.android.logic.StoryLogic;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -21,10 +24,13 @@ public class PopupWindowMenu extends PopupWindow {
 
     private static final String TAG = PopupWindowMenu.class.getSimpleName();
 
-    private static int storyId;
+    private static long storyId;
 
-    public PopupWindowMenu(Context context){
-        View view = LayoutInflater.from(context).inflate(R.layout.popup_window_layout,null);
+    private BaseActivity activity;
+
+    public PopupWindowMenu(BaseActivity activity){
+        View view = LayoutInflater.from(activity.getApplicationContext()).inflate(R.layout.popup_window_layout,null);
+        this.activity = activity;
         setContentView(view);
         ButterKnife.inject(this,view);
         setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
@@ -34,7 +40,7 @@ public class PopupWindowMenu extends PopupWindow {
         setBackgroundDrawable(new ColorDrawable(000000));
     }
 
-    public static void setStoryId(int id){
+    public static void setStoryId(long id){
         storyId = id;
     }
 
@@ -58,5 +64,7 @@ public class PopupWindowMenu extends PopupWindow {
     @OnClick(R.id.text_delete)
     public void onDeleteClicked(){
         dismiss();
+//        activity.showProgressDialog(R.string.loading_user_story);
+//        StoryLogic.instance().deleteStory(storyId, WisapeApplication.getInstance().getUserInfo().access_token);
     }
 }

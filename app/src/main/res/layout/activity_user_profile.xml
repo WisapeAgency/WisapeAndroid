@@ -28,18 +28,15 @@
         android:layout_alignParentEnd="true"
         android:src="@drawable/icon_down"/>
 
-    <com.facebook.drawee.view.SimpleDraweeView
+    <ImageView
         android:id="@+id/user_profile_icon"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_alignRight="@+id/icon_down"
         android:layout_marginRight="30dp"
         android:layout_marginTop="25dp"
-        app:roundAsCircle="true"
-        app:placeholderImage="@drawable/default_user_icon"
-        app:failureImage="@mipmap/icon_menu_default_head"
-        app:placeholderImageScaleType="focusCrop"
-        app:actualImageScaleType="focusCrop"/>
+        android:src="@mipmap/icon_menu_default_head"
+        />
     
     <View
         android:id="@+id/divider_icon"
@@ -70,17 +67,19 @@
         android:layout_alignParentEnd="true"
         android:src="@drawable/icon_down"/>
 
-    <TextView
+    <EditText
         android:id="@+id/user_profile_name_edit"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:textColor="@color/app_btn_green_normal"
+        android:textSize="12sp"
         android:layout_toRightOf="@+id/user_profile_name_title"
         android:layout_toEndOf="@+id/user_profile_name_title"
         android:layout_toLeftOf="@+id/name_down"
         android:layout_toStartOf="@+id/name_down"
         android:layout_marginRight="30dp"
         android:layout_marginTop="25dp"
+        android:background="@null"
         android:layout_below="@+id/user_profile_icon"
         android:gravity="right|end|center_vertical"/>
 

@@ -57,11 +57,11 @@
             android:text="@string/story_settings_cover"
             />
 
-        <com.facebook.drawee.view.SimpleDraweeView
+        <ImageView
             android:id="@+id/story_settings_cover_sdv"
             android:layout_width="80dp"
             android:layout_height="80dp"
-            app:placeholderImage="@drawable/default_user_icon"
+            android:src="@mipmap/icon_menu_default_head"
             />
 
         <ImageView

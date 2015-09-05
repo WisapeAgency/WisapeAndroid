@@ -79,7 +79,6 @@ dependencies {
     compile project(':oauth')
     //compile project(':volley')
     compile project(':mobihelp_sdk_android_v1_4')
-    compile project(':android-crop')
     compile project(':cordova')
     compile project(':widgets')
     compile project(':nanohttpd')
@@ -93,12 +92,12 @@ dependencies {
     compile 'com.jakewharton:butterknife:6.1.0'
     compile 'com.alibaba:fastjson:1.2.6'
     compile 'com.getbase:floatingactionbutton:1.9.1'
-    compile "com.facebook.fresco:fresco:${FRESCO_VERSION}"
-    compile "com.facebook.fresco:imagepipeline-okhttp:${FRESCO_VERSION}"
     compile 'com.google.zxing:core:3.2.0'
     compile 'com.j256.ormlite:ormlite-core:4.48'
     compile 'com.j256.ormlite:ormlite-android:4.48'
     compile 'de.greenrobot:eventbus:2.4.0'
-    compile 'com.google.android.gms:play-services:7.8.0'
-    compile 'com.android.support:multidex:1.0.1'
+    compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.google.android.gms:play-services:7.5.0'
+    compile 'com.android.support:multidex:1.0.0'
+
 }

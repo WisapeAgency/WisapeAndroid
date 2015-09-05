@@ -1,249 +1,254 @@
 package com.wisape.android.logic;
 
-import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
+import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Message;
+import android.util.Base64;
 import android.util.Log;
 
-import com.j256.ormlite.android.apptools.OpenHelperManager;
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.stmt.DeleteBuilder;
-import com.j256.ormlite.stmt.QueryBuilder;
-import com.wisape.android.msg.UserProfileErrorMessage;
-import com.wisape.android.msg.UserProfileMessage;
+import com.google.gson.Gson;
+import com.squareup.okhttp.FormEncodingBuilder;
+import com.squareup.okhttp.RequestBody;
 import com.wisape.android.WisapeApplication;
-import com.wisape.android.common.ProfileRequester;
-import com.wisape.android.common.UserManager;
-import com.wisape.android.database.DatabaseHelper;
-import com.wisape.android.database.UserActivityEntity;
-import com.wisape.android.database.UserMessageEntity;
-import com.wisape.android.model.UserActivityInfo;
+import com.wisape.android.http.HttpUrlConstancts;
+import com.wisape.android.http.OkhttpUtil;
 import com.wisape.android.model.UserInfo;
-import com.wisape.android.api.ApiUser;
-import com.wisape.android.model.UserMessageInfo;
-import com.wisape.android.network.Requester;
-import com.wisape.android.util.Utils;
+import com.wisape.android.network.DataSynchronizer;
+import com.wisape.android.util.FileUtils;
 
-import java.lang.ref.WeakReference;
-import java.sql.SQLException;
-import java.util.List;
-
-import de.greenrobot.event.EventBus;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
+ * 用户相关业务逻辑
  * Created by LeiGuoting on 3/7/15.
  */
 public class UserLogic {
     private static final String TAG = UserLogic.class.getSimpleName();
-    private static WeakReference<UserLogic> ref;
 
-    public static UserLogic instance(){
-        UserLogic logic;
-        if(null == ref || null == (logic = ref.get())){
-            synchronized (UserLogic.class){
-                if(null == ref || null == (logic = ref.get())){
-                    logic = new UserLogic();
-                    ref = new WeakReference(logic);
-                }
-            }
-        }
-        return logic;
+    private static UserLogic userLogic = new UserLogic();
+
+    private static final String ATTR_TYPE = "type";
+    private static final String ATTR_EMAIL = "user_email";
+    private static final String ATTR_PASSWORD = "user_pwd";
+    private static final String ATTR_USER_ICON = "user_ico";
+    private static final String ATTR_NICK_NAME = "nick_name";
+    private static final String ATTR_UNIQUE_STR = "unique_str";
+    private static final String ATTR_INSTALL_ID = "install_id";
+    private static final String ATTR_ACCESS_TOKEN = "access_token";
+
+    private static final String EXTRA_USER_INFO = "user_info";
+
+    private Map<String, String> params = new HashMap<>();
+
+    public static UserLogic instance() {
+        return userLogic;
     }
 
-    private UserLogic(){}
+    private UserLogic() {
+    }
 
-    public UserInfo signUp(Context context, ApiUser.AttrSignUpInfo attrInfo, Object cancelableTag){
-        ApiUser api = ApiUser.instance();
-        UserInfo user = api.signUp(context, attrInfo, cancelableTag);
-        if(Requester.ServerMessage.STATUS_SUCCESS == user.status){
-            UserManager.instance().saveUser(context, user);
+
+    /**
+     * 第三方登录
+     *
+     * @param type      登录类型
+     * @param email     邮箱
+     * @param userIcon  用户头像
+     * @param nickName  昵称
+     * @param uniqueStr 唯一
+     * @param installId parses使用
+     * @return 信息
+     */
+    public Message signUpWith(String type, String email, String userIcon, String nickName, String uniqueStr, String installId) {
+        params.clear();
+        params.put(ATTR_TYPE, type + "");
+        params.put(ATTR_EMAIL, email);
+        params.put(ATTR_INSTALL_ID, installId);
+        params.put(ATTR_NICK_NAME, nickName);
+        params.put(ATTR_USER_ICON, userIcon);
+        params.put(ATTR_UNIQUE_STR, uniqueStr);
+
+        return singUp(params);
+    }
+
+    /**
+     * 邮箱登录
+     *
+     * @param type  登录类型
+     * @param email 登录email
+     * @param pwd   登录密码
+     */
+    public Message signUp(String type, String email, String pwd, String installId) {
+        params.clear();
+        params.put(ATTR_TYPE, type);
+        params.put(ATTR_EMAIL, email);
+        params.put(ATTR_PASSWORD, pwd);
+        params.put(ATTR_INSTALL_ID, installId);
+
+        return singUp(params);
+    }
+
+    private Message singUp(Map<String, String> params) {
+        Message message = Message.obtain();
+
+        try {
+            UserInfo userInfo = OkhttpUtil.execute(HttpUrlConstancts.USER_LOGIN, params, UserInfo.class);
+            saveUserToSharePrefrence(new Gson().toJson(userInfo));
+            message.arg1 = HttpUrlConstancts.STATUS_SUCCESS;
+            message.obj = userInfo;
+        } catch (IOException e) {
+            message.arg1 =  HttpUrlConstancts.STATUS_EXCEPTION;
+            message.obj = e.getMessage();
         }
-        return user;
+        return message;
     }
 
     /**
      * 重置密码
-     * @param context
-     * @param attrInfo
-     * @param cancleableTag
-     * @return 服务器信息
+     *
+     * @param email 用户的邮箱
      */
-    public Requester.ServerMessage resetPassword(Context context,ApiUser.AttrResetPasswordInfo attrInfo,Object cancleableTag){
-        ApiUser api = ApiUser.instance();
-        return api.resetPassword(context, attrInfo, cancleableTag);
-    }
+    public Message passwordRest(String email) {
+        params.clear();
+        params.put(ATTR_EMAIL, email);
 
-    public UserInfo signUpWith(Context context, ProfileRequester.ProfileInfo profile, Object cancelableTag){
-        ApiUser.AttrSignUpInfo attr = new ApiUser.AttrSignUpInfo();
-        attr.type = profile.platform;
-        attr.email = profile.email;
-        attr.userIcon = profile.icon;
-        attr.nickName = profile.nickName;
-        attr.uniqueStr = profile.uniqueStr;
-        return signUp(context, attr, cancelableTag);
+        Message message = Message.obtain();
+        try {
+            OkhttpUtil.execute(HttpUrlConstancts.PASSWORD_RESET, params);
+            message.arg1 =  HttpUrlConstancts.STATUS_SUCCESS;
+        } catch (Exception e) {
+            message.arg1 = HttpUrlConstancts.STATUS_EXCEPTION;
+            message.obj = e.getMessage();
+        }
+        return message;
+
+
+//        RestAdapterUtil.getApi(UserApi.class).passwordRest(email, new HttpRequestCallBack<Object>() {
+//            @Override
+//            public void onSuccess(Object data) {
+//                EventBus.getDefault().post(new Event(EventType.RESET_PASSWORD_SUCCESS));
+//            }
+//
+//            @Override
+//            public void onError(String message) {
+//                EventBus.getDefault().post(new Event(EventType.REST_PASSWORD_ERROR));
+//            }
+//        });
     }
 
     /**
-     * We will send a Local Broadcast if update success.
-     *
-     * @param context
-     * @param profile
-     * @param iconUri
-     * @param cancelableTag
-     * @return
+     * 从本地读取用户信息
      */
-    public UserInfo updateProfile(Context context, ApiUser.AttrUserProfile profile, Uri iconUri, Object cancelableTag){
+    public UserInfo loaderUserFromLocal() {
+        DataSynchronizer.getInstance().synchronous(WisapeApplication.getInstance().getApplicationContext());//
+        UserInfo userInfo = null;
+        SharedPreferences sharedPreferences = WisapeApplication.getInstance().getSharePrefrence();
+        String decode = sharedPreferences.getString(EXTRA_USER_INFO, "");
+        if (0 != decode.length()) {
+            String gson = new String(Base64.decode(decode, Base64.DEFAULT));
+            Log.e(TAG, "loaderUserFromLocal:" + gson);
+            userInfo = new Gson().fromJson(gson, UserInfo.class);
+
+        }
+        return userInfo;
+    }
+
+
+    /**
+     * 将用户信息保存到shareprefrence
+     *
+     * @param userEncode 加密后的用户信息
+     */
+    private void saveUserToSharePrefrence(String userEncode) {
+        Log.w(TAG, "saveUserToSahrePrefrence:" + userEncode);
+        WisapeApplication.getInstance().getSharePrefrence().edit()
+                .putString(EXTRA_USER_INFO, Base64.encodeToString(userEncode.getBytes(), Base64.DEFAULT)).apply();
+
+    }
+
+    /**
+     * 清除用户信息
+     */
+    public void clearUserInfo() {
+        WisapeApplication.getInstance().getSharePrefrence().edit().clear().apply();
+    }
+
+
+    /**
+     * 更新用户信息
+     *
+     * @param nickName    昵称
+     * @param userIcon    用户图标
+     * @param userEmail   用户邮箱
+     * @param accessToken 唯一标志符
+     */
+    public Message updateProfile(String nickName, Uri userIcon, String userEmail, String accessToken) {
+        String filePath = FileUtils.getRealPathFromURI(WisapeApplication.getInstance().getApplicationContext(), userIcon);
         String iconBase64 = "";
-        if(null != iconUri){
-            iconBase64 = Utils.base64ForImage(iconUri);
+        if (null != filePath) {
+            iconBase64 = FileUtils.base64ForImage(filePath);
         }
-        profile.userIcon = iconBase64;
-        ApiUser api = ApiUser.instance();
-        UserInfo user = api.updateProfile(context, profile, cancelableTag);
 
-        if(Requester.ServerMessage.STATUS_SUCCESS == user.status){
-            Log.e(TAG,user.toString());
-            UserManager.instance().saveUser(context, user);
-            WisapeApplication.getInstance().setUserInfo(user);
-            EventBus.getDefault().post(new UserProfileMessage());
-        }else{
-            EventBus.getDefault().post(new UserProfileErrorMessage());
+        RequestBody formBody = new FormEncodingBuilder()
+                .add(ATTR_NICK_NAME, nickName)
+                .add(ATTR_EMAIL, userEmail)
+                .add(ATTR_ACCESS_TOKEN, accessToken)
+                .add(ATTR_USER_ICON,iconBase64)
+                .build();
+
+
+        Message message = Message.obtain();
+        try {
+            UserInfo userInfo = OkhttpUtil.executePost(HttpUrlConstancts.UPDATE_PROFILE, formBody, UserInfo.class);
+            saveUserToSharePrefrence(new Gson().toJson(userInfo));
+            message.arg1 =  HttpUrlConstancts.STATUS_SUCCESS;
+            message.obj = userInfo;
+        } catch (Exception e) {
+            message.arg1 = HttpUrlConstancts.STATUS_EXCEPTION;
+            message.obj = e.getMessage();
         }
-        return user;
+        return message;
+
+//        RestAdapterUtil.getApi(UserApi.class).updateProfile(nickName, iconBase64, userEmail, accessToken,
+//                new HttpRequestCallBack<ServerBean<UserInfo>>() {
+//                    Event<UserInfo> event = new Event<>(EventType.UPDATE_USER_PROFILE_SUCCES);
+//
+//                    @Override
+//                    public void onSuccess(ServerBean<UserInfo> data) {
+//                        event.setData(data.getData());
+//                        EventBus.getDefault().post(event);
+//                    }
+//
+//                    @Override
+//                    public void onError(String message) {
+//                        event.setEventType(EventType.UPDATE_USER_PROFILE_FAULER);
+//                        event.setEventMsg(message);
+//                        EventBus.getDefault().post(event);
+//                    }
+//                });
     }
 
-    public long obtainNewMessageNum(Context context, Object cancelableTag){
-        /*
-        * 1. 查询本地数据库，统计当前本地数据库未读信息的数量。
-        * */
-        DatabaseHelper helper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
-        long count = 0;
-        try{
-            Dao<UserMessageEntity, Long> msgDao = helper.getDao(UserMessageEntity.class);
-            QueryBuilder<UserMessageEntity, Long> queryBuilder = msgDao.queryBuilder();
-            queryBuilder.where().eq("status", UserMessageEntity.LOCAL_STATUS_NEW);
-            count = msgDao.countOf(queryBuilder.prepare());
-        }catch (SQLException e){
-            Log.e(TAG, "", e);
-            throw new IllegalStateException(e);
-        }finally {
-            OpenHelperManager.releaseHelper();
-        }
-
-        return count;
-    }
-
-    public List<UserMessageEntity> listUserMessagesLocal(Context context){
-        DatabaseHelper helper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
-        SQLiteDatabase db = helper.getWritableDatabase();
-        Dao<UserMessageEntity, Long> msgDao;
-        List<UserMessageEntity> entities;
-
-        db.beginTransaction();
-        try{
-            msgDao = helper.getDao(UserMessageEntity.class);
-            QueryBuilder<UserMessageEntity, Long> builder = msgDao.queryBuilder();
-            builder.orderBy("status", true);
-            entities = builder.query();
-        }catch (SQLException e){
-            Log.e(TAG, "", e);
-            throw new IllegalStateException(e);
-        }finally {
-            db.endTransaction();
-            OpenHelperManager.releaseHelper();
-        }
-        return entities;
-    }
-
-    public List<UserMessageEntity> listUserMessages(Context context, Object cancelableTag){
-        UserMessageInfo[] messages = ApiUser.instance().listUserMessages(context, cancelableTag);
-        int length = (null == messages ? 0 : messages.length);
-        if(0 == length){
-            return null;
-        }
-
-        DatabaseHelper helper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
-        SQLiteDatabase db = helper.getWritableDatabase();
-        Dao<UserMessageEntity, Long> msgDao;
-        db.beginTransaction();
-        try{
-            msgDao = helper.getDao(UserMessageEntity.class);
-            int size;
-            UserMessageEntity entity;
-            List<UserMessageEntity> entities;
-            boolean needCreate;
-            for(UserMessageInfo info : messages){
-                needCreate = true;
-                entities = msgDao.queryForEq("serverId", info.id);
-                size = (null == entities ? 0 : entities.size());
-                if(1 == size){
-                    needCreate = false;
-                    entity = entities.get(0);
-                    entity.message = info.message;
-                    msgDao.update(entity);
-                }else if(1 < size){
-                    DeleteBuilder delete  = msgDao.deleteBuilder();
-                    delete.where().eq("serverId", info.id);
-                    delete.delete();
-                }
-
-                if(needCreate){
-                    msgDao.createOrUpdate(UserMessageEntity.transform(info));
-                }
-            }
-            db.setTransactionSuccessful();
-        }catch (SQLException e){
-            Log.e(TAG, "", e);
-            throw new IllegalStateException(e);
-        }finally {
-            db.endTransaction();
-            OpenHelperManager.releaseHelper();
-        }
-
-        //select
-        db.beginTransaction();
-        List<UserMessageEntity> entities;
-        try{
-            QueryBuilder<UserMessageEntity, Long> builder = msgDao.queryBuilder();
-            builder.orderBy("status", true);
-            entities = builder.query();
-        }catch (SQLException e){
-            Log.e(TAG, "", e);
-            throw new IllegalStateException(e);
-        }finally {
-            db.endTransaction();
-            OpenHelperManager.releaseHelper();
-        }
-        return entities;
-    }
-
-    public UserActivityInfo[] listUserActivities(Context context, Object cancelableTag){
-        ApiUser.AttrActivityInfo attr = new ApiUser.AttrActivityInfo();
-        attr.countryIso = Utils.acquireCountryIso(context);
-        Log.d(TAG, "#listUserActivities CountryIso:" + attr.countryIso);
-
-        return ApiUser.instance().listUserActivities(context, attr, cancelableTag);
-    }
-
-    public List<UserActivityEntity> listUserActivitiesLocal(Context context){
-        DatabaseHelper helper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
-        SQLiteDatabase db = helper.getWritableDatabase();
-        Dao<UserActivityEntity, Long> activityDao;
-
-        db.beginTransaction();
-        List<UserActivityEntity> activities;
-        try{
-            activityDao = helper.getDao(UserActivityEntity.class);
-            QueryBuilder<UserActivityEntity, Long> builder = activityDao.queryBuilder();
-            builder.orderBy("status", true);
-            activities = builder.query();
-        }catch (SQLException e){
-            Log.e(TAG, "", e);
-            throw new IllegalStateException(e);
-        }finally {
-            db.endTransaction();
-            OpenHelperManager.releaseHelper();
-        }
-        return activities;
-    }
+//    public UserInfo updateProfile(Context context, ApiUser.AttrUserProfile profile, Uri iconUri, Object cancelableTag){
+//        String filePath = FileUtils.getRealPathFromURI(WisapeApplication.getInstance().getApplicationContext(),iconUri);
+//
+//        String iconBase64 = "";
+//        if(null != filePath){
+//            iconBase64 = FileUtils.base64ForImage(filePath);
+//        }
+//        profile.userIcon = iconBase64;
+//        ApiUser api = ApiUser.instance();
+//        UserInfo user = api.updateProfile(context, profile, cancelableTag);
+//
+//        if(Requester.ServerMessage.STATUS_SUCCESS == user.status){
+//            Log.e(TAG, user.toString());
+//            UserManager.instance().saveUser(context, user);
+//            WisapeApplication.getInstance().setUserInfo(user);
+////            EventBus.getDefault().post(new UserProfileMessage());
+//        }else{
+////            EventBus.getDefault().post(new UserProfileErrorMessage());
+//        }
+//        return user;
+//    }
 }

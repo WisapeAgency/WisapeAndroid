@@ -5,15 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Message;
-import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -26,8 +25,6 @@ import com.wisape.android.fragment.PhotoWallsFragment;
 import com.wisape.android.model.AppPhotoBucketInfo;
 import com.wisape.android.model.AppPhotoInfo;
 
-import java.io.File;
-import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,52 +49,46 @@ public class PhotoSelectorActivity extends AppCompatActivity implements LoaderMa
     public static final String EXTRA_BUCKET_ID = "extra_bucket_id";
     public static final String EXTRA_BUCKET_LIST = "extra_bucket_list";
     public static final String EXTRA_IMAGE_URI = "extra_image_uri";
+
     public static final int REQUEST_CODE_PHOTO = 10;
 
 
-    public static void launch(Activity activity, int requestCode) {
-        activity.startActivityForResult(getIntent(activity.getApplicationContext()), requestCode);
+    public static void launch(Activity activity,int requestCode){
+        Intent intent = new Intent(activity.getApplicationContext(),PhotoSelectorActivity.class);
+        activity.startActivityForResult(intent,requestCode);
     }
 
-    public static void launch(Fragment fragment, int requestCode) {
-        fragment.startActivityForResult(getIntent(fragment.getActivity().getApplicationContext()), requestCode);
-    }
-
-    public static Intent getIntent(Context context){
-        return new Intent(context, PhotoSelectorActivity.class);
-    }
-
-    public static Uri buildCropUri(Context context, int type){
-        if(!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())){
-            throw new IllegalStateException("We can not found External Storage.");
-        }
-
-        File parentDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        final String header = String.format("_crop_%1$s", Integer.toString(type));
-        final String parentPath = parentDir.getPath();
-        String[] children = parentDir.list(new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String filename) {
-                return dir.getPath().equals(parentPath) && filename.startsWith(header);
-            }
-        });
-
-        int count = (null == children ? 0 : children.length);
-        if(0 < count){
-            File child;
-            for (String path : children){
-                child = new File(path);
-                if(child.exists() && !child.delete()){
-                    child.deleteOnExit();
-                }
-            }
-        }
-        String fileName = String.format("%1$s_%2$s.jpeg", header, Long.toString(SystemClock.uptimeMillis()));
-        File cropPhoto = new File(parentDir,  fileName);
-        Uri uri = Uri.fromFile(cropPhoto);
-        Log.d(TAG, "#buildCropUri uri:" + uri);
-        return uri;
-    }
+//    public static Uri buildCropUri(Context context, int type){
+//        if(!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())){
+//            throw new IllegalStateException("We can not found External Storage.");
+//        }
+//
+//        File parentDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+//        final String header = String.format("_crop_%1$s", Integer.toString(type));
+//        final String parentPath = parentDir.getPath();
+//        String[] children = parentDir.list(new FilenameFilter() {
+//            @Override
+//            public boolean accept(File dir, String filename) {
+//                return dir.getPath().equals(parentPath) && filename.startsWith(header);
+//            }
+//        });
+//
+//        int count = (null == children ? 0 : children.length);
+//        if(0 < count){
+//            File child;
+//            for (String path : children){
+//                child = new File(path);
+//                if(child.exists() && !child.delete()){
+//                    child.deleteOnExit();
+//                }
+//            }
+//        }
+//        String fileName = String.format("%1$s_%2$s.jpeg", header, Long.toString(SystemClock.uptimeMillis()));
+//        File cropPhoto = new File(parentDir,  fileName);
+//        Uri uri = Uri.fromFile(cropPhoto);
+//        Log.d(TAG, "#buildCropUri uri:" + uri);
+//        return uri;
+//    }
 
     private long bucketId;
 
@@ -154,9 +145,9 @@ public class PhotoSelectorActivity extends AppCompatActivity implements LoaderMa
 
     @Override
     public void onPhotoSelected(Uri uri) {
-        Intent data = new Intent();
-        data.putExtra(EXTRA_IMAGE_URI, uri);
-        setResult(RESULT_OK, data);
+        Intent intent = new Intent();
+        intent.putExtra(EXTRA_IMAGE_URI,uri);
+        setResult(RESULT_OK,intent);
         finish();
     }
 
@@ -164,7 +155,10 @@ public class PhotoSelectorActivity extends AppCompatActivity implements LoaderMa
     public void onNewBucketSelected(AppPhotoBucketInfo bucket) {
         bucketId = bucket.id;
         loadPhotos(bucketId);
-        getSupportActionBar().setTitle(bucket.displayName);
+        ActionBar actionBar = getSupportActionBar();
+        if(null != actionBar){
+            actionBar.setTitle(bucket.displayName);
+        }
         getSupportFragmentManager().popBackStack();
     }
 

@@ -9,12 +9,12 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSONObject;
-import com.wisape.android.msg.ActiveMessage;
-import com.wisape.android.msg.OperateMessage;
-import com.wisape.android.msg.SystemMessage;
+import com.wisape.android.activity.SignUpActivity;
+import com.wisape.android.event.Event;
 import com.wisape.android.R;
 import com.wisape.android.activity.MainActivity;
 import com.wisape.android.activity.MessageCenterDetailActivity;
+import com.wisape.android.event.EventType;
 
 import de.greenrobot.event.EventBus;
 
@@ -25,6 +25,11 @@ import de.greenrobot.event.EventBus;
 public class MessageCenterReceiver extends BroadcastReceiver{
 
     private static final String TAG = MessageCenterReceiver.class.getSimpleName();
+
+    /**
+     *被挤下线
+     */
+    private static final int LOGIN_OUT_BY_OHTER = 0;
 
     /**
      * 运营消息
@@ -73,25 +78,30 @@ public class MessageCenterReceiver extends BroadcastReceiver{
         if(null != context && MESSAGE_RECEIVER_ACTION_OPERATE.equals(intent.getAction())){
             JSONObject jsonObject = JSONObject.parseObject(intent.getExtras().getString(DATA_KEY));
             Log.e(TAG, "#messageReciver:" + jsonObject.toString());
+            int typeKey = jsonObject.getInteger(MESSAGE_TYPE_KEY);
+
+            if(LOGIN_OUT_BY_OHTER == typeKey){
+                SignUpActivity.launch(context);
+            }
 
             //运营消息
-            if(OPERATION_MESSAGE == jsonObject.getInteger(MESSAGE_TYPE_KEY)){
+            if(OPERATION_MESSAGE == typeKey){
                 Log.e(TAG,"发送运营消息");
-                EventBus.getDefault().post(new OperateMessage());
+                EventBus.getDefault().post(new Event(EventType.UPDATE_MESSAGE_COUNT));
                 sendNotifacation(context, jsonObject, OPERATION_MESSAGE);
             }
 
             //活动中心消息
-            if (ACTIVE_MESSAGE == jsonObject.getInteger(MESSAGE_TYPE_KEY)){
+            if (ACTIVE_MESSAGE == typeKey){
                 Log.e(TAG,"发送活动中心消息");
-                EventBus.getDefault().post(new ActiveMessage());
+                EventBus.getDefault().post(new Event(EventType.UPDATE_ACTIVE_COUNT));
                 sendNotifacation(context, jsonObject, ACTIVE_MESSAGE);
             }
 
             //系统消息
-            if(SYSTEM_MESSAGE == jsonObject.getInteger(MESSAGE_TYPE_KEY)){
-                Log.e(TAG,"发送系统消息");
-                EventBus.getDefault().post(new SystemMessage());
+            if(SYSTEM_MESSAGE == typeKey){
+                Log.e(TAG, "发送系统消息");
+                EventBus.getDefault().post(new Event(EventType.UPDATE_MESSAGE_COUNT));
                 sendNotifacation(context,jsonObject, SYSTEM_MESSAGE);
             }
         }
@@ -126,6 +136,9 @@ public class MessageCenterReceiver extends BroadcastReceiver{
         }
         if(ACTIVE_MESSAGE == messageTeype){
              intent  = new Intent(context, MainActivity.class);
+        }
+        if(LOGIN_OUT_BY_OHTER == messageTeype){
+            intent = new Intent(context, SignUpActivity.class);
         }
         return intent;
     }

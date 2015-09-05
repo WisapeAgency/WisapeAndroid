@@ -5,18 +5,13 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 
 import com.freshdesk.mobihelp.Mobihelp;
 import com.freshdesk.mobihelp.MobihelpConfig;
-import com.parse.Parse;
-import com.parse.ParseInstallation;
-import com.parse.PushService;
 import com.wisape.android.R;
 import com.wisape.android.WisapeApplication;
-import com.wisape.android.model.UserInfo;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -25,42 +20,23 @@ import butterknife.InjectView;
  * @author Duke
  */
 public class MainActivity extends BaseActivity implements DrawerLayout.DrawerListener {
+
     private static final String TAG = MainActivity.class.getSimpleName();
     public static final String EXTRA_USER_INFO = "_user_info";
 
     @InjectView(R.id.drawer)
     DrawerLayout drawer;
 
-
-    public static void launch(Activity activity, UserInfo user, int requestCode) {
+    public static void launch(Activity activity) {
         Intent intent = new Intent(activity.getApplicationContext(), MainActivity.class);
-        intent.putExtra(EXTRA_USER_INFO, user);
-        if (-1 == requestCode) {
-            activity.startActivity(intent);
-            activity.finish();
-        } else {
-            activity.startActivityForResult(intent, requestCode);
-        }
+        activity.startActivity(intent);
+        activity.finish();
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Bundle args;
-        if (null == savedInstanceState) {
-            args = getIntent().getExtras();
-        } else {
-            args = savedInstanceState;
-        }
-        UserInfo user = args.getParcelable(EXTRA_USER_INFO);
-        if (null == user && 0 < user.user_id) {
-            SignUpActivity.launch(this, -1);
-            return;
-        }
-        WisapeApplication.getInstance().setUserInfo(user);
-        Mobihelp.init(this, new MobihelpConfig(getString(R.string.freshdesk_domain), getString(R.string.freshdesk_key), getString(R.string.freshdesk_secret)));
-
-        Log.d(TAG, "#onCreate this:" + hashCode() + ", user:" + user.toString());
+        Mobihelp.init(this, new MobihelpConfig("https://wisapeagency.freshdesk.com", "wisape-1-793b05d4f430fb3889880016a735ed46", "b27a8d9aa40cb8c9e925ae964f6025c4c56c7eb6"));
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
         initStyle();
@@ -68,11 +44,11 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
     }
 
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelable(EXTRA_USER_INFO, WisapeApplication.getInstance().getUserInfo());
-    }
+//    @Override
+//    protected void onSaveInstanceState(Bundle outState) {
+//        super.onSaveInstanceState(outState);
+//        outState.putParcelable(EXTRA_USER_INFO, WisapeApplication.getInstance().getUserInfo());
+//    }
 
     private void initStyle() {
         drawer.setScrimColor(Color.TRANSPARENT);

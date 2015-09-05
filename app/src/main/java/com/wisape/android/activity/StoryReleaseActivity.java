@@ -8,18 +8,16 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.v7.widget.AppCompatEditText;
-import android.widget.Toast;
+import android.widget.ImageView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
+import com.squareup.picasso.Picasso;
 import com.wisape.android.R;
 import com.wisape.android.common.StoryManager;
 import com.wisape.android.model.StorySettingsInfo;
-import com.wisape.android.util.FrescoFactory;
+import com.wisape.android.view.CircleTransform;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -49,17 +47,7 @@ public class StoryReleaseActivity extends BaseActivity{
     public static final int CHANNEL_SMS = 0x0b;
     public static final int CHANNEL_MORE = 0x0c;
 
-    public static final String PACKAGE_FACEBOOK = "com.facebook.katana";
-    public static final String PACKAGE_MESSAGE = "com.twitter.android";
-    public static final String PACKAGE_TWITTER = "com.twitter.android";
-    public static final String PACKAGE_LINKEDIN = "com.facebook.katana";
-    public static final String PACKAGE_WECHAT = "com.facebook.katana";
-    public static final String PACKAGE_MOMENTS = "com.facebook.katana";
-    public static final String PACKAGE_GOOGLE_PLUS = "com.facebook.katana";
-    public static final String PACKAGE_COPY_URL = "com.facebook.katana";
-    public static final String PACKAGE_QR_CODE = "com.facebook.katana";
-    public static final String PACKAGE_EMAIL = "com.facebook.katana";
-    public static final String PACKAGE_SMS = "com.facebook.katana";
+    public static final String PACKAGE_FACEBOOK = "";
 
     public static void launch(Activity activity, int requestCode){
         activity.startActivityForResult(getIntent(activity), requestCode);
@@ -75,9 +63,7 @@ public class StoryReleaseActivity extends BaseActivity{
     @InjectView(R.id.story_settings_desc)
     protected AppCompatEditText storyDescEdit;
     @InjectView(R.id.story_settings_cover_sdv)
-    protected SimpleDraweeView storyCoverView;
-
-    private Map<Integer, String> shareMap = new HashMap<>();
+    protected ImageView storyCoverView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,21 +71,6 @@ public class StoryReleaseActivity extends BaseActivity{
         setContentView(R.layout.activity_story_release);
         ButterKnife.inject(this);
         startLoad(WHAT_LOAD_STORY_SETTINGS, null);
-        initShareMap();
-    }
-
-    private void initShareMap(){
-        shareMap.put(CHANNEL_FACEBOOK,PACKAGE_FACEBOOK);
-        shareMap.put(CHANNEL_MESSENGER,PACKAGE_MESSAGE);
-        shareMap.put(CHANNEL_TWITTER,PACKAGE_TWITTER);
-        shareMap.put(CHANNEL_LINKEDIN,PACKAGE_LINKEDIN);
-        shareMap.put(CHANNEL_WECHAT,PACKAGE_WECHAT);
-        shareMap.put(CHANNEL_MOMENTS,PACKAGE_MOMENTS);
-        shareMap.put(CHANNEL_GOOGLE_PLUS,PACKAGE_GOOGLE_PLUS);
-        shareMap.put(CHANNEL_COPY_URL,PACKAGE_COPY_URL);
-        shareMap.put(CHANNEL_QR_CODE,PACKAGE_QR_CODE);
-        shareMap.put(CHANNEL_EMAIL,PACKAGE_EMAIL);
-        shareMap.put(CHANNEL_SMS,PACKAGE_SMS);
     }
 
     @Override
@@ -139,7 +110,11 @@ public class StoryReleaseActivity extends BaseActivity{
                     storyDescEdit.setText(settings.defaultDesc);
                     Uri cover = settings.defaultCover;
                     if(null != cover){
-                        FrescoFactory.bindImageFromUri(storyCoverView, cover);
+                        Picasso.with(this).load(cover)
+                                .resize(80, 80)
+                                .transform(new CircleTransform())
+                                .centerCrop()
+                                .into(storyCoverView);
                     }
                 }
                 break;
@@ -162,12 +137,15 @@ public class StoryReleaseActivity extends BaseActivity{
         File template = new File(StoryManager.getStoryTemplateDirectory(),"mingpian01");
         File thumb = new File(template,"thumb.jpg");
         String msg = "推荐给大家，http://www.wisape.com/demo/playstory/index.html";
-
-        String app_package = shareMap.get(channel);
-        if ("".equals(app_package)){
-            shareMessage("标题", "消息标题", msg, thumb);
-        } else {
-            shareMessage(app_package,"标题", "消息标题", msg, thumb);
+        switch (channel){
+            case CHANNEL_MORE:{
+                shareMessage("标题", "消息标题", msg, thumb);
+                break;
+            }
+            default:{
+                shareMessage("com.sina.weibo","标题", "消息标题", msg, thumb);
+                break;
+            }
         }
     }
 
@@ -208,10 +186,8 @@ public class StoryReleaseActivity extends BaseActivity{
                     break;
                 }
             }
-            if (!found){
-                Toast.makeText(this,"未安装此应用!",Toast.LENGTH_LONG).show();
+            if (!found)
                 return;
-            }
             startActivity(Intent.createChooser(share, "Select"));
         }
     }

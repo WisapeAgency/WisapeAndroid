@@ -1,31 +1,34 @@
 package com.wisape.android.fragment;
 
-import android.graphics.PointF;
+import android.app.LoaderManager;
+import android.content.AsyncTaskLoader;
+import android.content.Context;
+import android.content.Intent;
+import android.content.Loader;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.freshdesk.mobihelp.Mobihelp;
-import com.wisape.android.msg.Message;
-import com.wisape.android.msg.OperateMessage;
-import com.wisape.android.msg.SystemMessage;
-import com.wisape.android.msg.UserProfileErrorMessage;
-import com.wisape.android.msg.UserProfileMessage;
+import com.squareup.picasso.Picasso;
+import com.wisape.android.activity.BaseActivity;
+import com.wisape.android.activity.SignUpActivity;
+import com.wisape.android.event.Event;
+import com.wisape.android.event.EventType;
+import com.wisape.android.logic.UserLogic;
 import com.wisape.android.R;
 import com.wisape.android.WisapeApplication;
 import com.wisape.android.activity.AboutActivity;
-import com.wisape.android.activity.BaseActivity;
 import com.wisape.android.activity.MessageCenterActivity;
 import com.wisape.android.activity.UserProfileActivity;
-import com.wisape.android.common.UserManager;
 import com.wisape.android.model.UserInfo;
 import com.wisape.android.util.EnvironmentUtils;
 import com.wisape.android.util.FileUtils;
-import com.wisape.android.util.FrescoFactory;
+import com.wisape.android.view.CircleTransform;
 import com.wisape.android.widget.ComfirmDialog;
 
 import java.io.File;
@@ -38,11 +41,11 @@ import de.greenrobot.event.EventBus;
 /**
  * @author Duke
  */
-public class MainMenuFragment extends AbsFragment{
+public class MainMenuFragment extends AbsFragment {
     private static final String TAG = MainMenuFragment.class.getSimpleName();
 
     @InjectView(R.id.sdv_user_head_image)
-    SimpleDraweeView sdvUserHeadImage;
+    ImageView userHeadImage;
     @InjectView(R.id.tv_name)
     TextView tvName;
     @InjectView(R.id.tv_mail)
@@ -53,21 +56,26 @@ public class MainMenuFragment extends AbsFragment{
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_main_menu, null, false);
+        View rootView = inflater.inflate(R.layout.fragment_main_menu, container, false);
         ButterKnife.inject(this, rootView);
         EventBus.getDefault().register(this);
         setUserInfodata();
         return rootView;
     }
 
-    private void setUserInfodata(){
-        tvName.setText(WisapeApplication.getInstance().getUserInfo().nick_name);
-        tvMail.setText(WisapeApplication.getInstance().getUserInfo().user_email);
-        String iconUrl = WisapeApplication.getInstance().getUserInfo().user_ico_n;
-        if(null != iconUrl && 0 < iconUrl.length()){
-            Log.e(TAG,"iconUrl:" + iconUrl);
-            sdvUserHeadImage.getHierarchy().setActualImageFocusPoint(new PointF(0.5f, 0.5f));
-            FrescoFactory.bindImageFromUri(sdvUserHeadImage, iconUrl);
+    /**
+     * 设置用户信息
+     */
+    private void setUserInfodata() {
+        tvName.setText(wisapeApplication.getUserInfo().nick_name);
+        tvMail.setText(wisapeApplication.getUserInfo().user_email);
+        String iconUrl = wisapeApplication.getUserInfo().user_ico_n;
+        if (null != iconUrl && 0 < iconUrl.length()) {
+            Picasso.with(getActivity()).load(iconUrl)
+                    .resize(150, 150)
+                    .transform(new CircleTransform())
+                    .centerCrop()
+                    .into(userHeadImage);
         }
     }
 
@@ -114,7 +122,7 @@ public class MainMenuFragment extends AbsFragment{
     }
 
     /**
-     * 清楚缓存
+     * 清除缓存
      */
     private void clearCache() {
         Mobihelp.clearUserData(getActivity());
@@ -131,8 +139,9 @@ public class MainMenuFragment extends AbsFragment{
             @Override
             public void onConfirmClicked() {
                 clearCache();
-                UserManager.instance().clearUser(getActivity());
-                android.os.Process.killProcess(android.os.Process.myPid());
+                UserLogic.instance().clearUserInfo();
+                SignUpActivity.launch(getActivity());
+                getActivity().finish();
             }
         });
     }
@@ -150,33 +159,37 @@ public class MainMenuFragment extends AbsFragment{
         clearMsgCount();
     }
 
-    public interface UserCallback {
-        UserInfo getUserInfo();
-    }
 
-    public void onEventMainThread(Message message) {
-        if(message instanceof OperateMessage || message instanceof SystemMessage){
+    @SuppressWarnings("unused")
+    public void onEventMainThread(Event event) {
+        if (EventType.UPDATE_MESSAGE_COUNT.equals(event.getEventType())) {
             updataMsgCount();
         }
-        if(message instanceof UserProfileMessage){
-            ((BaseActivity)getActivity()).showToast("信息修改成功!");
-            setUserInfodata();
-        }
-        if(message instanceof UserProfileErrorMessage){
-            ((BaseActivity)getActivity()).showToast("信息修改失败!");
-        }
     }
 
+    /**
+     * 更新消息数量
+     */
     private void updataMsgCount() {
         Log.e(TAG, "更新消息数量");
-        if(tvMsgAccount.getVisibility() == View.GONE){
+        if (tvMsgAccount.getVisibility() == View.GONE) {
             tvMsgAccount.setVisibility(View.VISIBLE);
         }
         tvMsgAccount.setText(Integer.parseInt(tvMsgAccount.getText().toString()) + 1 + "");
     }
 
-    private void clearMsgCount(){
+    /**
+     * 清除消息数量
+     */
+    private void clearMsgCount() {
         tvMsgAccount.setText("0");
         tvMsgAccount.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (BaseActivity.RESULT_OK == resultCode) {
+            setUserInfodata();
+        }
     }
 }

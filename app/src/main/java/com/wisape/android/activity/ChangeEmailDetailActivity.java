@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.wisape.android.msg.UserProfileMessage;
 import com.wisape.android.R;
 import com.wisape.android.util.Utils;
 import com.wisape.android.widget.SignUpEditText;
@@ -12,7 +11,6 @@ import com.wisape.android.widget.SignUpEditText;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
 
 /**
  * 修改邮箱
@@ -20,10 +18,12 @@ import de.greenrobot.event.EventBus;
  */
 public class ChangeEmailDetailActivity extends BaseActivity{
 
-    private static final String USER_EMAIL = "email";
+    public static final int REQEUST_CODE_CHANGE_EMAIL_DETAIL = 0x05;
+    public static final String EXTRA_EMAIL_ACCOUNT = "email_account";
 
-    public static void launch(Activity activity){
-        activity.startActivity(new Intent(activity.getApplicationContext(), ChangeEmailDetailActivity.class));
+    public static void launch(Activity activity,int requestCode){
+        Intent intent = new Intent(activity.getApplicationContext(), ChangeEmailDetailActivity.class);
+        activity.startActivityForResult(intent, requestCode);
     }
 
     @InjectView(R.id.add_emai_edit)
@@ -39,13 +39,14 @@ public class ChangeEmailDetailActivity extends BaseActivity{
     }
 
     @OnClick(R.id.add_emai_btn)
+    @SuppressWarnings("unused")
     public void onChangeEmailOnclicked(){
         String email = editEmail.getText().toString();
         if(verifyEMail(email)){
-            UserProfileMessage userProfileMessage = new UserProfileMessage();
-            userProfileMessage.setUserEmail(email);
-            EventBus.getDefault().post(userProfileMessage);
-            ChangeEmailDetailActivity.this.finish();
+            Intent intent = new Intent();
+            intent.putExtra(EXTRA_EMAIL_ACCOUNT, email);
+            setResult(RESULT_OK, intent);
+            finish();
         }
     }
 
@@ -62,5 +63,10 @@ public class ChangeEmailDetailActivity extends BaseActivity{
             return false;
         }
         return true;
+    }
+
+    @Override
+    protected boolean onBackNavigation() {
+        return super.onBackNavigation();
     }
 }

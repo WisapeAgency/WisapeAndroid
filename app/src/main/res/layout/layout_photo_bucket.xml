@@ -4,16 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.facebook.drawee.view.SimpleDraweeView
+    <ImageView
         android:id="@+id/imgv_bucket_thumb"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        app:failureImage="@mipmap/ic_launcher"
-        app:placeholderImage="@mipmap/ic_launcher"
-        app:actualImageScaleType="center"/>
+        />
 
     <com.wisape.android.view.TextView
         android:id="@+id/txtv_bucket_title"
@@ -33,7 +31,7 @@
         android:layout_toEndOf="@+id/imgv_bucket_thumb"
         android:layout_toRightOf="@+id/imgv_bucket_thumb"/>
 
-    <com.facebook.drawee.view.SimpleDraweeView
+    <ImageView
         android:id="@+id/imgv_bucket_selected"
         android:layout_width="20dp"
         android:layout_height="20dp"
@@ -41,7 +39,5 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:visibility="gone"
-        app:actualImageScaleType="center"
-        app:failureImage="@drawable/icon_selected_flag"
-        app:placeholderImage="@drawable/icon_selected_flag"/>
+       />
 </RelativeLayout>

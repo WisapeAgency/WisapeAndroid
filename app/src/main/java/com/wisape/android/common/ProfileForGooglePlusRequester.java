@@ -7,6 +7,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.RetryPolicy;
 import com.android.volley.request.StringRequest;
 import com.android.volley.toolbox.RequestFuture;
+import com.wisape.android.activity.SignUpActivity;
 import com.wisape.android.network.Requester;
 import com.wisape.android.network.VolleyHelper;
 
@@ -46,7 +47,7 @@ public class ProfileForGooglePlusRequester implements ProfileRequester<ProfileRe
             Log.d(TAG, "#request data:" + data);
             JSONObject jsonObj = new JSONObject(data);
 
-            profile = new ProfileInfo(UserManager.SIGN_UP_WITH_GOOGLE_PLUS);
+            profile = new ProfileInfo(SignUpActivity.SIGN_UP_WITH_GOOGLE_PLUS);
             profile.uniqueStr = jsonObj.optString("id");
             profile.nickName = jsonObj.optString("name");
             profile.email = jsonObj.optString("email");

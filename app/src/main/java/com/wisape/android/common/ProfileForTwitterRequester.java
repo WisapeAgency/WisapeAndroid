@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.oauth.android.OAuthParams;
 import com.oauth.android.OAuthRequestor;
+import com.wisape.android.activity.SignUpActivity;
 import com.wisape.android.common.ProfileForTwitterRequester.TwitterParams;
 
 import org.json.JSONObject;
@@ -42,7 +43,7 @@ public class ProfileForTwitterRequester implements ProfileRequester<TwitterParam
             String data = OAuthRequestor.get(oAuthParams, params.token, params.screen, URL_PROFILE, map);
             Log.d(TAG, "#request data:" + data);
             JSONObject jsonObj = new JSONObject(data);
-            profile = new ProfileInfo(UserManager.SIGN_UP_WITH_TWITTER);
+            profile = new ProfileInfo(SignUpActivity.SIGN_UP_WITH_TWITTER);
             profile.uniqueStr = jsonObj.optString("id");
             profile.nickName = jsonObj.optString("name");
             profile.icon = jsonObj.optString("profile_image_url");

@@ -1,5 +1,6 @@
 package com.wisape.android.widget;
 
+import android.content.Context;
 import android.graphics.PointF;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
@@ -7,13 +8,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
-import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.interfaces.DraweeController;
-import com.facebook.drawee.view.SimpleDraweeView;
-import com.facebook.imagepipeline.common.ResizeOptions;
-import com.facebook.imagepipeline.request.ImageRequest;
-import com.facebook.imagepipeline.request.ImageRequestBuilder;
+import com.squareup.picasso.Picasso;
 import com.wisape.android.R;
 import com.wisape.android.model.AppPhotoBucketInfo;
 import com.wisape.android.content.PhotoProvider;
@@ -24,32 +21,35 @@ import java.util.List;
 /**
  * Created by LeiGuoting on 15/6/15.
  */
-public class PhotoBucketsAdapter extends RecyclerView.Adapter<RecyclerHolder> implements View.OnClickListener{
+public class PhotoBucketsAdapter extends RecyclerView.Adapter<RecyclerHolder> implements View.OnClickListener {
     private static final String TAG = PhotoBucketsAdapter.class.getSimpleName();
     private List<AppPhotoBucketInfo> buckets;
     private BucketAdapterListener adapterListener;
+    private Context context;
 
-    public PhotoBucketsAdapter(){}
+    public PhotoBucketsAdapter() {
+    }
 
-    public PhotoBucketsAdapter(List<AppPhotoBucketInfo> buckets){
+    public PhotoBucketsAdapter(List<AppPhotoBucketInfo> buckets) {
         this.buckets = buckets;
     }
 
-    public void setBucketAdapterListener(BucketAdapterListener adapterListener){
+    public void setBucketAdapterListener(BucketAdapterListener adapterListener) {
         this.adapterListener = adapterListener;
     }
 
-    public void update(List<AppPhotoBucketInfo> buckets){
+    public void update(List<AppPhotoBucketInfo> buckets) {
         List<AppPhotoBucketInfo> oldBuckets = this.buckets;
         this.buckets = buckets;
         notifyDataSetChanged();
-        if(null != oldBuckets){
+        if (null != oldBuckets) {
             oldBuckets.clear();
         }
     }
 
     @Override
     public RecyclerHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        context = parent.getContext();
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_photo_bucket, parent, false);
         return new RecyclerHolder(view);
     }
@@ -64,36 +64,13 @@ public class PhotoBucketsAdapter extends RecyclerView.Adapter<RecyclerHolder> im
         final AppPhotoBucketInfo bucket = buckets.get(position);
         titleTxtv.setText(bucket.displayName);
         messageTxtv.setText(Integer.toString(bucket.childrenCount));
-
-        final SimpleDraweeView thumb = (SimpleDraweeView) itemView.findViewById(R.id.imgv_bucket_thumb);
+        final ImageView thumb = (ImageView) itemView.findViewById(R.id.imgv_bucket_thumb);
         final ViewGroup.LayoutParams layoutParams = thumb.getLayoutParams();
         final int itemWidth = layoutParams.width;
         final int itemHeight = layoutParams.height;
         Uri uri = PhotoProvider.getBucketThumbUri(bucket.id);
-        ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
-                .setResizeOptions(new ResizeOptions(itemWidth, itemHeight))
-                .setProgressiveRenderingEnabled(true)
-                .setLocalThumbnailPreviewsEnabled(true)
-                .setPostprocessor(new PngResizePostprocessor(itemWidth, itemHeight))
-                .setAutoRotateEnabled(true)
-                .build();
 
-        DraweeController controller = Fresco.newDraweeControllerBuilder()
-                .setOldController(thumb.getController())
-                .setImageRequest(request)
-                .setAutoPlayAnimations(false)
-                .build();
-        thumb.getHierarchy().setActualImageFocusPoint(new PointF(0.5f, 0.5f));
-        thumb.setController(controller);
-
-        final SimpleDraweeView selectedView = (SimpleDraweeView) itemView.findViewById(R.id.imgv_bucket_selected);
-        boolean selected = bucket.isSelected();
-        if(selected){
-            bucket.setSelected(false);
-            selectedView.setVisibility(View.VISIBLE);
-        }else if(View.VISIBLE == selectedView.getVisibility()){
-            selectedView.setVisibility(View.GONE);
-        }
+        Picasso.with(context).load(uri).centerCrop().resize(itemWidth,itemHeight).into(thumb);
     }
 
     @Override
@@ -103,7 +80,7 @@ public class PhotoBucketsAdapter extends RecyclerView.Adapter<RecyclerHolder> im
 
     @Override
     public void onClick(View view) {
-        if(null == adapterListener){
+        if (null == adapterListener) {
             return;
         }
 
@@ -115,7 +92,7 @@ public class PhotoBucketsAdapter extends RecyclerView.Adapter<RecyclerHolder> im
 
         AppPhotoBucketInfo copyBucket;
         try {
-            copyBucket = (AppPhotoBucketInfo)bucket.clone();
+            copyBucket = (AppPhotoBucketInfo) bucket.clone();
         } catch (CloneNotSupportedException e) {
             Log.e(TAG, "", e);
             copyBucket = bucket;
@@ -123,20 +100,21 @@ public class PhotoBucketsAdapter extends RecyclerView.Adapter<RecyclerHolder> im
         adapterListener.onBucketSelected(copyBucket);
     }
 
-    public void destroy(){
-        if(null != buckets){
+    public void destroy() {
+        if (null != buckets) {
             buckets.clear();
             buckets = null;
         }
         adapterListener = null;
     }
 
-    public interface AppBucketItemData{
+    public interface AppBucketItemData {
         boolean isSelected();
+
         void setSelected(boolean selected);
     }
 
-    public interface BucketAdapterListener{
+    public interface BucketAdapterListener {
         void onBucketSelected(AppPhotoBucketInfo bucket);
     }
 }
