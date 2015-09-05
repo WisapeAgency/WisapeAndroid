@@ -126,7 +126,7 @@ public class UserProfileActivity extends BaseActivity {
         args.putString(EXTRAS_NAME, newName);
         args.putString(EXTRAS_EMAIL, newEmail);
         args.putParcelable(EXTRAS_ICON_URI, userIconUri);
-        startLoad(LOADER_WHAT_PROFILE_UPDATE, args);
+        startLoadWithProgress(LOADER_WHAT_PROFILE_UPDATE, args);
     }
 
     @Override

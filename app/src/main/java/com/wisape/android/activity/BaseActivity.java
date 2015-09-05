@@ -69,11 +69,12 @@ public abstract class BaseActivity extends VolleyActivity{
         }
     }
 
-    @Override
-    protected void startLoad(int what, Bundle args) {
+
+    protected void startLoadWithProgress(int what,Bundle args){
         showProgressDialog(R.string.loading_user_story);
-        super.startLoad(what, args);
+        startLoad(what,args);
     }
+
 
     @Override
     protected void onLoadCompleted(Message data) {

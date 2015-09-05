@@ -44,7 +44,7 @@ public class StorySettingsPlugin extends AbsPlugin {
         JSONObject jsonObject = new JSONObject();
 
         StoryMusicEntity storyMusicEntity = storySettingsInfo.defaultMusic;
-        Uri uri = storySettingsInfo.defaultCover;
+        Uri uri = Uri.parse(storySettingsInfo.defaultCover);
 
         if(storyMusicEntity == null){
             jsonObject.put("music","");

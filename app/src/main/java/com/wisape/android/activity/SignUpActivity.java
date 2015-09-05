@@ -102,7 +102,7 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
             Bundle args = new Bundle();
             args.putString(ARG_USER_EMIAL, email);
             args.putString(ARG_USER_PWD, password);
-            startLoad(LOADER_SIGN_UP, args);
+            startLoadWithProgress(LOADER_SIGN_UP, args);
         }
     }
 

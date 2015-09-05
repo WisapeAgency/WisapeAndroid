@@ -72,7 +72,7 @@ public class MessageCenterActivity extends BaseActivity {
 
         Bundle args = new Bundle();
         args.putLong(EXTRAS_USER_ID, wisapeApplication.getUserInfo().user_id);
-        startLoad(LOADER_MESSAGE_LIST, args);
+        startLoadWithProgress(LOADER_MESSAGE_LIST, args);
 
     }
 

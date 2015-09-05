@@ -108,7 +108,7 @@ public class StoryReleaseActivity extends BaseActivity{
                     StorySettingsInfo settings = (StorySettingsInfo)data.obj;
                     storyNameEdit.setText(settings.defaultName);
                     storyDescEdit.setText(settings.defaultDesc);
-                    Uri cover = settings.defaultCover;
+                    Uri cover = Uri.parse(settings.defaultCover);
                     if(null != cover){
                         Picasso.with(this).load(cover)
                                 .resize(80, 80)

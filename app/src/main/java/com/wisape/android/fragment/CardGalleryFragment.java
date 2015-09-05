@@ -87,7 +87,7 @@ public class CardGalleryFragment extends AbsFragment {
 
         Bundle bundle = new Bundle();
         bundle.putString(EXTRAS_ACCESS_TOKEN,wisapeApplication.getUserInfo().access_token);
-        startLoad(LOADER_STORY, bundle);
+        startLoadWithProgress(LOADER_STORY, bundle);
     }
 
     @Override

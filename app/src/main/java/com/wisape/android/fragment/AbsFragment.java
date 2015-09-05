@@ -171,7 +171,6 @@ public abstract class AbsFragment extends Fragment implements LoaderManager.Load
      * @param args can was null
      */
     protected void startLoad(int what, Bundle args){
-        showProgressDialog(R.string.progress_loading_data);
         Bundle inputArgs;
         if(null == args){
             inputArgs = new Bundle();
@@ -180,5 +179,10 @@ public abstract class AbsFragment extends Fragment implements LoaderManager.Load
         }
         inputArgs.putInt(EXTRA_WHAT, what);
         getLoaderManager().restartLoader(DEFAULT_LOADER_ID, inputArgs, this);
+    }
+
+    protected void startLoadWithProgress(int what,Bundle args){
+        showProgressDialog(R.string.progress_loading_data);
+        startLoad(what,args);
     }
 }

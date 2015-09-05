@@ -13,7 +13,7 @@ import org.json.JSONObject;
 public class StorySettingsInfo extends BaseInfo{
     public String defaultName;
     public String defaultDesc;
-    public Uri defaultCover;
+    public String defaultCover;
     public StoryMusicEntity defaultMusic;
     public StoryGestureInfo defaultGesture;
 
@@ -25,7 +25,7 @@ public class StorySettingsInfo extends BaseInfo{
         StorySettingsInfo settings = new StorySettingsInfo();
         settings.defaultName = json.optString("defaultName");
         settings.defaultDesc = json.optString("defaultDesc");
-        settings.defaultCover = Uri.parse(json.optString("defaultCover"));
+        settings.defaultCover = Uri.parse(json.optString("defaultCover")).toString();
         settings.defaultMusic = StoryMusicEntity.fromJsonObject(json.optJSONObject("defaultMusic"));
         settings.defaultGesture = StoryGestureInfo.fromJsonObject(json.optJSONObject("defaultGesture"));
         return settings;
@@ -40,7 +40,7 @@ public class StorySettingsInfo extends BaseInfo{
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.defaultName);
         dest.writeString(this.defaultDesc);
-        dest.writeParcelable(this.defaultCover, 0);
+        dest.writeString(this.defaultCover);
         dest.writeParcelable(this.defaultMusic, 0);
         dest.writeParcelable(this.defaultGesture, 0);
     }

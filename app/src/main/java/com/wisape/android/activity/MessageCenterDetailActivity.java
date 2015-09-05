@@ -46,11 +46,10 @@ public class MessageCenterDetailActivity extends BaseActivity {
         setContentView(R.layout.activity_message_center_detail);
         ButterKnife.inject(this);
 
-        int messagId = getIntent().getExtras().getInt(MESSAGE_ID);
         Bundle args = new Bundle();
-        args.putInt(EXTRAS_MESAGE_ID,messagId);
+        args.putInt(EXTRAS_MESAGE_ID,getIntent().getExtras().getInt(MESSAGE_ID));
         args.putLong(EXTRAS_USER_ID,wisapeApplication.getUserInfo().user_id);
-        startLoad(LOADER_MESSAGE_READ, args);
+        startLoadWithProgress(LOADER_MESSAGE_READ, args);
     }
 
     @Override

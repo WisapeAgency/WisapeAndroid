@@ -71,7 +71,7 @@ public class GiftFragment extends AbsFragment {
         Bundle args = new Bundle();
         args.putString(EXTRAS_COUNTRY_CODE, Utils.getCountry(getActivity()));
         args.putLong(EXTRAS_NOW, Utils.acquireUTCTimestamp());
-        startLoad(LOADER_USER_ACTIVE, args);
+        startLoadWithProgress(LOADER_USER_ACTIVE, args);
     }
 
     @Override
@@ -89,11 +89,9 @@ public class GiftFragment extends AbsFragment {
             if(null != activeInfoList && activeInfoList.size() > 0){
                 mGalleryAdapter.setData(activeInfoList);
             }else{
-//                closeFragment();
                 showToast("No Active");
             }
         }else{
-//            closeFragment();
             showToast((String)data.obj);
         }
     }

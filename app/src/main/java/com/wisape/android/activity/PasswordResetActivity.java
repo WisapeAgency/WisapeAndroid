@@ -49,7 +49,7 @@ public class PasswordResetActivity extends BaseActivity implements SignUpEditTex
         if (verifyEMail(email)) {
             Bundle args = new Bundle();
             args.putString(EXTARS_EMAIL_ACCOUNT, email.trim());
-            startLoad(LOADER_PASSWORD_RESET, args);
+            startLoadWithProgress(LOADER_PASSWORD_RESET, args);
         }
     }
 

@@ -100,7 +100,7 @@ public class StorySettingsActivity extends BaseActivity{
                 if(RESULT_OK == resultCode){
                     storyCoverUri = data.getParcelableExtra(CutActivity.EXTRA_IMAGE_URI);
                     if(null != storyCoverUri){
-                        storySettings.defaultCover = storyCoverUri;
+                        storySettings.defaultCover = storyCoverUri.toString();
                         Picasso.with(this).load(storyCoverUri)
                                 .resize(80, 80)
                                 .centerCrop()
@@ -153,7 +153,7 @@ public class StorySettingsActivity extends BaseActivity{
                     StorySettingsInfo settings = (StorySettingsInfo) data.obj;
                     storyNameEdit.setText(settings.defaultName);
                     storyDescEdit.setText(settings.defaultDesc);
-                    Uri defaultCover = settings.defaultCover;
+                    Uri defaultCover =Uri.parse(settings.defaultCover);
                     if(null != defaultCover){
                         Picasso.with(this).load(defaultCover)
                                 .resize(150, 150)
@@ -195,7 +195,7 @@ public class StorySettingsActivity extends BaseActivity{
         settings.defaultName = storyName;
         settings.defaultDesc = storyDesc;
         if (null != storyCoverUri){
-            settings.defaultCover = storyCoverUri;
+            settings.defaultCover = storyCoverUri.toString();
         }
 
         StoryManager.saveStorySettings(getApplicationContext(), settings);
