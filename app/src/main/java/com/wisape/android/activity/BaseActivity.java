@@ -6,6 +6,7 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.widget.Toast;
 
+import com.google.android.gms.analytics.GoogleAnalytics;
 import com.wisape.android.WisapeApplication;
 
 import butterknife.ButterKnife;
@@ -19,9 +20,23 @@ public abstract class BaseActivity extends VolleyActivity{
     protected WisapeApplication wisapeApplication;
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        GoogleAnalytics.getInstance(this).reportActivityStart(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        GoogleAnalytics.getInstance(this).reportActivityStop(this);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         wisapeApplication = WisapeApplication.getInstance();
+        //Get a Tracker (should auto-report)
+        wisapeApplication.getTracker(WisapeApplication.TrackerName.APP_TRACKER);
     }
 
     /**

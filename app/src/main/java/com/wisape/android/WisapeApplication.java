@@ -5,6 +5,8 @@ import android.content.Context;
 import android.support.multidex.MultiDex;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.Tracker;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.parse.Parse;
 import com.parse.ParseInstallation;
@@ -30,6 +32,9 @@ import java.util.Map;
  */
 public class WisapeApplication extends Application {
 
+    // The following line should be changed to include the correct property id.
+    private static final String PROPERTY_ID = "UA-64553657-1";
+
     private static WisapeApplication instance;
     public static WisapeApplication getInstance() {
         return instance;
@@ -38,6 +43,28 @@ public class WisapeApplication extends Application {
     private List<StoryTemplateTypeInfo> templateTypeList = new ArrayList<>();
     private Map<Integer,List<StoryTemplateInfo>> templateMap = new HashMap<>();
     private UserInfo userInfo;
+
+    public enum TrackerName {
+        APP_TRACKER,
+        // Tracker used only in this app.
+        GLOBAL_TRACKER,
+        // Tracker used by all the apps from a company.
+    }
+
+    private Map<TrackerName,Tracker> mTrackers = new HashMap<>();
+
+    public synchronized Tracker getTracker(TrackerName trackerId) {
+        if (!mTrackers.containsKey(trackerId)) {
+
+            GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
+            Tracker t = (trackerId == TrackerName.APP_TRACKER) ? analytics.newTracker(R.xml.app_tracker)
+                    : (trackerId ==
+                    TrackerName.GLOBAL_TRACKER) ? analytics.newTracker(PROPERTY_ID)
+                    : analytics.newTracker(R.xml.global_tracker);
+            mTrackers.put(trackerId, t);
+        }
+        return mTrackers.get(trackerId);
+    }
 
     @Override
     public void onCreate() {

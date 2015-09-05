@@ -17,7 +17,14 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
 
-        <meta-data android:name="com.parse.push.notification_icon" android:resource="@mipmap/logo"/>
+        <meta-data
+            android:name="com.parse.push.notification_icon"
+            android:resource="@mipmap/logo"/>
+
+        <!-- Google Analytics Version v4 needs this value for easy tracking -->
+        <meta-data
+            android:name="com.google.android.gms.analytics.globalConfigResource"
+            android:resource="@xml/global_tracker" />
 
         <service android:name="com.parse.PushService" />
         <receiver android:name="com.parse.ParseBroadcastReceiver">

@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.v7.widget.AppCompatEditText;
+import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.wisape.android.R;
@@ -207,8 +208,10 @@ public class StoryReleaseActivity extends BaseActivity{
                     break;
                 }
             }
-            if (!found)
+            if (!found){
+                Toast.makeText(this,"未安装此应用!",Toast.LENGTH_LONG).show();
                 return;
+            }
             startActivity(Intent.createChooser(share, "Select"));
         }
     }
