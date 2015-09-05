@@ -16,9 +16,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.wisape.android.R;
-import com.wisape.android.common.OnRecycleViewClickListener;
+import com.wisape.android.widget.OnRecycleViewClickListener;
 import com.wisape.android.logic.MessageCenterLogic;
 import com.wisape.android.model.MessageInfo;
+import com.wisape.android.widget.OnRecycleViewClickListener;
 
 import java.util.ArrayList;
 import java.util.List;

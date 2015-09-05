@@ -21,7 +21,7 @@ import com.wisape.android.R;
 import com.wisape.android.activity.BaseActivity;
 import com.wisape.android.activity.MainActivity;
 import com.wisape.android.activity.TestActivity;
-import com.wisape.android.common.OnRecycleViewClickListener;
+import com.wisape.android.widget.OnRecycleViewClickListener;
 import com.wisape.android.cordova.StorySettingsPlugin;
 import com.wisape.android.event.Event;
 import com.wisape.android.event.EventType;
