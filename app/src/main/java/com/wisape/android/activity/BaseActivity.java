@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.widget.Toast;
 
+import com.google.android.gms.analytics.GoogleAnalytics;
 import com.wisape.android.R;
 import com.wisape.android.WisapeApplication;
 import com.wisape.android.widget.CustomProgress;
