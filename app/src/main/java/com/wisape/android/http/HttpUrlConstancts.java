@@ -9,7 +9,7 @@ public class HttpUrlConstancts {
     public static final int STATUS_SUCCESS = 1;
     public static final int STATUS_EXCEPTION = Integer.MIN_VALUE;
 
-    private static final String SERVER_ADDRESS = "http://106.75.197.204/index.php/v1";
+    private static final String SERVER_ADDRESS = "http://106.75.196.252/index.php/v1";
 
     private static final String SEPERATOR = "/";
 

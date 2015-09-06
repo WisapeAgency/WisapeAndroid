@@ -133,7 +133,7 @@ public class UserProfileActivity extends BaseActivity {
     protected Message onLoadBackgroundRunning(int what, Bundle args) throws AsyncLoaderError {
         Message msg = UserLogic.instance().updateProfile(args.getString(EXTRAS_NAME),
                 (Uri) args.getParcelable(EXTRAS_ICON_URI),
-                args.getString(EXTRAS_NAME), wisapeApplication.getUserInfo().access_token);
+                args.getString(EXTRAS_EMAIL), wisapeApplication.getUserInfo().access_token);
         msg.what = what;
         return msg;
     }

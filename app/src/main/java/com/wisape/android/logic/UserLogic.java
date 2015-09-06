@@ -187,7 +187,7 @@ public class UserLogic {
     public Message updateProfile(String nickName, Uri userIcon, String userEmail, String accessToken) {
         String filePath = FileUtils.getRealPathFromURI(WisapeApplication.getInstance().getApplicationContext(), userIcon);
         String iconBase64 = "";
-        if (null != filePath) {
+        if (null != filePath && !"".equals(iconBase64)) {
             iconBase64 = FileUtils.base64ForImage(filePath);
         }
 
@@ -210,45 +210,5 @@ public class UserLogic {
             message.obj = e.getMessage();
         }
         return message;
-
-//        RestAdapterUtil.getApi(UserApi.class).updateProfile(nickName, iconBase64, userEmail, accessToken,
-//                new HttpRequestCallBack<ServerBean<UserInfo>>() {
-//                    Event<UserInfo> event = new Event<>(EventType.UPDATE_USER_PROFILE_SUCCES);
-//
-//                    @Override
-//                    public void onSuccess(ServerBean<UserInfo> data) {
-//                        event.setData(data.getData());
-//                        EventBus.getDefault().post(event);
-//                    }
-//
-//                    @Override
-//                    public void onError(String message) {
-//                        event.setEventType(EventType.UPDATE_USER_PROFILE_FAULER);
-//                        event.setEventMsg(message);
-//                        EventBus.getDefault().post(event);
-//                    }
-//                });
     }
-
-//    public UserInfo updateProfile(Context context, ApiUser.AttrUserProfile profile, Uri iconUri, Object cancelableTag){
-//        String filePath = FileUtils.getRealPathFromURI(WisapeApplication.getInstance().getApplicationContext(),iconUri);
-//
-//        String iconBase64 = "";
-//        if(null != filePath){
-//            iconBase64 = FileUtils.base64ForImage(filePath);
-//        }
-//        profile.userIcon = iconBase64;
-//        ApiUser api = ApiUser.instance();
-//        UserInfo user = api.updateProfile(context, profile, cancelableTag);
-//
-//        if(Requester.ServerMessage.STATUS_SUCCESS == user.status){
-//            Log.e(TAG, user.toString());
-//            UserManager.instance().saveUser(context, user);
-//            WisapeApplication.getInstance().setUserInfo(user);
-////            EventBus.getDefault().post(new UserProfileMessage());
-//        }else{
-////            EventBus.getDefault().post(new UserProfileErrorMessage());
-//        }
-//        return user;
-//    }
 }

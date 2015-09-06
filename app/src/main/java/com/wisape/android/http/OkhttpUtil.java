@@ -10,10 +10,8 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
-import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -138,21 +136,21 @@ public class OkhttpUtil {
         });
     }
 
-    private static byte[] getBytesFromStream(InputStream is) throws IOException {
-
-        int len;
-        int size = 1024;
-        byte[] buf;
-
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        buf = new byte[size];
-        while((len = is.read(buf, 0, size)) != -1) {
-            bos.write(buf, 0, len);
-        }
-        buf = bos.toByteArray();
-
-        return buf;
-    }
+//    private static byte[] getBytesFromStream(InputStream is) throws IOException {
+//
+//        int len;
+//        int size = 1024;
+//        byte[] buf;
+//
+//        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+//        buf = new byte[size];
+//        while((len = is.read(buf, 0, size)) != -1) {
+//            bos.write(buf, 0, len);
+//        }
+//        buf = bos.toByteArray();
+//
+//        return buf;
+//    }
 
     private static void saveByteToFile(byte[] bytes,String filePath){
         FileOutputStream fileOuputStream = null;
@@ -163,7 +161,9 @@ public class OkhttpUtil {
             e.printStackTrace();
         }  finally{
             try{
-                fileOuputStream.close();
+                if(null != fileOuputStream){
+                    fileOuputStream.close();
+                }
             }catch (Exception e){
                 e.printStackTrace();
             }
