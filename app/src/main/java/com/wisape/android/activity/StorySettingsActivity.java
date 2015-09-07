@@ -64,7 +64,7 @@ public class StorySettingsActivity extends BaseActivity{
     @OnClick(R.id.story_settings_cover_sdv)
     @SuppressWarnings("unused")
     protected void doSelectStoryCover(){
-        PhotoSelectorActivity.launch(this,PhotoSelectorActivity.REQUEST_CODE_PHOTO);
+        PhotoSelectorActivity.launch(this, PhotoSelectorActivity.REQUEST_CODE_PHOTO);
     }
 
     @OnClick(R.id.story_settings_music_layout)
@@ -153,12 +153,15 @@ public class StorySettingsActivity extends BaseActivity{
                     StorySettingsInfo settings = (StorySettingsInfo) data.obj;
                     storyNameEdit.setText(settings.defaultName);
                     storyDescEdit.setText(settings.defaultDesc);
-                    Uri defaultCover =Uri.parse(settings.defaultCover);
-                    if(null != defaultCover){
-                        Picasso.with(this).load(defaultCover)
-                                .resize(150, 150)
-                                .centerCrop()
-                                .into(storyBgView);
+                    String uri = settings.defaultCover;
+                    if(null != uri){
+                        Uri defaultCover =Uri.parse(settings.defaultCover);
+                        if(null != defaultCover){
+                            Picasso.with(this).load(defaultCover)
+                                    .resize(150, 150)
+                                    .centerCrop()
+                                    .into(storyBgView);
+                        }
                     }
 
                     StoryMusicEntity music = settings.defaultMusic;
