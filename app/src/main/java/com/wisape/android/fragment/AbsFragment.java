@@ -20,6 +20,7 @@ import com.wisape.android.R;
 import com.wisape.android.WisapeApplication;
 import com.wisape.android.activity.AbsCompatActivity;
 import com.wisape.android.activity.BaseActivity;
+import com.wisape.android.util.Utils;
 
 /**
  * @author Duke
@@ -171,6 +172,13 @@ public abstract class AbsFragment extends Fragment implements LoaderManager.Load
      * @param args can was null
      */
     protected void startLoad(int what, Bundle args){
+
+        if(!Utils.isNetworkAvailable(getActivity())){
+            closeProgressDialog();
+            showToast("Network Error");
+            return;
+        }
+
         Bundle inputArgs;
         if(null == args){
             inputArgs = new Bundle();

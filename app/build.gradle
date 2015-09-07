@@ -77,17 +77,14 @@ dependencies {
     compile files('libs/libammsdk.jar')
     compile files('libs/Parse-1.2.0.jar')
     compile project(':oauth')
-    //compile project(':volley')
     compile project(':mobihelp_sdk_android_v1_4')
     compile project(':cordova')
-    compile project(':widgets')
     compile project(':nanohttpd')
     compile project(':VolleyPlus')
     compile project(':lplayer')
     compile "com.android.support:appcompat-v7:${ANDROID_SUPPORT_VERSION}"
     compile "com.android.support:recyclerview-v7:${ANDROID_SUPPORT_VERSION}"
     compile "com.android.support:support-v4:${ANDROID_SUPPORT_VERSION}"
-    compile "com.android.support:design:${ANDROID_SUPPORT_VERSION}"
     compile "com.squareup.okhttp:okhttp-urlconnection:${OKHTTP_VERSION}"
     compile 'com.jakewharton:butterknife:6.1.0'
     compile 'com.alibaba:fastjson:1.2.6'
@@ -98,6 +95,5 @@ dependencies {
     compile 'de.greenrobot:eventbus:2.4.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.google.android.gms:play-services:7.5.0'
-    compile 'com.android.support:multidex:1.0.0'
 
 }

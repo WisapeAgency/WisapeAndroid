@@ -10,6 +10,7 @@ import android.widget.Toast;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.wisape.android.R;
 import com.wisape.android.WisapeApplication;
+import com.wisape.android.util.Utils;
 import com.wisape.android.widget.CustomProgress;
 
 import butterknife.ButterKnife;
@@ -75,6 +76,15 @@ public abstract class BaseActivity extends VolleyActivity{
         startLoad(what,args);
     }
 
+    @Override
+    protected void startLoad(int what, Bundle args) {
+        if(Utils.isNetworkAvailable(this)){
+            super.startLoad(what,args);
+        }else{
+            closeProgressDialog();
+            showToast("Network Error");
+        }
+    }
 
     @Override
     protected void onLoadCompleted(Message data) {

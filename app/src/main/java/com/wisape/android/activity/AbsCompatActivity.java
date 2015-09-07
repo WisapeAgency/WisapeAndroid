@@ -11,6 +11,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 
+import com.wisape.android.util.Utils;
+
 /**
  * @author LeiGuoting
  */
@@ -61,6 +63,7 @@ public abstract class AbsCompatActivity extends AppCompatActivity implements Loa
      * @param args can was null
      */
     protected void startLoad(int what, Bundle args){
+
         Bundle inputArgs;
         if(null == args){
             inputArgs = new Bundle();
@@ -142,7 +145,6 @@ public abstract class AbsCompatActivity extends AppCompatActivity implements Loa
                 msg = callback.onAsyncLoad(what, args);
                 if(null != msg){
                     msg.what = what;
-//                    msg.arg1 = STATUS_SUCCESS;
                 }
             }catch (AsyncLoaderError error){
                 msg = Message.obtain();

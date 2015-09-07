@@ -92,7 +92,6 @@ public class UserLogic {
 
     private Message singUp(Map<String, String> params) {
         Message message = Message.obtain();
-
         try {
             UserInfo userInfo = OkhttpUtil.execute(HttpUrlConstancts.USER_LOGIN, params, UserInfo.class);
             saveUserToSharePrefrence(new Gson().toJson(userInfo));
@@ -123,26 +122,17 @@ public class UserLogic {
             message.obj = e.getMessage();
         }
         return message;
-
-
-//        RestAdapterUtil.getApi(UserApi.class).passwordRest(email, new HttpRequestCallBack<Object>() {
-//            @Override
-//            public void onSuccess(Object data) {
-//                EventBus.getDefault().post(new Event(EventType.RESET_PASSWORD_SUCCESS));
-//            }
-//
-//            @Override
-//            public void onError(String message) {
-//                EventBus.getDefault().post(new Event(EventType.REST_PASSWORD_ERROR));
-//            }
-//        });
     }
 
     /**
      * 从本地读取用户信息
      */
     public UserInfo loaderUserFromLocal() {
-        DataSynchronizer.getInstance().synchronous(WisapeApplication.getInstance().getApplicationContext());//
+        try{
+            DataSynchronizer.getInstance().synchronous(WisapeApplication.getInstance().getApplicationContext());//
+        }catch (Exception e){
+            Log.e(TAG,"首页下载失败:" + e.getMessage());
+        }
         UserInfo userInfo = null;
         SharedPreferences sharedPreferences = WisapeApplication.getInstance().getSharePrefrence();
         String decode = sharedPreferences.getString(EXTRA_USER_INFO, "");
@@ -187,7 +177,7 @@ public class UserLogic {
     public Message updateProfile(String nickName, Uri userIcon, String userEmail, String accessToken) {
         String filePath = FileUtils.getRealPathFromURI(WisapeApplication.getInstance().getApplicationContext(), userIcon);
         String iconBase64 = "";
-        if (null != filePath && !"".equals(iconBase64)) {
+        if (null != filePath && !"".equals(filePath)) {
             iconBase64 = FileUtils.base64ForImage(filePath);
         }
 
