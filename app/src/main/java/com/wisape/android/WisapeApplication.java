@@ -11,7 +11,6 @@ import com.parse.Parse;
 import com.parse.ParseInstallation;
 import com.parse.PushService;
 import com.wisape.android.activity.MainActivity;
-import com.wisape.android.common.CrashHandler;
 import com.wisape.android.model.StoryTemplateInfo;
 import com.wisape.android.model.StoryTemplateTypeInfo;
 import com.wisape.android.model.UserInfo;
@@ -76,7 +75,6 @@ public class WisapeApplication extends Application {
         instance = this;
         final Context context = getApplicationContext();
         sharedPreferences = getSharedPreferences(PREFERENCES_NAME, MODE_PRIVATE);
-        CrashHandler.getInstance().init(getApplicationContext());
         WWWConfig.initialize(context);
         NanoService.startNanoServer(context);
         PlayerProxy.launch(context);
