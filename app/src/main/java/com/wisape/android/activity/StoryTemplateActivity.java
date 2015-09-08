@@ -98,9 +98,10 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
                         JSONObject json = new JSONObject();
                         json.put("id",id);
                         json.put("category_id",categoryId);
-                        json.put("path",new File(template, name));
+                        json.put("path", template);
+                        System.out.println("Path:" + template);
                         loadUrl("javascript:onCompleted(" + json.toString() + ")");
-                    }catch(JSONException e){
+                    } catch (JSONException e){
 
                     }
                     unzipTemplate(Uri.fromFile(new File(path)), template);
