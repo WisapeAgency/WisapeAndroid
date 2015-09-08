@@ -678,7 +678,6 @@ public class StoryLogic {
      * 获取默认story信息
      */
     private StoryInfo getDefaultStoryInfo() throws Exception{
-
         try {
             return OkhttpUtil.execute(HttpUrlConstancts.GET_DEFAULT_STORY_INTO, null, StoryInfo.class);
         } catch (Exception e) {
@@ -729,9 +728,9 @@ public class StoryLogic {
      **/
     public void downLoadDefaultStory(StoryInfo defaultStroy) {
         final File file = new File(StoryManager.getStoryDirectory(), defaultStroy.story_name + ".zip");
-        Log.e(TAG, "默认Story是否存在：" + file.exists()+":"+file.getAbsolutePath());
         if (!file.exists()) {
-            OkhttpUtil.downLoadFile(defaultStroy.story_url,StoryManager.getStoryDirectory()+"/"+defaultStroy.story_name);
+            Log.e(TAG,"下载默认story");
+            OkhttpUtil.downLoadFile(defaultStroy.story_url,file.getPath());
         }
     }
 }

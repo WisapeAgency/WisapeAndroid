@@ -180,15 +180,12 @@ public class UserLogic {
         if (null != filePath && !"".equals(filePath)) {
             iconBase64 = FileUtils.base64ForImage(filePath);
         }
-
         RequestBody formBody = new FormEncodingBuilder()
                 .add(ATTR_NICK_NAME, nickName)
                 .add(ATTR_EMAIL, userEmail)
                 .add(ATTR_ACCESS_TOKEN, accessToken)
                 .add(ATTR_USER_ICON,iconBase64)
                 .build();
-
-
         Message message = Message.obtain();
         try {
             UserInfo userInfo = OkhttpUtil.executePost(HttpUrlConstancts.UPDATE_PROFILE, formBody, UserInfo.class);

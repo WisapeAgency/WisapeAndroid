@@ -2,7 +2,6 @@ package com.wisape.android.fragment;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Message;
@@ -18,13 +17,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSONObject;
 import com.squareup.picasso.Picasso;
 import com.wisape.android.R;
 import com.wisape.android.activity.BaseActivity;
 import com.wisape.android.activity.MainActivity;
 import com.wisape.android.activity.TestActivity;
-import com.wisape.android.content.MessageCenterReceiver;
+import com.wisape.android.content.ActiveBroadcastReciver;
+import com.wisape.android.content.BroadCastReciverListener;
 import com.wisape.android.http.HttpUrlConstancts;
 import com.wisape.android.logic.StoryLogic;
 import com.wisape.android.model.StoryInfo;
@@ -42,7 +41,7 @@ import butterknife.OnClick;
 /**
  * @author Duke
  */
-public class CardGalleryFragment extends AbsFragment implements MessageCenterReceiver.OnMessageReciveListener{
+public class CardGalleryFragment extends AbsFragment implements BroadCastReciverListener{
 
     private static final String TAG = CardGalleryFragment.class.getSimpleName();
 
@@ -57,7 +56,7 @@ public class CardGalleryFragment extends AbsFragment implements MessageCenterRec
 
     private PopupWindowMenu popupWindow;
     private GalleryAdapter mGalleryAdapter;
-    private MessageCenterReceiver messageCenterReceiver;
+    private ActiveBroadcastReciver activeBroadcastReciver;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -69,10 +68,10 @@ public class CardGalleryFragment extends AbsFragment implements MessageCenterRec
     }
 
     private void setReciver(){
-        messageCenterReceiver = new MessageCenterReceiver(this);
+        activeBroadcastReciver = new ActiveBroadcastReciver(this);
         IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("com.wisape.android.content.MessageCenterReceiver");
-        getActivity().registerReceiver(messageCenterReceiver, intentFilter);
+        intentFilter.addAction("com.wisape.android.content.ActiveBroadcastReciver");
+        getActivity().registerReceiver(activeBroadcastReciver, intentFilter);
     }
 
     private void initView() {
@@ -129,7 +128,8 @@ public class CardGalleryFragment extends AbsFragment implements MessageCenterRec
         super.onDestroyView();
         ButterKnife.reset(this);
         popupWindow.dismiss();
-        getActivity().unregisterReceiver(messageCenterReceiver);
+        activeBroadcastReciver.destroy();
+        getActivity().unregisterReceiver(activeBroadcastReciver);
     }
 
     @OnClick(R.id.add_story)
@@ -251,18 +251,12 @@ public class CardGalleryFragment extends AbsFragment implements MessageCenterRec
         }
     }
 
+
     @Override
-    public void updateActiveCount(Context context,Intent intent) {
+    public void updateMsgCount() {
         if (mTextGifCount.getVisibility() == View.GONE) {
             mTextGifCount.setVisibility(View.VISIBLE);
         }
         mTextGifCount.setText(Integer.parseInt(mTextGifCount.getText().toString()) + 1 + "");
-        JSONObject jsonObject = JSONObject.parseObject(intent.getExtras().getString(DATA_KEY));
-        sendNotifacation(context,jsonObject,ACTIVE_MESSAGE);
-    }
-
-    @Override
-    public void updateMessageCount(Context context,Intent intent) {
-
     }
 }

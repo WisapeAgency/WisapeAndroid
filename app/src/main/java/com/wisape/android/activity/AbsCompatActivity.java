@@ -71,7 +71,6 @@ public abstract class AbsCompatActivity extends AppCompatActivity implements Loa
             inputArgs = args;
         }
         inputArgs.putInt(EXTRA_WHAT, what);
-        onPreLoad(what);
         getLoaderManager().restartLoader(DEFAULT_LOADER_ID, inputArgs, this);
     }
 
@@ -80,8 +79,6 @@ public abstract class AbsCompatActivity extends AppCompatActivity implements Loa
      */
     protected void onLoadCompleted(Message data){
     }
-
-    protected void onPreLoad(int what){}
 
     @Override
     public final Loader<Message> onCreateLoader(int id, Bundle args) {

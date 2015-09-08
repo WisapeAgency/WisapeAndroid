@@ -111,7 +111,7 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
     protected void doSignUPWithTwitter() {
         Resources resources = getResources();
         OAuthParams params = new OAuthParams(
-                OAuthParams.VERSION_OAUTH_1,
+                OAuthParams.VERSION_OAUTH_2,
                 OAuthParams.OAUTH_TWITTER,
                 "Twitter",
                 "",

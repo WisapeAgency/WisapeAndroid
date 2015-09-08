@@ -1,17 +1,14 @@
 package com.wisape.android.fragment;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSONObject;
 import com.freshdesk.mobihelp.Mobihelp;
 import com.squareup.picasso.Picasso;
 import com.wisape.android.R;
@@ -20,6 +17,7 @@ import com.wisape.android.activity.BaseActivity;
 import com.wisape.android.activity.MessageCenterActivity;
 import com.wisape.android.activity.SignUpActivity;
 import com.wisape.android.activity.UserProfileActivity;
+import com.wisape.android.content.BroadCastReciverListener;
 import com.wisape.android.content.MessageCenterReceiver;
 import com.wisape.android.logic.UserLogic;
 import com.wisape.android.util.EnvironmentUtils;
@@ -36,8 +34,7 @@ import butterknife.OnClick;
 /**
  * @author Duke
  */
-public class MainMenuFragment extends AbsFragment implements MessageCenterReceiver.OnMessageReciveListener{
-    private static final String TAG = MainMenuFragment.class.getSimpleName();
+public class MainMenuFragment extends AbsFragment implements BroadCastReciverListener{
 
     @InjectView(R.id.sdv_user_head_image)
     ImageView userHeadImage;
@@ -48,7 +45,7 @@ public class MainMenuFragment extends AbsFragment implements MessageCenterReceiv
     @InjectView(R.id.message_count)
     TextView tvMsgAccount;
 
-    private MessageCenterReceiver dynamicBroadcastReceiver;
+    private MessageCenterReceiver messageCenterReceiver;
 
 
     @Override
@@ -61,10 +58,10 @@ public class MainMenuFragment extends AbsFragment implements MessageCenterReceiv
     }
 
     private void registerReciver(){
-        dynamicBroadcastReceiver = new MessageCenterReceiver(this);
+        messageCenterReceiver = new MessageCenterReceiver(this);
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("com.wisape.android.content.MessageCenterReceiver");
-        getActivity().registerReceiver(dynamicBroadcastReceiver,intentFilter);
+        getActivity().registerReceiver(messageCenterReceiver,intentFilter);
     }
 
 
@@ -88,12 +85,9 @@ public class MainMenuFragment extends AbsFragment implements MessageCenterReceiv
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.reset(this);
-    }
+        messageCenterReceiver.destroy();
+        getActivity().unregisterReceiver(messageCenterReceiver);
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        getActivity().unregisterReceiver(dynamicBroadcastReceiver);
     }
 
     @OnClick(R.id.help_center)
@@ -164,18 +158,6 @@ public class MainMenuFragment extends AbsFragment implements MessageCenterReceiv
         clearMsgCount();
     }
 
-
-    /**
-     * 更新消息数量
-     */
-    private void updataMsgCount() {
-        Log.e(TAG, "更新消息数量");
-        if (tvMsgAccount.getVisibility() == View.GONE) {
-            tvMsgAccount.setVisibility(View.VISIBLE);
-        }
-        tvMsgAccount.setText(Integer.parseInt(tvMsgAccount.getText().toString()) + 1 + "");
-    }
-
     /**
      * 清除消息数量
      */
@@ -192,15 +174,10 @@ public class MainMenuFragment extends AbsFragment implements MessageCenterReceiv
     }
 
     @Override
-    public void updateMessageCount(Context context,Intent intent) {
-        JSONObject jsonObject = JSONObject.parseObject(intent.getExtras().getString(DATA_KEY));
-
-        sendNotifacation(context, jsonObject, OPERATION_MESSAGE);
-        updataMsgCount();
-    }
-
-    @Override
-    public void updateActiveCount(Context context,Intent intent) {
-
+    public void updateMsgCount() {
+        if (tvMsgAccount.getVisibility() == View.GONE) {
+            tvMsgAccount.setVisibility(View.VISIBLE);
+        }
+        tvMsgAccount.setText(Integer.parseInt(tvMsgAccount.getText().toString()) + 1 + "");
     }
 }

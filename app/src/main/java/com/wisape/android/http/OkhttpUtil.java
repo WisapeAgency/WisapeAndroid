@@ -80,7 +80,6 @@ public class OkhttpUtil {
     }
 
     public static <T> List<T> execute(Map<String,String > params,String url,Class<T> clazz) throws IOException {
-
         url = HttpUtils.getUrlWithParas(url,params);
         Log.e(TAG,url);
         Request request = new Request.Builder().url(url).build();
@@ -102,7 +101,6 @@ public class OkhttpUtil {
     }
 
     public static void execute(String url,Map<String,String > params) throws IOException {
-
         url = HttpUtils.getUrlWithParas(url,params);
         Log.e(TAG,url);
         Request request = new Request.Builder().url(url).build();
@@ -122,6 +120,7 @@ public class OkhttpUtil {
     }
 
     public static void downLoadFile(String url, final String filePath){
+        Log.e(TAG,"文件下载地址:" + url + "保存文件的地址:" + filePath);
         Request request = new Request.Builder().url(url).build();
         mOkHttpClient.newCall(request).enqueue(new Callback() {
             @Override
@@ -136,21 +135,6 @@ public class OkhttpUtil {
         });
     }
 
-//    private static byte[] getBytesFromStream(InputStream is) throws IOException {
-//
-//        int len;
-//        int size = 1024;
-//        byte[] buf;
-//
-//        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-//        buf = new byte[size];
-//        while((len = is.read(buf, 0, size)) != -1) {
-//            bos.write(buf, 0, len);
-//        }
-//        buf = bos.toByteArray();
-//
-//        return buf;
-//    }
 
     private static void saveByteToFile(byte[] bytes,String filePath){
         FileOutputStream fileOuputStream = null;

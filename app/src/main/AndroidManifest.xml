@@ -34,12 +34,6 @@
             </intent-filter>
         </receiver>
 
-        <!--<receiver android:name=".content.MessageCenterReceiver" >-->
-            <!--<intent-filter>-->
-                <!--<action android:name="com.wisape.android.content.MessageCenterReceiver" />-->
-            <!--</intent-filter>-->
-        <!--</receiver>-->
-
         <activity
             android:name=".activity.LauncherActivity"
             android:screenOrientation="portrait"
@@ -107,10 +101,6 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
 
-        <!--<activity-->
-        <!--android:name="com.soundcloud.android.crop.CropImageActivity"-->
-        <!--android:launchMode="singleTop"-->
-        <!--android:screenOrientation="portrait" />-->
 
         <activity
             android:name=".activity.AboutActivity"
@@ -139,12 +129,6 @@
             android:screenOrientation="portrait"
             android:label="@string/message_center_label"/>
 
-        <!--<activity-->
-        <!--android:name=".activity.ScaleCropImageActivity"-->
-        <!--android:label="@string/crop_activity_label"-->
-        <!--android:launchMode="singleTop"-->
-        <!--android:screenOrientation="portrait"-->
-        <!--android:theme="@style/AppTheme.Transparent" />-->
 
         <activity
             android:name=".activity.StorySettingsActivity"

@@ -1,9 +1,14 @@
 package com.wisape.android.util;
 
+import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -15,6 +20,11 @@ import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
+
+import com.wisape.android.R;
+import com.wisape.android.activity.BaseActivity;
+import com.wisape.android.activity.MainActivity;
+import com.wisape.android.activity.MessageCenterDetailActivity;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -166,6 +176,33 @@ public class Utils {
         }
         return true;
     }
+
+    public static void sendNotificatio(Context context,Class<? extends BaseActivity> activity,int msgId,String msgTile,String msgSubject){
+
+        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        Intent intent = getIntent(context, activity, msgId);
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(context,0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Notification notify = new Notification.Builder(context)
+                .setSmallIcon(R.mipmap.logo)
+                .setContentTitle(msgTile)
+                .setContentText(msgSubject)
+                .setContentIntent(pendingIntent)
+                .setNumber(1)
+                .getNotification();
+        notify.flags |= Notification.FLAG_AUTO_CANCEL;
+        notify.defaults = Notification.DEFAULT_ALL;
+        manager.notify(1, notify);
+    }
+
+    private static Intent getIntent(Context context,Class<? extends BaseActivity> activity,int messageID){
+        Intent intent = new Intent(context,activity);
+        intent.putExtra(MessageCenterDetailActivity.MESSAGE_ID,messageID);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        return intent;
+    }
+
 
 
 }
