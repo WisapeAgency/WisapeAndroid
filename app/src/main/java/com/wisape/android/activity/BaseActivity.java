@@ -1,10 +1,8 @@
 package com.wisape.android.activity;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
 import android.widget.Toast;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
@@ -14,7 +12,6 @@ import com.wisape.android.util.Utils;
 import com.wisape.android.widget.CustomProgress;
 
 import butterknife.ButterKnife;
-import de.greenrobot.event.EventBus;
 
 /**
  * 基本activity
@@ -73,7 +70,7 @@ public abstract class BaseActivity extends VolleyActivity{
 
     protected void startLoadWithProgress(int what,Bundle args){
         showProgressDialog(R.string.loading_user_story);
-        startLoad(what,args);
+        startLoad(what, args);
     }
 
     @Override

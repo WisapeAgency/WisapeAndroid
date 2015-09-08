@@ -34,11 +34,11 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".content.MessageCenterReceiver" >
-            <intent-filter>
-                <action android:name="com.wisape.android.content.MessageCenterReceiver" />
-            </intent-filter>
-        </receiver>
+        <!--<receiver android:name=".content.MessageCenterReceiver" >-->
+            <!--<intent-filter>-->
+                <!--<action android:name="com.wisape.android.content.MessageCenterReceiver" />-->
+            <!--</intent-filter>-->
+        <!--</receiver>-->
 
         <activity
             android:name=".activity.LauncherActivity"

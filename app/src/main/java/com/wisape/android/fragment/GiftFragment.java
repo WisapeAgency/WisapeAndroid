@@ -28,7 +28,6 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
 
 /**
  * @author limit
@@ -113,7 +112,6 @@ public class GiftFragment extends AbsFragment {
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.reset(this);
-        EventBus.getDefault().unregister(this);
     }
 
 

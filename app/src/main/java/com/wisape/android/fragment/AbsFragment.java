@@ -1,7 +1,11 @@
 package com.wisape.android.fragment;
 
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
@@ -16,10 +20,13 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.alibaba.fastjson.JSONObject;
 import com.wisape.android.R;
 import com.wisape.android.WisapeApplication;
 import com.wisape.android.activity.AbsCompatActivity;
 import com.wisape.android.activity.BaseActivity;
+import com.wisape.android.activity.MainActivity;
+import com.wisape.android.activity.MessageCenterDetailActivity;
 import com.wisape.android.util.Utils;
 
 /**
@@ -30,6 +37,38 @@ public abstract class AbsFragment extends Fragment implements LoaderManager.Load
     private static final int DEFAULT_LOADER_ID = Integer.MAX_VALUE;
     private static final String TAG = AbsCompatActivity.class.getSimpleName();
     private static final String EXTRA_WHAT = "loader_what";
+
+    /**
+     * 运营消息
+     */
+    protected static final int OPERATION_MESSAGE = 2;
+    /**
+     * 系统消息
+     */
+    protected static final int SYSTEM_MESSAGE = 1;
+    /**
+     * 活动中心消息
+     */
+    protected static final int ACTIVE_MESSAGE = 3;
+
+    /**
+     *  消息标题
+     */
+    protected static final String MESSAGE_TITILE = "message_title";
+
+    /**
+     * 消息简介
+     */
+    protected static final String MESSAGE_SUBJECT = "message_subject";
+
+    /**
+     * 消息ID
+     */
+    protected static final String MESSAGE_ID = "id";
+    /**
+     * 获取消息内容的key
+     */
+    protected static final String DATA_KEY = "com.parse.Data";
 
 
     public DisplayMetrics mDisplayMetrics;
@@ -192,5 +231,38 @@ public abstract class AbsFragment extends Fragment implements LoaderManager.Load
     protected void startLoadWithProgress(int what,Bundle args){
         showProgressDialog(R.string.progress_loading_data);
         startLoad(what,args);
+    }
+
+    protected void sendNotifacation(Context context,JSONObject jsonObject,int messageType){
+        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        Intent intent = getIntent(context,messageType,jsonObject.getInteger(MESSAGE_ID));
+        intent.putExtra(MessageCenterDetailActivity.MESSAGE_ID, jsonObject.getIntValue(MESSAGE_ID));
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(context,0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Notification notify = new Notification.Builder(context)
+                .setSmallIcon(R.mipmap.logo)
+                .setTicker(jsonObject.getString(MESSAGE_TITILE))
+                .setContentTitle(jsonObject.getString(MESSAGE_TITILE))
+                .setContentText(jsonObject.getString(MESSAGE_SUBJECT))
+                .setContentIntent(pendingIntent)
+                .setNumber(1)
+                .getNotification();
+        notify.flags |= Notification.FLAG_AUTO_CANCEL;
+        notify.defaults = Notification.DEFAULT_ALL;
+        manager.notify(1, notify);
+    }
+
+    private Intent getIntent(Context context,int messageTeype,int messageID){
+        Intent intent = null;
+        if(SYSTEM_MESSAGE == (messageTeype) || OPERATION_MESSAGE == messageTeype){
+            intent = new Intent(context,MessageCenterDetailActivity.class);
+            intent.putExtra(MessageCenterDetailActivity.MESSAGE_ID,messageID);
+        }
+        if(ACTIVE_MESSAGE == messageTeype){
+            intent  = new Intent(context, MainActivity.class);
+        }
+        return intent;
     }
 }

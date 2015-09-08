@@ -2,6 +2,8 @@ package com.wisape.android.fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.v4.app.FragmentManager;
@@ -16,19 +18,18 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONObject;
 import com.squareup.picasso.Picasso;
 import com.wisape.android.R;
 import com.wisape.android.activity.BaseActivity;
 import com.wisape.android.activity.MainActivity;
 import com.wisape.android.activity.TestActivity;
-import com.wisape.android.widget.OnRecycleViewClickListener;
-import com.wisape.android.cordova.StorySettingsPlugin;
-import com.wisape.android.event.Event;
-import com.wisape.android.event.EventType;
+import com.wisape.android.content.MessageCenterReceiver;
 import com.wisape.android.http.HttpUrlConstancts;
 import com.wisape.android.logic.StoryLogic;
 import com.wisape.android.model.StoryInfo;
 import com.wisape.android.view.GalleryView;
+import com.wisape.android.widget.OnRecycleViewClickListener;
 import com.wisape.android.widget.PopupWindowMenu;
 
 import java.util.ArrayList;
@@ -41,7 +42,7 @@ import butterknife.OnClick;
 /**
  * @author Duke
  */
-public class CardGalleryFragment extends AbsFragment {
+public class CardGalleryFragment extends AbsFragment implements MessageCenterReceiver.OnMessageReciveListener{
 
     private static final String TAG = CardGalleryFragment.class.getSimpleName();
 
@@ -56,13 +57,22 @@ public class CardGalleryFragment extends AbsFragment {
 
     private PopupWindowMenu popupWindow;
     private GalleryAdapter mGalleryAdapter;
+    private MessageCenterReceiver messageCenterReceiver;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_card_gallery, container, false);
         ButterKnife.inject(this, rootView);
         initView();
+        setReciver();
         return rootView;
+    }
+
+    private void setReciver(){
+        messageCenterReceiver = new MessageCenterReceiver(this);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("com.wisape.android.content.MessageCenterReceiver");
+        getActivity().registerReceiver(messageCenterReceiver, intentFilter);
     }
 
     private void initView() {
@@ -103,7 +113,7 @@ public class CardGalleryFragment extends AbsFragment {
         if(HttpUrlConstancts.STATUS_SUCCESS == data.arg1){
             mGalleryAdapter.setData((List<StoryInfo>)data.obj);
         }else {
-            showToast((String)data.obj);
+            showToast((String) data.obj);
         }
     }
 
@@ -114,25 +124,12 @@ public class CardGalleryFragment extends AbsFragment {
         }
     }
 
-
-    /**
-     * eventbus消息处理
-     */
-    @SuppressWarnings("unused")
-    public void onEventMainThread(Event event) {
-        if (EventType.UPDATE_ACTIVE_COUNT.equals(event.getEventType())) {
-            if (mTextGifCount.getVisibility() == View.GONE) {
-                mTextGifCount.setVisibility(View.VISIBLE);
-            }
-            mTextGifCount.setText(Integer.parseInt(mTextGifCount.getText().toString()) + 1 + "");
-        }
-    }
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.reset(this);
         popupWindow.dismiss();
+        getActivity().unregisterReceiver(messageCenterReceiver);
     }
 
     @OnClick(R.id.add_story)
@@ -252,5 +249,20 @@ public class CardGalleryFragment extends AbsFragment {
             super(itemView);
             ButterKnife.inject(this, itemView);
         }
+    }
+
+    @Override
+    public void updateActiveCount(Context context,Intent intent) {
+        if (mTextGifCount.getVisibility() == View.GONE) {
+            mTextGifCount.setVisibility(View.VISIBLE);
+        }
+        mTextGifCount.setText(Integer.parseInt(mTextGifCount.getText().toString()) + 1 + "");
+        JSONObject jsonObject = JSONObject.parseObject(intent.getExtras().getString(DATA_KEY));
+        sendNotifacation(context,jsonObject,ACTIVE_MESSAGE);
+    }
+
+    @Override
+    public void updateMessageCount(Context context,Intent intent) {
+
     }
 }
