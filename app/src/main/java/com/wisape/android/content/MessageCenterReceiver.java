@@ -57,6 +57,7 @@ public class MessageCenterReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        Log.e(TAG,"收到消息");
         if(destroyed){
             return;
         }
@@ -75,6 +76,7 @@ public class MessageCenterReceiver extends BroadcastReceiver {
     }
 
     public void destroy(){
+        Log.e(TAG,"销毁系统消息广播接收器");
         destroyed = true;
         broadcastReciverListener = null;
     }

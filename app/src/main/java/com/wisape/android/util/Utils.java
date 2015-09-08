@@ -85,23 +85,11 @@ public class Utils {
         }
     }
 
-    public static long acquireUTCTimestamp() {
-        SimpleDateFormat utcDateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss.SSS");
-        utcDateFormat.setTimeZone(TimeZone.getTimeZone("gmt"));
+    public static String acquireUTCTimestamp() {
+        SimpleDateFormat utcDateFormat = new SimpleDateFormat("yyyyMMddhhmmss");
         Date currentDate = new Date();
         String utcTime = utcDateFormat.format(currentDate);
-        Log.d("Utils", "#acquireUTCTimestamp current timestamp:" + currentDate.getTime());
-        SimpleDateFormat normalDateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss.SSS");
-        long utcTimestamp;
-        try {
-            Date date = normalDateFormat.parse(utcTime);
-            utcTimestamp = date.getTime();
-        } catch (ParseException e) {
-            Log.e("Utils", "#acquireUTCTimestamp ", e);
-            throw new IllegalStateException(e);
-        }
-        Log.d("Utils", "#acquireUTCTimestamp UTC timestamp:" + utcTimestamp);
-        return utcTimestamp;
+        return utcTime;
     }
 
 
@@ -186,6 +174,7 @@ public class Utils {
         PendingIntent pendingIntent = PendingIntent.getActivity(context,0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         Notification notify = new Notification.Builder(context)
                 .setSmallIcon(R.mipmap.logo)
+                .setTicker(msgTile)
                 .setContentTitle(msgTile)
                 .setContentText(msgSubject)
                 .setContentIntent(pendingIntent)

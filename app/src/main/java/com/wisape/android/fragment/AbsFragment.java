@@ -119,6 +119,7 @@ public abstract class AbsFragment extends Fragment implements LoaderManager.Load
 
         private Bundle args;
         private FragmentLoaderCallback callBack;
+        private boolean used;
 
         public FragmentLoader(Context context,Bundle args,FragmentLoaderCallback callBack){
             super(context);
@@ -128,6 +129,9 @@ public abstract class AbsFragment extends Fragment implements LoaderManager.Load
 
         @Override
         protected void onStartLoading() {
+            if(used){
+                return;
+            }
             forceLoad();
         }
 
@@ -135,6 +139,7 @@ public abstract class AbsFragment extends Fragment implements LoaderManager.Load
         @Override
         public Message loadInBackground() {
             int what = args.getInt(EXTRA_WHAT, 0);
+            used = true;
             return callBack.loadingInbackground(what, args);
         }
     }

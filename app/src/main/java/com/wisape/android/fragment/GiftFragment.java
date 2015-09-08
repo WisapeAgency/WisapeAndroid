@@ -15,14 +15,12 @@ import android.widget.RelativeLayout;
 
 import com.squareup.picasso.Picasso;
 import com.wisape.android.R;
-import com.wisape.android.common.OnActivityClickListener;
 import com.wisape.android.http.HttpUrlConstancts;
 import com.wisape.android.logic.ActiveLogic;
 import com.wisape.android.model.ActiveInfo;
 import com.wisape.android.util.Utils;
 import com.wisape.android.view.GalleryView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -43,7 +41,6 @@ public class GiftFragment extends AbsFragment {
 
     @InjectView(R.id.gift_gallery)
     GalleryView giftGallery;
-    GalleryAdapter mGalleryAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -57,25 +54,16 @@ public class GiftFragment extends AbsFragment {
     }
 
     private void init() {
-        mGalleryAdapter = new GalleryAdapter(getActivity());
-        giftGallery.setAdapter(mGalleryAdapter);
-        mGalleryAdapter.setOnRecycleViewClickListener(new OnActivityClickListener() {
-            @Override
-            public void onItemClickListener(String url) {
-                //TODO 跳转至相对应的界面
-            }
-        });
         giftGallery.setSpace((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 30, mDisplayMetrics));
-
         Bundle args = new Bundle();
         args.putString(EXTRAS_COUNTRY_CODE, Utils.getCountry(getActivity()));
-        args.putLong(EXTRAS_NOW, Utils.acquireUTCTimestamp());
+        args.putString(EXTRAS_NOW, Utils.acquireUTCTimestamp());
         startLoadWithProgress(LOADER_USER_ACTIVE, args);
     }
 
     @Override
     public Message loadingInbackground(int what, Bundle args) {
-        Message msg = ActiveLogic.getInstance().activeList(args.getString(EXTRAS_COUNTRY_CODE), args.getInt(EXTRAS_NOW));
+        Message msg = ActiveLogic.getInstance().activeList(args.getString(EXTRAS_COUNTRY_CODE), args.getString(EXTRAS_NOW));
         msg.what = what;
         return msg;
     }
@@ -86,7 +74,7 @@ public class GiftFragment extends AbsFragment {
         if(HttpUrlConstancts.STATUS_SUCCESS == data.arg1){
             List<ActiveInfo> activeInfoList = (List<ActiveInfo>)data.obj;
             if(null != activeInfoList && activeInfoList.size() > 0){
-                mGalleryAdapter.setData(activeInfoList);
+                giftGallery.setAdapter(new GalleryAdapter(getActivity(),activeInfoList));
             }else{
                 showToast("No Active");
             }
@@ -118,16 +106,13 @@ public class GiftFragment extends AbsFragment {
     public static class GalleryAdapter extends RecyclerView.Adapter<GHolder> {
 
         private Context mContext;
-        private List<ActiveInfo> activeInfoList = new ArrayList<>();
-        private OnActivityClickListener onRecycleViewClickListener;
+        private List<ActiveInfo> activeInfoList;
 
-        public GalleryAdapter(Context c) {
+        public GalleryAdapter(Context c,List<ActiveInfo> activeInfos) {
             this.mContext = c;
+            activeInfoList = activeInfos;
         }
 
-        public void setOnRecycleViewClickListener(OnActivityClickListener onRecycleViewClickListener) {
-            this.onRecycleViewClickListener = onRecycleViewClickListener;
-        }
 
         @Override
         public GHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -137,17 +122,11 @@ public class GiftFragment extends AbsFragment {
         @Override
         public void onBindViewHolder(GHolder holder, int position) {
             final ActiveInfo activeInfo = activeInfoList.get(position);
+            Picasso.with(mContext).load(activeInfo.getBg_img()).centerCrop().resize(600,800).into(holder.imgContent);
             holder.imgContent.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.e(TAG,activeInfo.getId()+"");
-                }
-            });
-            Picasso.with(mContext).load(activeInfo.getUrl()).centerCrop().resize(80,80).into(holder.imgContent);
-            holder.imgContent.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onRecycleViewClickListener.onItemClickListener(activeInfo.getUrl());
+                    Log.e(TAG,"点击某个活动的Id:" + activeInfo.getId());
                 }
             });
         }
@@ -155,11 +134,6 @@ public class GiftFragment extends AbsFragment {
         @Override
         public int getItemCount() {
             return activeInfoList.size();
-        }
-
-        public void setData(List<ActiveInfo> activeInfos) {
-            activeInfoList = activeInfos;
-            notifyDataSetChanged();
         }
     }
 

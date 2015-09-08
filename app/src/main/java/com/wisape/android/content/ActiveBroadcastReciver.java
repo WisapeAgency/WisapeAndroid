@@ -57,6 +57,7 @@ public class ActiveBroadcastReciver extends BroadcastReceiver {
     }
     
     public void destroy(){
+        Log.e(TAG,"销毁活动广播接收器");
         destroyed = true;
         broadcastReciverListener = null;
     }

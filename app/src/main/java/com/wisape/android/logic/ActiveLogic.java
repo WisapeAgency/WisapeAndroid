@@ -34,11 +34,11 @@ public class ActiveLogic {
      *  获取活动列表
      * @param countryCode 地区编码
      */
-    public Message activeList(String countryCode,int now){
+    public Message activeList(String countryCode,String now){
 
         params.clear();
         params.put(ATTR_COUNTY_CODE, countryCode);
-        params.put(ATTR_NOW, now + "");
+        params.put(ATTR_NOW, now);
 
         Message mesasge = Message.obtain();
 
@@ -52,25 +52,6 @@ public class ActiveLogic {
         }
 
         return mesasge;
-
-//        //TODO 时间戳没有生成
-//        RestAdapterUtil.getApi(ActiveApi.class).activeList(counryCode, 1, new HttpRequestCallBack<List<ActiveInfo>>() {
-//
-//            Event<List<ActiveInfo>> event = new Event<>(EventType.GET_ACTIVE_SUCCESS);
-//
-//            @Override
-//            public void onSuccess(List<ActiveInfo> data) {
-//                event.setData(data);
-//                EventBus.getDefault().post(event);
-//            }
-//
-//            @Override
-//            public void onError(String message) {
-//                event.setEventType(EventType.GET_ACTIVE_FAILURE);
-//                event.setEventMsg(message);
-//                EventBus.getDefault().post(event);
-//            }
-//        });
     }
 
 }

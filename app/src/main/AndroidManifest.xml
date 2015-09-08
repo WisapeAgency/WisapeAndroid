@@ -54,7 +54,6 @@
         <activity
             android:name=".activity.SignUpActivity"
             android:screenOrientation="portrait"
-            android:launchMode="singleTask"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
 
         <!-- Oauth Activity-->
@@ -69,43 +68,36 @@
             android:name=".activity.MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:launchMode="singleTop"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".activity.PhotoSelectorActivity"
             android:label="@string/photo_bucket_all"
-            android:launchMode="singleTop"
             android:screenOrientation="portrait" />
 
         <activity
             android:name=".activity.PasswordResetActivity"
             android:label="@string/password_reset_label"
-            android:launchMode="singleTop"
             android:screenOrientation="portrait" />
 
         <activity
             android:name=".activity.PasswordResetSuccessActivity"
             android:label="@string/password_reset_success_label"
-            android:launchMode="singleTop"
             android:screenOrientation="portrait" />
 
         <activity
             android:name=".activity.StoryTemplateActivity"
-            android:launchMode="singleTop"
             android:screenOrientation="portrait" />
 
         <activity
             android:name=".activity.UserProfileActivity"
             android:label="@string/user_profile_label"
-            android:launchMode="singleTop"
             android:screenOrientation="portrait" />
 
 
         <activity
             android:name=".activity.AboutActivity"
             android:label="@string/about_label"
-            android:launchMode="singleTop"
             android:screenOrientation="portrait">
 
         </activity>
@@ -116,16 +108,13 @@
 
         <activity
             android:name=".activity.AboutWebViewActivity"
-            android:launchMode="singleTop"
             android:screenOrientation="portrait" />
 
         <activity android:name=".activity.MessageCenterActivity"
-            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:label="@string/message_center_label"/>
 
         <activity android:name=".activity.MessageCenterDetailActivity"
-            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:label="@string/message_center_label"/>
 
@@ -133,26 +122,22 @@
         <activity
             android:name=".activity.StorySettingsActivity"
             android:label="@string/story_settings_label"
-            android:launchMode="singleTop"
             android:screenOrientation="portrait" />
 
         <activity
             android:name=".activity.StoryMusicActivity"
             android:label="@string/story_music_label"
-            android:launchMode="singleTop"
             android:screenOrientation="portrait" />
 
         <activity
             android:name=".activity.StoryReleaseActivity"
             android:label="@string/story_release_label"
-            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateHidden" />
 
         <activity
             android:name=".activity.TestActivity"
             android:label="Test"
-            android:launchMode="singleTop"
             android:screenOrientation="portrait" />
 
         <activity android:name=".activity.AddEmailAccoutActivity"
