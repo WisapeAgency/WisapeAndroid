@@ -37,7 +37,6 @@ public class GiftFragment extends AbsFragment {
     private static final int LOADER_USER_ACTIVE = 1;
 
     private static final String EXTRAS_COUNTRY_CODE = "country_code";
-    private static final String EXTRAS_NOW = "now";
 
     @InjectView(R.id.gift_gallery)
     GalleryView giftGallery;
@@ -57,13 +56,12 @@ public class GiftFragment extends AbsFragment {
         giftGallery.setSpace((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 30, mDisplayMetrics));
         Bundle args = new Bundle();
         args.putString(EXTRAS_COUNTRY_CODE, Utils.getCountry(getActivity()));
-        args.putString(EXTRAS_NOW, Utils.acquireUTCTimestamp());
         startLoadWithProgress(LOADER_USER_ACTIVE, args);
     }
 
     @Override
     public Message loadingInbackground(int what, Bundle args) {
-        Message msg = ActiveLogic.getInstance().activeList(args.getString(EXTRAS_COUNTRY_CODE), args.getString(EXTRAS_NOW));
+        Message msg = ActiveLogic.getInstance().activeList(args.getString(EXTRAS_COUNTRY_CODE));
         msg.what = what;
         return msg;
     }

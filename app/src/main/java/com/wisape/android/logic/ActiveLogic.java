@@ -17,7 +17,6 @@ import java.util.Map;
 public class ActiveLogic {
 
     private static final String ATTR_COUNTY_CODE = "country_code";
-    private static final String ATTR_NOW = "now";
 
     private static ActiveLogic activeLogic = new ActiveLogic();
 
@@ -34,11 +33,10 @@ public class ActiveLogic {
      *  获取活动列表
      * @param countryCode 地区编码
      */
-    public Message activeList(String countryCode,String now){
+    public Message activeList(String countryCode){
 
         params.clear();
         params.put(ATTR_COUNTY_CODE, countryCode);
-        params.put(ATTR_NOW, now);
 
         Message mesasge = Message.obtain();
 
