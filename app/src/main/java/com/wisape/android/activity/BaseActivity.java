@@ -38,6 +38,7 @@ public abstract class BaseActivity extends VolleyActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         wisapeApplication = WisapeApplication.getInstance();
+        wisapeApplication.getTracker(WisapeApplication.TrackerName.APP_TRACKER);
     }
 
 

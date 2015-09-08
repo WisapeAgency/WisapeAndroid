@@ -95,7 +95,8 @@ public class StoryTemplatePlugin extends AbsPlugin{
         } else if (ACTION_START.equals(action)) {//start
             Bundle bundle = new Bundle();
             if(null != args && args.length() != 0){
-                bundle.putInt(EXTRA_TEMPLATE_ID, args.getInt(0));//
+                bundle.putInt(EXTRA_TEMPLATE_ID, args.getInt(0));
+                bundle.putInt(EXTRA_CATEGORY_ID, args.getInt(1));
             }
             startLoad(WHAT_START, bundle);
         } else if (ACTION_READ.equals(action)) {//read
@@ -177,6 +178,7 @@ public class StoryTemplatePlugin extends AbsPlugin{
             case WHAT_START: {
                 ApiStory.AttrTemplateInfo attr = new ApiStory.AttrTemplateInfo();
                 attr.id = args.getInt(EXTRA_TEMPLATE_ID, 0);
+                int categoryId = args.getInt(EXTRA_CATEGORY_ID, 1);
                 Requester.ServerMessage message = logic.getStoryTemplateUrl(context, attr, null);
                 if (!message.succeed()){
                     callbackContext.error(message.status);
@@ -185,7 +187,7 @@ public class StoryTemplatePlugin extends AbsPlugin{
                 if (cordova.getActivity() instanceof StoryTemplateActivity){
                     StoryTemplateActivity activity = (StoryTemplateActivity)cordova.getActivity();
                     try {
-                        activity.downloadTemplate(message.data.toString(),attr.id);
+                        activity.downloadTemplate(message.data.toString(), attr.id, categoryId);
                     }catch (JSONException e){
                         callbackContext.error(-1);
                     }

@@ -32,7 +32,7 @@
             <button onclick="test(['test','test2']);">Test</button>
             <button onclick="getStageCategory();">getStageCategory</button>
             <button onclick="getStageList(1);">getStageList</button>
-            <button onclick="start(59);">Start</button>
+            <button onclick="start(59,2);">Start</button>
             <button onclick="read('dddddddddddd');">read</button>
             <div id="message"></div>
             <img src="http://www.baidu.com/img/baidu_jgylogo3.gif"/>
@@ -105,12 +105,12 @@
         *
         *下载模板
         */
-        function start(id){
+        function start(id,categoryId){
             cordova.exec(function(retval) {
                 showMessage(retval);
             }, function(e) {
                 alert("Error: "+e);
-            }, "StoryTemplate", "start", [id]);
+            }, "StoryTemplate", "start", [id,categoryId]);
         }
 
         function read(tempName){

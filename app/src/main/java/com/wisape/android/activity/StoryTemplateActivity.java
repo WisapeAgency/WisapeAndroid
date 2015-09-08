@@ -40,6 +40,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
     private static final String TEMPLATE_NAME = "stage.html";
     private static final String DOWNLOAD_PROGRESS = "progress";
     private static final String EXTRA_STORY_ID = "story_id";
+    private static final String EXTRA_CATEGORY_ID = "extra_category_id";
     private static final String EXTRA_TEMPLATE_ID = "temp_id";
     private static final String EXTRA_TEMPLATE_NAME = "temp_name";
     private static final String EXTRA_TEMPLATE_PATH = "temp_path";
@@ -74,10 +75,12 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
             switch (msg.what){
                 case WHAT_DOWNLOAD_PROGRESS:{
                     int id = msg.getData().getInt(EXTRA_TEMPLATE_ID,0);
+                    int categoryId = msg.getData().getInt(EXTRA_CATEGORY_ID,0);
                     double progress = msg.getData().getDouble(DOWNLOAD_PROGRESS, 0);
                     try{
                         JSONObject json = new JSONObject();
                         json.put("id",id);
+                        json.put("category_id",categoryId);
                         json.put("progress",progress);
                         loadUrl("javascript:onDownloading(" + json.toString() + ")");
                     }catch(JSONException e){
@@ -87,10 +90,19 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
                 }
                 case WHAT_DOWNLOAD_COMPLETED:{
                     int id = msg.getData().getInt(EXTRA_TEMPLATE_ID,0);
+                    int categoryId = msg.getData().getInt(EXTRA_CATEGORY_ID,0);
                     String name = msg.getData().getString(EXTRA_TEMPLATE_NAME);
                     String path = msg.getData().getString(EXTRA_TEMPLATE_PATH);
-                    loadUrl("javascript:onCompleted('" + id + "')");
                     File template = getTemplateUnzipDirectory(name);
+                    try{
+                        JSONObject json = new JSONObject();
+                        json.put("id",id);
+                        json.put("category_id",categoryId);
+                        json.put("path",new File(template, name));
+                        loadUrl("javascript:onCompleted(" + json.toString() + ")");
+                    }catch(JSONException e){
+
+                    }
                     unzipTemplate(Uri.fromFile(new File(path)), template);
                     downloadFont(template);
                     break;
@@ -116,13 +128,14 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
         loadUrl(START_URL);
     }
 
-    public void downloadTemplate(String data,int id) throws JSONException{
+    public void downloadTemplate(String data, int id,int categoryId) throws JSONException{
         JSONObject json = new JSONObject(data);
         String name = json.getString(EXTRA_TEMPLATE_NAME);
         String url = json.getString(EXTRA_TEMPLATE_URL);
 
         Bundle args = new Bundle();
         args.putInt(EXTRA_TEMPLATE_ID, id);
+        args.putInt(EXTRA_CATEGORY_ID,categoryId);
         args.putString(EXTRA_TEMPLATE_NAME, name);
         args.putString(EXTRA_TEMPLATE_URL, url);
         startLoad(WHAT_DOWNLOAD_TEMPLATE, args);
@@ -189,6 +202,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
                 return null;
             case WHAT_DOWNLOAD_TEMPLATE:{
                 final int id = args.getInt(EXTRA_TEMPLATE_ID, 0);
+                final int categoryId = args.getInt(EXTRA_CATEGORY_ID,0);
                 final String name = args.getString(EXTRA_TEMPLATE_NAME);
                 final String url = args.getString(EXTRA_TEMPLATE_URL);
                 Uri dest = Uri.fromFile(new File(StoryManager.getStoryTemplateDirectory(), name));
@@ -197,6 +211,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
                         Message msg = Message.obtain();
                         Bundle bundle = new Bundle();
                         bundle.putInt(EXTRA_TEMPLATE_ID, id);
+                        bundle.putInt(EXTRA_CATEGORY_ID,categoryId);
                         bundle.putDouble(DOWNLOAD_PROGRESS, progress);
                         msg.what = WHAT_DOWNLOAD_PROGRESS;
                         msg.setData(bundle);
@@ -207,6 +222,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
                         msg.what = WHAT_DOWNLOAD_COMPLETED;
                         Bundle bundle = new Bundle();
                         bundle.putInt(EXTRA_TEMPLATE_ID, id);
+                        bundle.putInt(EXTRA_CATEGORY_ID,categoryId);
                         bundle.putString(EXTRA_TEMPLATE_NAME, name);
                         bundle.putString(EXTRA_TEMPLATE_PATH,downUri.getPath());
                         msg.setData(bundle);
