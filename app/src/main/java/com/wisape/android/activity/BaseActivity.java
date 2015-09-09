@@ -3,8 +3,10 @@ package com.wisape.android.activity;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.view.MotionEvent;
 import android.widget.Toast;
 
+import com.bugtags.library.Bugtags;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.wisape.android.R;
 import com.wisape.android.WisapeApplication;
@@ -26,6 +28,24 @@ public abstract class BaseActivity extends VolleyActivity{
     protected void onStart() {
         super.onStart();
         GoogleAnalytics.getInstance(this).reportActivityStart(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Bugtags.onResume(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Bugtags.onPause(this);
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        Bugtags.onDispatchTouchEvent(this,ev);
+        return super.dispatchTouchEvent(ev);
     }
 
     @Override

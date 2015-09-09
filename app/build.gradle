@@ -76,6 +76,7 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile files('libs/libammsdk.jar')
     compile files('libs/Parse-1.2.0.jar')
+    compile files('libs/bugtags-lib-1.0.4.jar')
     compile project(':oauth')
     compile project(':mobihelp_sdk_android_v1_4')
     compile project(':cordova')
