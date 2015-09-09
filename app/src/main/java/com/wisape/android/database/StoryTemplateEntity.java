@@ -121,4 +121,20 @@ public class StoryTemplateEntity extends BaseEntity implements Parcelable {
             return new StoryTemplateEntity[size];
         }
     };
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        StoryTemplateEntity that = (StoryTemplateEntity) o;
+
+        return serverId == that.serverId;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) (serverId ^ (serverId >>> 32));
+    }
 }

@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.Where;
 import com.wisape.android.WisapeApplication;
@@ -499,37 +500,50 @@ public class StoryLogic {
         //insert into database
         DatabaseHelper helper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
         Dao<StoryTemplateEntity, Long> dao;
-        StoryTemplateEntity entity;
+
         SQLiteDatabase db = helper.getWritableDatabase();
         db.beginTransaction();
         StoryTemplateEntity storyTemplateArray[] = null;
         try {
             dao = helper.getDao(StoryTemplateEntity.class);
-            List<StoryTemplateEntity> entities;
+
+            QueryBuilder<StoryTemplateEntity, Long> builder = dao.queryBuilder();
+            List<StoryTemplateEntity> tempEntities;
+            tempEntities = builder.where().eq("type", attrInfo.type).query();
+
             int num;
             storyTemplateArray = new StoryTemplateEntity[count];
             int index = 0;
             long updateAt = System.currentTimeMillis();
             StoryTemplateEntity oldEntity;
             for (StoryTemplateInfo info : storyTemplateInfos) {
-                entity = StoryTemplateEntity.transform(info);
-
-                QueryBuilder<StoryTemplateEntity, Long> builder = dao.queryBuilder();
-                entities = builder.where().eq("serverId", entity.serverId).query();
+                StoryTemplateEntity entity = StoryTemplateEntity.transform(info);
+                builder = dao.queryBuilder();
+                List<StoryTemplateEntity> entities = builder.where().eq("serverId", entity.serverId).query();
                 num = (null == entities ? 0 : entities.size());
                 if (0 < num) {
                     oldEntity = entities.get(0);
                     dao.delete(entities);
                     entity.updateAt = updateAt;
                     entity.createAt = oldEntity.createAt;
-                    entity.thumbLocal = oldEntity.templateLocal;
+                    entity.templateLocal = oldEntity.templateLocal;
                     entity.thumbLocal = oldEntity.thumbLocal;
                 } else {
                     entity.createAt = updateAt;
                     entity.updateAt = updateAt;
+                    if (tempEntities != null){
+                        tempEntities.remove(entity);
+                    }
                 }
                 entity = dao.createIfNotExists(entity);
                 storyTemplateArray[index++] = entity;
+            }
+            if (tempEntities != null){
+                for (StoryTemplateEntity entity : tempEntities){
+                    DeleteBuilder deleteBuilder = dao.deleteBuilder();
+                    deleteBuilder.where().eq("serverId",entity.serverId);
+                    deleteBuilder.delete();
+                }
             }
             db.setTransactionSuccessful();
         } catch (SQLException e) {
