@@ -32,7 +32,11 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Queue;
 import java.util.Set;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Created by LeiGuoting on 7/7/15.
@@ -69,7 +73,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
 //        intent.putExtra(EXTRA_STORY_ID,storyId);
         fragment.startActivityForResult(intent, requestCode);
     }
-
+    private Queue<String> fontQueue = new LinkedBlockingQueue<>();
     private Handler downloadHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -152,11 +156,13 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
         File fontDirectory = StoryManager.getStoryFontDirectory();
         for(File file : fontDirectory.listFiles()){
             if(file.isDirectory() && !fontSet.contains(file.getName())){
-                Bundle args = new Bundle();
-                args.putString(EXTRA_FONT_NAME, file.getName());
-                startLoad(WHAT_DOWNLOAD_FONT, args);
+                fontSet.remove(file.getName());
             }
         }
+        fontQueue.addAll(fontSet);
+        Bundle args = new Bundle();
+        args.putString(EXTRA_FONT_NAME, fontQueue.poll());
+        startLoad(WHAT_DOWNLOAD_FONT, args);
     }
 
     private Set<String> parseFont(File template){
@@ -258,6 +264,12 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
                         File font = StoryManager.getStoryFontDirectory();
                         unzipFont(downUri, font);
                         appendFont(name);
+
+                        if(fontQueue.size() != 0){
+                            Bundle args = new Bundle();
+                            args.putString(EXTRA_FONT_NAME, fontQueue.poll());
+                            startLoad(WHAT_DOWNLOAD_FONT, args);
+                        }
                     }
 
                     public void onError(Uri uri){
