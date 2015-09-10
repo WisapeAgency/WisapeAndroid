@@ -6,22 +6,16 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.squareup.picasso.Picasso;
-import com.wisape.android.activity.AddEmailAccoutActivity;
-import com.wisape.android.activity.ChangeEamilActivity;
 import com.wisape.android.activity.CutActivity;
 import com.wisape.android.activity.PhotoSelectorActivity;
-import com.wisape.android.content.PhotoProvider;
 import com.wisape.android.network.NanoServer;
-import com.wisape.android.view.CircleTransform;
+import com.wisape.android.util.*;
+import com.wisape.android.util.FileUtils;
 
 import org.apache.cordova.CallbackContext;
-import org.apache.cordova.CordovaArgs;
 import org.json.JSONException;
 
 import java.util.HashMap;
-
-import static com.wisape.android.activity.PhotoSelectorActivity.REQUEST_CODE_PHOTO;
 
 /**
  * Created by LeiGuoting on 3/7/15.
@@ -39,21 +33,15 @@ public class PhotoSelectorPlugin extends AbsPlugin {
         callbackContextMap = new HashMap(3);
     }
 
-    public boolean execute(String action, CordovaArgs args, CallbackContext callbackContext) throws JSONException {
-        if(ACTION_STORY_BACKGROUND.equals(action)){
-
+    public boolean execute(CallbackContext callbackContext) throws JSONException {
 
             PhotoSelectorActivity.launch(getCurrentActivity(), PhotoSelectorActivity.REQUEST_CODE_PHOTO);
-
 //            startActivityForResult(PhotoSelectorActivity.getIntent(getCurrentActivity().getApplicationContext()), REQUEST_CODE_PHOTO);
-
             synchronized (callbackContextMap){
-                callbackContextMap.remove(action);
-                callbackContextMap.put(action, callbackContext);
+                callbackContextMap.remove(ACTION_STORY_BACKGROUND);
+                callbackContextMap.put(ACTION_STORY_BACKGROUND, callbackContext);
             }
             return true;
-        }
-        return false;
     }
 
     @Override
@@ -73,9 +61,8 @@ public class PhotoSelectorPlugin extends AbsPlugin {
                         callback = callbackContextMap.remove(ACTION_STORY_BACKGROUND);
                     }
                     if(null != callback){
-                        String localPath = cropImgUri.getPath();
-                        Uri newUri = NanoServer.makeImageUrl(localPath);
-                        callback.success(newUri.toString());
+                        callback.success(FileUtils.getRealPathFromURI(getCurrentActivity(),
+                                cropImgUri));
                     }
                     cropImgUri = null;
                     break;

@@ -26,6 +26,7 @@ import com.wisape.android.http.OkhttpUtil;
 import com.wisape.android.model.StoryInfo;
 import com.wisape.android.model.StoryMusicInfo;
 import com.wisape.android.model.StoryMusicTypeInfo;
+import com.wisape.android.model.StorySettingsInfo;
 import com.wisape.android.model.StoryTemplateInfo;
 import com.wisape.android.model.UserInfo;
 import com.wisape.android.network.Downloader;
@@ -678,12 +679,7 @@ public class StoryLogic {
     private void localStoryConvertoStroyInfo(List<StoryEntity> storyEntityList,List<StoryInfo> loacalStroyList){
         if(null != storyEntityList && storyEntityList.size() > 0){
             for (StoryEntity storyEntity : storyEntityList) {
-                StoryInfo storyInfo = new StoryInfo();
-                storyInfo.story_url = storyEntity.storyUri;
-                storyInfo.id = storyEntity.id;
-                storyInfo.story_name = storyEntity.storyName;
-                storyInfo.small_img = storyEntity.storyThumbUri;
-                loacalStroyList.add(storyInfo);
+                loacalStroyList.add(StoryEntity.convert(storyEntity));
             }
         }
     }
@@ -728,7 +724,7 @@ public class StoryLogic {
     private List<StoryInfo> getUserStoryFromServer(String access_token) throws Exception{
 
         Map<String,String> params = new HashMap<>();
-        params.put(ATTR_ACCESS_TOKEN,access_token);
+        params.put(ATTR_ACCESS_TOKEN, access_token);
 
         try{
             return OkhttpUtil.execute(params, HttpUrlConstancts.GET_USER_STORY_FROM_SERVER, StoryInfo.class);
@@ -742,9 +738,32 @@ public class StoryLogic {
      **/
     public void downLoadDefaultStory(StoryInfo defaultStroy) {
         final File file = new File(StoryManager.getStoryDirectory(), defaultStroy.story_name + ".zip");
-        if (!file.exists()) {
+        if(!file.exists()) {
             Log.e(TAG,"下载默认story");
             OkhttpUtil.downLoadFile(defaultStroy.story_url,file.getPath());
         }
     }
+
+    /**
+     * 保存封面设置到本地
+     */
+    public StoryEntity saveStory(Context context,StoryEntity storyEntity) {
+        DatabaseHelper databaseHelper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
+        Dao<StoryEntity, Integer> dao;
+        SQLiteDatabase database = databaseHelper.getWritableDatabase();
+        database.beginTransaction();
+        try {
+            dao = databaseHelper.getDao(StoryEntity.class);
+            StoryEntity entity = dao.createIfNotExists(storyEntity);
+            database.setTransactionSuccessful();
+            return entity;
+        } catch (SQLException e) {
+            Log.e(TAG,e.getMessage());
+            return null;
+        } finally {
+            database.endTransaction();
+            OpenHelperManager.releaseHelper();
+        }
+    }
+
 }

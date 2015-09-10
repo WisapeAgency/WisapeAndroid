@@ -13,6 +13,8 @@ import com.squareup.picasso.Picasso;
 import com.wisape.android.R;
 import com.wisape.android.logic.UserLogic;
 import com.wisape.android.model.UserInfo;
+import com.wisape.android.network.NanoServer;
+import com.wisape.android.util.FileUtils;
 import com.wisape.android.view.CircleTransform;
 
 import butterknife.ButterKnife;

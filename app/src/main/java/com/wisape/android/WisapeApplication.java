@@ -12,6 +12,7 @@ import com.parse.Parse;
 import com.parse.ParseInstallation;
 import com.parse.PushService;
 import com.wisape.android.activity.MainActivity;
+import com.wisape.android.database.StoryEntity;
 import com.wisape.android.model.StoryTemplateInfo;
 import com.wisape.android.model.StoryTemplateTypeInfo;
 import com.wisape.android.model.UserInfo;
@@ -46,6 +47,7 @@ public class WisapeApplication extends Application {
     private UserInfo userInfo;
     private SharedPreferences sharedPreferences;
     private String installId;
+    private StoryEntity storyEntity;
 
 
     public enum TrackerName {
@@ -121,5 +123,13 @@ public class WisapeApplication extends Application {
 
     public Map<Integer, List<StoryTemplateInfo>> getTemplateMap() {
         return templateMap;
+    }
+
+    public StoryEntity getStoryEntity() {
+        return storyEntity;
+    }
+
+    public void setStoryEntity(StoryEntity storyEntity) {
+        this.storyEntity = storyEntity;
     }
 }
