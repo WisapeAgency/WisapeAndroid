@@ -26,7 +26,9 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -47,6 +49,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
     private static final String EXTRA_TEMPLATE_URL = "temp_url";
     private static final String EXTRA_FONT_NAME = "font_name";
     private static final String FONT_FAMILY = "font-family";
+    private static final String FONT_FILE_NAME = "fonts.css";
 
     private static final int WHAT_DOWNLOAD_TEMPLATE = 0x01;
     private static final int WHAT_DOWNLOAD_FONT = 0x02;
@@ -67,7 +70,6 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
         fragment.startActivityForResult(intent, requestCode);
     }
 
-    private int storyId;
     private Handler downloadHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -136,7 +138,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
 
         Bundle args = new Bundle();
         args.putInt(EXTRA_TEMPLATE_ID, id);
-        args.putInt(EXTRA_CATEGORY_ID,categoryId);
+        args.putInt(EXTRA_CATEGORY_ID, categoryId);
         args.putString(EXTRA_TEMPLATE_NAME, name);
         args.putString(EXTRA_TEMPLATE_URL, url);
         startLoad(WHAT_DOWNLOAD_TEMPLATE, args);
@@ -149,7 +151,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
         }
         File fontDirectory = StoryManager.getStoryFontDirectory();
         for(File file : fontDirectory.listFiles()){
-            if(!fontSet.contains(file.getName())){
+            if(file.isDirectory() && !fontSet.contains(file.getName())){
                 Bundle args = new Bundle();
                 args.putString(EXTRA_FONT_NAME, file.getName());
                 startLoad(WHAT_DOWNLOAD_FONT, args);
@@ -243,16 +245,19 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
             }
             case WHAT_DOWNLOAD_FONT:{
                 final String name = args.getString(EXTRA_FONT_NAME);
+//                final String name = "Trebuc";
                 Uri uri = WWWConfig.acquireUri(getString(R.string.uri_font_download));
                 String url = String.format("%s?name=%s", uri.toString(), name);
-                Uri dest = Uri.fromFile(new File(StoryManager.getStoryFontDirectory(), name));
+                Uri dest = Uri.fromFile(new File(StoryManager.getStoryFontDirectory(), name + ".zip"));
                 Downloader.download(Uri.parse(url),dest, new Downloader.DownloaderCallback(){
                     public void onDownloading(double progress){
 
                     }
                     public void onCompleted(Uri downUri){
-                        File template = getFontUnzipDirectory(name);
-                        unzipTemplate(downUri, template);
+//                        File font = getFontUnzipDirectory(name);
+                        File font = StoryManager.getStoryFontDirectory();
+                        unzipFont(downUri, font);
+                        appendFont(name);
                     }
 
                     public void onError(Uri uri){
@@ -263,6 +268,34 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
             }
         }
         return msg;
+    }
+
+    private synchronized void appendFont(String fontName){
+        File fonts = new File(StoryManager.getStoryFontDirectory(),FONT_FILE_NAME);
+        PrintWriter writer = null;
+        try {
+            if (!fonts.exists()) {
+                fonts.createNewFile();
+            }
+            writer = new PrintWriter(new FileWriter(fonts, true));
+            writer.println("@font-face {");
+            writer.println(String.format("    font-family: '%s';",fontName));
+            writer.println(String.format("    src: url('%s/%s.eot');",fontName,fontName));
+            writer.println(String.format("    src: url('%s/%s.eot?#iefix') format('embedded-opentype'),",fontName,fontName));
+            writer.println(String.format("    url('%s/%s.woff') format('woff'),",fontName,fontName));
+            writer.println(String.format("    url('%s/%s.ttf') format('truetype'),",fontName,fontName));
+            writer.println(String.format("    url('%s/%s.svg') format('svg');",fontName,fontName));
+            writer.println("    font-weight: normal;");
+            writer.println("    font-style: normal;");
+            writer.println("}");
+        }catch (Exception e){
+
+        }finally {
+            if (writer != null){
+                writer.close();
+            }
+        }
+
     }
 
     private File getTemplateUnzipDirectory(String name) {
@@ -291,6 +324,15 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
                 FileUtils.deleteDirectory(template);
             }
             ZipUtils.unzip(downUri, template);
+        }catch (IOException e){
+            Log.e(TAG, "", e);
+            loadUrl("javascript:onError('unzip error!')");
+        }
+    }
+
+    private void unzipFont(Uri downUri, File font) {
+        try {
+            ZipUtils.unzip(downUri, font);
         }catch (IOException e){
             Log.e(TAG, "", e);
             loadUrl("javascript:onError('unzip error!')");
