@@ -1,0 +1,66 @@
+<div class="header">
+    <div class="pull-left">
+        <a class="icon-arrow-left"  ng-click="showView('storyStageList','mainHtml')"></a>
+        <span class="tit">Page List</span>
+    </div>
+    <div class="pull-right">
+        <ul class="list-inline">
+            <li><a class="icon-dustbin" id="pageDel"></a></li>
+        </ul>
+    </div>
+</div>
+<div class="story-page-list" >
+    <ul id="storyDragBox">
+        <li class="tpl-page-item">
+            <img class="stage-thumb" src="../public/img/temp/stage_example.jpg" alt="">
+            <i class="icon-correct"></i>
+        </li>
+        <li class="tpl-page-item">
+            <img class="stage-thumb" src="../public/img/temp/stage_example2.png" alt="">
+            <i class="icon-correct"></i>
+        </li>
+        <li class="tpl-page-item">
+            <img class="stage-thumb" src="../public/img/temp/stage_example.jpg" alt="">
+            <i class="icon-correct"></i>
+        </li>
+        <li class="tpl-page-item">
+            <img class="stage-thumb" src="../public/img/temp/stage_example2.png" alt="">
+            <i class="icon-correct"></i>
+        </li>
+        <li class="tpl-page-item">
+            <img class="stage-thumb" src="../public/img/temp/stage_example.jpg" alt="">
+            <i class="icon-correct"></i>
+        </li>
+        <li class="tpl-page-item">
+            <img class="stage-thumb" src="../public/img/temp/stage_example2.png" alt="">
+            <i class="icon-correct"></i>
+        </li>
+        <li class="tpl-page-item">
+            <img class="stage-thumb" src="../public/img/temp/stage_example.jpg" alt="">
+            <i class="icon-correct"></i>
+        </li>
+        <li class="tpl-page-item">
+            <img class="stage-thumb" src="../public/img/temp/stage_example2.png" alt="">
+            <i class="icon-correct"></i>
+        </li>
+    </ul>
+</div>
+
+<script type="application/javascript">
+    $(function(){
+        Sortable.create(storyDragBox, {
+            group: "words",
+            animation: 150,
+            onAdd: function (evt){ console.log('onAdd.bar:', evt.item); },
+            onUpdate: function (evt){ console.log('onUpdate.bar:', evt.item); },
+            onRemove: function (evt){ console.log('onRemove.bar:', evt.item); },
+            onStart:function(evt){ console.log('onStart.foo:', evt.item);console.info("evt:");console.info(evt);$(evt.item).addClass("selected").siblings().removeClass("selected")},
+            onEnd: function(evt){ console.log('onEnd.foo:', evt.item);},
+        });
+
+        $("#pageDel").click(function(){
+            $("#storyDragBox li.selected").remove();
+        })
+    })
+
+</script>

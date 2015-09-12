@@ -1,0 +1,45 @@
+<html>
+<head>
+    <title>Angular JS Custom Directives</title>
+</head>
+<body ng-app='app'>
+<style>
+    .expander {
+        border: 1px solid black;
+        width: 250px;
+    }
+
+    .expander>.title {
+        background-color: black;
+        color: white;
+        padding: .1em .3em;
+        cursor: pointer;
+    }
+
+    .expander>.body {
+        padding: .1em .3em;
+    }
+</style>
+<div ng-controller='MyController'>
+    <div ng-repeat='thing in things'>
+        {{thing}}.<hello></hello>
+    </div>
+</div>
+<script src="../cs/public/js/angular.min.js"></script>
+<script>
+    var appModule = angular.module('app', []);
+    appModule.directive('hello', function() {
+        return {
+            restrict: 'E',
+            template: '<span>Hi there</span>',
+            replace: true
+        };
+    });
+    appModule.controller('MyController',function($scope) {
+        $scope.things = [1,2,3,4,5,6];
+    });
+
+
+</script>
+</body>
+</html>

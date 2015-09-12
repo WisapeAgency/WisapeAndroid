@@ -213,9 +213,9 @@ function MainCtrl(browser,$scope){
         })();
 
         //禁用系统默认的touchmove
-        document.addEventListener('touchmove',function(e){
+        /*document.addEventListener('touchmove',function(e){
             e.preventDefault();
-        },false);
+        },false);*/
     }else{
         $scope.mainHtmlUrl = 'pc.html';
     }

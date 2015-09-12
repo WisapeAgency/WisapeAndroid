@@ -768,3 +768,7 @@
         -o-transform: translate3d(0,0,0);
     }
 }
+
+.enter-from-bottom{
+    background-image: url(enter-from-bottom.png);
+}

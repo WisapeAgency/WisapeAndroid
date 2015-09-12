@@ -1,0 +1,141 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <link href="../public/css/reset.css" rel="stylesheet"/>
+    <link href="../public/css/layout.css" rel="stylesheet"/>
+    <link href="../public/css/font.css" rel="stylesheet"/>
+    <link href="../public/css/animation.css" rel="stylesheet"/>
+    <link href="../public/css/editor_index.css" rel="stylesheet"/>
+    <link href="../public/css/stageSelct.css" rel="stylesheet"/>
+</head>
+<body>
+<div id="main" class="page">
+    <div class="header">
+        <div class="pull-left">
+            <a class="icon-arrow-left"></a>
+        </div>
+        <div class="pull-right">
+            <ul class="list-inline">
+                <li><a class="icon-play"></a></li>
+                <li><a class="icon-layout"></a></li>
+                <li><a class="icon-list"></a></li>
+                <li><a class="icon-settings" onclick="setting(1);"></a></li>
+            </ul>
+        </div>
+    </div>
+    <div html-include="stage_select.html"></div>
+    <!--Story加载区-->
+    <story>
+        <button onclick="test(['test','test2']);">Test</button>
+        <button onclick="getStageCategory();">getStageCategory</button>
+        <button onclick="getStageList(1);">getStageList</button>
+        <button onclick="start(16,2);">Start</button>
+        <button onclick="read('/storage/sdcard0/wisape/com.wisape.android/data/template/mingpian02/stage.html');">read</button>
+        <div id="message"></div>
+        <img src="http://www.baidu.com/img/baidu_jgylogo3.gif"/>
+    </story>
+</div>
+<!--编辑图片-->
+<div html-include="editor_image.html"></div>
+<!--编辑文字-->
+<div html-include="editor_text.html"></div>
+<!--故事预览-->
+<div html-include="story_preview.html"></div>
+<!--故事页面删除管理-->
+<div html-include="story_stageMana.html"></div>
+<!--故事设置-->
+<div html-include="story_setting.html"></div>
+<!--脚本-->
+<script src="../public/js/cordova.js"></script>
+<script src="../public/js/class.js"></script>
+<script src="../public/js/jquery2.1.4.min.js"></script>
+<script src="../public/js/angular.min.js"></script>
+<script src="../public/js/hammer.min.js"></script>
+<script src="../public/js/iscroll-lite.js"></script>
+<script src="../public/js/animation.js"></script>
+<script src="../public/js/app-main.js"></script>
+<script type="text/javascript">
+        function test(args){
+            /**
+            *调用Android方法，有5个参数
+            *1、回调函数：调用成功后回调
+            *2、回调函数：调用失败后回调
+            *3、插件名称
+            *4、方法名称
+            *5、方法参数(数组)
+            */
+            cordova.exec(function(retval) {
+                alert(retval);
+            }, function(e) {
+                alert("Error: "+e);
+            }, "Test", "test", args);
+        };
+        function test2(){
+            alert("test2");
+        }
+        /**
+        *
+        *获取模板类型测试
+        */
+        function getStageCategory(){
+            cordova.exec(function(retval) {
+                showMessage(retval);
+            }, function(e) {
+                alert("Error: "+e);
+            }, "StoryTemplate", "getStageCategory", []);
+        }
+        /**
+        *
+        *获取模板
+        */
+        function getStageList(id){
+            cordova.exec(function(retval) {
+                showMessage(retval);
+            }, function(e) {
+                alert("Error: "+e);
+            }, "StoryTemplate", "getStageList", [id]);
+        }
+        /**
+        *
+        *下载模板
+        */
+        function start(id,categoryId){
+            cordova.exec(function(retval) {
+                showMessage(retval);
+            }, function(e) {
+                alert("Error: "+e);
+            }, "StoryTemplate", "start", [id,categoryId]);
+        }
+        function read(tempName){
+            cordova.exec(function(retval) {
+                showMessage(retval);
+            }, function(e) {
+                alert("Error: "+e);
+            }, "StoryTemplate", "read", [tempName]);
+        }
+        function setting(id){
+            cordova.exec(function(retval) {
+                <!--showMessage(retval);-->
+            }, function(e) {
+                alert("Error: "+e);
+            }, "StoryTemplate", "setting", [id]);
+        }
+        function onDownloading(progress){
+            var message = "progress:" + progress;
+            showMessage(message);
+        }
+        function onCompleted(path){
+            showMessage(path);
+        }
+        function onError(){
+            alert("download error!");
+        }
+        function showMessage(message){
+            jQuery("#message").text(message);
+        }
+    </script>
+</body>
+</html>

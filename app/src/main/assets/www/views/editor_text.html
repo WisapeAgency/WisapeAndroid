@@ -1,23 +1,147 @@
-<div id="editorText" class="page">
-    <div class="header">
-        <div class="pull-left">
-            <a class="imgIco-back"></a><span>Edit Text</span>
+<div class="header">
+    <div class="pull-left">
+        <a class="icon-arrow-left" ng-click="showView('editorText','mainHtml')"></a>
+        <span class="tit">Edit Text</span>
+    </div>
+    <div class="pull-right">
+        <ul class="list-inline">
+            <li><a class="icon-pencil" ng-click="popTextEditerOpt($event)"></a></li>
+        </ul>
+    </div>
+</div>
+<div class="pages editable">
+    <div class="tpl-item" style="background: url(../public/img/temp/stage_example.jpg);background-size: 100% 100%;">
+        <div id="test" class="pages-txt selected" contenteditable="true" style="margin:70px auto;width:150px;color:#fff;text-align: left;background:rgba(0,0,0,0.5);">As c update of the classic translation corpus, the combination of network technology and language essence</div>
+    </div>
+</div>
+<div class="pop-layer pop-editer-opt" style="display: none">
+    <div class="hd">
+        <i class="icon-bold" ng-click="setFontWeight($event)"></i>
+        <i class="icon-italic" ng-click="setFontStyle($event)"></i>
+        <i class="icon-hyperlink" ng-click="setFontLink($event)"></i>
+        <i class="icon-align-left" ng-click="setFontAlign($event)"></i>
+    </div>
+    <div class="bd opts">
+        <div class="item" ng-click="changePopLayer('pop-editer-color')"><span class="opt-name">Color</span><span class="opt-right"><span class="opt-val-color" style="background-color: red"></span><i class="icon-arrow-right-list"></i></span></div>
+        <div class="item" ng-click="changePopLayer('pop-editer-font')"><span class="opt-name">Font</span><span class="opt-right"><span class="opt-val">Hevele</span><i class="icon-arrow-right-list"></i></span></div>
+        <div class="item" ng-click="changePopLayer('pop-editer-animation')"><span class="opt-name">Animation</span><span class="opt-right"><span class="opt-val">Animation1</span><i class="icon-arrow-right-list"></i></span></div>
+    </div>
+</div>
+
+<div class="pop-layer pop-editer-font" style="display: none">
+    <div class="hd">
+        <i class="icon-arrow-left" ng-click="backPopLayerOpt()"></i>
+        <span class="tit">Font Selection</span>
+    </div>
+    <div class="bd opts">
+        <div class="item"><span class="opt-name">Font1</span><span class="opt-right"><i class="icon-correct"></i></span></div>
+        <div class="item"><span class="opt-name">Font2</span><span class="opt-right"><i class="icon-download"></i></span></div>
+        <div class="item"><span class="opt-name">Font2</span><span class="opt-right"><div class="download-progress-bar"><div class="download-progress-percent" style="width:50%;"></div></div></span></div>
+        <div class="item"><span class="opt-name">Font2</span><span class="opt-right"><i class="icon-download"></i></span></div>
+        <div class="item"><span class="opt-name">Font2</span><span class="opt-right"><i class="icon-download"></i></span></div>
+        <div class="item"><span class="opt-name">Font2</span><span class="opt-right"><i class="icon-download"></i></span></div>
+        <div class="item"><span class="opt-name">Font2</span><span class="opt-right"><i class="icon-download"></i></span></div>
+    </div>
+</div>
+
+<div class="pop-layer pop-editer-animation" style="display: none">
+    <div class="hd">
+        <i class="icon-arrow-left" ng-click="backPopLayerOpt()"></i>
+        <span class="tit">Animation</span>
+    </div>
+    <div class="bd">
+        <span class="anim-item"><i class="enter-from-bottom"></i></span>
+        <span class="anim-item"></span>
+        <span class="anim-item"></span>
+        <span class="anim-item"></span>
+        <span class="anim-item"></span>
+        <span class="anim-item"></span>
+        <span class="anim-item"></span>
+        <span class="anim-item"></span>
+        <span class="anim-item"></span>
+        <span class="anim-item"></span>
+    </div>
+</div>
+
+<div class="pop-layer pop-editer-color" style="display: none">
+    <div class="hd">
+        <i class="icon-arrow-left" ng-click="backPopLayerOpt()"></i>
+        <span class="tit">Color</span>
+    </div>
+    <div class="bd" id="color-box">
+        <div class="color-main">
+            <span class="color-main-item active"></span>
+            <span class="color-main-item"></span>
+            <span class="color-main-item"></span>
+            <span class="color-main-item"></span>
+            <span class="color-main-item"></span>
+            <span class="color-main-item"></span>
+            <span class="color-main-item"></span>
+            <span class="color-main-item"></span>
+            <span class="color-main-item"></span>
+            <span class="color-main-item"></span>
         </div>
-        <div class="pull-right">
-            <!--文字元件编辑状态切换入口-->
-            <a class="imgIco-edit-text"></a>
+        <div class="color-sub">
+            <span class="color-sub-item"><i></i></span>
+            <span class="color-sub-item"><i></i></span>
+            <span class="color-sub-item"><i></i></span>
+            <span class="color-sub-item selected"><i></i></span>
+            <span class="color-sub-item"><i></i></span>
+            <span class="color-sub-item"><i></i></span>
+            <span class="color-sub-item"><i></i></span>
+            <span class="color-sub-item"><i></i></span>
         </div>
     </div>
-    <!--正在编辑的模板-->
-    <stage>
-        ...
-    </stage>
-    <!--文字可选择变量展示-->
-    <div html-include="text_select_main.html"></div>
-    <!--编辑字体-->
-    <div html-include="text_select_font.html"></div>
-    <!--编辑颜色-->
-    <div html-include="text_select_color.html"></div>
-    <!--编辑动画-->
-    <div html-include="text_select_animation.html"></div>
 </div>
+
+<div class="ui-mask" style="display: none; width: 100%; height: 671px;"></div>
+<div class="ui-dialog href-dialog" style="width: 300px; height: 200px; display: none; left: 50%; margin-left: -150px; top: 50%; margin-top: -100px;">
+    <div class="ui-dialog-title">Set Destination</div>
+    <div class="ui-dialog-content">
+        <div class="input-href">
+            <input type="text" value="http://"/>
+        </div>
+    </div>
+    <div class="ui-dialog-btns">
+        <a class="ui-btn btn-cancle">Cancle</a>
+        <a class="ui-btn btn-submit">Confirm</a>
+    </div>
+</div>
+<script>
+    $(function(){
+        var ColorArr = [
+            ["#000000", "#444444", "#999999", "#999999", "#b7b7b7", "#d9d9d9", "#d9d9d9", "#ffffff"],
+            ["#5b0f01", "#85200c", "#a61c00", "#980000", "#cccccc", "#cc4025", "#e7b8b0", "#ffffff"],
+            ["#660000", "#990100", "#cc0001", "#fe0000", "#e06665", "#e99998", "#f4cccc", "#ffffff"],
+            ["#773f04", "#b45f05", "#e69137", "#fe9900", "#f6b26b", "#f9ca9c", "#fbe5cd", "#ffffff"],
+            ["#7e6000", "#bf9100", "#f1c332", "#ffff00", "#fed966", "#ffe59a", "#fff2cd", "#ffffff"],
+            ["#274f13", "#37761d", "#69a84f", "#00ff01", "#92c47d", "#b6d7a8", "#d8ead2", "#ffffff"],
+            ["#0c343c", "#144f5d", "#46818f", "#00ffff", "#76a5af", "#a2c3c8", "#d1e0e3", "#ffffff"],
+            ["#1c4587", "#1055cc", "#3c78d8", "#4a86e8", "#6d9eeb", "#a4c2f4", "#c9daf8", "#ffffff"],
+            ["#073863", "#0c5395", "#3e85c7", "#0000fe", "#6fa8dd", "#9fc5e9", "#cfe2f3", "#ffffff"],
+            ["#20124d", "#351d75", "#674fa7", "#9a00ff", "#8d7cc2", "#b4a7d5", "#dad2e9", "#ffffff"]
+        ];
+
+        var $colorSub = $(".color-sub");
+        var $colorMain = $(".color-main");
+        $colorMain.find(".color-main-item").each(function(i){
+            $(this).css({"background-color":ColorArr[i][3]});
+        });
+        $colorMain.find("span").click(function(){
+            ChangeSubColor($(this).index());
+        }).eq(0).trigger("click");
+        $colorSub.find("span").click(function(){
+            $(this).addClass("selected").siblings().removeClass("selected");
+        });
+
+        function ChangeSubColor (i) {
+            $colorSub.find(".color-sub-item").each(function(j){
+                var me = $(this);
+                me.css({"background-color":ColorArr[i][j]});
+            })
+        }
+
+    })
+</script>
+
+

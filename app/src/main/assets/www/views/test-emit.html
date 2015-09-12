@@ -1,0 +1,57 @@
+<html>
+<head>
+    <title>Angular JS Filters</title>
+</head>
+<body ng-app="myapp">
+<div ng-controller="ParentCtrl">                  //父级
+    <div ng-controller="SelfCtrl">                //自己
+        <a ng-click="click()">click me</a>
+        <div ng-controller="ChildCtrl"></div>     //子级
+    </div>
+    <div ng-controller="BroCtrl"></div>           //平级
+</div>
+
+<script src="../cs/public/js/angular.min.js"></script>
+
+<script>
+
+    var myapp = angular.module('myapp',[]);
+
+
+
+    myapp.controller('SelfCtrl', function($scope) {
+        $scope.click = function () {
+            $scope.$broadcast('to-child', 'child');
+            $scope.$emit('to-parent', 'parent');
+        }
+    });
+
+    myapp.controller('ParentCtrl', function($scope) {
+        $scope.$on('to-parent', function(d,data) {
+            console.log(data);         //父级能得到值
+        });
+        $scope.$on('to-child', function(d,data) {
+            console.log(data);         //子级得不到值
+        });
+    });
+
+    myapp.controller('ChildCtrl', function($scope){
+        $scope.$on('to-child', function(d,data) {
+            console.log(data);         //子级能得到值
+        });
+        $scope.$on('to-parent', function(d,data) {
+            console.log(data);         //父级得不到值
+        });
+    });
+
+    myapp.controller('BroCtrl', function($scope){
+        $scope.$on('to-parent', function(d,data) {
+            console.log(data);        //平级得不到值
+        });
+        $scope.$on('to-child', function(d,data) {
+            console.log(data);        //平级得不到值
+        });
+    });
+</script>
+</body>
+</html>

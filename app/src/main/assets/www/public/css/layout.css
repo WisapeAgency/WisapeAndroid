@@ -10,14 +10,14 @@
     box-sizing: border-box;
 }
 body{
-    display: block;
+/*    display: block;
     position: absolute;
     width: 100%;
     max-width: 1080px;
     height: 100%;
     top: 0;
     left: 0;
-    overflow: hidden;
+    overflow: hidden;*/
 }
 stage,symbol{
     display: block;
@@ -37,12 +37,12 @@ stage,symbol{
     box-sizing: content-box;
 }
 .page{
-    position: absolute;
+/*    position: absolute;
     width: 100%;
     height: 100%;
     top: 0;
     left: 0;
-    z-index: 1;
+    z-index: 1;*/
 }
 .page-active{
     z-index: 2;
@@ -175,7 +175,7 @@ stage,symbol{
     font-weight: bold;
 }
 [class*="icon-"]{
-    display: block;
+    display: inline-block;
     background-repeat: no-repeat;
     background-position: center center;
     background-size: 100% 100%;
