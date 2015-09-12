@@ -52,7 +52,6 @@ public class StoryTemplatePlugin extends AbsPlugin{
     public static final String ACTION_GET_STAGE_LIST = "getStageList";
     public static final String ACTION_START = "start";
     public static final String ACTION_READ = "read";
-    public static final String ACTION_REPLACE_FILE = "replaceFile";
     public static final String ACTION_STORY_PATH = "getStoryPath";
     public static final String ACTION_STAGE_PATH = "getStagePath";
     public static final String ACTION_MUSIC_PATH = "getMusicPath";
@@ -107,12 +106,6 @@ public class StoryTemplatePlugin extends AbsPlugin{
                 String content = readHtml(path);
                 callbackContext.success(content);
             }
-        }else if(ACTION_REPLACE_FILE.equals(action)){//replaceFile
-            if(null != args && args.length() == 2){
-                String newFilePath = args.getString(0);//
-                String oldFilePath = args.getString(1);//
-                replaceFile(newFilePath, oldFilePath);
-            }
         }else if (ACTION_STORY_PATH.equals(action)){
             if(null != args && args.length() == 1){
                 int id = args.getInt(0);
@@ -133,7 +126,7 @@ public class StoryTemplatePlugin extends AbsPlugin{
             if(null != args && args.length() == 3){
                 bundle.putInt(EXTRA_STORY_ID, args.optInt(0));//story_id
                 bundle.putString(EXTRA_STORY_HTML, args.getString(1));
-                bundle.putString(EXTRA_FILE_PATH,args.getString(2));
+                bundle.putString(EXTRA_FILE_PATH, args.getString(2));
             }
             startLoad(WHAT_SAVE, bundle);
         }else if (ACTION_PUBLISH.equals(action)){//publish
@@ -168,10 +161,8 @@ public class StoryTemplatePlugin extends AbsPlugin{
 //                attr.type = args.getInt(EXTRA_CATEGORY_ID, 0);
 //                StoryTemplateEntity[] entities = logic.listStoryTemplate(context, attr, null);
                 int type = args.getInt(EXTRA_CATEGORY_ID, 0);
-                List<StoryTemplateInfo> entities = app.getTemplateMap().get(type);
-                if(entities == null){
-                    entities = new ArrayList<>();
-                }
+//                List<StoryTemplateInfo> entities = app.getTemplateMap().get(type);
+                List<StoryTemplateInfo> entities = logic.listStoryTemplateLocalByType(context,type);
                 System.out.println(entities.toString());
 //                System.out.println(entities.toString());
                 callbackContext.success(new Gson().toJson(entities));
@@ -323,20 +314,6 @@ public class StoryTemplatePlugin extends AbsPlugin{
 
             }
         }
-    }
-
-    private void replaceFile(String newFilePath,String oldFilePath){
-        File newFile = new File(newFilePath);
-        if (!newFile.exists()){
-            callbackContext.error("New file does not exists!");
-        }
-        File oldFile = new File(oldFilePath);
-        try {
-            org.apache.commons.io.FileUtils.copyFile(newFile, oldFile);
-        }catch (IOException e){
-            callbackContext.error("copy file error!" + e.getMessage());
-        }
-        callbackContext.success();
     }
 
     private void getStoryPath(int id){
