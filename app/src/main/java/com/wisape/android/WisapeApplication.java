@@ -5,12 +5,14 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.multidex.MultiDex;
 
+import com.bugtags.library.Bugtags;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 import com.parse.Parse;
 import com.parse.ParseInstallation;
 import com.parse.PushService;
 import com.wisape.android.activity.MainActivity;
+import com.wisape.android.database.StoryEntity;
 import com.wisape.android.model.StoryTemplateInfo;
 import com.wisape.android.model.StoryTemplateTypeInfo;
 import com.wisape.android.model.UserInfo;
@@ -45,6 +47,7 @@ public class WisapeApplication extends Application {
     private UserInfo userInfo;
     private SharedPreferences sharedPreferences;
     private String installId;
+    private StoryEntity storyEntity;
 
 
     public enum TrackerName {
@@ -78,7 +81,10 @@ public class WisapeApplication extends Application {
         WWWConfig.initialize(context);
         NanoService.startNanoServer(context);
         PlayerProxy.launch(context);
-
+        Bugtags.start("f6843af99861f31d1af2ae6d74a8e9a9", this, Bugtags.BTGInvocationEventBubble);
+        Bugtags.setTrackingCrashes(true);
+        Bugtags.setTrackingUserSteps(true);
+        Bugtags.setTrackingConsoleLog(false);
         //初始化parse通讯
         Parse.initialize(this, "L3WrrhBJmbPhRoJ4GYIUDMIErlR8IlvkJuQQJ0Px", "yfC5kFI4jLLeeDaKlepK1hgAGiYJJEHjXfnpaCks");
         PushService.subscribe(this, "abcde", MainActivity.class);
@@ -117,5 +123,13 @@ public class WisapeApplication extends Application {
 
     public Map<Integer, List<StoryTemplateInfo>> getTemplateMap() {
         return templateMap;
+    }
+
+    public StoryEntity getStoryEntity() {
+        return storyEntity;
+    }
+
+    public void setStoryEntity(StoryEntity storyEntity) {
+        this.storyEntity = storyEntity;
     }
 }

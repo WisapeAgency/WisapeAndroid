@@ -31,6 +31,18 @@ public class StoryEntity extends BaseEntity implements Parcelable{
     @DatabaseField(dataType= DataType.STRING)
     public String storyUri;
 
+    @DatabaseField(dataType = DataType.STRING)
+    public String storyMusicLocal;
+
+    @DatabaseField(dataType = DataType.STRING)
+    public String storyMusicName;
+
+    @DatabaseField
+    public long musicServerId;
+
+    @DatabaseField(dataType = DataType.STRING)
+    public String storyGestor;
+
     /**
      * Story status
      * One of

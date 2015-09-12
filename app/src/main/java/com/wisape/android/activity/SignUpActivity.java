@@ -129,7 +129,7 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
                 OAuthParams.VERSION_OAUTH_2,
                 OAuthParams.OAUTH_FACEBOOK,
                 "Facebook",
-                "public_profile  email",
+                "public_profile,email",
                 resources.getString(R.string.facebook_api_key),
                 resources.getString(R.string.facebook_api_secret_key),
                 resources.getString(R.string.facebook_api_callback_uri));
@@ -144,8 +144,8 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
                 OAuthParams.VERSION_OAUTH_2,
                 OAuthParams.OAUTH_GOOGLEPLUS,
                 "Google+",
-                "openid email profile",
-                resources.getString(BuildConfig.DEBUG ? R.string.googleplus_api_key_debug : R.string.googleplus_api_key),
+                "openid,email,profile",
+                resources.getString(R.string.googleplus_api_key),
                 resources.getString(R.string.googleplus_api_secret_key),
                 resources.getString(R.string.googleplus_api_callback_uri));
         OAuthActivity.start(this, params, REQUEST_CODE_GOOGLE_PLUS_LOGIN);
@@ -165,6 +165,8 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
                     ProfileRequester.Param param = new ProfileRequester.Param();
                     param.token = facebookToken;
                     param.screen = data.getStringExtra(OAuthActivity.EXTEA_SECRET);
+
+                   String response =  data.getStringExtra(OAuthActivity.EXTEA_RESPONSE);
 
                     Bundle args = new Bundle();
                     args.putParcelable(EXTRA_PROFILE_PARAM, param);

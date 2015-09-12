@@ -36,6 +36,8 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by tony on 2015/7/19.
@@ -292,12 +294,19 @@ public class StoryTemplatePlugin extends AbsPlugin{
     }
 
     private String readHtml(String path){
+        String parent = new File(path).getParent();
         StringBuffer content = new StringBuffer();
         BufferedReader reader = null;
         try {
             reader = new BufferedReader(new FileReader(new File(path)));
             String line;
+            Pattern p = Pattern.compile("img/[a-zA-Z0-9-_]+(\\.jpg|\\.png)");
             while ((line = reader.readLine()) != null){
+                Matcher m = p.matcher(line);
+                while (m.find()) {
+                    String result = m.group();
+                    line = line.replace(result, new File(parent,result).getAbsolutePath());
+                }
                 content.append(line);
             }
             reader.close();

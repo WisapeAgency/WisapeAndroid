@@ -23,8 +23,8 @@ public class GestorChoiceActivity extends BaseActivity {
     public static final int REQUEST_CODE_SLIDE_MOTION = 0x02;
     public static final String EXTRO_SELECT_SLIDE = "extro_select_slide";
 
-    private static final int GESTOR_LEFT_ID = 1;
-    private static final int GETSORY_TOP_ID = 2;
+    public static final int GESTOR_LEFT_ID = 1;
+    public static final int GETSORY_TOP_ID = 2;
 
     private TextView selectTextView;
 
