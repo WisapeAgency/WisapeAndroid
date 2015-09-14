@@ -27,14 +27,18 @@ import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaWebView;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -46,14 +50,14 @@ public class StoryTemplatePlugin extends AbsPlugin{
     private static final String FILE_NAME_THUMB = "thumb.jpg";
     private static final String FILE_NAME_STORY = "story.html";
     private static final String FILE_NAME_TEMPLATE = "stage.html";
+    private static final String FILE_NAME_FONT = "fonts.css";
     private static final String DIR_NAME_IMAGE = "img";
 
     public static final String ACTION_GET_STAGE_CATEGORY = "getStageCategory";
     public static final String ACTION_GET_STAGE_LIST = "getStageList";
     public static final String ACTION_START = "start";
     public static final String ACTION_READ = "read";
-    public static final String ACTION_STORY_PATH = "getStoryPath";
-    public static final String ACTION_STAGE_PATH = "getStagePath";
+    public static final String ACTION_GET_FONTS = "getFonts";
     public static final String ACTION_MUSIC_PATH = "getMusicPath";
     public static final String ACTION_SAVE = "save";
     public static final String ACTION_PUBLISH = "publish";
@@ -106,21 +110,13 @@ public class StoryTemplatePlugin extends AbsPlugin{
                 String content = readHtml(path);
                 callbackContext.success(content);
             }
-        }else if (ACTION_STORY_PATH.equals(action)){
-            if(null != args && args.length() == 1){
-                int id = args.getInt(0);
-                getStoryPath(id);
-            }
-        }else if (ACTION_STAGE_PATH.equals(action)){
-            if(null != args && args.length() == 1){
-                int id = args.getInt(0);
-                getStagePath(id);
-            }
         }else if (ACTION_MUSIC_PATH.equals(action)){
             if(null != args && args.length() == 1){
                 int id = args.getInt(0);
                 getMusicPath(id);
             }
+        }else if (ACTION_GET_FONTS.equals(action)) {
+            getFonts();
         }else if (ACTION_SAVE.equals(action)){//save
             Bundle bundle = new Bundle();
             if(null != args && args.length() == 3){
@@ -316,24 +312,27 @@ public class StoryTemplatePlugin extends AbsPlugin{
         }
     }
 
-    private void getStoryPath(int id){
-        Context context = getCurrentActivity().getApplicationContext();
-        StoryEntity story = logic.getStoryLocalById(context, id);
-        if(story != null){
-            callbackContext.success(story.storyLocal);
-        }else{
-            callbackContext.error(1);//not fond
+    private void getFonts(){
+        JSONObject json = new JSONObject();
+        try {
+            File fontDirectory = StoryManager.getStoryFontDirectory();
+            File fontFile = new File(fontDirectory, FILE_NAME_FONT);
+            json.put("filePath", fontFile.getAbsolutePath());
+            File[] fonts = fontDirectory.listFiles(new FileFilter() {
+                @Override
+                public boolean accept(File file) {
+                    return file.isDirectory();
+                }
+            });
+            String[] fontNames = new String[fonts.length];
+            for (int i = 0; i < fonts.length; i++) {
+                fontNames[i] = fonts[i].getName();
+            }
+            json.put("fonts", fontNames);
+        }catch (JSONException e){
+            callbackContext.success(1);
         }
-    }
-
-    private void getStagePath(int id){
-        Context context = getCurrentActivity().getApplicationContext();
-        StoryTemplateEntity template = logic.getStoryTemplateLocalById(context,id);
-        if(template != null){
-            callbackContext.success(template.templateLocal);
-        }else{
-            callbackContext.error(1);//not fond
-        }
+        callbackContext.success(json);
     }
 
     private void getMusicPath(int id){
