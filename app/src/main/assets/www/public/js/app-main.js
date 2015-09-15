@@ -110,9 +110,26 @@ WisapeEditer = {
                 return false;
             }
             WisapeEditer.ShowView('main','editorImage');
+            cordova.exec(function(retval) {
+                console.info("PhotoSelector:" + retval);
+            }, function(e) {
+                alert("Error: "+e);
+            }, "PhotoSelector", "execute", "action");
             event.stopPropagation();
 
         });
+
+
+        function startPhotoSelector(url, opts, className){
+            cordova.exec(function(url) {
+                console.log("Image URL:" + url);
+                var imgID = new Image();
+                imgID.src=url;
+                imgID.onload = function(){
+                    document.getElementById("img_logo").innerHTML = "<img src="+imgID.src+" />";
+                }
+            }, function(e) {console.log("Error: "+e);}, "PhotoSelector", "story", [className, url, opts || {}]);
+        };
 
         pageScroll.delegate("li.active .pages-txt ","click",function(event){
             var _me = $(this);
