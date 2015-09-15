@@ -65,7 +65,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
     private static final int WHAT_DOWNLOAD_PROGRESS = 0x03;
     private static final int WHAT_DOWNLOAD_COMPLETED = 0x04;
     private static final int WHAT_DOWNLOAD_ERROR = 0x05;
-    private static final int WHAT_DOWNLOAD_FONT_COMPLETED = 0x06;
+    private static final int WHAT_INIT = 0x06;
 
     public static void launch(Activity activity, int requestCode){
         Intent intent = new Intent(activity.getApplicationContext(), StoryTemplateActivity.class);
@@ -138,6 +138,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
         String url = uri.toString();
         Log.d(TAG, "#onCreate url:" + url);
         loadUrl(START_URL);
+        startLoad(WHAT_INIT, null);
     }
 
     public void downloadTemplate(String data, int id,int categoryId) throws JSONException{
@@ -212,7 +213,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
         final Message msg = Message.obtain();
         msg.what = what;
         switch (what){
-            default :
+            case WHAT_INIT :
                 WisapeApplication app = WisapeApplication.getInstance();
                 StoryEntity story = app.getStoryEntity();
                 if (story == null){
@@ -236,7 +237,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
                     story.storyLocal = new File(storyDirectory,storyName).getAbsolutePath();
                     app.setStoryEntity(story);
                 }
-                return null;
+                break;
             case WHAT_DOWNLOAD_TEMPLATE:{
                 final int id = args.getInt(EXTRA_TEMPLATE_ID, 0);
                 final int categoryId = args.getInt(EXTRA_CATEGORY_ID,0);

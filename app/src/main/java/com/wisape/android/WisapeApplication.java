@@ -81,10 +81,8 @@ public class WisapeApplication extends Application {
         WWWConfig.initialize(context);
         NanoService.startNanoServer(context);
         PlayerProxy.launch(context);
-        Bugtags.start("f6843af99861f31d1af2ae6d74a8e9a9", this, Bugtags.BTGInvocationEventBubble);
+        Bugtags.start("f6843af99861f31d1af2ae6d74a8e9a9", this, Bugtags.BTGInvocationEventNone);
         Bugtags.setTrackingCrashes(true);
-        Bugtags.setTrackingUserSteps(true);
-        Bugtags.setTrackingConsoleLog(false);
         //初始化parse通讯
         Parse.initialize(this, "L3WrrhBJmbPhRoJ4GYIUDMIErlR8IlvkJuQQJ0Px", "yfC5kFI4jLLeeDaKlepK1hgAGiYJJEHjXfnpaCks");
         PushService.subscribe(this, "abcde", MainActivity.class);
