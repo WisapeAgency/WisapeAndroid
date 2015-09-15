@@ -13,6 +13,7 @@ import com.wisape.android.util.*;
 import com.wisape.android.util.FileUtils;
 
 import org.apache.cordova.CallbackContext;
+import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.HashMap;
@@ -33,15 +34,16 @@ public class PhotoSelectorPlugin extends AbsPlugin {
         callbackContextMap = new HashMap(3);
     }
 
-    public boolean execute(String action,CallbackContext callbackContext) throws JSONException {
+    public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
 
-            PhotoSelectorActivity.launch(getCurrentActivity(), PhotoSelectorActivity.REQUEST_CODE_PHOTO);
-//            startActivityForResult(PhotoSelectorActivity.getIntent(getCurrentActivity().getApplicationContext()), REQUEST_CODE_PHOTO);
-            synchronized (callbackContextMap){
-                callbackContextMap.remove(ACTION_STORY_BACKGROUND);
-                callbackContextMap.put(ACTION_STORY_BACKGROUND, callbackContext);
-            }
-            return true;
+        Intent intent = new Intent(getCurrentActivity(), PhotoSelectorActivity.class);
+
+        startActivityForResult(intent, PhotoSelectorActivity.REQUEST_CODE_PHOTO);
+        synchronized (callbackContextMap) {
+            callbackContextMap.remove(ACTION_STORY_BACKGROUND);
+            callbackContextMap.put(ACTION_STORY_BACKGROUND, callbackContext);
+        }
+        return true;
     }
 
     @Override
@@ -52,23 +54,25 @@ public class PhotoSelectorPlugin extends AbsPlugin {
             switch (requestCode) {
                 case PhotoSelectorActivity.REQUEST_CODE_PHOTO:
                     Uri imgUri = extras.getParcelable(PhotoSelectorActivity.EXTRA_IMAGE_URI);
-                    CutActivity.launch(getCurrentActivity(), imgUri, CutActivity.RQEUST_CODE_CROP_IMG);
+                    Intent intent1 = new Intent(getCurrentActivity(), CutActivity.class);
+                    intent1.putExtra(CutActivity.EXTRA_IMAGE_URI, imgUri);
+                    startActivityForResult(intent1, CutActivity.RQEUST_CODE_CROP_IMG);
                     break;
                 case CutActivity.RQEUST_CODE_CROP_IMG:
                     cropImgUri = extras.getParcelable(CutActivity.EXTRA_IMAGE_URI);
                     CallbackContext callback;
-                    synchronized (callbackContextMap){
+                    synchronized (callbackContextMap) {
                         callback = callbackContextMap.remove(ACTION_STORY_BACKGROUND);
                     }
-                    if(null != callback){
+                    if (null != callback) {
                         callback.success(FileUtils.getRealPathFromURI(getCurrentActivity(),
                                 cropImgUri));
                     }
                     cropImgUri = null;
                     break;
-               default:
-                   super.onActivityResult(requestCode,resultCode,intent);
-                   break;
+                default:
+                    super.onActivityResult(requestCode, resultCode, intent);
+                    break;
             }
         }
 //        switch (requestCode){
@@ -109,7 +113,7 @@ public class PhotoSelectorPlugin extends AbsPlugin {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if(null != callbackContextMap){
+        if (null != callbackContextMap) {
             callbackContextMap.clear();
             callbackContextMap = null;
         }
