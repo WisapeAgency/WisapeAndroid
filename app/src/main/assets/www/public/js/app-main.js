@@ -337,7 +337,6 @@ WisapeEditer = {
         eidtPage.find(".opt-val-color").css({"color":curPagesTxt.css("color")});
     },
 
-
     //加载stagelist的stages
     LoadStageList : function(){},
 
