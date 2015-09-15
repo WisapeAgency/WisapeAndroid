@@ -49,6 +49,7 @@ import java.util.regex.Pattern;
 public class StoryTemplatePlugin extends AbsPlugin{
     private static final String FILE_NAME_THUMB = "thumb.jpg";
     private static final String FILE_NAME_STORY = "story.html";
+    private static final String FILE_NAME_PREVIEW = "preview.html";
     private static final String FILE_NAME_TEMPLATE = "stage.html";
     private static final String FILE_NAME_FONT = "fonts.css";
     private static final String DIR_NAME_IMAGE = "img";
@@ -67,7 +68,8 @@ public class StoryTemplatePlugin extends AbsPlugin{
     private static final int WHAT_GET_STAGE_LIST = 0x02;
     private static final int WHAT_START = 0x03;
     private static final int WHAT_SAVE = 0x04;
-    private static final int WHAT_PUBLISH = 0x05;
+    private static final int WHAT_PREVIEW = 0x05;
+    private static final int WHAT_PUBLISH = 0x06;
 
     private static final String EXTRA_CATEGORY_ID = "extra_category_id";
     private static final String EXTRA_TEMPLATE_ID = "extra_template_id";
@@ -201,6 +203,26 @@ public class StoryTemplatePlugin extends AbsPlugin{
                 }
                 break;
             }
+            case WHAT_PREVIEW:{
+                int storyId = args.getInt(EXTRA_STORY_ID, 0);
+                String html = args.getString(EXTRA_STORY_HTML);
+                String path = args.getString(EXTRA_FILE_PATH);
+                com.alibaba.fastjson.JSONArray paths = JSON.parseArray(path);
+                WisapeApplication app = WisapeApplication.getInstance();
+                StoryEntity story = app.getStoryEntity();
+                logic.saveStoryLocal(context,story);
+                File myStory = new File(story.storyLocal);
+                if (!myStory.exists()){
+                    myStory.mkdirs();
+                }
+                if(!saveStory(myStory,html,paths)){
+                    callbackContext.error(-1);
+                    return null;
+                }
+                File previewFile = new File(myStory,FILE_NAME_PREVIEW);
+
+                break;
+            }
             case WHAT_PUBLISH:{
                 int storyId = args.getInt(EXTRA_STORY_ID,0);
                 String html = args.getString(EXTRA_STORY_HTML);
@@ -317,11 +339,11 @@ public class StoryTemplatePlugin extends AbsPlugin{
                     return file.isDirectory();
                 }
             });
-            String[] fontNames = new String[fonts.length];
-            for (int i = 0; i < fonts.length; i++) {
-                fontNames[i] = fonts[i].getName();
+            List<String> fontList = new ArrayList<>();
+            for (File font : fonts) {
+                fontList.add(font.getName());
             }
-            json.put("fonts", fontNames);
+            json.put("fonts", fontList);
         }catch (JSONException e){
             callbackContext.success(1);
         }
