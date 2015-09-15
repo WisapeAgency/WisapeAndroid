@@ -33,7 +33,7 @@ public class PhotoSelectorPlugin extends AbsPlugin {
         callbackContextMap = new HashMap(3);
     }
 
-    public boolean execute(CallbackContext callbackContext) throws JSONException {
+    public boolean execute(String action,CallbackContext callbackContext) throws JSONException {
 
             PhotoSelectorActivity.launch(getCurrentActivity(), PhotoSelectorActivity.REQUEST_CODE_PHOTO);
 //            startActivityForResult(PhotoSelectorActivity.getIntent(getCurrentActivity().getApplicationContext()), REQUEST_CODE_PHOTO);
