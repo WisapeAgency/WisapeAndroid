@@ -25,8 +25,7 @@
             <ul>
                 <li class="tpl-page-item" ng-repeat="item in GetStageList" data-id="{{item.id}}"  ng-click="ChangeStage($event)" on-last-repeat>
                     <i ng-show="item.status == 1" class="icon-tags-hot"></i>
-                    <span  ng-hide="item.exists" class="icon-download"></span>
-                    <div style="display:none;" class="download-progress-bar"><div class="download-progress-percent"></div></div>
+                    <span  ng-hide="item.exists" class="icon-download"></span><div style="display:none;" class="download-progress-bar"><div class="download-progress-percent"></div></div>
                     <img class="stage-thumb" ng-src="{{item.temp_img_local}}"  alt="{{item.temp_name}}"/>
                     <div class="tpl-page-item-name">{{item.temp_name}}</div>
                 </li>

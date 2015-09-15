@@ -1,0 +1,142 @@
+<html ng-app='WisapePlayer'>
+<head  >
+    <meta charset="utf-8"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <link href="../public/css/reset.css" rel="stylesheet"/>
+    <link href="../public/css/layout.css" rel="stylesheet"/>
+    <link href="../public/css/font.css" rel="stylesheet"/>
+    <link href="../cs/public/css/animation.css" rel="stylesheet"/>
+    <link href="../public/css/editor_index.css" rel="stylesheet"/>
+    <link href="../public/css/stageSelct.css" rel="stylesheet"/>
+</head>
+<body>
+<!--Story加载区-->
+<story style="display: none">
+    <button onclick="test(['test','test2']);">Test</button>
+    <button onclick="getStageCategory();">getStageCategory</button>
+    <button onclick="getStageList(1);">getStageList</button>
+    <button onclick="start(59,2);">Start</button>
+    <button onclick="read('/storage/sdcard0/wisape/com.wisape.android/data/template/mingpian02/stage.html');">read</button>
+    <div id="message"></div>
+    <img src="http://www.baidu.com/img/baidu_jgylogo3.gif"/>
+</story>
+<div ng-controller='MainCtrl'>
+
+    <div id="mainHtml"  style="display: block"  ng-include="mainHtmlUrl" ng-controller="EditerIndexCtrl"></div>
+    <div id="storyStageList" style="display: none"  ng-include="'story_stage_list.html'"></div>
+    <div id="editorText" style="display: none"  ng-include="'editor_text.html'"  ng-controller="EditerTextCtrl"></div>
+    <div id="editorImage" style="display: none"  ng-include="'editor_image.html'"></div>
+</div>
+
+
+<script src="../public/js/cordova.js"></script>
+<script src="../public/js/class.js"></script>
+<script src="../public/js/jquery2.1.4.min.js"></script>
+<script src="../public/js/angular.min.js"></script>
+<script src="../public/js/hammer.min.js"></script>
+<script src="../public/js/iscroll-lite.js"></script>
+<script src="../public/js/animation.js"></script>
+
+<script src="../public/js/app-main.js"></script>
+<script src="../public/js/common.js"></script>
+
+<script src="../public/js/Sortable.js"></script>
+<script type="text/javascript">
+        function test(args){
+            /**
+            *调用Android方法，有5个参数
+            *1、回调函数：调用成功后回调
+            *2、回调函数：调用失败后回调
+            *3、插件名称
+            *4、方法名称
+            *5、方法参数(数组)
+            */
+            cordova.exec(function(retval) {
+                alert(retval);
+            }, function(e) {
+                alert("Error: "+e);
+            }, "Test", "test", args);
+        };
+        function test2(){
+            alert("test2");
+        }
+        /**
+        *
+        *获取模板类型测试
+        */
+        function getStageCategory(){
+            cordova.exec(function(retval) {
+
+                showMessage(retval);
+                return retval;
+            }, function(e) {
+                alert("Error: "+e);
+            }, "StoryTemplate", "getStageCategory", []);
+        }
+        /**
+        *
+        *获取模板
+        */
+        function getStageList(id){
+            cordova.exec(function(retval) {
+                showMessage(retval);
+            }, function(e) {
+                alert("Error: "+e);
+            }, "StoryTemplate", "getStageList", [id]);
+        }
+        /**
+        *
+        *下载模板
+        */
+        function start(id,categoryId){
+            cordova.exec(function(retval) {
+                showMessage("start?:" +retval);
+            }, function(e) {
+                alert("Error: "+e);
+            }, "StoryTemplate", "start", [id,categoryId]);
+        }
+        function read(tempName){
+            cordova.exec(function(retval) {
+                showMessage(retval);
+            }, function(e) {
+                alert("Error: "+e);
+            }, "StoryTemplate", "read", [tempName]);
+        }
+        function setting(id){
+            cordova.exec(function(retval) {
+
+                showMessage("start?:" +retval);
+            }, function(e) {
+                alert("Error: "+e);
+            }, "StoryTemplate", "setting", [id]);
+        }
+        function onDownloading(progress){
+            var message = "onDownloading:" + progress;
+            var target = $("[data-id=" + progress.id + "]");
+            console.info("onDownloading:");
+            console.dir(JSON.stringify(progress));
+            console.info(progress.progress);
+            console.info(progress.id);
+            console.info(target.find(".download-progress-bar").length);
+            target.find(".icon-download").hide();
+            target.find(".download-progress-bar").show().find(".download-progress-percent").css({"width":progress.progress*100 + "%"});
+            showMessage(message);
+        }
+        function onCompleted(path){
+            var target = $("[data-id=" + path.id + "]");
+            showMessage("onCompleted:" + path);
+            console.dir(JSON.stringify(path));
+            target.find(".download-progress-bar").hide();
+            target.attr({"data-path":path.path});
+        }
+        function onError(){
+            alert("download error!");
+        }
+        function showMessage(message){
+            jQuery("#message").text(message);
+        }
+
+
+    </script>
+</body>
+</html>
