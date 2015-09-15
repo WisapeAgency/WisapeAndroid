@@ -3,15 +3,13 @@ package com.wisape.android.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 
 import com.wisape.android.R;
-import com.wisape.android.widget.ClipImageLayout;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
+import com.wisape.android.widget.CropImageView;
 
 /**
  * 图片裁剪
@@ -29,22 +27,20 @@ public class CutActivity extends BaseActivity {
     }
 
 
-    @InjectView(R.id.clip_image_layout)
-    protected ClipImageLayout clipImageLayout;
-
+    private CropImageView cropImageView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cut);
-        ButterKnife.inject(this);
         Uri uri = getIntent().getExtras().getParcelable(EXTRA_IMAGE_URI);
-        clipImageLayout.setImgIconUri(uri);
+        cropImageView = (CropImageView)findViewById(R.id.cropImageView);
+        cropImageView.setImageBitmap(BitmapFactory.decodeFile(uri.getPath()));
+
     }
 
     @Override
     protected boolean onBackNavigation() {
-
-        Bitmap bitmap = clipImageLayout.clip();
+        Bitmap bitmap = cropImageView.getCroppedBitmap();
         if(null != bitmap){
             Uri uri = Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(),bitmap,null,null));
             bitmap.recycle();

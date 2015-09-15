@@ -1,11 +1,20 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.wisape.android.widget.CropImageView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cropImageView"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    custom:cropEnabled="true"
+    custom:cropMode="ratio_1_1"
+    custom:frameColor="@android:color/white"
+    custom:frameStrokeWeight="0dp"
+    custom:guideColor="#BBFFFFFF"
+    custom:guideShowMode="not_show"
+    custom:guideStrokeWeight="0dp"
+    custom:handleColor="@android:color/white"
+    custom:handleShowMode="show_always"
+    custom:handleSize="5dp"
+    custom:overlayColor="#66000000"
+    custom:touchPadding="0dp" />
 
-    <com.wisape.android.widget.ClipImageLayout
-        android:id="@+id/clip_image_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-
-</RelativeLayout>
