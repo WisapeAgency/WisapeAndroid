@@ -184,28 +184,21 @@ public class StoryTemplatePlugin extends AbsPlugin{
                 break;
             }
             case WHAT_SAVE:{
-                int storyId = args.getInt(EXTRA_STORY_ID,0);
+                int storyId = args.getInt(EXTRA_STORY_ID, 0);
                 String html = args.getString(EXTRA_STORY_HTML);
                 String path = args.getString(EXTRA_FILE_PATH);
                 com.alibaba.fastjson.JSONArray paths = JSON.parseArray(path);
-                String storyName;
-                if (storyId == 0){
-                    storyName = UUID.randomUUID().toString().substring(0,8);
-                }else{
-                    StoryEntity story = logic.getStoryLocalById(context,storyId);
-                    storyName = story.storyName;
+                WisapeApplication app = WisapeApplication.getInstance();
+                StoryEntity story = app.getStoryEntity();
+                logic.saveStoryLocal(context,story);
+                File myStory = new File(story.storyLocal);
+                if (!myStory.exists()){
+                    myStory.mkdirs();
                 }
-                File storyDirectory = new File(StoryManager.getStoryDirectory(), storyName);
-                if (!storyDirectory.exists()){
-                    storyDirectory.mkdirs();
-                }
-                if(!saveStory(storyDirectory,html,paths)){
+                if(!saveStory(myStory,html,paths)){
                     callbackContext.error(-1);
                     return null;
                 }
-                StoryEntity story = new StoryEntity();
-                story.storyName = storyName;
-                logic.saveStoryLocal(context,story);
                 break;
             }
             case WHAT_PUBLISH:{
@@ -245,8 +238,8 @@ public class StoryTemplatePlugin extends AbsPlugin{
         return null;
     }
 
-    private boolean saveStory(File storyDirectory,String html,com.alibaba.fastjson.JSONArray paths){
-        File storyHTML = new File(storyDirectory,FILE_NAME_STORY);
+    private boolean saveStory(File myStory,String html,com.alibaba.fastjson.JSONArray paths){
+        File storyHTML = new File(myStory,FILE_NAME_STORY);
         PrintWriter writer = null;
         try{
             writer = new PrintWriter(storyHTML);
@@ -260,7 +253,7 @@ public class StoryTemplatePlugin extends AbsPlugin{
                 writer.close();
             }
         }
-        File storyImg = new File(storyDirectory,DIR_NAME_IMAGE);
+        File storyImg = new File(myStory,DIR_NAME_IMAGE);
         if (storyImg.exists()){
             try{
                 FileUtils.deleteDirectory(storyImg);

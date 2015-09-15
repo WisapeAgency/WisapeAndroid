@@ -126,6 +126,9 @@ public abstract class AbsPlugin extends CordovaPlugin  implements LoaderManager.
 
         @Override
         public Message loadInBackground() {
+            if (null == args){
+                return null;
+            }
             int what = args.getInt(EXTRA_WHAT, 0);
             Message msg;
             try{

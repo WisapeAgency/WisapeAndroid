@@ -114,7 +114,7 @@ WisapeEditer = {
                 console.info("PhotoSelector:" + retval);
             }, function(e) {
                 alert("Error: "+e);
-            }, "PhotoSelector", "execute", "action");
+            }, "PhotoSelector", "execute", []);
             event.stopPropagation();
 
         });
