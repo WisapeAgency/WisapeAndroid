@@ -12,7 +12,9 @@ import android.util.Log;
 import android.webkit.WebSettings;
 
 import com.wisape.android.R;
+import com.wisape.android.WisapeApplication;
 import com.wisape.android.common.StoryManager;
+import com.wisape.android.database.StoryEntity;
 import com.wisape.android.network.Downloader;
 import com.wisape.android.network.WWWConfig;
 import com.wisape.android.util.EnvironmentUtils;
@@ -27,9 +29,11 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Queue;
@@ -209,6 +213,29 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
         msg.what = what;
         switch (what){
             default :
+                WisapeApplication app = WisapeApplication.getInstance();
+                StoryEntity story = app.getStoryEntity();
+                if (story == null){
+                    File storyDirectory = StoryManager.getStoryDirectory();
+                    String[] storyFiles = storyDirectory.list(new FilenameFilter() {
+                        @Override
+                        public boolean accept(File file, String name) {
+                            return file.isDirectory() && name.startsWith("My story");
+                        }
+                    });
+                    String storyName = "My story1";
+                    if (storyFiles != null && storyFiles.length != 0){
+                        Arrays.sort(storyFiles);
+                        String fileName = storyFiles[storyFiles.length - 1];
+                        int count = Integer.parseInt(fileName.replace("My story", ""));
+                        storyName = "My story" + (count + 1);
+                    }
+                    story = new StoryEntity();
+                    story.storyName = storyName;
+                    story.storyDesc = "Something wonderful is coming";
+                    story.storyLocal = new File(storyDirectory,storyName).getAbsolutePath();
+                    app.setStoryEntity(story);
+                }
                 return null;
             case WHAT_DOWNLOAD_TEMPLATE:{
                 final int id = args.getInt(EXTRA_TEMPLATE_ID, 0);
