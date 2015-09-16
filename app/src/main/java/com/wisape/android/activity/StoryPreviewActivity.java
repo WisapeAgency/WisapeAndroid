@@ -9,10 +9,10 @@ import android.os.Bundle;
  */
 public class StoryPreviewActivity extends AbsCordovaActivity{
 
-    public static void launch(Activity activity,String url, int requestCode){
+    public static void launch(Activity activity,String url){
         Intent intent = new Intent(activity, StoryPreviewActivity.class);
         intent.putExtra("url",url);
-        activity.startActivityForResult(intent, requestCode);
+        activity.startActivity(intent);
     }
 
     @Override

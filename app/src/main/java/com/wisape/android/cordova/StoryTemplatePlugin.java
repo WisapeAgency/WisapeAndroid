@@ -7,8 +7,11 @@ import android.os.Message;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
+import com.google.android.gms.tagmanager.PreviewActivity;
 import com.google.gson.Gson;
 import com.wisape.android.WisapeApplication;
+import com.wisape.android.activity.StoryPreviewActivity;
+import com.wisape.android.activity.StoryReleaseActivity;
 import com.wisape.android.activity.StorySettingsActivity;
 import com.wisape.android.activity.StoryTemplateActivity;
 import com.wisape.android.api.ApiStory;
@@ -220,41 +223,30 @@ public class StoryTemplatePlugin extends AbsPlugin{
                     return null;
                 }
                 File previewFile = new File(myStory,FILE_NAME_PREVIEW);
-
+                if(saveStoryPreview(previewFile,html)){
+                    StoryPreviewActivity.launch(cordova.getActivity(),previewFile.getAbsolutePath());
+                }else {
+                    callbackContext.error(-1);
+                }
                 break;
             }
             case WHAT_PUBLISH:{
-                int storyId = args.getInt(EXTRA_STORY_ID,0);
+                int storyId = args.getInt(EXTRA_STORY_ID, 0);
                 String html = args.getString(EXTRA_STORY_HTML);
                 String path = args.getString(EXTRA_FILE_PATH);
                 com.alibaba.fastjson.JSONArray paths = JSON.parseArray(path);
-                String storyName;
-                if (storyId == 0){
-                    storyName = UUID.randomUUID().toString().substring(0,8);
-                }else{
-                    StoryEntity story = logic.getStoryLocalById(context,storyId);
-                    storyName = story.storyName;
+                WisapeApplication app = WisapeApplication.getInstance();
+                StoryEntity story = app.getStoryEntity();
+                logic.saveStoryLocal(context,story);
+                File myStory = new File(story.storyLocal);
+                if (!myStory.exists()){
+                    myStory.mkdirs();
                 }
-                File storyDirectory = new File(StoryManager.getStoryDirectory(), storyName);
-                if (!storyDirectory.exists()){
-                    storyDirectory.mkdirs();
-                }
-                if(!saveStory(storyDirectory,html,paths)){
+                if(!saveStory(myStory,html,paths)){
                     callbackContext.error(-1);
                     return null;
                 }
-                StoryEntity story = new StoryEntity();
-                story.storyName = storyName;
-                logic.saveStoryLocal(context,story);
-
-                ApiStory.AttrStoryInfo storyInfo = new ApiStory.AttrStoryInfo();
-                storyInfo.attrStoryThumb = Uri.fromFile(new File(storyDirectory, FILE_NAME_THUMB));
-                storyInfo.storyStatus = ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE;
-                storyInfo.story = Uri.fromFile(storyDirectory);
-                storyInfo.storyName = storyName;
-                storyInfo.storyDescription = "hahahaha";
-                logic.update(context,storyInfo,null);
-                break;
+                StoryReleaseActivity.launch(cordova.getActivity(),1);
             }
         }
         return null;
@@ -291,6 +283,23 @@ public class StoryTemplatePlugin extends AbsPlugin{
             }
         }catch (IOException e){
             Log.e("saveStory","",e);
+        }
+        return true;
+    }
+
+    private boolean saveStoryPreview(File previewFile, String html){
+        PrintWriter writer = null;
+        try{
+            writer = new PrintWriter(previewFile);
+            writer.write(html);
+            writer.close();
+        }catch (IOException e){
+            Log.e("saveStoryPreview","",e);
+            return false;
+        }finally {
+            if (writer != null){
+                writer.close();
+            }
         }
         return true;
     }
