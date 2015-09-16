@@ -78,8 +78,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
 //        intent.putExtra(EXTRA_STORY_ID,storyId);
         fragment.startActivityForResult(intent, requestCode);
     }
-    private Queue<String> fontQueue = new LinkedBlockingQueue<>();
-    private Handler downloadHandler = new Handler(){
+    private Handler downloadTemplateHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
@@ -116,12 +115,52 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
 
                     }
                     unzipTemplate(Uri.fromFile(new File(path)), template);
-                    downloadFont(template);
+//                    downloadFont(template);
                     break;
                 }
                 case WHAT_DOWNLOAD_ERROR:{
                     int id = msg.getData().getInt(EXTRA_TEMPLATE_ID,0);
-                    loadUrl("javascript:onError('"  +id + "!')");
+                    loadUrl("javascript:onError("  +id + ")");
+                    break;
+                }
+
+            }
+        }
+    };
+
+    private Handler downloadFontHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+                case WHAT_DOWNLOAD_PROGRESS:{
+                    String name = msg.getData().getString(EXTRA_FONT_NAME);
+                    double progress = msg.getData().getDouble(DOWNLOAD_PROGRESS, 0);
+                    try{
+                        JSONObject json = new JSONObject();
+                        json.put("fontName",name);
+                        json.put("progress",progress);
+                        loadUrl("javascript:onFontDownloading(" + json.toString() + ")");
+                    }catch(JSONException e){
+
+                    }
+                    break;
+                }
+                case WHAT_DOWNLOAD_COMPLETED:{
+                    String name = msg.getData().getString(EXTRA_FONT_NAME);
+                    try{
+                        JSONObject json = new JSONObject();
+                        json.put("fontName", name);
+                        System.out.println("downloaded font:" + name);
+                        loadUrl("javascript:onFontCompleted(" + json.toString() + ")");
+                    } catch (JSONException e){
+
+                    }
+                    break;
+                }
+                case WHAT_DOWNLOAD_ERROR:{
+                    String name = msg.getData().getString(EXTRA_FONT_NAME);
+                    loadUrl("javascript:onFontError("  + name + ")");
                     break;
                 }
 
@@ -154,20 +193,9 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
         startLoad(WHAT_DOWNLOAD_TEMPLATE, args);
     }
 
-    public void downloadFont(File template){
-        Set<String> fontSet = parseFont(template);
-        if (fontSet.size() == 0){
-            return;
-        }
-        File fontDirectory = StoryManager.getStoryFontDirectory();
-        for(File file : fontDirectory.listFiles()){
-            if(file.isDirectory() && !fontSet.contains(file.getName())){
-                fontSet.remove(file.getName());
-            }
-        }
-        fontQueue.addAll(fontSet);
+    public void downloadFont(String fontName){
         Bundle args = new Bundle();
-        args.putString(EXTRA_FONT_NAME, fontQueue.poll());
+        args.putString(EXTRA_FONT_NAME, fontName);
         startLoad(WHAT_DOWNLOAD_FONT, args);
     }
 
@@ -253,7 +281,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
                         bundle.putDouble(DOWNLOAD_PROGRESS, progress);
                         msg.what = WHAT_DOWNLOAD_PROGRESS;
                         msg.setData(bundle);
-                        downloadHandler.sendMessage(msg);
+                        downloadTemplateHandler.sendMessage(msg);
                     }
                     public void onCompleted(Uri downUri){
                         Message msg = Message.obtain();
@@ -264,7 +292,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
                         bundle.putString(EXTRA_TEMPLATE_NAME, name);
                         bundle.putString(EXTRA_TEMPLATE_PATH,downUri.getPath());
                         msg.setData(bundle);
-                        downloadHandler.sendMessage(msg);
+                        downloadTemplateHandler.sendMessage(msg);
                     }
 
                     public void onError(Uri uri){
@@ -273,7 +301,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
                         Bundle bundle = new Bundle();
                         bundle.putInt(EXTRA_TEMPLATE_ID, id);
                         msg.setData(bundle);
-                        downloadHandler.sendMessage(msg);
+                        downloadTemplateHandler.sendMessage(msg);
                     }
                 });
                 break;
@@ -286,23 +314,35 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
                 Uri dest = Uri.fromFile(new File(StoryManager.getStoryFontDirectory(), name + ".zip"));
                 Downloader.download(Uri.parse(url),dest, new Downloader.DownloaderCallback(){
                     public void onDownloading(double progress){
-
+                        Message msg = Message.obtain();
+                        Bundle bundle = new Bundle();
+                        bundle.putString(EXTRA_FONT_NAME, name);
+                        bundle.putDouble(DOWNLOAD_PROGRESS, progress);
+                        msg.what = WHAT_DOWNLOAD_PROGRESS;
+                        msg.setData(bundle);
+                        downloadFontHandler.sendMessage(msg);
                     }
                     public void onCompleted(Uri downUri){
+                        Message msg = Message.obtain();
+                        msg.what = WHAT_DOWNLOAD_COMPLETED;
+                        Bundle bundle = new Bundle();
+                        bundle.putString(EXTRA_FONT_NAME, name);
+                        msg.setData(bundle);
+                        downloadFontHandler.sendMessage(msg);
+
 //                        File font = getFontUnzipDirectory(name);
                         File font = StoryManager.getStoryFontDirectory();
                         unzipFont(downUri, font);
                         appendFont(name);
-
-                        if(fontQueue.size() != 0){
-                            Bundle args = new Bundle();
-                            args.putString(EXTRA_FONT_NAME, fontQueue.poll());
-                            startLoad(WHAT_DOWNLOAD_FONT, args);
-                        }
                     }
 
                     public void onError(Uri uri){
-
+                        Message msg = Message.obtain();
+                        msg.what = WHAT_DOWNLOAD_ERROR;
+                        Bundle bundle = new Bundle();
+                        bundle.putString(EXTRA_FONT_NAME, name);
+                        msg.setData(bundle);
+                        downloadFontHandler.sendMessage(msg);
                     }
                 });
                 break;

@@ -1,13 +1,11 @@
 package com.wisape.android.cordova;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
-import com.google.android.gms.tagmanager.PreviewActivity;
 import com.google.gson.Gson;
 import com.wisape.android.WisapeApplication;
 import com.wisape.android.activity.StoryPreviewActivity;
@@ -18,11 +16,9 @@ import com.wisape.android.api.ApiStory;
 import com.wisape.android.common.StoryManager;
 import com.wisape.android.database.StoryEntity;
 import com.wisape.android.database.StoryMusicEntity;
-import com.wisape.android.database.StoryTemplateEntity;
 import com.wisape.android.logic.StoryLogic;
 import com.wisape.android.model.StoryTemplateInfo;
 import com.wisape.android.network.Requester;
-import com.wisape.android.util.EnvironmentUtils;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.cordova.CallbackContext;
@@ -39,10 +35,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -62,6 +55,7 @@ public class StoryTemplatePlugin extends AbsPlugin{
     public static final String ACTION_START = "start";
     public static final String ACTION_READ = "read";
     public static final String ACTION_GET_FONTS = "getFonts";
+    public static final String ACTION_DOWNLOAD_FONT = "downloadFont";
     public static final String ACTION_MUSIC_PATH = "getMusicPath";
     public static final String ACTION_SAVE = "save";
     public static final String ACTION_PUBLISH = "publish";
@@ -73,9 +67,11 @@ public class StoryTemplatePlugin extends AbsPlugin{
     private static final int WHAT_SAVE = 0x04;
     private static final int WHAT_PREVIEW = 0x05;
     private static final int WHAT_PUBLISH = 0x06;
+    private static final int WHAT_DOWNLOAD_FONT = 0x07;
 
     private static final String EXTRA_CATEGORY_ID = "extra_category_id";
     private static final String EXTRA_TEMPLATE_ID = "extra_template_id";
+    private static final String EXTRA_FONT_NAME = "extra_font_name";
     private static final String EXTRA_STORY_ID = "extra_story_id";
     private static final String EXTRA_STORY_HTML = "extra_story_html";
     private static final String EXTRA_FILE_PATH = "extra_file_path";
@@ -115,13 +111,19 @@ public class StoryTemplatePlugin extends AbsPlugin{
                 String content = readHtml(path);
                 callbackContext.success(content);
             }
-        }else if (ACTION_MUSIC_PATH.equals(action)){
+        }else if (ACTION_MUSIC_PATH.equals(action)){//getMusicPath
             if(null != args && args.length() == 1){
                 int id = args.getInt(0);
                 getMusicPath(id);
             }
-        }else if (ACTION_GET_FONTS.equals(action)) {
+        }else if (ACTION_GET_FONTS.equals(action)) {//getFonts
             getFonts();
+        }else if (ACTION_DOWNLOAD_FONT.equals(action)) {
+            Bundle bundle = new Bundle();
+            if(null != args && args.length() != 0) {
+                bundle.putString(EXTRA_FONT_NAME, args.getString(0));
+            }
+            startLoad(WHAT_DOWNLOAD_FONT, bundle);
         }else if (ACTION_SAVE.equals(action)){//save
             Bundle bundle = new Bundle();
             if(null != args && args.length() == 3){
@@ -185,6 +187,14 @@ public class StoryTemplatePlugin extends AbsPlugin{
                     }catch (JSONException e){
                         callbackContext.error(-1);
                     }
+                }
+                break;
+            }
+            case WHAT_DOWNLOAD_FONT: {
+                String fontName = args.getString(EXTRA_FONT_NAME);
+                if (cordova.getActivity() instanceof StoryTemplateActivity){
+                    StoryTemplateActivity activity = (StoryTemplateActivity)cordova.getActivity();
+                    activity.downloadFont(fontName);
                 }
                 break;
             }
