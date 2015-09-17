@@ -1,7 +1,8 @@
 var WisapeEditer = WisapeEditer || {};
+
 WisapeEditer = {
 
-    currentTplData : '<div class="stage-content edit-area pages-img" style="background: url(/mnt/sdcard/wisape/com.wisape.android/data/template/dddddddddddd/img/bg.jpg);background-size: 100% 100%;width:100%;height:100%;"> <div class="symbol" style="z-index: 2;"> <div class="pages-img edit-area"><img data-name="img1" style="" src="/mnt/sdcard/wisape/com.wisape.android/data/template/dddddddddddd/img/icon-earth.png"/> </div> </div> <div class="symbol" style="z-index: 3;"> <div class="pages-txt edit-area" style="margin:70px auto;width:150px;color:#fff;text-align: center;">As c update of the classictranslation corpus, the combination of network technology and language essence </div> </div> </div>',
+    currentTplData : '<div class="stage-content edit-area pages-img pages-img-bg" style="background: url(/mnt/sdcard/wisape/com.wisape.android/data/template/dddddddddddd/img/bg.jpg);background-size: 100% 100%;width:100%;height:100%;"><div class="symbol" style="z-index: 2;"> <div class="pages-img edit-area"><img data-name="img1" style="" src="/mnt/sdcard/wisape/com.wisape.android/data/template/dddddddddddd/img/icon-earth.png"/ width="50" height="50"> </div> </div><div class="symbol" style="z-index: 2;"> <div class="pages-img edit-area"><img data-name="img1" style="" src="/mnt/sdcard/wisape/com.wisape.android/data/template/dddddddddddd/img/icon-earth.png"/ width="50" height="50"> </div> </div> <div class="symbol" style="z-index: 3;"> <div class="pages-txt edit-area" style="margin:70px auto;width:150px;color:#fff;text-align: center;">As c update of the classictranslation corpus, the combination of network technology and language essence </div> </div> </div>',
 
     selectedStagetIndex : 1,
 
@@ -11,9 +12,10 @@ WisapeEditer = {
 
     initial : function(){
 
+        var menuScroll = $("#menu-scroll");
+
         //获取模板分类
         WisapeEditer.GetNativeData("getStageCategory", [],function(data){
-            var menuScroll = $("#menu-scroll");
             console.info("getStageCategory");
             console.info(JSON.stringify(data));
 
@@ -39,15 +41,29 @@ WisapeEditer = {
 
             //默认加载的stage，需入口传递
             WisapeEditer.storyData.push(WisapeEditer.currentTplData);
+            var pageScroll = $("#pages-scroll");
+            pageScroll.find("li").eq(0).append('<span class="count">1/1</span>');
+
+
+            console.info("WisapeEditer.storyData:");
+            console.info(WisapeEditer.storyData);
 
         });
+
+        //获取字体接口数据
+        WisapeEditer.GetNativeData("getFonts", [],function(data){
+            console.info("fonts:");
+            console.info(data);
+            console.info(JSON.stringify(data));
+        })
 
     },
 
     event : function(){
 
         //模板分类事件
-        var menuScroll = $("#menu-scroll");
+        var menuScroll = $("#menu-scroll"),
+            pageScroll = $("#pages-scroll");
         console.info("menu-scroll length:" +  menuScroll.length);
         menuScroll.delegate("li","click",function(){
 
@@ -63,6 +79,37 @@ WisapeEditer = {
         //显示隐藏分类
         $("#toggleCat").click(function(){
             $(".tpl-page-cat").toggle();
+        });
+
+        //管理stage列表
+        $("#manageStageList").click(function(){
+            console.info("manageStageList:");
+            console.info(typeof [1,2,3,4]);
+            console.info([1,2,3,4]);
+            console.info(typeof WisapeEditer.storyData);
+            $("#pageScroll li").find(".ico-acitve,.count").remove();
+            var retHtml = "";
+            for(var i in WisapeEditer.storyData) {
+                retHtml += '<li class="tpl-page-item" draggable="false" height="60"><span class="drag-handle">☰</span><i class="icon-correct"></i>' + WisapeEditer.storyData[i] + '</li>';
+            };
+            $("#storyDragBox").html(retHtml);
+            WisapeEditer.ShowView('main','storyStageList');
+        });
+
+        //从管理stage列表页面返回，并保存
+        $("#storyStageList .icon-arrow-left").click(function(){
+            var retHtml = [];
+            $("#storyDragBox").find(".drag-handle,.icon-correct").remove();
+            $("#storyDragBox li").each(function(){
+                retHtml.push($(this).html());
+            });
+            console.info("storyStageList:");
+            console.info(retHtml);
+            WisapeEditer.storyData = retHtml;//覆盖更新storyData
+            WisapeEditer.LoadStageList(retHtml,function(){//重新加载主界面的stage列表
+                WisapeEditer.ShowView('storyStageList','main')
+            })
+
         })
 
         //模板列表事件
@@ -86,8 +133,11 @@ WisapeEditer = {
                 console.info("read data:");
                 console.info(data);
                 WisapeEditer.currentTplData = data;
-                pageScroll.find("ul li.active").html(data);
+                pageScroll.find("ul li.active").html('<span class="count">' + WisapeEditer.selectedStagetIndex + '/' + WisapeEditer.storyData.length + '</span>' + data);
                 WisapeEditer.storyData[WisapeEditer.selectedStagetIndex-1] = data;
+
+                console.info("WisapeEditer.storyData:");
+                console.info(WisapeEditer.storyData);
             });
             //}
         });
@@ -100,18 +150,31 @@ WisapeEditer = {
             _me.addClass("active").siblings().removeClass("active").find(".pages-img,.pages-txt").removeClass("active");
         });
 
-        pageScroll.delegate("li.active .pages-img ","click",function(event){
+        pageScroll.delegate("li.active .pages-img","click",function(event){
             var _me = $(this);
+            console.info(_me.parent().html());
             if(!_me.hasClass("active")) {
                 console.info(pageScroll.find(".edit-area").length);
                 pageScroll.find(".edit-area").removeClass("active");
                 _me.addClass("active");
-                if(_me.find(".ico-acitve").length == 0) _me.append('<i class="ico-acitve"></i>');
+                if(_me.children(".ico-acitve").length == 0) _me.append('<i class="ico-acitve"></i>');
                 return false;
             }
-            WisapeEditer.ShowView('main','editorImage');
             cordova.exec(function(retval) {
                 console.info("PhotoSelector:" + retval);
+                console.info("_me:" + _me.html());
+                console.info("_me.hasClass:" + _me.hasClass("pages-img-bg"));
+                if(_me.hasClass("pages-img-bg")) {
+                    _me.css({"background-image": "url(" + retval + ")"})
+                } else {
+                    _me.find("img").attr({"src":retval})
+                }
+
+                WisapeEditer.storyData[WisapeEditer.selectedStagetIndex-1] = pageScroll.find("li.active").html();
+
+                console.info("WisapeEditer.storyData:");
+                console.info(WisapeEditer.storyData);
+
             }, function(e) {
                 alert("Error: "+e);
             }, "PhotoSelector", "execute", []);
@@ -120,16 +183,6 @@ WisapeEditer = {
         });
 
 
-        function startPhotoSelector(url, opts, className){
-            cordova.exec(function(url) {
-                console.log("Image URL:" + url);
-                var imgID = new Image();
-                imgID.src=url;
-                imgID.onload = function(){
-                    document.getElementById("img_logo").innerHTML = "<img src="+imgID.src+" />";
-                }
-            }, function(e) {console.log("Error: "+e);}, "PhotoSelector", "story", [className, url, opts || {}]);
-        };
 
         pageScroll.delegate("li.active .pages-txt ","click",function(event){
             var _me = $(this);
@@ -150,15 +203,25 @@ WisapeEditer = {
             var target = pageScroll.find("li.active"),
                 pageScrollLi = pageScroll.find("li");
 
+            WisapeEditer.storyData.push(WisapeEditer.currentTplData);
 
-            if(pageScrollLi.length > 0 ){
+            console.info("WisapeEditer.storyData:");
+            console.info(WisapeEditer.storyData);
+
+            if(WisapeEditer.storyData.length > 0 ){
                 pageScroll.find("li").removeClass("active").find(".pages-img,.pages-txt").removeClass("active");
-                target.after('<li class="active">' + WisapeEditer.currentTplData + '</li>');
+                target.after('<li class="active"><span class="count">' + WisapeEditer.selectedStagetIndex++ + '/' + WisapeEditer.storyData.length + '</span>' + WisapeEditer.currentTplData + '</li>');
             } else {
                 target.find("ul").html('<li class="active">' + WisapeEditer.currentTplData + '</li>');
             }
 
-            WisapeEditer.selectedStagetIndex++;
+            pageScroll.find("li").each(function(i){
+                var me = $(this);
+                me.find(".count").html((i+1) + "/" +WisapeEditer.storyData.length);
+            })
+
+
+
 
             pageScroll.iScroll( {scrollX: true, scrollY: false, preventDefault: false });
         })
@@ -168,8 +231,19 @@ WisapeEditer = {
 
             var pagesScroll = $("#pages-scroll li").eq(WisapeEditer.selectedStagetIndex-1);
             var eidtPage = $("#editorText .pages");
-            eidtPage.find(".pages-txt").removeAttr("contenteditable");
-            pagesScroll.html( eidtPage.html());
+            eidtPage.find(".pages-txt").removeAttr("contenteditable").removeClass(preAnimation);
+            console.info(preAnimation);
+            eidtPage.find(".pages-txt").removeClass(preAnimation);
+            console.info(eidtPage.find(".pages-txt").parent().html());
+            console.info(eidtPage.html());
+            var ret = eidtPage.html();
+            console.info("back html:" + ret);
+            pagesScroll.html(ret);
+
+            WisapeEditer.storyData[WisapeEditer.selectedStagetIndex-1] = ret;
+
+            console.info("WisapeEditer.storyData:");
+            console.info(WisapeEditer.storyData);
 
             WisapeEditer.ShowView('editorText','main');
 
@@ -278,18 +352,34 @@ WisapeEditer = {
         });
 
         //动画事件
+        var preAnimation = "";
+
         $(".pop-editer-animation .anim-item").click(function(){
-            var me = $(this).find("i");
+
+            var selected = $("#editorText .pages-txt.active");
+            var me = $(this).find("i"),animtionClassName = "animated " + me.data("animation");
+            console.info(animtionClassName);
             if(me.hasClass("active")) {
-                me.removeClass("active")
+                me.removeClass("active");
+                selected.removeClass(animtionClassName);
+                selected.attr({"data-animation" : ""});
             } else {
                 me.addClass("active");
                 me.parent().siblings().find("i").removeClass("active");
-            }
+                selected.removeClass(preAnimation).addClass(animtionClassName).attr({"data-animation" : animtionClassName});
+                selected.attr({"data-animation" : animtionClassName});
+                preAnimation = animtionClassName;
+                console.info(selected.parent().html());
+            };
+            console.info(selected.length);
+
+            console.info(selected.hasClass(animtionClassName));
         })
+
+
     },
 
-    //加载模板列表
+    //通过接口加载模板列表
     LoadTplList : function(id){
         WisapeEditer.GetNativeData("getStageList", [id],function(data){
             console.info("getStageList");
@@ -320,8 +410,17 @@ WisapeEditer = {
         });
     },
 
-    //加载,更新stages
-    LoadStage : function(){
+    //加载,更新主界面stages
+    LoadStageList : function(arr,cb){
+        console.info("LoadStageList:");
+        console.info(arr);
+        var retHtml = "";
+        for(var i in arr) {
+            retHtml += '<li><span class="count">' + (parseInt(i)+1) + '/' + WisapeEditer.storyData.length + '</span>' + arr[i] + '</li>';
+        };
+        $("#pages-scroll ul").html(retHtml).find("li").eq("0").addClass("active");
+        WisapeEditer.selectedStagetIndex = 1;
+        cb();
 
     },
 
@@ -336,9 +435,6 @@ WisapeEditer = {
         //初始化编辑菜单
         eidtPage.find(".opt-val-color").css({"color":curPagesTxt.css("color")});
     },
-
-    //加载stagelist的stages
-    LoadStageList : function(){},
 
     //生成发布，保存的story
     GenerateStory : function(){},

@@ -1,4 +1,4 @@
-<html ng-app='WisapePlayer'>
+<html>
 <head  >
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
@@ -7,7 +7,7 @@
     <link href="../public/css/reset.css" rel="stylesheet"/>
     <link href="../public/css/layout.css" rel="stylesheet"/>
     <link href="../public/css/font.css" rel="stylesheet"/>
-    <link href="../cs/animation/animation.css" rel="stylesheet"/>
+    <link href="../public/css/animation.css" rel="stylesheet"/>
     <link href="../public/css/editor_index.css" rel="stylesheet"/>
 </head>
 <body>
@@ -22,7 +22,7 @@
             <ul class="list-inline">
                 <li><a class="icon-play"></a></li>
                 <li><a class="icon-layout" id="toggleCat" ></a></li>
-                <li><a class="icon-list" onclick="WisapeEditer.ShowView('main','storyStageList')"></a></li>
+                <li><a class="icon-list" id="manageStageList"></a></li>
                 <li><a class="icon-settings" onclick="setting(1);"></a></li>
             </ul>
         </div>
@@ -37,15 +37,24 @@
     <div class="pages" id="pages-scroll" >
         <ul>
             <li class="active">
-                <div class="stage-content edit-area pages-img" style="background: url(/mnt/sdcard/wisape/com.wisape.android/data/template/dddddddddddd/img/bg.jpg);background-size: 100% 100%;width:100%;height:100%;">
-                    <div class="symbol" style="z-index: 2;">
-                        <div class="pages-img edit-area">
-                            <img data-name="img1" style="" src="/mnt/sdcard/wisape/com.wisape.android/data/template/dddddddddddd/img/icon-earth.png"/>
+                <div class="stage-content edit-area pages-img pages-img-bg"
+                     style="background-image: url(/mnt/sdcard/wisape/com.wisape.android/data/template/dddddddddddd/img/bg.jpg);background-size: cover;background-position:50% 50%;width:100%;height:100%;">
+                    <div class="symbol" style="background:red;">
+                        <div class="pages-img edit-area"><img data-name="img1" style=""
+                                                              src="/mnt/sdcard/wisape/com.wisape.android/data/template/dddddddddddd/img/icon-earth.png"/
+                            width="50" height="50">
+                        </div>
+                    </div>
+                    <div class="symbol" style="background: green;">
+                        <div class="pages-img edit-area"><img data-name="img1" style=""
+                                                              src="/mnt/sdcard/wisape/com.wisape.android/data/template/dddddddddddd/img/icon-earth.png"/
+                            width="50" height="50">
                         </div>
                     </div>
                     <div class="symbol" style="z-index: 3;">
-                        <div class="pages-txt edit-area" style="margin:70px auto;width:150px;color:#fff;text-align: center;">As c
-                            update of the classictranslation corpus, the combination of network technology and language essence
+                        <div class="pages-txt edit-area"
+                             style="margin:70px auto;width:150px;color:#fff;text-align: center;">As c update of the
+                            classictranslation corpus, the combination of network technology and language essence
                         </div>
                     </div>
                 </div>
@@ -108,16 +117,19 @@
             <span class="tit">Animation</span>
         </div>
         <div class="bd">
-            <span class="anim-item"><i class="icon-enter-from-bottom"></i><span class="anim-name">dsfadfs</span></span>
-            <span class="anim-item"><i class="icon-enter-from-bottom"></i><span class="anim-name">dsfadfs</span></span>
-            <span class="anim-item"><i class="icon-enter-from-bottom"></i><span class="anim-name">dsfadfs</span></span>
-            <span class="anim-item"><i class="icon-enter-from-bottom"></i><span class="anim-name">dsfadfs</span></span>
-            <span class="anim-item"><i class="icon-enter-from-bottom"></i><span class="anim-name">dsfadfs</span></span>
-            <span class="anim-item"><i class="icon-enter-from-bottom"></i><span class="anim-name">dsfadfs</span></span>
-            <span class="anim-item"><i class="icon-enter-from-bottom"></i><span class="anim-name">dsfadfs</span></span>
-            <span class="anim-item"><i class="icon-enter-from-bottom"></i><span class="anim-name">dsfadfs</span></span>
-            <span class="anim-item"><i class="icon-enter-from-bottom"></i><span class="anim-name">dsfadfs</span></span>
-            <span class="anim-item"><i class="icon-enter-from-bottom"></i><span class="anim-name">dsfadfs</span></span>
+            <span class="anim-item"><i data-animation="slideInDown" class="icon-enter-from-bottom"></i><span class="anim-name">bottom</span></span>
+            <span class="anim-item"><i data-animation="slideInLeft" class="icon-enter-from-left"></i><span class="anim-name">left</span></span>
+            <span class="anim-item"><i data-animation="slideInRight" class="icon-enter-from-right"></i><span class="anim-name">right</span></span>
+            <span class="anim-item"><i data-animation="slideInUp" class="icon-enter-from-top"></i><span class="anim-name">top</span></span>
+            <span class="anim-item"><i data-animation="fadeInDown" class="icon-fadeIn-from-bottom"></i><span class="anim-name">dsfadfs</span></span>
+            <span class="anim-item"><i data-animation="fadeInLeft" class="icon-fadeIn-from-left"></i><span class="anim-name">dsfadfs</span></span>
+            <span class="anim-item"><i data-animation="fadeInRight" class="icon-fadeIn-from-right"></i><span class="anim-name">dsfadfs</span></span>
+            <span class="anim-item"><i data-animation="fadeInIp" class="icon-fadeIn-from-top"></i><span class="anim-name">dsfadfs</span></span>
+            <span class="anim-item"><i data-animation="pulse" class="icon-tuxian"></i><span class="anim-name">dsfadfs</span></span>
+            <span class="anim-item"><i data-animation="wobble"  class="icon-tanru-from-top"></i><span class="anim-name">抖动</span></span>
+            <span class="anim-item"><i data-animation="flash"  class="icon-tanru-from-top"></i><span class="anim-name">闪烁</span></span>
+            <span class="anim-item"><i data-animation="bounceInDown"  class="icon-tanru-from-top"></i><span class="anim-name">下落抖动</span></span>
+            <span class="anim-item"><i class="icon-tanru-from-top"></i><span class="anim-name">roate</span></span>
         </div>
     </div>
 
@@ -171,7 +183,7 @@
 <div id="editorImage" style="display: none">
     <div class="header">
         <div class="pull-left">
-            <a class="icon-arrow-left" onclick="WisapeEditer.ShowView('editorImage','main')"></a><span class="tit">Edit Image</span>
+            <a class="icon-arrow-left"></a><span class="tit">Edit Image</span>
         </div>
         <div class="pull-right">
             <!--图片元件图片选择入口-->
@@ -189,7 +201,7 @@
 <div id="storyStageList" style="display: none">
     <div class="header">
         <div class="pull-left">
-            <a class="icon-arrow-left"  onclick="WisapeEditer.ShowView('storyStageList','main')"></a>
+            <a class="icon-arrow-left"></a>
             <span class="tit">Page List</span>
         </div>
         <div class="pull-right">
@@ -200,46 +212,50 @@
     </div>
     <div class="story-page-list" >
         <ul id="storyDragBox">
-            <li class="tpl-page-item">
+            <li class="tpl-page-item" draggable="false">
+                <span class="drag-handle">☰</span>
                 <img class="stage-thumb" src="../public/img/temp/stage_example.jpg" alt="">
                 <i class="icon-correct"></i>
             </li>
-            <li class="tpl-page-item">
-                <img class="stage-thumb" src="../public/img/temp/stage_example2.png" alt="">
-                <i class="icon-correct"></i>
-            </li>
-            <li class="tpl-page-item">
+            <li class="tpl-page-item" draggable="false">
+                <span class="drag-handle">☰</span>
                 <img class="stage-thumb" src="../public/img/temp/stage_example.jpg" alt="">
                 <i class="icon-correct"></i>
             </li>
-            <li class="tpl-page-item">
-                <img class="stage-thumb" src="../public/img/temp/stage_example2.png" alt="">
-                <i class="icon-correct"></i>
-            </li>
-            <li class="tpl-page-item">
+            <li class="tpl-page-item" draggable="false">
+                <span class="drag-handle">☰</span>
                 <img class="stage-thumb" src="../public/img/temp/stage_example.jpg" alt="">
                 <i class="icon-correct"></i>
             </li>
-            <li class="tpl-page-item">
-                <img class="stage-thumb" src="../public/img/temp/stage_example2.png" alt="">
-                <i class="icon-correct"></i>
-            </li>
-            <li class="tpl-page-item">
+            <li class="tpl-page-item" draggable="false">
+                <span class="drag-handle">☰</span>
                 <img class="stage-thumb" src="../public/img/temp/stage_example.jpg" alt="">
                 <i class="icon-correct"></i>
             </li>
-            <li class="tpl-page-item">
-                <img class="stage-thumb" src="../public/img/temp/stage_example2.png" alt="">
+            <li class="tpl-page-item" draggable="false">
+                <span class="drag-handle">☰</span>
+                <img class="stage-thumb" src="../public/img/temp/stage_example.jpg" alt="">
+                <i class="icon-correct"></i>
+            </li>
+            <li class="tpl-page-item" draggable="false">
+                <span class="drag-handle">☰</span>
+                <img class="stage-thumb" src="../public/img/temp/stage_example.jpg" alt="">
+                <i class="icon-correct"></i>
+            </li>
+            <li class="tpl-page-item" draggable="false">
+                <span class="drag-handle">☰</span>
+                <img class="stage-thumb" src="../public/img/temp/stage_example.jpg" alt="">
+                <i class="icon-correct"></i>
+            </li>
+            <li class="tpl-page-item" draggable="false">
+                <span class="drag-handle">☰</span>
+                <img class="stage-thumb" src="../public/img/temp/stage_example.jpg" alt="">
                 <i class="icon-correct"></i>
             </li>
         </ul>
     </div>
 
 </div>
-
-
-
-
 
 <script src="../public/js/cordova.js"></script>
 <script type="text/javascript" charset="utf-8" src="cordova.file.js"></script>
@@ -351,7 +367,7 @@
 
     </script>
 
-    <script>
+<script>
         $(function(){
             var ColorArr = [
                 ["#000000", "#444444", "#999999", "#999999", "#b7b7b7", "#d9d9d9", "#d9d9d9", "#ffffff"],
@@ -392,15 +408,19 @@
             }
 
 
-            Sortable.create(storyDragBox, {
-                group: "words",
+            Sortable.create(document.getElementById("storyDragBox"), {
+                handle: '.drag-handle',
                 animation: 150,
                 onAdd: function (evt){ console.log('onAdd.bar:', evt.item); },
                 onUpdate: function (evt){ console.log('onUpdate.bar:', evt.item); },
                 onRemove: function (evt){ console.log('onRemove.bar:', evt.item); },
-                onStart:function(evt){ console.log('onStart.foo:', evt.item);console.info("evt:");console.info(evt);$(evt.item).addClass("selected").siblings().removeClass("selected")},
+                onStart:function(evt){ console.log('onStart.foo:', evt.item);console.info("evt:");console.info(evt);$(evt.item)},
                 onEnd: function(evt){ console.log('onEnd.foo:', evt.item);},
             });
+
+            $("#storyDragBox").delegate(".tpl-page-item","click",function(){
+                $(this).addClass("selected").siblings().removeClass("selected")
+            })
 
             $("#pageDel").click(function(){
                 $("#storyDragBox li.selected").remove();

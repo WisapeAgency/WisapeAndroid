@@ -136,6 +136,66 @@ a {text-decoration: none;color:inherit;}
 .icon-enter-from-bottom.active {
     background-image: url(../img/enter-from-bottom-active.png);
 }
+.icon-enter-from-left {
+    background-image: url(../img/enter-from-left.png);
+}
+.icon-enter-from-left.active {
+    background-image: url(../img/enter-from-left-active.png);
+}
+.icon-enter-from-right {
+    background-image: url(../img/enter-from-right.png);
+}
+.icon-enter-from-right.active {
+    background-image: url(../img/enter-from-right-active.png);
+}
+.icon-enter-from-top {
+    background-image: url(../img/enter-from-top.png);
+}
+.icon-enter-from-top.active {
+    background-image: url(../img/enter-from-top-active.png);
+}
+.icon-fadeIn-from-bottom {
+    background-image: url(../img/fadeIn-from-bottom.png);
+}
+.icon-fadeIn-from-bottom.active {
+    background-image: url(../img/fadeIn-from-bottom-active.png);
+}
+.icon-fadeIn-from-left {
+    background-image: url(../img/fadeIn-from-left.png);
+}
+.icon-fadeIn-from-left.active {
+    background-image: url(../img/fadeIn-from-left-active.png);
+}
+.icon-fadeIn-from-right {
+    background-image: url(../img/fadeIn-from-right.png);
+}
+.icon-fadeIn-from-right.active {
+    background-image: url(../img/fadeIn-from-right-active.png);
+}
+.icon-fadeIn-from-top {
+    background-image: url(../img/fadeIn-from-top.png);
+}
+.icon-fadeIn-from-top.active {
+    background-image: url(../img/fadeIn-from-top-active.png);
+}
+.icon-tuxian {
+    background-image: url(../img/tuxian.png);
+}
+.icon-tuxian.active {
+    background-image: url(../img/tuxian-active.png);
+}
+.icon-fadeIn {
+    background-image: url(../img/fadeIn.png);
+}
+.icon-fadeIn.active {
+    background-image: url(../img/fadeIn-active.png);
+}
+.icon-tanru-from-top {
+    background-image: url(../img/tanru-from-top.png);
+}
+.icon-tanru-from-top.active {
+    background-image: url(../img/tanru-from-top-active.png);
+}
 .header{
     height: 48px;line-height: 48px;
 }
@@ -197,7 +257,7 @@ a {text-decoration: none;color:inherit;}
 .pages li {width:200px;height:280px;float:left;position: relative;margin-left:15px;opacity: 0.5;}
 .pages li.active  {opacity: 1}
 .pages li .pages-txt.active {border:1px dashed #ffe400;border-radius:5px;}
-.pages-item .count {position: absolute;left:0;bottom:0;background:rgba(82,181,2,0.5);color:#fff;font-size:14px;padding:2px 6px;}
+.pages li .count {position: absolute;left:0;bottom:0;background:rgba(82,181,2,0.5);color:#fff;font-size:14px;padding:2px 6px;}
 .pages-item .pages-item-thumb {width:100%;}
 
 .story-page-list {width:100%;overflow: hidden}
@@ -259,10 +319,11 @@ a {text-decoration: none;color:inherit;}
 }
 .color-sub .color-sub-item.selected i {display: inline-block}
 
-.pop-editer-animation .bd {padding:10px;}
-.pop-editer-animation .anim-item {width:20%;display: inline-block;float:left;text-align: center;}
+.pop-editer-animation .bd {overflow: scroll;width:100%;}
+.pop-editer-animation .anim-item {width:20%;display: inline-block;float:left;text-align: center;margin:5px 0;}
 .pop-editer-animation .anim-item i {display: inline-block;width:30px;height:30px;background-size: 100% 100%;border-radius: 30px;border:1px solid #ddd;}
-.pop-editer-animation .anim-item .anim-name {padding:5px 0;display: block;color:#999;}
+.pop-editer-animation .anim-item i.active {border-color:#52b502;}
+.pop-editer-animation .anim-item .anim-name {padding:5px 0;display: block;}
 .icon-add-stage {width:60px;height:60px;position: fixed;bottom:20px;right:20px;z-index: 9999;}
 
 .ui-dialog{
@@ -317,14 +378,19 @@ a {text-decoration: none;color:inherit;}
 .input-href {width:100%;padding:10px 0;border-bottom:1px solid green;}
 .input-href input {border:none;}
 
-.stage-content .symbol {transform: scale(0.8);}
+.stage-content .symbol {transform: scale(0.8);display: inline-block;}
 .stage { border-radius: 5px;overflow: hidden;}
 #editorText .pages {width:80%;margin:0 10%;}
+#editorText .pages .count {display: none}
 .stage-content .symbol {transform: scale(0.8);}
 .stage-content .edit-area {display:inline-block;position: relative;}
 .edit-area .ico-acitve {display: none;background-image: url(../img/icon-edit-pic.png);width:36px;height:36px;position: absolute;;top:0;right:0;background-size: 100% 100%;}
 .pages-txt.edit-area.active {border:1px dashed #ffe400;border-radius:5px;}
 .edit-area.active>.ico-acitve {display: block;}
+
+.drag-handle {display:none;position: absolute; top: 0px; right: 0px; bottom:0;left:0;background: #000; width:100%;height:100%;opacity: 0}
+li.selected .drag-handle {display: block;}
+.story-page-list .symbol {visibility: hidden;}
 
 
 

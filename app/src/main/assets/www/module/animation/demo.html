@@ -46,8 +46,11 @@
         <symbol animation="name:tuxian|dura:2s|func:ease-in|delay:0s|count:1" class="temp">123</symbol>
     </stage>
     <script>
-        var ani = new Animator();
-        ani.play(0);
+        setTimeout(function(){
+            var ani = new Animator();
+            ani.play(0);
+        },6000)
+
     </script>
 </body>
 </html>
