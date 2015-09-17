@@ -277,7 +277,7 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
                         showToast((String) data.obj);
                     }
                 }else {
-                    showToast("网络连接失败!");
+                    showToast("登录失败!");
                 }
                 break;
         }

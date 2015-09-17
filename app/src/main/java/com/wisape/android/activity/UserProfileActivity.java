@@ -33,6 +33,9 @@ public class UserProfileActivity extends BaseActivity {
 
     private static final int LOADER_WHAT_PROFILE_UPDATE = 1;
 
+    private static final int WIDTH = 400;
+    private static final int HEIGHT = 600;
+
     public static final String EXTRAS_EMAIL = "email";
     public static final String EXTRAS_NAME = "nickName";
     public static final String EXTRAS_ICON_URI = "icon_uri";
@@ -176,7 +179,7 @@ public class UserProfileActivity extends BaseActivity {
             switch (requestCode) {
                 case PhotoSelectorActivity.REQUEST_CODE_PHOTO:
                     Uri imgUri = extras.getParcelable(PhotoSelectorActivity.EXTRA_IMAGE_URI);
-                    CutActivity.launch(this, imgUri, CutActivity.RQEUST_CODE_CROP_IMG);
+                    CutActivity.launch(this, imgUri,WIDTH,HEIGHT,CutActivity.RQEUST_CODE_CROP_IMG);
                     break;
                 case CutActivity.RQEUST_CODE_CROP_IMG:
                     userIconUri = extras.getParcelable(CutActivity.EXTRA_IMAGE_URI);
