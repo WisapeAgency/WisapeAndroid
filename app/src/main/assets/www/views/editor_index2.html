@@ -140,6 +140,14 @@ xx
         function showMessage(message){
             jQuery("#message").text(message);
         }
+
+        function getFont(){
+            cordova.exec(function(retval) {
+                showMessage(retval);
+            }, function(e) {
+                alert("Error: "+e);
+            }, "StoryTemplate", "getFonts", []);
+        }
     </script>
 </body>
 </html>

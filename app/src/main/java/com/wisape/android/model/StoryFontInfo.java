@@ -7,7 +7,7 @@ import org.json.JSONObject;
 public class StoryFontInfo extends ServerInfo{
     public long id;
     public String name;
-    public String preview_url;
+    public String preview_img;
     public String zip_url;
     public int default_down;
 
@@ -19,7 +19,7 @@ public class StoryFontInfo extends ServerInfo{
         StoryFontInfo music = new StoryFontInfo();
         music.id = json.optLong("id");
         music.name = json.optString("name");
-        music.preview_url = json.optString("preview_url");
+        music.preview_img = json.optString("preview_img");
         music.zip_url = json.optString("zip_url");
         music.default_down = json.optInt("default_down");
         return music;
@@ -34,7 +34,7 @@ public class StoryFontInfo extends ServerInfo{
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(this.id);
         dest.writeString(this.name);
-        dest.writeString(this.preview_url);
+        dest.writeString(this.preview_img);
         dest.writeString(this.zip_url);
         dest.writeInt(this.default_down);
     }
@@ -45,7 +45,7 @@ public class StoryFontInfo extends ServerInfo{
     protected StoryFontInfo(Parcel in) {
         this.id = in.readLong();
         this.name = in.readString();
-        this.preview_url = in.readString();
+        this.preview_img = in.readString();
         this.zip_url = in.readString();
         this.default_down = in.readInt();
     }
