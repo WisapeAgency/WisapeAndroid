@@ -559,12 +559,12 @@ public class StoryLogic {
                     entity.createAt = oldEntity.createAt;
                     entity.templateLocal = oldEntity.templateLocal;
                     entity.thumbLocal = oldEntity.thumbLocal;
-                } else {
-                    entity.createAt = updateAt;
-                    entity.updateAt = updateAt;
                     if (tempEntities != null){
                         tempEntities.remove(entity);
                     }
+                } else {
+                    entity.createAt = updateAt;
+                    entity.updateAt = updateAt;
                 }
                 entity = dao.createIfNotExists(entity);
                 storyTemplateArray[index++] = entity;

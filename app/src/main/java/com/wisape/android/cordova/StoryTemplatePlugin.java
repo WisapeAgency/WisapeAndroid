@@ -95,8 +95,10 @@ public class StoryTemplatePlugin extends AbsPlugin{
         }
         this.callbackContext = callbackContext;
         if(ACTION_GET_STAGE_CATEGORY.equals(action)){//getStageCategory
+            System.out.println("getStageCategory");
             startLoad(WHAT_GET_STAGE_CATEGORY, null);
         } else if (ACTION_GET_STAGE_LIST.equals(action)){//getStageList
+            System.out.println("getStageList:" + args.getInt(0));
             Bundle bundle = new Bundle();
             if(null != args && args.length() != 0){
                 bundle.putInt(EXTRA_CATEGORY_ID, args.getInt(0));//
