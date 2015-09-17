@@ -27,6 +27,8 @@ public class PhotoSelectorPlugin extends AbsPlugin {
 
     private Uri cropImgUri;
     private HashMap<String, CallbackContext> callbackContextMap;
+    private int width;
+    private int height;
 
     @Override
     protected void pluginInitialize() {
@@ -37,6 +39,9 @@ public class PhotoSelectorPlugin extends AbsPlugin {
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
 
         Intent intent = new Intent(getCurrentActivity(), PhotoSelectorActivity.class);
+
+        width = args.getInt(0);
+        height = args.getInt(1);
 
         startActivityForResult(intent, PhotoSelectorActivity.REQUEST_CODE_PHOTO);
         synchronized (callbackContextMap) {
@@ -56,6 +61,8 @@ public class PhotoSelectorPlugin extends AbsPlugin {
                     Uri imgUri = extras.getParcelable(PhotoSelectorActivity.EXTRA_IMAGE_URI);
                     Intent intent1 = new Intent(getCurrentActivity(), CutActivity.class);
                     intent1.putExtra(CutActivity.EXTRA_IMAGE_URI, imgUri);
+                    intent1.putExtra(CutActivity.EXRA_WIDTH,width);
+                    intent1.putExtra(CutActivity.EXRA_HEIGHT,height);
                     startActivityForResult(intent1, CutActivity.RQEUST_CODE_CROP_IMG);
                     break;
                 case CutActivity.RQEUST_CODE_CROP_IMG:

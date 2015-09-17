@@ -43,6 +43,7 @@ xx
         <button onclick="getStageList(1);">getStageList</button>
         <button onclick="start(59);">Start</button>
         <button onclick="read('dddddddddddd');">read</button>
+        <button onclick="getFont();">getFonts</button>
         <div id="message"></div>
         <img src="http://www.baidu.com/img/baidu_jgylogo3.gif"/>
     </story>
@@ -138,6 +139,14 @@ xx
         }
         function showMessage(message){
             jQuery("#message").text(message);
+        }
+
+        function getFont(){
+            cordova.exec(function(retval) {
+                showMessage(retval);
+            }, function(e) {
+                alert("Error: "+e);
+            }, "StoryTemplate", "getFonts", []);
         }
     </script>
 </body>

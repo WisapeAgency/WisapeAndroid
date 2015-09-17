@@ -27,6 +27,9 @@ import butterknife.OnClick;
 public class StorySettingsActivity extends BaseActivity {
     private static final int WHAT_LOAD_SETTINGS = 0x01;
 
+    private static final int WIDTH = 600;
+    private static final int HEIGHT = 1000;
+
     public static void launch(Activity activity, int requestCode) {
         Intent intent = new Intent(activity.getApplicationContext(), StorySettingsActivity.class);
         activity.startActivityForResult(intent, requestCode);
@@ -104,7 +107,7 @@ public class StorySettingsActivity extends BaseActivity {
                 if (RESULT_OK == resultCode) {
                     Uri imageUri = data.getParcelableExtra(PhotoSelectorActivity.EXTRA_IMAGE_URI);
                     if (null != imageUri) {
-                        CutActivity.launch(this, imageUri, CutActivity.RQEUST_CODE_CROP_IMG);
+                        CutActivity.launch(this, imageUri,WIDTH,HEIGHT,CutActivity.RQEUST_CODE_CROP_IMG);
                     }
                 }
                 break;
