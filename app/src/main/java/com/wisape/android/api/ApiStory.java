@@ -11,6 +11,7 @@ import com.google.gson.JsonParser;
 import com.wisape.android.R;
 import com.wisape.android.model.AttributeInfo;
 import com.wisape.android.model.ServerInfo;
+import com.wisape.android.model.StoryFontInfo;
 import com.wisape.android.model.StoryInfo;
 import com.wisape.android.model.StoryMusicInfo;
 import com.wisape.android.model.StoryMusicTypeInfo;
@@ -35,6 +36,7 @@ public class ApiStory extends ApiBase{
     private static final int WHAT_LIST_STORY_TEMPLATE = 0x02;
     private static final int WHAT_LIST_STORY_TEMPLATE_TYPE = 0x03;
     private static final int WHAT_LIST_STORY_MUSIC_TYPE = 0x04;
+    private static final int WHAT_LIST_STORY_FONT = 0x05;
 
     public static ApiStory instance(){
         return new ApiStory();
@@ -84,6 +86,18 @@ public class ApiStory extends ApiBase{
         Requester.ServerMessage message = requester.post(uri, attr.convert(), tag);
         StoryMusicInfo storyMusicArray[] = (StoryMusicInfo[])convertArray(WHAT_LIST_STORY_MUSIC, message);
         return storyMusicArray;
+    }
+
+    public StoryFontInfo[] listStoryFont(Context context, Object tag){
+        Uri uri = WWWConfig.acquireUri(context.getString(R.string.uri_font_list));
+        Log.d(TAG, "#listStoryFont uri:" + uri.toString());
+
+        Requester requester = Requester.instance();
+        AttributeInfoImpl attr = new AttributeInfoImpl();
+        setAccessToken(context, attr);
+        Requester.ServerMessage message = requester.post(uri, attr.convert(), tag);
+        StoryFontInfo storyFontArray[] = (StoryFontInfo[])convertArray(WHAT_LIST_STORY_FONT, message);
+        return storyFontArray;
     }
 
     public StoryTemplateInfo[] listStoryTemplate(Context context, AttrTemplateInfo attrInfo, Object tag){
@@ -215,7 +229,27 @@ public class ApiStory extends ApiBase{
                     infoArray = newArray;
                 }
                 break;
+            case WHAT_LIST_STORY_FONT :
+                infoArray = new StoryFontInfo[length];
+                index = 0;
+                StoryFontInfo font;
+                for(int i = 0; i < length; i ++){
+                    jsonObj = jsonArray.optJSONObject(i);
+                    font = StoryFontInfo.fromJsonObject(jsonObj);
+                    if(null == font){
+                        continue;
+                    }
 
+                    infoArray[index ++] = font;
+                }
+
+                if(index < length){
+                    int newLength = index;
+                    StoryMusicInfo[] newArray = new StoryMusicInfo[newLength];
+                    System.arraycopy(infoArray, 0, newArray, 0, newLength);
+                    infoArray = newArray;
+                }
+                break;
             case WHAT_LIST_STORY_TEMPLATE :
                 infoArray = new StoryTemplateInfo[length];
                 index = 0;

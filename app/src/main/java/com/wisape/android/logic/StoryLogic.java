@@ -23,6 +23,7 @@ import com.wisape.android.database.StoryMusicTypeEntity;
 import com.wisape.android.database.StoryTemplateEntity;
 import com.wisape.android.http.HttpUrlConstancts;
 import com.wisape.android.http.OkhttpUtil;
+import com.wisape.android.model.StoryFontInfo;
 import com.wisape.android.model.StoryInfo;
 import com.wisape.android.model.StoryMusicInfo;
 import com.wisape.android.model.StoryMusicTypeInfo;
@@ -452,6 +453,11 @@ public class StoryLogic {
             dataArray = listMusicUIDataLocal(context);
         }
         return dataArray;
+    }
+
+    public StoryFontInfo[] listFont(Context context, Object tag) {
+        ApiStory api = ApiStory.instance();
+        return api.listStoryFont(context, tag);
     }
 
     public StoryTemplateEntity[] listStoryTemplateLocal(Context context) {

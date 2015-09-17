@@ -17,6 +17,7 @@ import com.wisape.android.common.StoryManager;
 import com.wisape.android.database.StoryEntity;
 import com.wisape.android.database.StoryMusicEntity;
 import com.wisape.android.logic.StoryLogic;
+import com.wisape.android.model.StoryFontInfo;
 import com.wisape.android.model.StoryTemplateInfo;
 import com.wisape.android.network.Requester;
 
@@ -35,6 +36,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -67,7 +70,8 @@ public class StoryTemplatePlugin extends AbsPlugin{
     private static final int WHAT_SAVE = 0x04;
     private static final int WHAT_PREVIEW = 0x05;
     private static final int WHAT_PUBLISH = 0x06;
-    private static final int WHAT_DOWNLOAD_FONT = 0x07;
+    private static final int WHAT_GET_FONTS = 0x07;
+    private static final int WHAT_DOWNLOAD_FONT = 0x08;
 
     private static final String EXTRA_CATEGORY_ID = "extra_category_id";
     private static final String EXTRA_TEMPLATE_ID = "extra_template_id";
@@ -117,7 +121,7 @@ public class StoryTemplatePlugin extends AbsPlugin{
                 getMusicPath(id);
             }
         }else if (ACTION_GET_FONTS.equals(action)) {//getFonts
-            getFonts();
+            startLoad(WHAT_GET_FONTS,null);
         }else if (ACTION_DOWNLOAD_FONT.equals(action)) {
             Bundle bundle = new Bundle();
             if(null != args && args.length() != 0) {
@@ -189,6 +193,13 @@ public class StoryTemplatePlugin extends AbsPlugin{
                     }
                 }
                 break;
+            }
+            case WHAT_GET_FONTS:{
+
+                StoryFontInfo[] fonts = logic.listFont(context, "getFonts");
+                List<StoryFontInfo> fontList = Arrays.asList(fonts);
+                System.out.println(fontList);
+                getFonts(fontList);
             }
             case WHAT_DOWNLOAD_FONT: {
                 String fontName = args.getString(EXTRA_FONT_NAME);
@@ -346,21 +357,26 @@ public class StoryTemplatePlugin extends AbsPlugin{
         }
     }
 
-    private void getFonts(){
+    private void getFonts(List<StoryFontInfo> fontList){
         JSONObject json = new JSONObject();
         try {
             File fontDirectory = StoryManager.getStoryFontDirectory();
             File fontFile = new File(fontDirectory, FILE_NAME_FONT);
             json.put("filePath", fontFile.getAbsolutePath());
-            File[] fonts = fontDirectory.listFiles(new FileFilter() {
-                @Override
-                public boolean accept(File file) {
-                    return file.isDirectory();
+            if (fontList == null || fontList.size() == 0){
+                fontList = new ArrayList<>();
+                File[] fonts = fontDirectory.listFiles(new FileFilter() {
+                    @Override
+                    public boolean accept(File file) {
+                        return file.isDirectory();
+                    }
+                });
+                StoryFontInfo fontInfo = null;
+                for (File font : fonts) {
+                    fontInfo = new StoryFontInfo();
+                    fontInfo.name = font.getName();
+                    fontList.add(fontInfo);
                 }
-            });
-            List<String> fontList = new ArrayList<>();
-            for (File font : fonts) {
-                fontList.add(font.getName());
             }
             json.put("fonts", fontList);
         }catch (JSONException e){

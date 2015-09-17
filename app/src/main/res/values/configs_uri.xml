@@ -16,6 +16,7 @@
     <string name="uri_music_list">music/list</string>
     <string name="uri_template_download">template/download</string>
     <string name="uri_music_download">music/download</string>
+    <string name="uri_font_list">fonts/list</string>
     <string name="uri_font_download">fonts/DLbyName</string>
 
     <!--active-->
