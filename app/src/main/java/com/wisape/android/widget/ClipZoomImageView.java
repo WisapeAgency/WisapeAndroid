@@ -2,10 +2,13 @@ package com.wisape.android.widget;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Environment;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
@@ -16,6 +19,14 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
+
+import com.wisape.android.util.AppBitmapFactory;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * 缩放图片的View
@@ -366,12 +377,13 @@ public class ClipZoomImageView extends ImageView implements
      *
      * @return 返回裁剪后的bitmap
      */
-    public Bitmap clip() {
+    public Bitmap clip(Uri uri) {
+        //创建原始位图
         Bitmap bitmap = Bitmap.createBitmap(getWidth(), getHeight(),
-                Bitmap.Config.ARGB_8888);
-
+                Bitmap.Config.ARGB_4444);
         Canvas canvas = new Canvas(bitmap);
         draw(canvas);
+        //从原始位图中剪切
         return Bitmap.createBitmap(bitmap, mHorizontalPadding,
                 mVerticalPadding, getWidth() - 2 * mHorizontalPadding,
                 getHeight() - 2 * mVerticalPadding);

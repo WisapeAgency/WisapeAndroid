@@ -17,6 +17,8 @@ import com.wisape.android.network.NanoServer;
 import com.wisape.android.util.FileUtils;
 import com.wisape.android.view.CircleTransform;
 
+import java.io.File;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -55,7 +57,7 @@ public class UserProfileActivity extends BaseActivity {
     @InjectView(R.id.user_profile_email_edit)
     protected TextView emailEdit;
 
-    private Uri userIconUri;
+    private String userIconUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +70,7 @@ public class UserProfileActivity extends BaseActivity {
         emailEdit.setText(wisapeApplication.getUserInfo().user_email);
         String iconUrl = wisapeApplication.getUserInfo().user_ico_n;
         if (null != iconUrl && 0 < iconUrl.length()) {
-            Picasso.with(this).load(iconUrl)
+            Picasso.with(this).load(Uri.parse(iconUrl))
                     .resize(150, 150)
                     .transform(new CircleTransform())
                     .centerCrop()
@@ -102,7 +104,6 @@ public class UserProfileActivity extends BaseActivity {
     }
 
     private void doSaveProfile() {
-
         if (isDestroyed()) {
             setResult(RESULT_CANCELED);
             finish();
@@ -130,14 +131,14 @@ public class UserProfileActivity extends BaseActivity {
         Bundle args = new Bundle();
         args.putString(EXTRAS_NAME, newName);
         args.putString(EXTRAS_EMAIL, newEmail);
-        args.putParcelable(EXTRAS_ICON_URI, userIconUri);
+        args.putString(EXTRAS_ICON_URI, userIconUri);
         startLoadWithProgress(LOADER_WHAT_PROFILE_UPDATE, args);
     }
 
     @Override
     protected Message onLoadBackgroundRunning(int what, Bundle args) throws AsyncLoaderError {
         Message msg = UserLogic.instance().updateProfile(args.getString(EXTRAS_NAME),
-                (Uri) args.getParcelable(EXTRAS_ICON_URI),
+                args.getString(EXTRAS_ICON_URI),
                 args.getString(EXTRAS_EMAIL), wisapeApplication.getUserInfo().access_token);
         msg.what = what;
         return msg;
@@ -175,22 +176,22 @@ public class UserProfileActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
-
             switch (requestCode) {
                 case PhotoSelectorActivity.REQUEST_CODE_PHOTO:
                     Uri imgUri = extras.getParcelable(PhotoSelectorActivity.EXTRA_IMAGE_URI);
                     CutActivity.launch(this, imgUri,WIDTH,HEIGHT,CutActivity.RQEUST_CODE_CROP_IMG);
                     break;
                 case CutActivity.RQEUST_CODE_CROP_IMG:
-                    userIconUri = extras.getParcelable(CutActivity.EXTRA_IMAGE_URI);
+                    userIconUri = extras.getString(CutActivity.EXTRA_IMAGE_URI);
                     if (null != userIconUri) {
-                        Picasso.with(this).load(userIconUri)
+                        Picasso.with(this).load(new File(userIconUri))
                                 .resize(150, 150)
                                 .transform(new CircleTransform())
+                                .placeholder(R.mipmap.icon_camera)
+                                .error(R.mipmap.icon_about_logo)
                                 .centerCrop()
                                 .into(iconView);
                     }
-
                     break;
                 case AddEmailAccoutActivity.REQEUST_CODE_ADD_EMAIL:
                     emailEdit.setText(extras.getString(AddEmailAccoutActivity.EXTRA_EMAIL_ACCOUNT));

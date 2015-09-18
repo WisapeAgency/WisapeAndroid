@@ -1,14 +1,12 @@
 package com.wisape.android.fragment;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -21,17 +19,19 @@ import com.squareup.picasso.Picasso;
 import com.wisape.android.R;
 import com.wisape.android.activity.BaseActivity;
 import com.wisape.android.activity.MainActivity;
+import com.wisape.android.activity.StoryReleaseActivity;
+import com.wisape.android.activity.StorySettingsActivity;
+import com.wisape.android.activity.StoryTemplateActivity;
 import com.wisape.android.activity.TestActivity;
 import com.wisape.android.content.ActiveBroadcastReciver;
 import com.wisape.android.content.BroadCastReciverListener;
+import com.wisape.android.database.StoryEntity;
 import com.wisape.android.http.HttpUrlConstancts;
 import com.wisape.android.logic.StoryLogic;
 import com.wisape.android.model.StoryInfo;
 import com.wisape.android.view.GalleryView;
-import com.wisape.android.widget.OnRecycleViewClickListener;
 import com.wisape.android.widget.PopupWindowMenu;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -39,15 +39,21 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 /**
+ * my story界面
+ *
  * @author Duke
  */
-public class CardGalleryFragment extends AbsFragment implements BroadCastReciverListener{
-
-    private static final String TAG = CardGalleryFragment.class.getSimpleName();
+public class CardGalleryFragment extends AbsFragment implements BroadCastReciverListener,
+        PopupWindowMenu.OnPuupWindowItemClickListener {
 
     private static final int LOADER_STORY = 1;
+    private static final int LOADER_DELETE_STORY = 2;
+    private static final int LOADER_CREATE_STORY = 3;
+    private static final int LOADER_PUBLISH_STORY = 4;
 
     private static final String EXTRAS_ACCESS_TOKEN = "access_token";
+    private static final String EXTRAS_STORY_ENTITY = "story_entity";
+    private static final String EXRAS_IS_SERVER = "is_server";
 
     @InjectView(R.id.card_gallery)
     GalleryView mCardGallery;
@@ -55,8 +61,12 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
     TextView mTextGifCount;
 
     private PopupWindowMenu popupWindow;
-    private GalleryAdapter mGalleryAdapter;
     private ActiveBroadcastReciver activeBroadcastReciver;
+    private StoryEntity clickStoryEntity;
+    private int clickPosition;
+    private GalleryAdapter mGalleryAdapter;
+    private List<StoryEntity> storyEntityList;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -67,7 +77,7 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
         return rootView;
     }
 
-    private void setReciver(){
+    private void setReciver() {
         activeBroadcastReciver = new ActiveBroadcastReciver(this);
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("com.wisape.android.content.ActiveBroadcastReciver");
@@ -75,51 +85,74 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
     }
 
     private void initView() {
-        popupWindow = new PopupWindowMenu((BaseActivity)getActivity());
+        popupWindow = new PopupWindowMenu((BaseActivity) getActivity(), this);
         mCardGallery.setSpace((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 30, mDisplayMetrics));
-        mGalleryAdapter = new GalleryAdapter(getActivity());
-        mGalleryAdapter.setOnRecycleViewClickListener(new OnRecycleViewClickListener() {
-            @Override
-            public void onItemClick(long storyId) {
-                // TODO: 15/8/26 调用接口
-                Log.e(TAG, "onItemClick:" + storyId);
-            }
-
-            @Override
-            public void onItemSubViewClick(long storyId) {
-                Log.e(TAG, "onItemSubViewClick:" + storyId);
-                showPopupWindow(storyId);
-
-            }
-        });
-        mCardGallery.setAdapter(mGalleryAdapter);
-
         Bundle bundle = new Bundle();
-        bundle.putString(EXTRAS_ACCESS_TOKEN,wisapeApplication.getUserInfo().access_token);
+        bundle.putString(EXTRAS_ACCESS_TOKEN, wisapeApplication.getUserInfo().access_token);
         startLoadWithProgress(LOADER_STORY, bundle);
     }
 
     @Override
     public Message loadingInbackground(int what, Bundle args) {
-        Message msg = StoryLogic.instance().getUserStory(args.getString(EXTRAS_ACCESS_TOKEN));
-        msg.what = what;
-        return msg;
+        Message message = Message.obtain();
+        switch (what) {
+            case LOADER_STORY:
+                message = StoryLogic.instance().getUserStory(args.getString(EXTRAS_ACCESS_TOKEN));
+                break;
+            case LOADER_DELETE_STORY:
+                StoryEntity storyEntity = args.getParcelable(EXTRAS_STORY_ENTITY);
+                message = StoryLogic.instance().deleteStory(getActivity(), storyEntity
+                        , args.getString(EXTRAS_ACCESS_TOKEN), args.getBoolean(EXRAS_IS_SERVER));
+                break;
+            case LOADER_CREATE_STORY:
+                message.obj = StoryLogic.instance().createStory(getActivity());
+                break;
+            case LOADER_PUBLISH_STORY:
+                break;
+        }
+        message.what = what;
+        return message;
     }
 
     @Override
     protected void onLoadComplete(Message data) {
         super.onLoadComplete(data);
-        if(HttpUrlConstancts.STATUS_SUCCESS == data.arg1){
-            mGalleryAdapter.setData((List<StoryInfo>)data.obj);
-        }else {
-            showToast((String) data.obj);
-        }
-    }
+        switch (data.what) {
+            case LOADER_STORY:
+                if (HttpUrlConstancts.STATUS_SUCCESS == data.arg1) {
+                    storyEntityList = (List<StoryEntity>) data.obj;
+                    if (0 == storyEntityList.size()) {
+                        showToast("no story");
+                    } else {
+                        mGalleryAdapter = new GalleryAdapter();
+                        mCardGallery.setAdapter(mGalleryAdapter);
+                    }
+                } else {
+                    showToast("get story error");
+                }
+                break;
+            case LOADER_DELETE_STORY:
+                if (data.arg1 == HttpUrlConstancts.STATUS_SUCCESS) {
+                    deleteData();
+                } else {
+                    showToast("删除story失败");
+                }
+                break;
+            case LOADER_CREATE_STORY:
+                StoryEntity storyEntity = (StoryEntity) data.obj;
+                if (null == storyEntity) {
+                    showToast("本地数据库创建失败,请重新创建");
+                } else {
+                    wisapeApplication.setStoryEntity(storyEntity);
+                    addStoryData(storyEntity);
+                    StoryTemplateActivity.launch(this, 0);
+//                    StorySettingsActivity.launch(getActivity(), StorySettingsActivity.REQUEST_SETTING);
+                }
+                break;
+            case LOADER_PUBLISH_STORY:
+                StoryEntity entity = StoryEntity.transform((StoryInfo)data.obj);
 
-    private void showPopupWindow(long storyid){
-        if(!popupWindow.isShowing()){
-            PopupWindowMenu.setStoryId(storyid);
-            popupWindow.showAtLocation(getView(), Gravity.BOTTOM|Gravity.CENTER_HORIZONTAL,0,0);
+
         }
     }
 
@@ -135,7 +168,8 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
     @OnClick(R.id.add_story)
     @SuppressWarnings("unused")
     protected void doAddStory() {
-        TestActivity.launch(getActivity(), 0);
+        startLoad(LOADER_CREATE_STORY, null);
+//        TestActivity.launch(getActivity(), 0);
     }
 
     @OnClick(R.id.gift)
@@ -166,54 +200,115 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
         }
     }
 
+
+    @Override
+    public void updateMsgCount() {
+        if (mTextGifCount.getVisibility() == View.GONE) {
+            mTextGifCount.setVisibility(View.VISIBLE);
+        }
+        mTextGifCount.setText(Integer.parseInt(mTextGifCount.getText().toString()) + 1 + "");
+    }
+
+    @Override
+    public void onEditClick() {
+        //TODO 跳转至再次编辑界面
+    }
+
+    @Override
+    public void onPrevidewClick() {
+        //TODO 跳转至预览界面
+    }
+
+    @Override
+    public void onPublishClick() {
+        if ("0".equals(clickStoryEntity.status)) {
+            startLoad(LOADER_PUBLISH_STORY, null);
+        } else {
+            StoryReleaseActivity.launch(getActivity(), StoryEntity.convert(clickStoryEntity));
+        }
+    }
+
+    @Override
+    public void onDeleteClick() {
+        boolean isSever = true;
+        /*如果是草稿story只进行本地删除*/
+        if ("0".equals(clickStoryEntity.status)) {
+            isSever = false;
+        }
+
+        Bundle args = new Bundle();
+        args.putParcelable(EXTRAS_STORY_ENTITY, clickStoryEntity);
+        args.putString(EXTRAS_ACCESS_TOKEN, wisapeApplication.getUserInfo().access_token);
+        args.putBoolean(EXRAS_IS_SERVER, isSever);
+        startLoad(LOADER_DELETE_STORY, args);
+    }
+
+    /*删除story*/
+    private void deleteData() {
+        storyEntityList.remove(clickPosition);
+        mGalleryAdapter.notifyItemRemoved(clickPosition);
+        mGalleryAdapter.notifyDataSetChanged();
+    }
+
+    /*修改story信息*/
+    private void updateStoryData(StoryEntity storyEntity) {
+        storyEntityList.add(clickPosition, storyEntity);
+        mGalleryAdapter.notifyItemChanged(clickPosition);
+        mGalleryAdapter.notifyDataSetChanged();
+    }
+
+    /*新增story*/
+    private void addStoryData(StoryEntity storyEntity) {
+        int size = storyEntityList.size();
+        storyEntityList.add(size, storyEntity);
+        mGalleryAdapter.notifyItemInserted(size);
+        mGalleryAdapter.notifyDataSetChanged();
+    }
+
     /**
      * story列表适配器
      */
     public class GalleryAdapter extends RecyclerView.Adapter<GHolder> {
 
-        private Context mContext;
-        private List<StoryInfo> storyEntityList = new ArrayList<>();
-        private OnRecycleViewClickListener onRecycleViewClickListener;
-
-        public GalleryAdapter(Context c) {
-            this.mContext = c;
-        }
-
-        public void setOnRecycleViewClickListener(OnRecycleViewClickListener onRecycleViewClickListener) {
-            this.onRecycleViewClickListener = onRecycleViewClickListener;
-        }
 
         @Override
         public GHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
-            final View view = LayoutInflater.from(mContext).inflate(R.layout.layout_main_view_card_item,
+            final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_main_view_card_item,
                     parent, false);
             return new GHolder(view);
         }
 
         @Override
         public void onBindViewHolder(GHolder holder, final int position) {
-            final StoryInfo storyEntity = storyEntityList.get(position);
+            final StoryEntity storyEntity = storyEntityList.get(position);
 
-            holder.mTextEyecount.setText(storyEntity.view_num + "");
-            holder.mTextStoryState.setText(storyEntity.status + "");
-            holder.mTextZanCount.setText(storyEntity.like_num + "");
-            holder.mTextShareCount.setText(storyEntity.share_num + "");
-            holder.mTextStoryName.setText(storyEntity.story_name);
-            Picasso.with(getActivity()).load(storyEntity.small_img)
-                    .into(holder.mStoryBg);
+            holder.mTextEyecount.setText(storyEntity.viewNum + "");
+            holder.mTextZanCount.setText(storyEntity.likeNum + "");
+            holder.mTextShareCount.setText(storyEntity.shareNum + "");
+            holder.mTextStoryName.setText(storyEntity.storyName);
 
-            //设置事件监听
-            holder.mStoryBg.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onRecycleViewClickListener.onItemClick(storyEntity.id);
+            if (0 == position) {
+                holder.mTextStoryState.setText("默认");
+            } else {
+                if ("0".equals(storyEntity.status)) {
+                    holder.mTextStoryState.setText("草稿");
+                } else {
+                    holder.mTextStoryState.setText("已经发布");
                 }
-            });
+            }
+            Picasso.with(getActivity())
+                    .load(storyEntity.storyThumbUri)
+                    .into(holder.mStoryBg);
 
             holder.imageShare.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onRecycleViewClickListener.onItemSubViewClick(storyEntity.id);
+                    clickPosition = position;
+                    clickStoryEntity = storyEntity;
+                    if (!popupWindow.isShowing()) {
+                        popupWindow.showAtLocation(getView(),
+                                Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+                    }
                 }
             });
         }
@@ -222,14 +317,9 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
         public int getItemCount() {
             return storyEntityList.size();
         }
-
-        public void setData(List<StoryInfo> storyEntities) {
-            storyEntityList = storyEntities;
-            notifyDataSetChanged();
-        }
     }
 
-    public class GHolder extends RecyclerView.ViewHolder{
+    public class GHolder extends RecyclerView.ViewHolder {
         @InjectView(R.id.main_story_bg)
         ImageView mStoryBg;
         @InjectView(R.id.text_story_state)
@@ -249,14 +339,5 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
             super(itemView);
             ButterKnife.inject(this, itemView);
         }
-    }
-
-
-    @Override
-    public void updateMsgCount() {
-        if (mTextGifCount.getVisibility() == View.GONE) {
-            mTextGifCount.setVisibility(View.VISIBLE);
-        }
-        mTextGifCount.setText(Integer.parseInt(mTextGifCount.getText().toString()) + 1 + "");
     }
 }

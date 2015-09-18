@@ -3,6 +3,7 @@ package com.wisape.android.widget;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 
@@ -64,7 +65,7 @@ public class ClipImageLayout extends RelativeLayout {
      *
      * @return 返回裁剪后的bitmap
      */
-    public Bitmap clip() {
-        return mZoomImageView.clip();
+    public Bitmap clip(Uri uri) {
+        return mZoomImageView.clip(uri);
     }
 }

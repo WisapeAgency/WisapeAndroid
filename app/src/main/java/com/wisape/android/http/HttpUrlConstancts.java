@@ -32,6 +32,8 @@ public class HttpUrlConstancts {
      * 从服务器获取用户story信息
      */
     public static final String GET_USER_STORY_FROM_SERVER = SERVER_ADDRESS + SEPERATOR +"story/list";
+
+    public static final String DELETE_USER_STORY = SERVER_ADDRESS + SEPERATOR + "story/del";
     /**
      * 修改用户信息
      */

@@ -11,8 +11,8 @@ import com.wisape.android.R;
 import com.wisape.android.model.UserInfo;
 import com.wisape.android.util.SecurityUtils;
 import com.wisape.android.util.Utils;
-import com.oauth.android.OAuthParams;
-import com.oauth.android.OAuthRequestor;
+//import com.oauth.android.OAuthParams;
+//import com.oauth.android.OAuthRequestor;
 
 import org.json.JSONObject;
 
@@ -158,34 +158,34 @@ public class ServerAPI {
     }
 
     public void loadTwitterProfile(Context context, String token, String secret, String response, final APICallback callback) {
-        Uri uri = Uri.parse("oauth://twitter?" + response);
-        String userId = uri.getQueryParameter("user_id");
-        String screenName = uri.getQueryParameter("screen_name");
-
-        String url = "https://api.twitter.com/1.1/users/show.json";
-        OAuthParams params = new OAuthParams(OAuthParams.VERSION_OAUTH_1,
-                OAuthParams.OAUTH_TWITTER,
-                "",
-                "",
-                context.getString(R.string.twitter_api_key),
-                context.getString(R.string.twitter_api_secret_key),
-                context.getString(R.string.twitter_api_callback_uri));
-        HashMap<String, String> map = new HashMap();
-        map.put("user_id", userId);
-        map.put("screen_name", screenName);
-        String result;
-        try {
-            result = OAuthRequestor.get(params, token, secret, url, map);
-            JSONObject object = new JSONObject(result);
-            UserInfo entity = new UserInfo();
-            entity.unique_str = object.optString("id");
-            entity.nick_name = object.optString("name");
-            entity.user_ico_n = object.optString("profile_image_url");
-            callback.onSucces(entity);
-        } catch (Exception e) {
-            e.printStackTrace();
-            callback.onFail(200, "Oauth twitter error");
-        }
+//        Uri uri = Uri.parse("oauth://twitter?" + response);
+//        String userId = uri.getQueryParameter("user_id");
+//        String screenName = uri.getQueryParameter("screen_name");
+//
+//        String url = "https://api.twitter.com/1.1/users/show.json";
+//        OAuthParams params = new OAuthParams(OAuthParams.VERSION_OAUTH_1,
+//                OAuthParams.OAUTH_TWITTER,
+//                "",
+//                "",
+//                context.getString(R.string.twitter_api_key),
+//                context.getString(R.string.twitter_api_secret_key),
+//                context.getString(R.string.twitter_api_callback_uri));
+//        HashMap<String, String> map = new HashMap();
+//        map.put("user_id", userId);
+//        map.put("screen_name", screenName);
+//        String result;
+//        try {
+//            result = OAuthRequestor.get(params, token, secret, url, map);
+//            JSONObject object = new JSONObject(result);
+//            UserInfo entity = new UserInfo();
+//            entity.unique_str = object.optString("id");
+//            entity.nick_name = object.optString("name");
+//            entity.user_ico_n = object.optString("profile_image_url");
+//            callback.onSucces(entity);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            callback.onFail(200, "Oauth twitter error");
+//        }
     }
 
     public void loadGoogleplusProfile(String token, final APICallback callback) {

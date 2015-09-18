@@ -1,17 +1,13 @@
 package com.wisape.android.widget;
 
-import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.PopupWindow;
 
 import com.wisape.android.R;
-import com.wisape.android.WisapeApplication;
 import com.wisape.android.activity.BaseActivity;
-import com.wisape.android.logic.StoryLogic;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -22,15 +18,11 @@ import butterknife.OnClick;
  */
 public class PopupWindowMenu extends PopupWindow {
 
-    private static final String TAG = PopupWindowMenu.class.getSimpleName();
+    private OnPuupWindowItemClickListener itemClickListener;
 
-    private static long storyId;
-
-    private BaseActivity activity;
-
-    public PopupWindowMenu(BaseActivity activity){
+    public PopupWindowMenu(BaseActivity activity,OnPuupWindowItemClickListener onPuupWindowItemClickListener){
         View view = LayoutInflater.from(activity.getApplicationContext()).inflate(R.layout.popup_window_layout,null);
-        this.activity = activity;
+        itemClickListener = onPuupWindowItemClickListener;
         setContentView(view);
         ButterKnife.inject(this,view);
         setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
@@ -40,31 +32,41 @@ public class PopupWindowMenu extends PopupWindow {
         setBackgroundDrawable(new ColorDrawable(000000));
     }
 
-    public static void setStoryId(long id){
-        storyId = id;
-    }
-
     @OnClick(R.id.text_edit)
+    @SuppressWarnings("unused")
     public void onEditClicked(){
-        Log.e(TAG,"#onEdit:" + storyId);
         dismiss();
+        itemClickListener.onEditClick();
     }
     @OnClick(R.id.text_result)
+    @SuppressWarnings("unused")
     public void onResultClicked(){
         dismiss();
     }
     @OnClick(R.id.text_preview)
+    @SuppressWarnings("unused")
     public void onPreviewClicked(){
         dismiss();
+        itemClickListener.onPrevidewClick();
     }
     @OnClick(R.id.text_publish)
+    @SuppressWarnings("unused")
     public void onPublishClicked(){
         dismiss();
+        itemClickListener.onPublishClick();
     }
     @OnClick(R.id.text_delete)
+    @SuppressWarnings("unused")
     public void onDeleteClicked(){
         dismiss();
-//        activity.showProgressDialog(R.string.loading_user_story);
-//        StoryLogic.instance().deleteStory(storyId, WisapeApplication.getInstance().getUserInfo().access_token);
+        itemClickListener.onDeleteClick();
     }
+
+   public interface OnPuupWindowItemClickListener{
+        void onEditClick();
+        void onPrevidewClick();
+        void onPublishClick();
+        void onDeleteClick();
+    }
+
 }

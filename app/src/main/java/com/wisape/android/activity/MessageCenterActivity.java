@@ -16,10 +16,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.wisape.android.R;
-import com.wisape.android.widget.OnRecycleViewClickListener;
 import com.wisape.android.logic.MessageCenterLogic;
 import com.wisape.android.model.MessageInfo;
-import com.wisape.android.widget.OnRecycleViewClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,8 +42,6 @@ public class MessageCenterActivity extends BaseActivity {
 
     @InjectView(R.id.imge_no_data)
     ImageView imgNoData;
-
-    private MessageListAdapter messageListAdapter;
 
     public static void launch(Activity activity) {
         Intent intent = new Intent(activity.getApplicationContext(), MessageCenterActivity.class);
@@ -92,18 +88,7 @@ public class MessageCenterActivity extends BaseActivity {
                 imgNoData.setVisibility(View.VISIBLE);
                 messageListRecyclerView.setVisibility(View.GONE);
             }else {
-                messageListAdapter = new MessageListAdapter(messageInfoList);
-                messageListAdapter.setOnRecycleViewClickListener(new OnRecycleViewClickListener() {
-                    @Override
-                    public void onItemClick(long storyId) {
-                        MessageCenterDetailActivity.launch(getApplicationContext(),(int)storyId);
-                    }
-
-                    @Override
-                    public void onItemSubViewClick(long storyId) {
-
-                    }
-                });
+                MessageListAdapter messageListAdapter = new MessageListAdapter(messageInfoList);
                 messageListRecyclerView.setAdapter(messageListAdapter);
             }
         }else{
@@ -116,14 +101,9 @@ public class MessageCenterActivity extends BaseActivity {
     public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.MessageListHolder> {
 
         private List<MessageInfo> messageInfoList = new ArrayList<>();
-        private OnRecycleViewClickListener onRecycleViewClickListener;
 
         public MessageListAdapter(List<MessageInfo> messageInfos){
             messageInfoList = messageInfos;
-        }
-
-        public void setOnRecycleViewClickListener(OnRecycleViewClickListener onRecycleViewClickListener) {
-            this.onRecycleViewClickListener = onRecycleViewClickListener;
         }
 
         @Override
@@ -158,7 +138,7 @@ public class MessageCenterActivity extends BaseActivity {
                 @Override
                 public void onClick(View v) {
                     messageInfo.getId();
-                    onRecycleViewClickListener.onItemClick(messageInfo.getId());
+                    MessageCenterDetailActivity.launch(getApplicationContext(), messageInfo.getId());
                 }
             });
         }

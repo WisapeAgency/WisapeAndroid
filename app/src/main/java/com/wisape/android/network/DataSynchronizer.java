@@ -43,7 +43,8 @@ public class DataSynchronizer {
     private static final String THUMB_NAME = "thumb.jpg";
     private static final String STAGE_NAME = "stage.html";
     private static DataSynchronizer instance = new DataSynchronizer();
-    public static DataSynchronizer getInstance(){
+
+    public static DataSynchronizer getInstance() {
         return instance;
     }
 
@@ -51,11 +52,12 @@ public class DataSynchronizer {
     private WisapeApplication application;
     private StoryLogic logic = StoryLogic.instance();
     private BlockingQueue<StoryTemplateInfo> downloadQueue = new LinkedBlockingQueue<>();
-    private DataSynchronizer(){
+
+    private DataSynchronizer() {
 
     }
 
-    public void synchronous(Context context){
+    public void synchronous(Context context) {
         this.context = context;
         this.application = WisapeApplication.getInstance();
         ExecutorService service = Executors.newCachedThreadPool();
@@ -67,17 +69,17 @@ public class DataSynchronizer {
         JSONArray localData = logic.listStoryTemplateTypeLocal(context);
         JSONArray remoteData = logic.listStoryTemplateType(context, null);
         System.out.println(remoteData);
-        try{
-            for(int i=0;i<remoteData.length();i++){
-                JSONObject obj = (JSONObject)remoteData.get(i);
+        try {
+            for (int i = 0; i < remoteData.length(); i++) {
+                JSONObject obj = (JSONObject) remoteData.get(i);
                 getStoryTemplate(obj);
             }
-        }catch (JSONException e){
-            Log.e("DataSynchronizer","",e);
+        } catch (JSONException e) {
+            Log.e("DataSynchronizer", "", e);
         }
     }
 
-    private void getStoryTemplate(JSONObject obj) throws JSONException{
+    private void getStoryTemplate(JSONObject obj) throws JSONException {
         StoryTemplateTypeInfo templateType = new StoryTemplateTypeInfo();
         templateType.id = obj.getInt("id");
         templateType.name = obj.getString("name");
@@ -87,13 +89,13 @@ public class DataSynchronizer {
         ApiStory.AttrTemplateInfo attr = new ApiStory.AttrTemplateInfo();
         attr.type = templateType.id;
         StoryTemplateEntity[] entities = logic.listStoryTemplate(context, attr, null);
-        for (StoryTemplateEntity template : entities){
+        for (StoryTemplateEntity template : entities) {
             StoryTemplateInfo templateInfo = StoryTemplateEntity.convert(template);
             File temp_dir = new File(StoryManager.getStoryTemplateDirectory(), templateInfo.temp_name);
             templateInfo.temp_img_local = new File(temp_dir, THUMB_NAME).getAbsolutePath();
             templateInfo.exists = new File(temp_dir, STAGE_NAME).exists();
             List<StoryTemplateInfo> storyTemplateInfoList = application.getTemplateMap().get(templateType.id);
-            if (storyTemplateInfoList == null){
+            if (storyTemplateInfoList == null) {
                 storyTemplateInfoList = new ArrayList<>();
             }
             storyTemplateInfoList.add(templateInfo);
@@ -102,10 +104,10 @@ public class DataSynchronizer {
         }
     }
 
-    public static class Downloader implements Runnable{
+    public static class Downloader implements Runnable {
         private BlockingQueue<StoryTemplateInfo> downloadQueue;
 
-        public Downloader(BlockingQueue<StoryTemplateInfo> downloadQueue){
+        public Downloader(BlockingQueue<StoryTemplateInfo> downloadQueue) {
             this.downloadQueue = downloadQueue;
         }
 
@@ -127,8 +129,8 @@ public class DataSynchronizer {
             }
         }
 
-        private void download(StoryTemplateInfo templateInfo){
-            if(!EnvironmentUtils.isMounted()){
+        private void download(StoryTemplateInfo templateInfo) {
+            if (!EnvironmentUtils.isMounted()) {
                 return;
             }
             File destFile = new File(templateInfo.temp_img_local);
@@ -156,20 +158,20 @@ public class DataSynchronizer {
                 while (0 < (count = input.read(buffer))) {
                     output.write(buffer, 0, count);
                 }
-            }catch (IOException e){
+            } catch (IOException e) {
                 Log.e("DataSynchronizer", "", e);
             } finally {
                 if (null != input) {
                     try {
                         input.close();
-                    }catch (Exception e){
+                    } catch (Exception e) {
 
                     }
                 }
                 if (null != output) {
                     try {
                         output.close();
-                    }catch (Exception e){
+                    } catch (Exception e) {
 
                     }
                 }
@@ -177,5 +179,4 @@ public class DataSynchronizer {
         }
 
     }
-
 }

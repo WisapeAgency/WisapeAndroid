@@ -80,7 +80,7 @@ public class StoryEntity extends BaseEntity implements Parcelable{
         entity.viewNum = info.view_num;
         entity.shareNum = info.share_num;
         entity.userId = info.uid;
-        entity.createAt = Long.parseLong(info.createtime);
+//        entity.createAt = info.createtime;
         entity.updateAt = SystemClock.uptimeMillis();
         return entity;
     }

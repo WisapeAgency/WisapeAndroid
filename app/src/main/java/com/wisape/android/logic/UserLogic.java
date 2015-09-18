@@ -174,8 +174,7 @@ public class UserLogic {
      * @param userEmail   用户邮箱
      * @param accessToken 唯一标志符
      */
-    public Message updateProfile(String nickName, Uri userIcon, String userEmail, String accessToken) {
-        String filePath = FileUtils.getRealPathFromURI(WisapeApplication.getInstance().getApplicationContext(), userIcon);
+    public Message updateProfile(String nickName, String filePath, String userEmail, String accessToken) {
         String iconBase64 = "";
         if (null != filePath && !"".equals(filePath)) {
             iconBase64 = FileUtils.base64ForImage(filePath);

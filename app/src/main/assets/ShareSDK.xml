@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DevInfor>
+
+    <ShareSDK
+        AppKey = "a5f0e8ffbfde"/> <!-- 修改成你在sharesdk后台注册的应用的appkey"-->
+
+    <Twitter
+        Id="9"
+        SortId="9"
+        ConsumerKey="QOpDnl9PSeloYl9ZJBt7a1hrX"
+        ConsumerSecret="pvyMCR5QlPFWl82J3Wcp5ZFs92aSIU7Vl1m2IaLdl5Katxixbh"
+        CallbackUrl="http://mob.com"
+        Enable="true" />
+
+    <Facebook
+        Id="8"
+        SortId="8"
+        ConsumerKey="305010149669435"
+        ConsumerSecret="b9f5da0846a5523ed88649d6024de077"
+        RedirectUrl="http://www.wisape.com/"
+        Enable="true" />
+
+    <GooglePlus
+        Id="21"
+        SortId="21"
+        ConsumerKey="AIzaSyAe2Gwb7mG886dwmykR3OtkMIyhME7toMk"
+        ConsumerSecret="79156317172-6hnfqun8ukvccp8p9r0kr36v7s3jpev2.apps.googleusercontent.com"
+        Enable="true" />
+
+    <Wechat
+        Id="4"
+        SortId="4"
+        AppId="wx4868b35061f87885"
+        AppSecret="64020361b8ec4c99936c0e3999a9f249"
+        BypassApproval="true"
+        Enable="true" />
+    
+    <WechatMoments
+        Id="5"
+        SortId="5"
+        AppId="wx4868b35061f87885"
+        AppSecret="64020361b8ec4c99936c0e3999a9f249"
+        BypassApproval="true"
+        Enable="true" />
+    
+    <Email
+        Id="12" 
+        SortId="12"
+        Enable="true" />
+    
+    <ShortMessage
+        Id="13" 
+        SortId="13"
+        Enable="true" />
+    
+    <LinkedIn
+    	Id="20"
+        SortId="20"
+        ApiKey="ejo5ibkye3vo"
+        SecretKey="cC7B2jpxITqPLZ5M" 
+        RedirectUrl="http://sharesdk.cn"
+        Enable="true" />
+
+    <FacebookMessenger
+        Id="39"
+        SortId="39"
+        ConsumerKey="107704292745179"
+        ConsumerSecret="38053202e1a5fe26c80c753071f0b573"
+        RedirectUrl="http://mob.com"
+        Enable="true" />
+
+</DevInfor>

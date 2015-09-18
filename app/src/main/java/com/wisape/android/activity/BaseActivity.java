@@ -115,11 +115,10 @@ public abstract class BaseActivity extends VolleyActivity{
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        ButterKnife.reset(this);
     }
 
     public void showToast(String msg){
-        Toast.makeText(this,msg,Toast.LENGTH_SHORT).show();
+        Utils.showToast(this,msg);
     }
 
 }

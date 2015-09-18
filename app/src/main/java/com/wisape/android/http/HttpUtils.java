@@ -50,7 +50,4 @@ public class HttpUtils {
     private static boolean isEmpty(String str) {
         return (str == null || str.trim().length() == 0 || "".equals(str));
     }
-
-
-
 }

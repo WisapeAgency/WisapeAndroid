@@ -15,6 +15,9 @@ import com.wisape.android.database.StoryEntity;
 import com.wisape.android.database.StoryMusicEntity;
 import com.wisape.android.logic.StoryLogic;
 import com.wisape.android.model.StoryGestureInfo;
+import com.wisape.android.util.Utils;
+
+import java.io.File;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -25,10 +28,12 @@ import butterknife.OnClick;
  * Created by tony on 2015/7/21.
  */
 public class StorySettingsActivity extends BaseActivity {
-    private static final int WHAT_LOAD_SETTINGS = 0x01;
+    private static final int LOADER_UPATE_SETTINGS = 0x01;
 
     private static final int WIDTH = 600;
     private static final int HEIGHT = 1000;
+
+    public static final int REQUEST_SETTING = 1;
 
     public static void launch(Activity activity, int requestCode) {
         Intent intent = new Intent(activity.getApplicationContext(), StorySettingsActivity.class);
@@ -39,10 +44,8 @@ public class StorySettingsActivity extends BaseActivity {
     protected AppCompatEditText storyNameEdit;
     @InjectView(R.id.story_settings_desc)
     protected AppCompatEditText storyDescEdit;
-
     @InjectView(R.id.story_settings_cover_sdv)
     protected ImageView storyBgView;
-
     @InjectView(R.id.story_settings_music)
     protected AppCompatTextView storyMusicTxtv;
     @InjectView(R.id.story_settings_gesture)
@@ -55,7 +58,36 @@ public class StorySettingsActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_story_settings);
         ButterKnife.inject(this);
-        startLoad(WHAT_LOAD_SETTINGS, null);
+        storyEntity = wisapeApplication.getStoryEntity();
+        setViewData();
+    }
+
+    private void setViewData() {
+        String storyName = storyEntity.storyName;
+        if (!Utils.isEmpty(storyName)) {
+            storyNameEdit.setText(storyName);
+        }
+        String storyDesc = storyEntity.storyDesc;
+        if (!Utils.isEmpty(storyDesc)) {
+            storyDescEdit.setText(storyDesc);
+        }
+
+        String uri = storyEntity.storyThumbUri;
+        if (null != uri) {
+            Uri defaultCover = Uri.parse(uri);
+            Picasso.with(this).load(defaultCover)
+                    .resize(150, 150)
+                    .centerCrop()
+                    .into(storyBgView);
+        }
+        String storyMusicName = storyEntity.storyMusicName;
+        if (!Utils.isEmpty(storyMusicName)) {
+            storyMusicTxtv.setText(storyMusicName);
+        }
+        String storyGestorName = storyEntity.storyGestor;
+        if (!Utils.isEmpty(storyGestorName)) {
+            storyGestureTxtv.setText(storyGestorName);
+        }
     }
 
     @OnClick(R.id.story_settings_cover_sdv)
@@ -67,16 +99,11 @@ public class StorySettingsActivity extends BaseActivity {
     @OnClick(R.id.story_settings_music_layout)
     @SuppressWarnings("unused")
     protected void doSelectStoryMusic() {
-
-        StoryMusicEntity musicEntity = null;
+        StoryMusicEntity musicEntity = new StoryMusicEntity();
         String musicName = storyEntity.storyMusicName;
-        if(null != musicName || !"".equals(musicName)){
-            musicEntity = new StoryMusicEntity();
-            musicEntity.musicLocal = storyEntity.storyMusicLocal;
-            musicEntity.name = storyEntity.storyMusicName;
-            musicEntity.serverId = storyEntity.musicServerId;
-        }
-
+        musicEntity.musicLocal = storyEntity.storyMusicLocal;
+        musicEntity.name = storyEntity.storyMusicName;
+        musicEntity.serverId = storyEntity.musicServerId;
         StoryMusicActivity.launch(this, musicEntity, StoryMusicActivity.REQUEST_CODE_STORY_MUSIC);
     }
 
@@ -85,7 +112,7 @@ public class StorySettingsActivity extends BaseActivity {
     protected void doSelectStroySlideMotion() {
         StoryGestureInfo storyGestureInfo = null;
         String gestorName = storyEntity.storyGestor;
-        if (null != gestorName && !"".equals(gestorName)) {
+        if (!Utils.isEmpty(gestorName)) {
             storyGestureInfo = new StoryGestureInfo();
             if (gestorName.contains("left")) {
                 storyGestureInfo.id = GestorChoiceActivity.GESTOR_LEFT_ID;
@@ -107,17 +134,17 @@ public class StorySettingsActivity extends BaseActivity {
                 if (RESULT_OK == resultCode) {
                     Uri imageUri = data.getParcelableExtra(PhotoSelectorActivity.EXTRA_IMAGE_URI);
                     if (null != imageUri) {
-                        CutActivity.launch(this, imageUri,WIDTH,HEIGHT,CutActivity.RQEUST_CODE_CROP_IMG);
+                        CutActivity.launch(this, imageUri, WIDTH, HEIGHT, CutActivity.RQEUST_CODE_CROP_IMG);
                     }
                 }
                 break;
 
             case CutActivity.RQEUST_CODE_CROP_IMG:
                 if (RESULT_OK == resultCode) {
-                    Uri storyCoverUri = data.getParcelableExtra(CutActivity.EXTRA_IMAGE_URI);
+                    String storyCoverUri = data.getStringExtra(CutActivity.EXTRA_IMAGE_URI);
                     if (null != storyCoverUri) {
                         storyEntity.storyThumbUri = storyCoverUri.toString();
-                        Picasso.with(this).load(storyCoverUri)
+                        Picasso.with(this).load(new File(storyCoverUri))
                                 .resize(80, 80)
                                 .centerCrop()
                                 .into(storyBgView);
@@ -145,50 +172,16 @@ public class StorySettingsActivity extends BaseActivity {
 
     @Override
     protected Message onLoadBackgroundRunning(int what, Bundle args) throws AsyncLoaderError {
-        Message msg;
-        switch (what) {
-            default:
-                msg = null;
-                break;
-
-            case WHAT_LOAD_SETTINGS:
-                msg = Message.obtain();
-                msg.obj = wisapeApplication.getStoryEntity();
-                break;
-
-        }
+        Message msg = Message.obtain();
+        msg.obj = StoryLogic.instance().updateStory(this, storyEntity);
         return msg;
     }
 
     @Override
     protected void onLoadCompleted(Message data) {
-        switch (data.what) {
-            default:
-                return;
-
-            case WHAT_LOAD_SETTINGS:
-                if (null != data.obj) {
-                   this.storyEntity = (StoryEntity) data.obj;
-                    storyNameEdit.setText(storyEntity.storyName);
-                    storyDescEdit.setText(storyEntity.storyDesc);
-                    String uri = storyEntity.storyThumbUri;
-                    if (null != uri) {
-                        Uri defaultCover = Uri.parse(uri);
-                            Picasso.with(this).load(defaultCover)
-                                    .resize(150, 150)
-                                    .centerCrop()
-                                    .into(storyBgView);
-                    }
-                    if (null != storyEntity.storyMusicName) {
-                        storyMusicTxtv.setText(storyEntity.storyMusicName);
-                    }
-                    if (null != storyEntity.storyGestor) {
-                        storyGestureTxtv.setText(storyEntity.storyGestor);
-                    }
-                } else {
-                    this.storyEntity = new StoryEntity();
-                }
-                break;
+        int result = (int) data.obj;
+        if (1 == result){
+            wisapeApplication.setStoryEntity(storyEntity);
         }
     }
 
@@ -205,15 +198,10 @@ public class StorySettingsActivity extends BaseActivity {
     }
 
     private void doSaveStorySettings() {
-        String storyName = storyNameEdit.getText().toString();
-        String storyDesc = storyDescEdit.getText().toString();
-
-        this.storyEntity.storyName = storyName;
-        this.storyEntity.storyDesc = storyDesc;
-
-        wisapeApplication.setStoryEntity(StoryLogic.instance().saveStory(this, this.storyEntity));
+        storyEntity.storyName = storyNameEdit.getText().toString();
+        storyEntity.storyDesc = storyDescEdit.getText().toString();
+        startLoad(LOADER_UPATE_SETTINGS, null);
     }
-
 
     @Override
     protected void onDestroy() {

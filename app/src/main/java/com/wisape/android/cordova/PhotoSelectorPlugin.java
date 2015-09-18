@@ -25,7 +25,7 @@ public class PhotoSelectorPlugin extends AbsPlugin {
     private static final String TAG = PhotoSelectorPlugin.class.getSimpleName();
     private static final String ACTION_STORY_BACKGROUND = "story";
 
-    private Uri cropImgUri;
+    private String cropImgUri;
     private HashMap<String, CallbackContext> callbackContextMap;
     private int width;
     private int height;
@@ -66,14 +66,13 @@ public class PhotoSelectorPlugin extends AbsPlugin {
                     startActivityForResult(intent1, CutActivity.RQEUST_CODE_CROP_IMG);
                     break;
                 case CutActivity.RQEUST_CODE_CROP_IMG:
-                    cropImgUri = extras.getParcelable(CutActivity.EXTRA_IMAGE_URI);
+                    cropImgUri = extras.getString(CutActivity.EXTRA_IMAGE_URI);
                     CallbackContext callback;
                     synchronized (callbackContextMap) {
                         callback = callbackContextMap.remove(ACTION_STORY_BACKGROUND);
                     }
                     if (null != callback) {
-                        callback.success(FileUtils.getRealPathFromURI(getCurrentActivity(),
-                                cropImgUri));
+                        callback.success(cropImgUri);
                     }
                     cropImgUri = null;
                     break;
@@ -82,39 +81,6 @@ public class PhotoSelectorPlugin extends AbsPlugin {
                     break;
             }
         }
-//        switch (requestCode){
-//            default :
-//                super.onActivityResult(requestCode, resultCode, intent);
-//                return;
-//
-//            case REQUEST_CODE_PHOTO :
-//                if(Activity.RESULT_OK == resultCode){
-//                    Uri imageUri = intent.getParcelableExtra(PhotoSelectorActivity.EXTRA_IMAGE_URI);
-//                    cropImgUri = PhotoSelectorActivity.buildCropUri(getCurrentActivity(), 1);
-////                    Intent cropIntent = Crop.of(PhotoProvider.getPhotoUri(imageUri.getPath()), cropImgUri).asSquare().getIntent(getCurrentActivity().getApplicationContext());
-////                    startActivityForResult(cropIntent, Crop.REQUEST_CROP);
-//
-//                    //Intent cropIntent = ScaleCropImageActivity.getIntent(getCurrentActivity(), PhotoProvider.getPhotoUri(imageUri.getPath()), cropImgUri);
-//                    //startActivityForResult(cropIntent, ScaleCropImageActivity.REQUEST_CODE_CROP);
-//                }
-//                break;
-//
-////            case Crop.REQUEST_CROP :
-////                if(Activity.RESULT_OK == resultCode){
-////                    CallbackContext callback;
-////                    synchronized (callbackContextMap){
-////                        callback = callbackContextMap.remove(ACTION_STORY_BACKGROUND);
-////                    }
-////
-////                    if(null != callback){
-////                        String localPath = cropImgUri.getPath();
-////                        Uri newUri = NanoServer.makeImageUrl(localPath);
-////                        callback.success(newUri.toString());
-////                    }
-////                    cropImgUri = null;
-////                }
-////                break;
-//        }
     }
 
     @Override

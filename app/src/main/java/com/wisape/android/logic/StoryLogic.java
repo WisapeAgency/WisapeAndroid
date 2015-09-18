@@ -21,6 +21,7 @@ import com.wisape.android.database.StoryEntity;
 import com.wisape.android.database.StoryMusicEntity;
 import com.wisape.android.database.StoryMusicTypeEntity;
 import com.wisape.android.database.StoryTemplateEntity;
+import com.wisape.android.http.FileDownloadListener;
 import com.wisape.android.http.HttpUrlConstancts;
 import com.wisape.android.http.OkhttpUtil;
 import com.wisape.android.model.StoryFontInfo;
@@ -65,6 +66,7 @@ public class StoryLogic {
     private static final String EXTRA_STORY_TEMPLATE_TYPE = "_story_template_type";
 
     private static final String ATTR_ACCESS_TOKEN = "access_token";
+    private static final String ATTR_STORY_ID = "sid";
 
     public static StoryLogic instance() {
         return new StoryLogic();
@@ -482,7 +484,7 @@ public class StoryLogic {
         return storyTemplateArray;
     }
 
-    public List<StoryTemplateInfo> listStoryTemplateLocalByType(Context context,long typeId) {
+    public List<StoryTemplateInfo> listStoryTemplateLocalByType(Context context, long typeId) {
         DatabaseHelper helper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
         List<StoryTemplateInfo> storyTemplateInfoList = new ArrayList<>();
         Dao<StoryTemplateEntity, Long> dao;
@@ -490,10 +492,10 @@ public class StoryLogic {
             dao = helper.getDao(StoryTemplateEntity.class);
             QueryBuilder<StoryTemplateEntity, Long> builder = dao.queryBuilder();
             List<StoryTemplateEntity> storyTemplateList = builder.where().eq("type", typeId).query();
-            if (storyTemplateList == null || storyTemplateList.size() == 0){
+            if (storyTemplateList == null || storyTemplateList.size() == 0) {
                 return storyTemplateInfoList;
             }
-            for (StoryTemplateEntity entity : storyTemplateList){
+            for (StoryTemplateEntity entity : storyTemplateList) {
                 storyTemplateInfoList.add(StoryTemplateEntity.convert(entity));
 
             }
@@ -559,7 +561,7 @@ public class StoryLogic {
                     entity.createAt = oldEntity.createAt;
                     entity.templateLocal = oldEntity.templateLocal;
                     entity.thumbLocal = oldEntity.thumbLocal;
-                    if (tempEntities != null){
+                    if (tempEntities != null) {
                         tempEntities.remove(entity);
                     }
                 } else {
@@ -569,10 +571,10 @@ public class StoryLogic {
                 entity = dao.createIfNotExists(entity);
                 storyTemplateArray[index++] = entity;
             }
-            if (tempEntities != null){
-                for (StoryTemplateEntity entity : tempEntities){
+            if (tempEntities != null) {
+                for (StoryTemplateEntity entity : tempEntities) {
                     DeleteBuilder deleteBuilder = dao.deleteBuilder();
-                    deleteBuilder.where().eq("serverId",entity.serverId);
+                    deleteBuilder.where().eq("serverId", entity.serverId);
                     deleteBuilder.delete();
                 }
             }
@@ -664,64 +666,64 @@ public class StoryLogic {
 
     /**
      * 获取用户所有的story
-     * @param access_token  用户唯一标示
-     * @return  返回信息
+     *
+     * @param access_token 用户唯一标示
+     * @return 返回信息
      */
-    public Message getUserStory(String access_token){
-        StoryInfo defaultStoryInfo = null;
-        List<StoryInfo> storyInfoList = null;
-        List<StoryInfo> localStoryInfoList = new ArrayList<>();
+    public Message getUserStory(String access_token) {
+
+        /*返回的所有的story集合*/
+        List<StoryEntity> storyEntitYList = new ArrayList<>();
+
+        StoryInfo defaultStoryInfo = getDefaultStoryInfo();
+        if (null != defaultStoryInfo) {
+            storyEntitYList.add(0, StoryEntity.transform(defaultStoryInfo));
+            downLoadStory(defaultStoryInfo);
+        }
+
+        /*服务器端story*/
+        List<StoryInfo> serverStoryList = getUserStoryFromServer(access_token);
+        if (null != serverStoryList) {
+
+            /*下载服务器端story的压缩包解压*/
+            for (StoryInfo storyInfo : serverStoryList) {
+                downLoadStory(storyInfo);
+            }
+            storyEntitYList.addAll(serverStoryToLocalStory(serverStoryList));
+        }
+
+        /*获取本地草稿story并且进行实体转换*/
+        List<StoryEntity> storyLocalEntityList = getUserStoryFromLocal(WisapeApplication.getInstance()
+                .getApplicationContext());
+        storyEntitYList.addAll(storyLocalEntityList);
+
+
         Message message = Message.obtain();
         message.arg1 = HttpUrlConstancts.STATUS_SUCCESS;
-       try{
-           defaultStoryInfo = getDefaultStoryInfo();
-           if(null != defaultStoryInfo){
-               downLoadDefaultStory(defaultStoryInfo);
-           }
-       }catch (Exception e){
-           message.obj = e.getMessage();
-       }
-        List<StoryEntity> storyEntityList = getUserStoryFromLocal(WisapeApplication.getInstance().getApplicationContext());
-        localStoryConvertoStroyInfo(storyEntityList,localStoryInfoList);
-        try{
-            storyInfoList = getUserStoryFromServer(access_token);
-        }catch (Exception e){
-            message.obj = e.getMessage();
-        }
-        //组合所有的story
-        if(storyInfoList == null){
-            storyInfoList = new ArrayList<>();
-        }
-        if(null != localStoryInfoList && localStoryInfoList.size() > 0){
-            storyInfoList.addAll(localStoryInfoList);
-        }
-        if(null != defaultStoryInfo){
-            storyInfoList.add(0, defaultStoryInfo);
-        }
-        if(storyInfoList.size() == 0){
-            message.arg1 = HttpUrlConstancts.STATUS_EXCEPTION;
-            return message;
-        }
-        message.obj = storyInfoList;
+        message.obj = storyEntitYList;
+
         return message;
     }
 
-    private void localStoryConvertoStroyInfo(List<StoryEntity> storyEntityList,List<StoryInfo> loacalStroyList){
-        if(null != storyEntityList && storyEntityList.size() > 0){
-            for (StoryEntity storyEntity : storyEntityList) {
-                loacalStroyList.add(StoryEntity.convert(storyEntity));
+    private List<StoryEntity> serverStoryToLocalStory(List<StoryInfo> storyInfoList) {
+        List<StoryEntity> localStoryEntyList = new ArrayList<>();
+        if (null != storyInfoList && storyInfoList.size() > 0) {
+            for (StoryInfo storyInfo : storyInfoList) {
+                localStoryEntyList.add(StoryEntity.transform(storyInfo));
             }
         }
+        return localStoryEntyList;
     }
 
     /**
      * 获取默认story信息
      */
-    private StoryInfo getDefaultStoryInfo() throws Exception{
+    private StoryInfo getDefaultStoryInfo() {
         try {
             return OkhttpUtil.execute(HttpUrlConstancts.GET_DEFAULT_STORY_INTO, null, StoryInfo.class);
         } catch (Exception e) {
-            throw  e;
+            Log.e(TAG, "获取默认story失败:" + e.getMessage());
+            return null;
         }
     }
 
@@ -738,7 +740,7 @@ public class StoryLogic {
         db.beginTransaction();
         try {
             dao = databaseHelper.getDao(StoryEntity.class);
-            return dao.queryBuilder().where().eq("userId", userId).query();
+            return dao.queryBuilder().where().eq("userId", userId).and().eq("status", 0).query();
         } catch (SQLException e) {
             Log.e(TAG, "", e);
             return null;
@@ -751,33 +753,159 @@ public class StoryLogic {
     /**
      * 从服务器查询用户的个人story
      */
-    private List<StoryInfo> getUserStoryFromServer(String access_token) throws Exception{
+    private List<StoryInfo> getUserStoryFromServer(String access_token) {
 
-        Map<String,String> params = new HashMap<>();
+        Map<String, String> params = new HashMap<>();
         params.put(ATTR_ACCESS_TOKEN, access_token);
-
-        try{
+        try {
             return OkhttpUtil.execute(params, HttpUrlConstancts.GET_USER_STORY_FROM_SERVER, StoryInfo.class);
-        }catch (Exception e){
-            throw e;
+        } catch (Exception e) {
+            Log.e(TAG, "从服务器获取story失败:" + e.getMessage());
+            return null;
         }
     }
 
     /**
-     * 下载默认story
+     * 下载story压缩包并且解压
      **/
-    public void downLoadDefaultStory(StoryInfo defaultStroy) {
-        final File file = new File(StoryManager.getStoryDirectory(), defaultStroy.story_name + ".zip");
-        if(!file.exists()) {
-            Log.e(TAG,"下载默认story");
-            OkhttpUtil.downLoadFile(defaultStroy.story_url,file.getPath());
+    public void downLoadStory(final StoryInfo storyInfo) {
+        final File file = new File(StoryManager.getStoryDirectory(), storyInfo.story_name + ".zip");
+        if (!file.exists()) {
+            Log.e(TAG, "开始下载story:" + storyInfo.story_name);
+            OkhttpUtil.downLoadFile(storyInfo.story_url, file.getPath(), new FileDownloadListener() {
+                @Override
+                public void onSuccess(String filePath) {
+                    try {
+                        ZipUtils.unzip(Uri.fromFile(file),
+                                new File(StoryManager.getStoryDirectory(), storyInfo.story_name));
+                    } catch (IOException e) {
+                        Log.e(TAG, "解压story文件失败:" + storyInfo.story_name + ":" +
+                                file.getAbsolutePath());
+                    }
+                }
+
+                @Override
+                public void onError(String msg) {
+                    Log.e(TAG, "下载story文件失败:" + storyInfo.story_name + ":" + msg);
+                }
+            });
         }
     }
 
     /**
-     * 保存封面设置到本地
+     * 删除服务器与本地数据库story
+     *
+     * @param context
+     * @param storyEntity
+     * @param access_token
+     * @param isServer
+     * @return
      */
-    public StoryEntity saveStory(Context context,StoryEntity storyEntity) {
+    public Message deleteStory(Context context, StoryEntity storyEntity, String access_token, boolean isServer) {
+        Message message = Message.obtain();
+        if (isServer) {
+            Map<String, String> params = new HashMap<>();
+            params.put(ATTR_ACCESS_TOKEN, access_token);
+            params.put(ATTR_STORY_ID, storyEntity.storyServerId + "");
+            try {
+                OkhttpUtil.execute(HttpUrlConstancts.DELETE_USER_STORY,
+                        params, StoryInfo.class);
+            } catch (IOException e) {
+                Log.e(TAG, "删除服务器上用户story失败");
+                message.arg1 = HttpUrlConstancts.STATUS_EXCEPTION;
+            }
+        }
+        deleteLocalStroy(context, storyEntity);
+        message.arg1 = HttpUrlConstancts.STATUS_SUCCESS;
+        return message;
+    }
+
+    /**
+     * 删除本地数据库story
+     *
+     * @param storyEntity
+     * @return
+     */
+    private int deleteLocalStroy(Context context, StoryEntity storyEntity) {
+        storyEntity.status = "2";
+        long userId = WisapeApplication.getInstance().getUserInfo().user_id;
+        DatabaseHelper databaseHelper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
+        Dao<StoryEntity, Log> dao;
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+        db.beginTransaction();
+        try {
+            dao = databaseHelper.getDao(StoryEntity.class);
+            int result = dao.update(storyEntity);
+            db.setTransactionSuccessful();
+            return result;
+        } catch (SQLException e) {
+            Log.e(TAG, "", e);
+            return -1;
+        } finally {
+            db.endTransaction();
+            OpenHelperManager.releaseHelper();
+        }
+    }
+
+    /**
+     * 点击加好的时候创建本地story
+     *
+     * @param context
+     * @return 返回创建story的实体
+     */
+    public StoryEntity createStory(Context context) {
+        DatabaseHelper databaseHelper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+        Dao<StoryEntity, Integer> dao;
+        db.beginTransaction();
+        try {
+            StoryEntity storyEntity = new StoryEntity();
+            storyEntity.status = "0";
+            storyEntity.userId = WisapeApplication.getInstance().getUserInfo().user_id;
+            dao = databaseHelper.getDao(StoryEntity.class);
+            StoryEntity resultEntity = dao.createIfNotExists(storyEntity);
+            db.setTransactionSuccessful();
+            return resultEntity;
+        } catch (SQLException e) {
+            Log.e(TAG, "本地新建story出现异常:" + e.getMessage());
+            return null;
+        } finally {
+            db.endTransaction();
+            OpenHelperManager.releaseHelper();
+        }
+    }
+
+    /**
+     * 更新本地数据story信息
+     *
+     * @param context
+     * @param storyEntity
+     * @return
+     */
+    public int updateStory(Context context, StoryEntity storyEntity) {
+        DatabaseHelper databaseHelper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
+        Dao<StoryEntity, Integer> dao;
+        SQLiteDatabase database = databaseHelper.getWritableDatabase();
+        database.beginTransaction();
+        try {
+            dao = databaseHelper.getDao(StoryEntity.class);
+            int result = dao.update(storyEntity);
+            database.setTransactionSuccessful();
+            return result;
+        } catch (SQLException e) {
+            Log.e(TAG, e.getMessage());
+            return -1;
+        } finally {
+            database.endTransaction();
+            OpenHelperManager.releaseHelper();
+        }
+    }
+
+
+    /**
+     * 保存封面设置到本地数据库
+     */
+    public StoryEntity saveStory(Context context, StoryEntity storyEntity) {
         DatabaseHelper databaseHelper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
         Dao<StoryEntity, Integer> dao;
         SQLiteDatabase database = databaseHelper.getWritableDatabase();
@@ -788,7 +916,7 @@ public class StoryLogic {
             database.setTransactionSuccessful();
             return entity;
         } catch (SQLException e) {
-            Log.e(TAG,e.getMessage());
+            Log.e(TAG, e.getMessage());
             return null;
         } finally {
             database.endTransaction();

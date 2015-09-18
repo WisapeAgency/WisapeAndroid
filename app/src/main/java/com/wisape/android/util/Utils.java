@@ -6,6 +6,8 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -20,7 +22,13 @@ import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
 import com.wisape.android.R;
 import com.wisape.android.activity.BaseActivity;
 import com.wisape.android.activity.MainActivity;
@@ -38,6 +46,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -192,6 +201,61 @@ public class Utils {
         return intent;
     }
 
+    private static final int BLACK = 0xff000000;
+    private static final int WITHE = 0xffffffff;
 
+    /**
+     * 生成一个二维码图像
+     *
+     * @param url
+     *            传入的字符串，通常是一个URL
+     * @param widthAndHeight
+     *           图像的宽高
+     * @return
+     */
+    public static Bitmap createQRCode(String url, int widthAndHeight)
+            throws WriterException {
+        Hashtable<EncodeHintType, String> hints = new Hashtable<EncodeHintType, String>();
+        hints.put(EncodeHintType.CHARACTER_SET, "utf-8");
+        BitMatrix matrix = new MultiFormatWriter().encode(url,
+                BarcodeFormat.QR_CODE, widthAndHeight, widthAndHeight);
+        int width = matrix.getWidth();
+        int height = matrix.getHeight();
+        int[] pixels = new int[width * height];
 
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                if (matrix.get(x, y)) {
+                    pixels[y * width + x] = BLACK;
+                }else{
+                    pixels[y * width + x] = WITHE;
+                }
+            }
+        }
+        Bitmap bitmap = Bitmap.createBitmap(width, height,
+                Bitmap.Config.ARGB_8888);
+        bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
+        return bitmap;
+    }
+
+    public static void clipText(Context context,String text){
+        if (android.os.Build.VERSION.SDK_INT > 11) {
+            ClipboardManager clip = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+            clip.setPrimaryClip(ClipData.newPlainText("http://www.baiud.com", text));
+        }else{
+            android.text.ClipboardManager c = (android.text.ClipboardManager)context.getSystemService(Context.CLIPBOARD_SERVICE);
+            c.setText(text);
+        }
+    }
+
+    public static boolean isEmpty(String str){
+        if(null == str || "".equals(str.trim())){
+            return true;
+        }
+        return false;
+    }
+
+    public static void showToast(Context context,String msg){
+        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+    }
 }
