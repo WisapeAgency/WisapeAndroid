@@ -1,79 +1,9 @@
-[{
-    "temp_url": "http://106.75.196.252/uploads/template/2015082709/ca9671faad767acda3bfbcbd752f3a4d.zip",
-    "temp_name": "aaa",
-    "temp_img_local": "/mnt/sdcard/wisape/com.wisape.android/data/template/aaa/thumb.jpg",
-    "order_type": "",
-    "rec_status": "A",
-    "temp_description": "",
-    "temp_img": "http://106.75.196.252/uploads/template/2015082703/ce5ca5f58c7e5071bc80b0cd89dd1846.jpg",
-    "order": 0,
-    "id": 75,
-    "type": 1,
-    "exists": true,
-    "status": 0
-}, {
-    "temp_url": "http://106.75.196.252/uploads/template/2015082710/6389936887507d51f7bb6f2b47112ba0.zip",
-    "temp_name": "6666",
-    "temp_img_local": "/mnt/sdcard/wisape/com.wisape.android/data/template/6666/thumb.jpg",
-    "order_type": "",
-    "rec_status": "A",
-    "temp_description": "",
-    "temp_img": "http://106.75.196.252/uploads/template/2015082710/c9045b8c4583c58d10483cd5faf95bfe.jpg",
-    "order": 0,
-    "id": 76,
-    "type": 1,
-    "exists": true,
-    "status": 0
-}, {
-    "temp_url": "http://106.75.196.252/uploads/template/2015082710/6389936887507d51f7bb6f2b47112ba0.zip",
-    "temp_name": "6666",
-    "temp_img_local": "/mnt/sdcard/wisape/com.wisape.android/data/template/6666/thumb.jpg",
-    "order_type": "",
-    "rec_status": "A",
-    "temp_description": "",
-    "temp_img": "http://106.75.196.252/uploads/template/2015082710/c9045b8c4583c58d10483cd5faf95bfe.jpg",
-    "order": 0,
-    "id": 77,
-    "type": 1,
-    "exists": true,
-    "status": 0
-}, {
-    "temp_url": "http://106.75.196.252/uploads/template/2015082710/5f1b71e8ad2c88c1015026f1d1fa49f2.zip",
-    "temp_name": "6666",
-    "temp_img_local": "/mnt/sdcard/wisape/com.wisape.android/data/template/6666/thumb.jpg",
-    "order_type": "",
-    "rec_status": "A",
-    "temp_description": "",
-    "temp_img": "http://106.75.196.252/uploads/template/2015082710/c9045b8c4583c58d10483cd5faf95bfe.jpg",
-    "order": 0,
-    "id": 78,
-    "type": 1,
-    "exists": true,
-    "status": 0
-}, {
-    "temp_url": "http://106.75.196.252/uploads/template/2015090207/5a4796eb9bab025cca443427a69e6246.zip",
-    "temp_name": "推送消息测试",
-    "temp_img_local": "/mnt/sdcard/wisape/com.wisape.android/data/template/推送消息测试/thumb.jpg",
-    "order_type": "",
-    "rec_status": "A",
-    "temp_description": "",
-    "temp_img": "http://106.75.196.252/uploads/template/2015090207/8266f2f909a9dd8b1cff55b6998c1533.jpg",
-    "order": 0,
-    "id": 79,
-    "type": 1,
-    "exists": true,
-    "status": 0
-}, {
-    "temp_url": "http://106.75.196.252/uploads/template/2015091014/a04a80869b67fcb9820ca83cc11907c4.zip",
-    "temp_name": "asss",
-    "temp_img_local": "/mnt/sdcard/wisape/com.wisape.android/data/template/asss/thumb.jpg",
-    "order_type": "",
-    "rec_status": "A",
-    "temp_description": "",
-    "temp_img": "http://106.75.196.252/uploads/template/2015091101/dace82b35fd53a371277377d64ec462d.jpg",
-    "order": 0,
-    "id": 81,
-    "type": 1,
-    "exists": false,
-    "status": 0
-}]
+{
+    "fonts"
+:
+    "[{\"zip_url\":\"http://106.75.196.252/uploads/fonts/UniSansHeavy.zip\",\"preview_img\":\"http://106.75.196.252/uploads/fonts/preview_image/Bookman Old Style.png\",\"name\":\"UniSansHeavy\",\"default_down\":1,\"id\":5,\"status\":0}, " +
+    "{\"zip_url\":\"http://106.75.196.252/uploads/fonts/Trebuc.zip\",\"preview_img\":\"http://106.75.196.252/uploads/fonts/preview_image/Great Vibes.png\",\"name\":\"Trebuc\",\"default_down\":0,\"id\":6,\"status\":0}]",
+"filePath"
+:
+    "/mnt/sdcard/wisape/com.wisape.android/data/font/fonts.css"
+}

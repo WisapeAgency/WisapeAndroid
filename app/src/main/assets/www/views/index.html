@@ -364,9 +364,19 @@
             jQuery("#message").text(message);
         }
 
+        function onFontDownloading(progress) {
+            console.info("onDownloading:");
+            console.dir(JSON.stringify(progress));
+            console.info(progress.progress);
+        }
+
+        function onFontCompleted(data) {
+            console.info("onFontCompleted:");
+            console.dir(JSON.stringify(data));
+        }
+
 
     </script>
-
 <script>
         $(function(){
             var ColorArr = [

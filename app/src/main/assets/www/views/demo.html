@@ -12,8 +12,6 @@
     <link href="../public/css/editor_index.css" rel="stylesheet"/>
 </head>
 <body>
-
-
 <style type="text/css">
     * {
         -webkit-box-sizing: border-box;
@@ -89,8 +87,6 @@
     }
 
 </style>
-</head>
-<body>
 <div id="font">xxxx</div>
 <div id="message"></div>
 <div id="wrapper">
@@ -151,7 +147,7 @@
     </div>
 
 
-<div id="main" class="page" style="display: block;">
+<div id="main" class="page">
     <div class="header">
         <div class="pull-left">
             <a class="icon-arrow-left"></a>
@@ -175,15 +171,24 @@
     <div class="pages" id="pages-scroll" >
         <ul>
             <li class="active">
-                <div class="stage-content edit-area pages-img pages-img-bg"  style="background: url(/mnt/sdcard/wisape/com.wisape.android/data/template/dddddddddddd/img/bg.jpg);background-size: 100% 100%;width:100%;height:100%;">
-                    <div class="symbol" style="z-index: 2;">
-                        <div class="pages-img edit-area">
-                            <img data-name="img1" width="50" height="50" style="" src="/mnt/sdcard/wisape/com.wisape.android/data/template/dddddddddddd/img/icon-earth.png"/>
+                <div class="stage-content edit-area pages-img pages-img-bg"
+                     style="background-image: url(/mnt/sdcard/wisape/com.wisape.android/data/template/dddddddddddd/img/bg.jpg);background-size: cover;background-position:50% 50%;width:100%;height:100%;">
+                    <div class="symbol" style="background:red;">
+                        <div class="pages-img edit-area"><img data-name="img1" style=""
+                                                              src="/mnt/sdcard/wisape/com.wisape.android/data/template/dddddddddddd/img/icon-earth.png"/
+                            width="50" height="50">
+                        </div>
+                    </div>
+                    <div class="symbol" style="background: green;">
+                        <div class="pages-img edit-area"><img data-name="img1" style=""
+                                                              src="/mnt/sdcard/wisape/com.wisape.android/data/template/dddddddddddd/img/icon-earth.png"/
+                            width="50" height="50">
                         </div>
                     </div>
                     <div class="symbol" style="z-index: 3;">
-                        <div class="pages-txt edit-area" style="margin:70px auto;width:150px;color:#fff;text-align: center;">As c
-                            update of the classictranslation corpus, the combination of network technology and language essence
+                        <div class="pages-txt edit-area"
+                             style="margin:70px auto;width:150px;color:#fff;text-align: center;">As c update of the
+                            classictranslation corpus, the combination of network technology and language essence
                         </div>
                     </div>
                 </div>
@@ -193,8 +198,201 @@
     <span class="icon-add-stage" id="AddNewStage"></span>
 </div>
 
-<!--<script src="../public/js/cordova.js"></script>-->
-<!--<script type="text/javascript" charset="utf-8" src="cordova.file.js"></script>-->
+<div id="editorText" style="display: none">
+    <div class="header">
+        <div class="pull-left">
+            <a class="icon-arrow-left backToMain" ></a>
+            <span class="tit">Edit Text</span>
+        </div>
+        <div class="pull-right">
+            <ul class="list-inline">
+                <li><a class="icon-pencil" id="TextEditerOpt"></a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="pages editable">
+        <div class="tpl-item" style="background: url(../public/img/temp/stage_example.jpg);background-size: 100% 100%;">
+            <div id="test" class="pages-txt selected" contenteditable="true" style="margin:70px auto;width:150px;color:#fff;text-align: left;background:rgba(0,0,0,0.5);">As c update of the classic translation corpus, the combination of network technology and language essence</div>
+        </div>
+    </div>
+    <div class="pop-layer pop-editer-opt" style="display: none">
+        <div class="hd">
+            <i class="icon-bold" id="setFontWeight" ></i>
+            <i class="icon-italic" id="setFontStyle"></i>
+            <i class="icon-hyperlink" id="setFontLink"></i>
+            <i class="icon-align-left" id="setFontAlign"></i>
+        </div>
+        <div class="bd opts">
+            <div class="item" data-name="pop-editer-color"><span class="opt-name">Color</span><span class="opt-right"><span class="opt-val-color" style="background-color: #fff"></span><i class="icon-arrow-right-list"></i></span></div>
+            <div class="item" data-name="pop-editer-font"><span class="opt-name">Font</span><span class="opt-right"><span class="opt-val">Hevele</span><i class="icon-arrow-right-list"></i></span></div>
+            <div class="item" data-name="pop-editer-animation"><span class="opt-name">Animation</span><span class="opt-right"><span class="opt-val">Animation1</span><i class="icon-arrow-right-list"></i></span></div>
+        </div>
+    </div>
+
+    <div class="pop-layer pop-editer-font" style="display: none">
+        <div class="hd">
+            <i class="icon-arrow-left backPopLayerOpt"></i>
+            <span class="tit">Font Selection</span>
+        </div>
+        <div class="bd opts">
+            <div class="item"><span class="opt-name">Font1</span><span class="opt-right"><i class="icon-correct"></i></span></div>
+            <div class="item"><span class="opt-name">Font2</span><span class="opt-right"><i class="icon-download"></i></span></div>
+            <div class="item"><span class="opt-name">Font2</span><span class="opt-right"><div class="download-progress-bar"><div class="download-progress-percent" style="width:50%;"></div></div></span></div>
+            <div class="item"><span class="opt-name">Font2</span><span class="opt-right"><i class="icon-download"></i></span></div>
+            <div class="item"><span class="opt-name">Font2</span><span class="opt-right"><i class="icon-download"></i></span></div>
+            <div class="item"><span class="opt-name">Font2</span><span class="opt-right"><i class="icon-download"></i></span></div>
+            <div class="item"><span class="opt-name">Font2</span><span class="opt-right"><i class="icon-download"></i></span></div>
+        </div>
+    </div>
+
+    <div class="pop-layer pop-editer-animation" style="display: none">
+        <div class="hd">
+            <i class="icon-arrow-left backPopLayerOpt"></i>
+            <span class="tit">Animation</span>
+        </div>
+        <div class="bd">
+            <span class="anim-item"><i data-animation="slideInDown" class="icon-enter-from-bottom"></i><span class="anim-name">bottom</span></span>
+            <span class="anim-item"><i data-animation="slideInLeft" class="icon-enter-from-left"></i><span class="anim-name">left</span></span>
+            <span class="anim-item"><i data-animation="slideInRight" class="icon-enter-from-right"></i><span class="anim-name">right</span></span>
+            <span class="anim-item"><i data-animation="slideInUp" class="icon-enter-from-top"></i><span class="anim-name">top</span></span>
+            <span class="anim-item"><i data-animation="fadeInDown" class="icon-fadeIn-from-bottom"></i><span class="anim-name">dsfadfs</span></span>
+            <span class="anim-item"><i data-animation="fadeInLeft" class="icon-fadeIn-from-left"></i><span class="anim-name">dsfadfs</span></span>
+            <span class="anim-item"><i data-animation="fadeInRight" class="icon-fadeIn-from-right"></i><span class="anim-name">dsfadfs</span></span>
+            <span class="anim-item"><i data-animation="fadeInIp" class="icon-fadeIn-from-top"></i><span class="anim-name">dsfadfs</span></span>
+            <span class="anim-item"><i data-animation="pulse" class="icon-tuxian"></i><span class="anim-name">dsfadfs</span></span>
+            <span class="anim-item"><i data-animation="wobble"  class="icon-tanru-from-top"></i><span class="anim-name">抖动</span></span>
+            <span class="anim-item"><i data-animation="flash"  class="icon-tanru-from-top"></i><span class="anim-name">闪烁</span></span>
+            <span class="anim-item"><i data-animation="bounceInDown"  class="icon-tanru-from-top"></i><span class="anim-name">下落抖动</span></span>
+            <span class="anim-item"><i class="icon-tanru-from-top"></i><span class="anim-name">roate</span></span>
+        </div>
+    </div>
+
+    <div class="pop-layer pop-editer-color" style="display: none">
+        <div class="hd">
+            <i class="icon-arrow-left backPopLayerOpt"></i>
+            <span class="tit">Color</span>
+        </div>
+        <div class="bd" id="color-box">
+            <div class="color-main">
+                <span class="color-main-item active"></span>
+                <span class="color-main-item"></span>
+                <span class="color-main-item"></span>
+                <span class="color-main-item"></span>
+                <span class="color-main-item"></span>
+                <span class="color-main-item"></span>
+                <span class="color-main-item"></span>
+                <span class="color-main-item"></span>
+                <span class="color-main-item"></span>
+                <span class="color-main-item"></span>
+            </div>
+            <div class="color-sub">
+                <span class="color-sub-item"><i></i></span>
+                <span class="color-sub-item"><i></i></span>
+                <span class="color-sub-item"><i></i></span>
+                <span class="color-sub-item"><i></i></span>
+                <span class="color-sub-item"><i></i></span>
+                <span class="color-sub-item"><i></i></span>
+                <span class="color-sub-item"><i></i></span>
+                <span class="color-sub-item"><i></i></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="ui-mask" style="display: none; width: 100%; height: 671px;"></div>
+    <div class="ui-dialog href-dialog" style="width: 300px; height: 200px; display: none; left: 50%; margin-left: -150px; top: 50%; margin-top: -100px;">
+        <div class="ui-dialog-title">Set Destination</div>
+        <div class="ui-dialog-content">
+            <div class="input-href">
+                <input type="text" value="http://"/>
+            </div>
+        </div>
+        <div class="ui-dialog-btns">
+            <a class="ui-btn btn-cancle">Cancle</a>
+            <a class="ui-btn btn-submit">Confirm</a>
+        </div>
+    </div>
+
+</div>
+
+<div id="editorImage" style="display: none">
+    <div class="header">
+        <div class="pull-left">
+            <a class="icon-arrow-left"></a><span class="tit">Edit Image</span>
+        </div>
+        <div class="pull-right">
+            <!--图片元件图片选择入口-->
+            <a class="imgIco-edit-image"></a>
+        </div>
+    </div>
+    <!--图片操作区域-->
+    <div id="cropper">
+        <div class="crop-area">
+            <img />
+        </div>
+    </div>
+</div>
+
+<div id="storyStageList" style="display: none">
+    <div class="header">
+        <div class="pull-left">
+            <a class="icon-arrow-left"></a>
+            <span class="tit">Page List</span>
+        </div>
+        <div class="pull-right">
+            <ul class="list-inline">
+                <li><a class="icon-dustbin" id="pageDel"></a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="story-page-list" >
+        <ul id="storyDragBox">
+            <li class="tpl-page-item" draggable="false">
+                <span class="drag-handle">☰</span>
+                <img class="stage-thumb" src="../public/img/temp/stage_example.jpg" alt="">
+                <i class="icon-correct"></i>
+            </li>
+            <li class="tpl-page-item" draggable="false">
+                <span class="drag-handle">☰</span>
+                <img class="stage-thumb" src="../public/img/temp/stage_example.jpg" alt="">
+                <i class="icon-correct"></i>
+            </li>
+            <li class="tpl-page-item" draggable="false">
+                <span class="drag-handle">☰</span>
+                <img class="stage-thumb" src="../public/img/temp/stage_example.jpg" alt="">
+                <i class="icon-correct"></i>
+            </li>
+            <li class="tpl-page-item" draggable="false">
+                <span class="drag-handle">☰</span>
+                <img class="stage-thumb" src="../public/img/temp/stage_example.jpg" alt="">
+                <i class="icon-correct"></i>
+            </li>
+            <li class="tpl-page-item" draggable="false">
+                <span class="drag-handle">☰</span>
+                <img class="stage-thumb" src="../public/img/temp/stage_example.jpg" alt="">
+                <i class="icon-correct"></i>
+            </li>
+            <li class="tpl-page-item" draggable="false">
+                <span class="drag-handle">☰</span>
+                <img class="stage-thumb" src="../public/img/temp/stage_example.jpg" alt="">
+                <i class="icon-correct"></i>
+            </li>
+            <li class="tpl-page-item" draggable="false">
+                <span class="drag-handle">☰</span>
+                <img class="stage-thumb" src="../public/img/temp/stage_example.jpg" alt="">
+                <i class="icon-correct"></i>
+            </li>
+            <li class="tpl-page-item" draggable="false">
+                <span class="drag-handle">☰</span>
+                <img class="stage-thumb" src="../public/img/temp/stage_example.jpg" alt="">
+                <i class="icon-correct"></i>
+            </li>
+        </ul>
+    </div>
+
+</div>
+
+<script src="../public/js/cordova.js"></script>
+<script type="text/javascript" charset="utf-8" src="cordova.file.js"></script>
 <script src="../public/js/jquery2.1.4.min.js"></script>
 
 <script src="../public/js/template.js"></script>
@@ -203,7 +401,7 @@
 <script src="../public/js/iscroll-zoom.js"></script>
 <script src="../public/js/animation.js"></script>
 
-<!--<script src="../public/js/app-main.js"></script>-->
+<script src="../public/js/app-main.js"></script>
 <script src="../public/js/common.js"></script>
 <script src="../public/js/Sortable.js"></script>
 <script type="text/javascript">
@@ -344,16 +542,16 @@
             })
         }
 
-//
-//        Sortable.create(document.getElementById("storyDragBox"), {
-//            handle: '.drag-handle',
-//            animation: 150,
-//            onAdd: function (evt){ console.log('onAdd.bar:', evt.item); },
-//            onUpdate: function (evt){ console.log('onUpdate.bar:', evt.item); },
-//            onRemove: function (evt){ console.log('onRemove.bar:', evt.item); },
-//            onStart:function(evt){ console.log('onStart.foo:', evt.item);console.info("evt:");console.info(evt);$(evt.item)},
-//            onEnd: function(evt){ console.log('onEnd.foo:', evt.item);},
-//        });
+
+        Sortable.create(document.getElementById("storyDragBox"), {
+            handle: '.drag-handle',
+            animation: 150,
+            onAdd: function (evt){ console.log('onAdd.bar:', evt.item); },
+            onUpdate: function (evt){ console.log('onUpdate.bar:', evt.item); },
+            onRemove: function (evt){ console.log('onRemove.bar:', evt.item); },
+            onStart:function(evt){ console.log('onStart.foo:', evt.item);console.info("evt:");console.info(evt);$(evt.item)},
+            onEnd: function(evt){ console.log('onEnd.foo:', evt.item);},
+        });
 
         $("#storyDragBox").delegate(".tpl-page-item","click",function(){
             $(this).addClass("selected").siblings().removeClass("selected")
@@ -364,26 +562,7 @@
         })
 
 
-        myScroll = new IScroll('#wrapper', {
-            zoom: true,
-            scrollX: true,
-            scrollY: true,
-            mouseWheel: true,
-            wheelAction: 'zoom',
-            onZoomEnd : function(){
-                console.info("room end");
-                alert("x");
-            },
-            onZoomEnd : function(){
-                console.info("room end");
-                alert("x");
-            }
-        });
 
-        myScroll.on('zoomStart', function(){
-            console.info("room start");
-            alert("x")
-        });
 
 
         var myScroll = new IScroll('#wrapper', {
@@ -406,9 +585,7 @@
             console.info("room start");
             $("#font").html($("#scroller").css("transform").split("matrix(")[1].split(",")[0]);
             $("#message").html(parseInt($("#scroller").css("transform").split("matrix(")[1].split(",")[0]*12));
-
         });
-
 
     })
 </script>
