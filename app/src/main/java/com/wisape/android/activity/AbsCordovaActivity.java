@@ -158,6 +158,9 @@ public abstract class AbsCordovaActivity extends CordovaActivity implements Load
 
         @Override
         public Message loadInBackground() {
+            if(null == args){
+                return null;
+            }
             int what = args.getInt(EXTRA_WHAT, 0);
             Message msg;
             try{
