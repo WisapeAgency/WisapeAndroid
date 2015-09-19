@@ -145,7 +145,6 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
                 } else {
                     wisapeApplication.setStoryEntity(storyEntity);
                     addStoryData(storyEntity);
-                    StoryTemplateActivity.launch(this, 0);
 //                    StorySettingsActivity.launch(getActivity(), StorySettingsActivity.REQUEST_SETTING);
                 }
                 break;
@@ -168,7 +167,11 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
     @OnClick(R.id.add_story)
     @SuppressWarnings("unused")
     protected void doAddStory() {
-        startLoad(LOADER_CREATE_STORY, null);
+
+        StoryTemplateActivity.launch(this, 0);
+
+
+//        startLoad(LOADER_CREATE_STORY, null);
 //        TestActivity.launch(getActivity(), 0);
     }
 
@@ -199,7 +202,6 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
             ((MainActivity) activity).openOrCloseMainMenu();
         }
     }
-
 
     @Override
     public void updateMsgCount() {
@@ -269,7 +271,6 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
      * story列表适配器
      */
     public class GalleryAdapter extends RecyclerView.Adapter<GHolder> {
-
 
         @Override
         public GHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
