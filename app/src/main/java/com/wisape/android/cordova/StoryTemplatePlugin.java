@@ -165,17 +165,17 @@ public class StoryTemplatePlugin extends AbsPlugin{
         }else if (ACTION_BACK.equals(action)){
             cordova.getActivity().finish();
         }else if (ACTION_EDIT.equals(action)){
-            int id = args.getInt(0);
-            if (id == 0){
-                doEditStory(id);
+            StoryEntity storyEntity = app.getStoryEntity();
+            if (storyEntity != null){
+                doEditStory(storyEntity);
             }
             cordova.getActivity().finish();
         }
         return true;
     }
 
-    private void doEditStory(int id){
-        System.out.println(id);
+    private void doEditStory(StoryEntity storyEntity){
+        System.out.println(storyEntity.storyName);
     }
 
     @Override
