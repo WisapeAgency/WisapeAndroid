@@ -21,7 +21,6 @@ import com.wisape.android.logic.StoryLogic;
 import com.wisape.android.model.StoryFontInfo;
 import com.wisape.android.model.StoryTemplateInfo;
 import com.wisape.android.network.Requester;
-import com.wisape.android.util.EnvironmentUtils;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.cordova.CallbackContext;
@@ -34,13 +33,15 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -302,12 +303,17 @@ public class StoryTemplatePlugin extends AbsPlugin{
                 if (!myStory.exists()){
                     myStory.mkdirs();
                 }
-                if(!saveStory(myStory,html,paths)){
+                if(!saveStory(myStory, html, paths)){
                     callbackContext.error(-1);
                     return null;
                 }
+                if ("".equals(story.storyThumbUri)
+                        && !new File(story.storyThumbUri).exists()){
+                    copyAssetsFile("www/public/img/photo_cover.png",
+                            new File(story.storyLocal, "thumb.png").getAbsolutePath());
+                }
                 ApiStory.AttrStoryInfo storyAttr = new ApiStory.AttrStoryInfo();
-                Uri thumb = Uri.fromFile(new File(story.storyLocal, "thumb.jpeg"));
+                Uri thumb = Uri.fromFile(new File(story.storyLocal, "thumb.png"));
                 storyAttr.attrStoryThumb = thumb;
                 storyAttr.storyStatus = ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE;
                 storyAttr.story = Uri.fromFile(new File(story.storyLocal));
@@ -389,6 +395,41 @@ public class StoryTemplatePlugin extends AbsPlugin{
         return true;
     }
 
+    private void copyAssetsFile(String src, String dest) {
+        InputStream in = null;
+        OutputStream out = null;
+        try {
+            out = new FileOutputStream(dest);
+            in = cordova.getActivity().getAssets().open(src);
+            byte[] buffer = new byte[1024];
+            int length = in.read(buffer);
+            while (length > 0) {
+                out.write(buffer, 0, length);
+                length = in.read(buffer);
+            }
+            out.flush();
+            in.close();
+            out.close();
+        }catch (IOException e){
+
+        }finally {
+            if (in != null){
+                try {
+                    in.close();
+                }catch (IOException  e){
+
+                }
+            }
+            if (out != null){
+                try {
+                    out.close();
+                }catch (IOException  e){
+
+                }
+            }
+        }
+    }
+
     private String readFile(String path){
         StringBuffer content = new StringBuffer();
         BufferedReader reader = null;
@@ -463,26 +504,66 @@ public class StoryTemplatePlugin extends AbsPlugin{
 
     private void getFonts(List<StoryFontInfo> fontList){
         JSONObject json = new JSONObject();
+        List<StoryFontInfo> resultFontlist = new ArrayList<>();
         try {
             File fontDirectory = StoryManager.getStoryFontDirectory();
             File fontFile = new File(fontDirectory, FILE_NAME_FONT);
+            File[] fonts = fontDirectory.listFiles(new FileFilter() {
+                @Override
+                public boolean accept(File file) {
+                    return file.isDirectory();
+                }
+            });
             json.put("filePath", fontFile.getAbsolutePath());
             if (fontList == null || fontList.size() == 0){
-                fontList = new ArrayList<>();
-                File[] fonts = fontDirectory.listFiles(new FileFilter() {
-                    @Override
-                    public boolean accept(File file) {
-                        return file.isDirectory();
-                    }
-                });
                 StoryFontInfo fontInfo = null;
                 for (File font : fonts) {
                     fontInfo = new StoryFontInfo();
                     fontInfo.name = font.getName();
-                    fontList.add(fontInfo);
+                    fontInfo.downloaded = 1;
+                    resultFontlist.add(fontInfo);
                 }
+            }else{
+                int serverFontSize = fontList.size();
+                int localFontSize = fonts.length;
+                //如果服务器的字体数量大于本地数量
+                if(serverFontSize  > localFontSize){
+                    for(int i = 0; i < serverFontSize; i++){
+                        StoryFontInfo serverFontInfo = fontList.get(i);
+                        if(i >= fonts.length){
+                            resultFontlist.add(serverFontInfo);
+                        }else{
+                            String localFonInName = fonts[i].getName();
+                            if(localFonInName.equals(serverFontInfo.name)){
+                                serverFontInfo.downloaded = 1;
+                            }else{
+                                serverFontInfo.downloaded = 0;
+                            }
+                            resultFontlist.add(serverFontInfo);
+                        }
+                    }
+                }else{
+                    for(int i = 0; i < fonts.length; i++){
+                        String localFontName = fonts[i].getName();
+                        if(i >= fontList.size()){
+                            StoryFontInfo storyFontInfo = new StoryFontInfo();
+                            storyFontInfo.name = localFontName;
+                            storyFontInfo.downloaded = 1;
+                            resultFontlist.add(storyFontInfo);
+                        }else{
+                            StoryFontInfo storyFontInfo = fontList.get(i);
+                            if(localFontName.equals(storyFontInfo.name)){
+                                storyFontInfo.downloaded = 1;
+                            }else {
+                                storyFontInfo.downloaded = 0;
+                            }
+                            resultFontlist.add(storyFontInfo);
+                        }
+                    }
+                }
+
             }
-            json.put("fonts", fontList);
+            json.put("fonts", resultFontlist);
         }catch (JSONException e){
             callbackContext.success(1);
         }
