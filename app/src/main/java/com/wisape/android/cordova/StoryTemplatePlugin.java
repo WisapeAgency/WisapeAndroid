@@ -272,7 +272,7 @@ public class StoryTemplatePlugin extends AbsPlugin{
                     return null;
                 }
                 File previewFile = new File(myStory,FILE_NAME_PREVIEW);
-                if(saveStoryPreview(previewFile,html)){
+                if(saveStoryPreview(previewFile,html,story)){
                     StoryPreviewActivity.launch(cordova.getActivity(),previewFile.getAbsolutePath());
                 }else {
                     callbackContext.error(-1);
@@ -336,7 +336,7 @@ public class StoryTemplatePlugin extends AbsPlugin{
         return true;
     }
 
-    private boolean saveStoryPreview(File previewFile, String html){
+    private boolean saveStoryPreview(File previewFile, String html,StoryEntity story){
         String header = getFromAssets(PREVIEW_HEADER);
         String footer = getFromAssets(PREVIEW_FOOTER);
         PrintWriter writer = null;
@@ -344,6 +344,12 @@ public class StoryTemplatePlugin extends AbsPlugin{
             writer = new PrintWriter(previewFile);
             writer.println(header);
             writer.println(html);
+            if (!"".equals(story.storyMusicLocal)){
+                writer.println("<div id=\"audio-btn\" class=\"on\">");
+                writer.println(String.format("    <audio loop=\"loop\" src=\"%s\" id=\"media\" preload=\"preload\"></audio>",
+                        story.storyMusicLocal));
+                writer.println("</div>");
+            }
             writer.println(footer);
             writer.close();
         }catch (IOException e){
