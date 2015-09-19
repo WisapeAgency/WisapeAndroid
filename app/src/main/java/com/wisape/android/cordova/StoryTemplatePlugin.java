@@ -67,6 +67,8 @@ public class StoryTemplatePlugin extends AbsPlugin{
     public static final String ACTION_PREVIEW = "preview";
     public static final String ACTION_PUBLISH = "publish";
     public static final String ACTION_SETTING = "setting";
+    public static final String ACTION_BACK = "back";
+    public static final String ACTION_EDIT = "edit";
 
     private static final int WHAT_GET_STAGE_CATEGORY = 0x01;
     private static final int WHAT_GET_STAGE_LIST = 0x02;
@@ -160,8 +162,20 @@ public class StoryTemplatePlugin extends AbsPlugin{
             startLoad(WHAT_PUBLISH, bundle);
         }else if (ACTION_SETTING.equals(action)){
             StorySettingsActivity.launch(getCurrentActivity(), 0);
+        }else if (ACTION_BACK.equals(action)){
+            cordova.getActivity().finish();
+        }else if (ACTION_EDIT.equals(action)){
+            int id = args.getInt(0);
+            if (id == 0){
+                doEditStory(id);
+            }
+            cordova.getActivity().finish();
         }
         return true;
+    }
+
+    private void doEditStory(int id){
+        System.out.println(id);
     }
 
     @Override
