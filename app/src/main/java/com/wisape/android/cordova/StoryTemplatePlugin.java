@@ -1,6 +1,7 @@
 package com.wisape.android.cordova;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
@@ -20,6 +21,7 @@ import com.wisape.android.logic.StoryLogic;
 import com.wisape.android.model.StoryFontInfo;
 import com.wisape.android.model.StoryTemplateInfo;
 import com.wisape.android.network.Requester;
+import com.wisape.android.util.EnvironmentUtils;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.cordova.CallbackContext;
@@ -139,9 +141,9 @@ public class StoryTemplatePlugin extends AbsPlugin{
         }else if (ACTION_SAVE.equals(action)){//save
             Bundle bundle = new Bundle();
             if(null != args && args.length() == 3){
-                bundle.putInt(EXTRA_STORY_ID, args.optInt(0));//story_id
-                bundle.putString(EXTRA_STORY_HTML, args.getString(1));
-                bundle.putString(EXTRA_FILE_PATH, args.getString(2));
+//                bundle.putInt(EXTRA_STORY_ID, args.optInt(0));//story_id
+                bundle.putString(EXTRA_STORY_HTML, args.getString(0));
+                bundle.putString(EXTRA_FILE_PATH, args.getString(1));
             }
             startLoad(WHAT_SAVE, bundle);
         }else if (ACTION_PREVIEW.equals(action)){//preview
@@ -154,10 +156,10 @@ public class StoryTemplatePlugin extends AbsPlugin{
             startLoad(WHAT_PREVIEW, bundle);
         }else if (ACTION_PUBLISH.equals(action)){//publish
             Bundle bundle = new Bundle();
-            if(null != args && args.length() == 3){
-                bundle.putInt(EXTRA_STORY_ID, args.optInt(0));//story_id
-                bundle.putString(EXTRA_STORY_HTML, args.getString(1));
-                bundle.putString(EXTRA_FILE_PATH, args.getString(2));
+            if(null != args && args.length() == 2){
+//                bundle.putInt(EXTRA_STORY_ID, args.optInt(0));//story_id
+                bundle.putString(EXTRA_STORY_HTML, args.getString(0));
+                bundle.putString(EXTRA_FILE_PATH, args.getString(1));
             }
             startLoad(WHAT_PUBLISH, bundle);
         }else if (ACTION_SETTING.equals(action)){
@@ -238,7 +240,7 @@ public class StoryTemplatePlugin extends AbsPlugin{
                 break;
             }
             case WHAT_SAVE:{
-                int storyId = args.getInt(EXTRA_STORY_ID, 0);
+//                int storyId = args.getInt(EXTRA_STORY_ID, 0);
                 String html = args.getString(EXTRA_STORY_HTML);
                 String path = args.getString(EXTRA_FILE_PATH);
                 com.alibaba.fastjson.JSONArray paths = JSON.parseArray(path);
@@ -280,7 +282,7 @@ public class StoryTemplatePlugin extends AbsPlugin{
                 break;
             }
             case WHAT_PUBLISH:{
-                int storyId = args.getInt(EXTRA_STORY_ID, 0);
+//                int storyId = args.getInt(EXTRA_STORY_ID, 0);
                 String html = args.getString(EXTRA_STORY_HTML);
                 String path = args.getString(EXTRA_FILE_PATH);
                 com.alibaba.fastjson.JSONArray paths = JSON.parseArray(path);
@@ -295,6 +297,14 @@ public class StoryTemplatePlugin extends AbsPlugin{
                     callbackContext.error(-1);
                     return null;
                 }
+                ApiStory.AttrStoryInfo storyAttr = new ApiStory.AttrStoryInfo();
+                Uri thumb = Uri.fromFile(new File(story.storyLocal, "thumb.jpeg"));
+                storyAttr.attrStoryThumb = thumb;
+                storyAttr.storyStatus = ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE;
+                storyAttr.story = Uri.fromFile(new File(story.storyLocal));
+                storyAttr.storyName = story.storyName;
+                storyAttr.storyDescription = story.storyDesc;
+                logic.update(cordova.getActivity().getApplicationContext(),storyAttr,"release");
                 StoryReleaseActivity.launch(cordova.getActivity(),1);
             }
         }
