@@ -323,7 +323,6 @@ public class StoryTemplatePlugin extends AbsPlugin{
     }
 
     private boolean saveStory(File myStory,String html,com.alibaba.fastjson.JSONArray paths){
-//        File storyPath = StoryManager.getStoryDirectory();
         File templatePath = StoryManager.getStoryTemplateDirectory();
         html = html.replace(templatePath.getAbsolutePath(),myStory.getAbsolutePath());
         File storyHTML = new File(myStory,FILE_NAME_STORY);

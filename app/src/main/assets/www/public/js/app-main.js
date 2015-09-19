@@ -71,15 +71,14 @@ WisapeEditer = {
                 for(var i = 0;i< JSON.parse(data.fonts).length;i++){
                     console.info(JSON.parse(data.fonts)[i])
                 }
-
-                var sourceFont =
+                var sourceFont = ''
                     +    '{{each listFont as value i}}'
-                    +        '<div class="item"> <span class="opt-name">{{value.name}}</span> <span class="opt-right"><i class="icon-correct"></i></span> </div>'
+                    +        '<div class="item"> <span class="opt-name">{{value.name}}</span> <span class="opt-right">{{value.downloaded}}</span> </div>'
                     +    '{{/each}}';
 
                 var render = template.compile(sourceFont);
                 var htmlFont = render({
-                    listFont: JSON.parse(data)
+                    listFont : JSON.parse(data.fonts)
                 });
 
                 $(".pop-editer-font .opts").html(htmlFont);
