@@ -10,6 +10,7 @@ public class StoryFontInfo extends ServerInfo{
     public String preview_img;
     public String zip_url;
     public int default_down;
+    public int downloaded;
 
     public static StoryFontInfo fromJsonObject(JSONObject json){
         if(null == json){
