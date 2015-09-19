@@ -71,6 +71,7 @@ public class StoryTemplatePlugin extends AbsPlugin{
     public static final String ACTION_SETTING = "setting";
     public static final String ACTION_BACK = "back";
     public static final String ACTION_EDIT = "edit";
+    public static final String ACTION_GET_CONTENT = "getContent";
 
     private static final int WHAT_GET_STAGE_CATEGORY = 0x01;
     private static final int WHAT_GET_STAGE_LIST = 0x02;
@@ -172,12 +173,20 @@ public class StoryTemplatePlugin extends AbsPlugin{
                 doEditStory(storyEntity);
             }
             cordova.getActivity().finish();
+        }else if (ACTION_GET_CONTENT.equals(action)){
+            if (cordova.getActivity() instanceof StoryTemplateActivity){
+                StoryTemplateActivity activity = (StoryTemplateActivity)cordova.getActivity();
+                String html = activity.getContent();
+                callbackContext.success(html);
+            }
         }
         return true;
     }
 
     private void doEditStory(StoryEntity storyEntity){
-        System.out.println(storyEntity.storyName);
+        File htmlFile = new File(storyEntity.storyLocal, FILE_NAME_STORY);
+        String html = readFile(htmlFile.getAbsolutePath());
+        callbackContext.success(html);
     }
 
     @Override

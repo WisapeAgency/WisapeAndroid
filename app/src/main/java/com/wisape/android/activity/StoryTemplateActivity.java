@@ -56,6 +56,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
     private static final String EXTRA_TEMPLATE_PATH = "temp_path";
     private static final String EXTRA_TEMPLATE_URL = "temp_url";
     private static final String EXTRA_FONT_NAME = "font_name";
+    private static final String EXTRA_EDIT_CONTENT = "html_content";
     private static final String FONT_FAMILY = "font-family";
     private static final String FONT_FILE_NAME = "fonts.css";
 
@@ -68,15 +69,21 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
 
     public static void launch(Activity activity, int requestCode){
         Intent intent = new Intent(activity.getApplicationContext(), StoryTemplateActivity.class);
-//        intent.putExtra(EXTRA_STORY_ID,storyId);
+        activity.startActivityForResult(intent, requestCode);
+    }
+
+    public static void launch(Activity activity,String html, int requestCode){
+        Intent intent = new Intent(activity.getApplicationContext(), StoryTemplateActivity.class);
+        intent.putExtra(EXTRA_EDIT_CONTENT, html);
         activity.startActivityForResult(intent, requestCode);
     }
 
     public static void launch(Fragment fragment, int requestCode){
         Intent intent = new Intent(fragment.getActivity().getApplicationContext(), StoryTemplateActivity.class);
-//        intent.putExtra(EXTRA_STORY_ID,storyId);
         fragment.startActivityForResult(intent, requestCode);
     }
+
+    private String html;
     private Handler downloadTemplateHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -167,6 +174,10 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
         }
     };
 
+    public String getContent(){
+        return html;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -175,6 +186,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
                 .appendEncodedPath("template_light/index.html").build();
         String url = uri.toString();
         Log.d(TAG, "#onCreate url:" + url);
+        html = getIntent().getStringExtra(EXTRA_EDIT_CONTENT);
         loadUrl(START_URL);
         startLoad(WHAT_INIT, null);
     }
