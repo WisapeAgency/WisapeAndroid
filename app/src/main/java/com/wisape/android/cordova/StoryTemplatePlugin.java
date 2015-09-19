@@ -61,6 +61,7 @@ public class StoryTemplatePlugin extends AbsPlugin{
     public static final String ACTION_DOWNLOAD_FONT = "downloadFont";
     public static final String ACTION_MUSIC_PATH = "getMusicPath";
     public static final String ACTION_SAVE = "save";
+    public static final String ACTION_PREVIEW = "preview";
     public static final String ACTION_PUBLISH = "publish";
     public static final String ACTION_SETTING = "setting";
 
@@ -138,6 +139,14 @@ public class StoryTemplatePlugin extends AbsPlugin{
                 bundle.putString(EXTRA_FILE_PATH, args.getString(2));
             }
             startLoad(WHAT_SAVE, bundle);
+        }else if (ACTION_PREVIEW.equals(action)){//preview
+            Bundle bundle = new Bundle();
+            if(null != args && args.length() == 3){
+                bundle.putInt(EXTRA_STORY_ID, args.optInt(0));//story_id
+                bundle.putString(EXTRA_STORY_HTML, args.getString(1));
+                bundle.putString(EXTRA_FILE_PATH, args.getString(2));
+            }
+            startLoad(WHAT_PREVIEW, bundle);
         }else if (ACTION_PUBLISH.equals(action)){//publish
             Bundle bundle = new Bundle();
             if(null != args && args.length() == 3){
