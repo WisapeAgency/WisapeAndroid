@@ -50,30 +50,36 @@ WisapeEditer = {
 
         });
 
-        //获取字体接口数据
-        WisapeEditer.GetNativeData("getFonts", [],function(data){
-            //console.info("fonts:");
-            //console.info(data);
-            //console.info(JSON.stringify(data));
-            //
-            //
-            //var source =
-            //    +    '{{each list as value i}}'
-            //    +        '<div class="item"> <span class="opt-name">{{value.name}}</span> <span class="opt-right"><i class="icon-correct"></i></span> </div>'
-            //    +    '{{/each}}';
-            //
-            //var render = template.compile(source);
-            //var html = render({
-            //    list: data.fonts
-            //});
-            //
-            //$(".pop-editer-font .opts").html(html);
-
-        })
 
     },
 
     event : function(){
+
+
+        //获取字体接口数据
+        $("#pop-editer-font").click(function(){
+            WisapeEditer.GetNativeData("getFonts", [],function(data){
+                console.info("fonts:");
+                console.info(data.fonts);
+                console.info(JSON.stringify(data.fonts));
+                console.info(JSON.parse(data.fonts) instanceof Array);
+
+
+                var sourceFont =
+                    +    '{{each listFont as value i}}'
+                    +        '<div class="item"> <span class="opt-name">{{value.name}}</span> <span class="opt-right"><i class="icon-correct"></i></span> </div>'
+                    +    '{{/each}}';
+
+                var render = template.compile(sourceFont);
+                var htmlFont = render({
+                    listFont: data.fonts
+                });
+
+                $(".pop-editer-font .opts").html(htmlFont);
+
+            })
+        })
+
 
         //预览
         $("#storyPublish").click(function(){

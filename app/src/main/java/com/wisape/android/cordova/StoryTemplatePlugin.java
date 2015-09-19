@@ -312,7 +312,9 @@ public class StoryTemplatePlugin extends AbsPlugin{
                 storyAttr.storyStatus = ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE;
                 storyAttr.story = Uri.fromFile(new File(story.storyLocal));
                 storyAttr.storyName = story.storyName;
+                storyAttr.bgMusic = story.storyMusicName;
                 storyAttr.storyDescription = story.storyDesc;
+                storyAttr.imgPrefix = StoryManager.getStoryDirectory().getAbsolutePath();
                 logic.update(cordova.getActivity().getApplicationContext(),storyAttr,"release");
                 StoryReleaseActivity.launch(cordova.getActivity(),1);
             }
@@ -336,17 +338,13 @@ public class StoryTemplatePlugin extends AbsPlugin{
             }
         }
         File storyImg = new File(myStory,DIR_NAME_IMAGE);
-        if (storyImg.exists()){
-            try{
-                FileUtils.deleteDirectory(storyImg);
-            }catch (IOException e){
-                Log.e("saveStory","",e);
-            }
+        if (!storyImg.exists()){
+            storyImg.mkdirs();
         }
-        storyImg.mkdirs();
         try{
             for (int i=0;i<paths.size();i++){
-                File file = new File(paths.getString(i));
+                String path = paths.getString(i).replace("file:/","");
+                File file = new File(path);
                 FileUtils.copyFile(file,new File(storyImg,file.getName()));
             }
         }catch (IOException e){

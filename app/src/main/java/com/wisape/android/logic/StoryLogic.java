@@ -98,8 +98,10 @@ public class StoryLogic {
                 throw new IllegalStateException(e);
             }
 
-            String thumb = Utils.base64ForImage(attr.attrStoryThumb);
-            attr.storyThumb = thumb;
+            if (new File(attr.attrStoryThumb.toString()).exists()){
+                String thumb = Utils.base64ForImage(attr.attrStoryThumb);
+                attr.storyThumb = thumb;
+            }
 
             ApiStory api = ApiStory.instance();
             story = api.update(context, attr, tag);
