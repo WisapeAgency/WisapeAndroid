@@ -1,5 +1,6 @@
 (function(){
     $.fn.iScroll = function(options){
+
         function set_wrap_width(dom){
             var wid = 0;
             var ul = dom.find('ul');
@@ -8,6 +9,8 @@
                 wid += $(this).outerWidth(true);
             });
             ul.css('width',wid+1);
+            console.info("scroll width:" + (wid+1));
+            console.info("scroll length:" + li.length);
         }
         return this.each(function(){
             set_wrap_width($(this));

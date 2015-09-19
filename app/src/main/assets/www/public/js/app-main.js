@@ -61,6 +61,33 @@ WisapeEditer = {
 
     event : function(){
 
+        //预览
+        $("#storyPublish").click(function(){
+            var retHtml = "",retImg = [];
+            for(var i = 0;i < WisapeEditer.storyData.length;i++) {
+                retHtml += WisapeEditer.storyData[i];
+            }
+            pageScroll.find(".pages-img").each(function(){
+                var me = $(this);
+                if(me.hasClass("pages-img-bg")) {
+                    retImg.push(me.css("background-image"));
+                } else {
+                    retImg.push(me.find("img").attr("src"));
+                }
+            });
+
+            console.info("storyPublish");
+            console.info(retHtml);
+            console.info(retImg);
+
+            WisapeEditer.GetNativeData("preview", [retHtml,retImg],function(){
+                console.info("publis done");
+            })
+
+
+
+        })
+
         //模板分类事件
         var menuScroll = $("#menu-scroll"),
             pageScroll = $("#pages-scroll");
@@ -84,13 +111,14 @@ WisapeEditer = {
         //管理stage列表
         $("#manageStageList").click(function(){
             console.info("manageStageList:");
-            console.info(typeof [1,2,3,4]);
-            console.info([1,2,3,4]);
             console.info(typeof WisapeEditer.storyData);
             $("#pageScroll li").find(".ico-acitve,.count").remove();
             var retHtml = "";
+            var computedHeight = parseInt($(document).width()/3*1.67);
+            console.info($(document).width());
+            console.info(computedHeight);
             for(var i in WisapeEditer.storyData) {
-                retHtml += '<li class="tpl-page-item" draggable="false" height="60"><span class="drag-handle">☰</span><i class="icon-correct"></i>' + WisapeEditer.storyData[i] + '</li>';
+                retHtml += '<li class="tpl-page-item" draggable="false" style="height:' + computedHeight +'px"><span class="drag-handle">☰</span><i class="icon-correct"></i>' + WisapeEditer.storyData[i] + '</li>';
             };
             $("#storyDragBox").html(retHtml);
             WisapeEditer.ShowView('main','storyStageList');
@@ -101,7 +129,7 @@ WisapeEditer = {
             var retHtml = [];
             $("#storyDragBox").find(".drag-handle,.icon-correct").remove();
             $("#storyDragBox li").each(function(){
-                retHtml.push($(this).html());
+                retHtml.push($(this).removeAttr("style").html());
             });
             console.info("storyStageList:");
             console.info(retHtml);
@@ -182,8 +210,6 @@ WisapeEditer = {
 
         });
 
-
-
         pageScroll.delegate("li.active .pages-txt ","click",function(event){
             var _me = $(this);
             if(!_me.hasClass("active")) {
@@ -220,10 +246,7 @@ WisapeEditer = {
                 me.find(".count").html((i+1) + "/" +WisapeEditer.storyData.length);
             })
 
-
-
-
-            pageScroll.iScroll( {scrollX: true, scrollY: false, preventDefault: false });
+            pageScroll.iScroll( {scrollX: true, scrollY: false, mouseWheel: true, checkDOMChanges: true , preventDefault: false });
         })
 
         //文本编辑事件
@@ -245,13 +268,16 @@ WisapeEditer = {
             console.info("WisapeEditer.storyData:");
             console.info(WisapeEditer.storyData);
 
-            WisapeEditer.ShowView('editorText','main');
 
+
+            //reset Editer
             if($("#TextEditerOpt").hasClass("active")) {
                 $("#TextEditerOpt").click();
             }
             $(".pop-editer-opt i,.pop-editer-animation i").removeClass("active");
             $(".input-href").val("http://");
+
+            WisapeEditer.ShowView('editorText','main');
 
         })
 
@@ -262,7 +288,7 @@ WisapeEditer = {
             if(me.hasClass("active")) {
                 me.removeClass("active");
                 parent.removeClass("pop-active");
-                target.hide();
+                parent.find(".pop-layer").hide();
             } else {
                 me.addClass("active");
                 parent.addClass("pop-active");
@@ -391,7 +417,7 @@ WisapeEditer = {
                 +        '<li class="tpl-page-item {{if value.exists}}tpl-exist{{/if}}"  data-id="{{value.id}}" data-exists="{{value.exists}}" data-type="{{value.type}}"  data-name="{{value.temp_name}}">'
                 +           '<i style="display: none" class="icon-tags-hot"></i>'
                 +           '{{if !value.exists}} <span class="icon-download"></span> {{/if}}<div style="display:none;" class="download-progress-bar"><div class="download-progress-percent"></div></div>'
-                +           '<img class="stage-thumb" src="{{value.temp_img_local}}"  alt="{{value.temp_name}}"/>'
+                +           '<img class="stage-thumb" src="{{value.temp_img}}"  alt="{{value.temp_name}}"/>'
                 +           '<div class="tpl-page-item-name">{{value.temp_name}}</div>'
                 +        ' </li>'
                 +    '{{/each}}'
@@ -429,11 +455,17 @@ WisapeEditer = {
         var pagesScroll = $("#pages-scroll li").eq(tplIndex-1);
         var eidtPage = $("#editorText .pages");
         var curPagesTxt = eidtPage.find(".symbol").eq(symbolInex).find(".pages-txt");
-        console.info("symbolInex:" + eidtPage.find(".symbol").eq(symbolInex).html());
-        eidtPage.html(pagesScroll.html()).find(".symbol").eq(symbolInex).addClass("active").find(".pages-txt").attr({"contenteditable":"true"});
-
+        var curAnimation = "";
         //初始化编辑菜单
         eidtPage.find(".opt-val-color").css({"color":curPagesTxt.css("color")});
+        if(curPagesTxt.attr("data-animation")) {
+            curAnimation = curPagesTxt.attr("data-animation").split(" ")[1];
+            console.info('i[data-animation=' + curAnimation + ']');
+            console.info(eidtPage.find(".anim-item").eq(0).html());
+            eidtPage.find('.anim-item i').eq(0).addClass("active");
+        }
+         console.info("symbolInex:" + eidtPage.find(".symbol").eq(symbolInex).html());
+        eidtPage.html(pagesScroll.html()).find(".symbol").eq(symbolInex).addClass("active").find(".pages-txt").attr({"contenteditable":"true"});
     },
 
     //生成发布，保存的story
