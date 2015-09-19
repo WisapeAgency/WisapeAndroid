@@ -208,7 +208,7 @@ public class StoryTemplatePlugin extends AbsPlugin{
 //                StoryTemplateEntity[] entities = logic.listStoryTemplate(context, attr, null);
                 int type = args.getInt(EXTRA_CATEGORY_ID, 0);
 //                List<StoryTemplateInfo> entities = app.getTemplateMap().get(type);
-                List<StoryTemplateInfo> entities = logic.listStoryTemplateLocalByType(context,type);
+                List<StoryTemplateInfo> entities = logic.listStoryTemplateLocalByType(context, type);
                 System.out.println(entities.toString());
 //                System.out.println(entities.toString());
                 callbackContext.success(new Gson().toJson(entities));
@@ -323,9 +323,9 @@ public class StoryTemplatePlugin extends AbsPlugin{
     }
 
     private boolean saveStory(File myStory,String html,com.alibaba.fastjson.JSONArray paths){
-        File storyPath = StoryManager.getStoryDirectory();
+//        File storyPath = StoryManager.getStoryDirectory();
         File templatePath = StoryManager.getStoryTemplateDirectory();
-        html = html.replace(templatePath.getAbsolutePath(),storyPath.getAbsolutePath());
+        html = html.replace(templatePath.getAbsolutePath(),myStory.getAbsolutePath());
         File storyHTML = new File(myStory,FILE_NAME_STORY);
         PrintWriter writer = null;
         try{
@@ -347,10 +347,11 @@ public class StoryTemplatePlugin extends AbsPlugin{
         }
         try{
             for (int i=0;i<paths.size();i++){
-                String path = paths.getString(i).replace("file:/","");
-                path = path.replace(templatePath.getAbsolutePath(),storyPath.getAbsolutePath());
+                String path = paths.getString(i).replace("file://","");
+                String newPath = path.replace(templatePath.getAbsolutePath(), myStory.getAbsolutePath());
                 File file = new File(path);
-                File imgDirectory = file.getParentFile();
+                File newPathFile = new File(newPath);
+                File imgDirectory = newPathFile.getParentFile();
                 if (!imgDirectory.exists()){
                     imgDirectory.mkdirs();
                 }

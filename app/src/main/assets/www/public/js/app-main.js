@@ -2,7 +2,7 @@ var WisapeEditer = WisapeEditer || {};
 
 WisapeEditer = {
 
-    currentTplData : '<div class="stage-content edit-area pages-img pages-img-bg" style="background: url(/mnt/sdcard/wisape/com.wisape.android/data/template/dddddddddddd/img/bg.jpg);background-size: 50% 50%;background-position:cover;width:100%;height:100%;" data="600,900"><div class="symbol" style="z-index: 2;"> <div class="pages-img edit-area"><img data-name="img1" style=""  src="/mnt/sdcard/wisape/com.wisape.android/data/template/dddddddddddd/img/icon-earth.png"/ width="50" height="50"> </div> </div><div class="symbol" style="z-index: 2;"> <div class="pages-img edit-area"><img data-name="img1" style="" src="/mnt/sdcard/wisape/com.wisape.android/data/template/dddddddddddd/img/icon-earth.png"/ width="50" height="50"> </div> </div> <div class="symbol" style="z-index: 3;"> <div class="pages-txt edit-area" style="margin:70px auto;width:150px;color:#fff;text-align: center;">As c update of the classictranslation corpus, the combination of network technology and language essence </div> </div> </div>',
+    currentTplData : '<div class="stage-content edit-area pages-img pages-img-bg" style="background: url(/mnt/sdcard/wisape/com.wisape.android/data/template/dddddddddddd/img/bg.jpg);background-position: 100% 100%;background-size:cover;width:100%;height:100%;" data="600,900"><div class="symbol" style="z-index: 2;"> <div class="pages-img edit-area"><img data-name="img1" style=""  src="/mnt/sdcard/wisape/com.wisape.android/data/template/dddddddddddd/img/icon-earth.png"/ width="50" height="50"> </div> </div><div class="symbol" style="z-index: 2;"> <div class="pages-img edit-area"><img data-name="img1" style="" src="/mnt/sdcard/wisape/com.wisape.android/data/template/dddddddddddd/img/icon-earth.png"/ width="50" height="50"> </div> </div> <div class="symbol" style="z-index: 3;"> <div class="pages-txt edit-area" style="margin:70px auto;width:150px;color:#fff;text-align: center;">As c update of the classictranslation corpus, the combination of network technology and language essence </div> </div> </div>',
 
     selectedStagetIndex : 1,
 
@@ -62,8 +62,15 @@ WisapeEditer = {
                 console.info("fonts:");
                 console.info(data.fonts);
                 console.info(JSON.stringify(data.fonts));
+                console.info(JSON.parse(data.fonts));
                 console.info(JSON.parse(data.fonts) instanceof Array);
 
+                //data.fonts.each(function(i,v){
+                //    console.info(v);
+                //})
+                for(var i = 0;i< JSON.parse(data.fonts).length;i++){
+                    console.info(JSON.parse(data.fonts)[i])
+                }
 
                 var sourceFont =
                     +    '{{each listFont as value i}}'
@@ -72,7 +79,7 @@ WisapeEditer = {
 
                 var render = template.compile(sourceFont);
                 var htmlFont = render({
-                    listFont: data.fonts
+                    listFont: JSON.parse(data)
                 });
 
                 $(".pop-editer-font .opts").html(htmlFont);

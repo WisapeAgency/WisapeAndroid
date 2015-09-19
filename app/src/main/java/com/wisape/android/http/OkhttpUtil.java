@@ -127,25 +127,25 @@ public class OkhttpUtil {
      * @param filePath 下载保存到本地的地址
      */
     public static void downLoadFile(String url, final String filePath, final FileDownloadListener listener) {
-        Request request = new Request.Builder().url(url)
-                .addHeader("Content-Type", "application/octet-stream")
-                .addHeader("Accept-Encoding", "identity")
-                .build();
-        mOkHttpClient.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Request request, IOException e) {
-                listener.onError(e.getMessage());
-            }
-
-            @Override
-            public void onResponse(Response response) throws IOException {
-                if (saveByteToFile(response.body().bytes(), filePath)) {
-                    listener.onSuccess(filePath + ".zip");
-                } else {
-                    listener.onError("save error");
-                }
-            }
-        });
+//        Request request = new Request.Builder().url(url)
+//                .addHeader("Content-Type", "application/octet-stream")
+//                .addHeader("Accept-Encoding", "identity")
+//                .build();
+//        mOkHttpClient.newCall(request).enqueue(new Callback() {
+//            @Override
+//            public void onFailure(Request request, IOException e) {
+//                listener.onError(e.getMessage());
+//            }
+//
+//            @Override
+//            public void onResponse(Response response) throws IOException {
+//                if (saveByteToFile(response.body().bytes(), filePath)) {
+//                    listener.onSuccess(filePath + ".zip");
+//                } else {
+//                    listener.onError("save error");
+//                }
+//            }
+//        });
     }
 
 

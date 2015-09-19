@@ -14,7 +14,6 @@
     "status": 0
 }]
 
-
     [{
     "temp_url": "http://106.75.196.252/uploads/template/2015091309/45b2d54317491ec1a5eff60d1820e725.zip",
     "temp_name": "dddddddddddd",
@@ -40,4 +39,3 @@
     "exists": false,
     "status": 0
 }]
-
