@@ -323,6 +323,9 @@ public class StoryTemplatePlugin extends AbsPlugin{
     }
 
     private boolean saveStory(File myStory,String html,com.alibaba.fastjson.JSONArray paths){
+        File storyPath = StoryManager.getStoryDirectory();
+        File templatePath = StoryManager.getStoryTemplateDirectory();
+        html = html.replace(templatePath.getAbsolutePath(),storyPath.getAbsolutePath());
         File storyHTML = new File(myStory,FILE_NAME_STORY);
         PrintWriter writer = null;
         try{
@@ -337,6 +340,7 @@ public class StoryTemplatePlugin extends AbsPlugin{
                 writer.close();
             }
         }
+
         File storyImg = new File(myStory,DIR_NAME_IMAGE);
         if (!storyImg.exists()){
             storyImg.mkdirs();
@@ -344,8 +348,13 @@ public class StoryTemplatePlugin extends AbsPlugin{
         try{
             for (int i=0;i<paths.size();i++){
                 String path = paths.getString(i).replace("file:/","");
+                path = path.replace(templatePath.getAbsolutePath(),storyPath.getAbsolutePath());
                 File file = new File(path);
-                FileUtils.copyFile(file,new File(storyImg,file.getName()));
+                File imgDirectory = file.getParentFile();
+                if (!imgDirectory.exists()){
+                    imgDirectory.mkdirs();
+                }
+                FileUtils.copyFile(file,new File(imgDirectory, file.getName()));
             }
         }catch (IOException e){
             Log.e("saveStory","",e);
