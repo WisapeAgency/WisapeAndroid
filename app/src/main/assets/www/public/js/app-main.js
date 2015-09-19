@@ -52,9 +52,23 @@ WisapeEditer = {
 
         //获取字体接口数据
         WisapeEditer.GetNativeData("getFonts", [],function(data){
-            console.info("fonts:");
-            console.info(data);
-            console.info(JSON.stringify(data));
+            //console.info("fonts:");
+            //console.info(data);
+            //console.info(JSON.stringify(data));
+            //
+            //
+            //var source =
+            //    +    '{{each list as value i}}'
+            //    +        '<div class="item"> <span class="opt-name">{{value.name}}</span> <span class="opt-right"><i class="icon-correct"></i></span> </div>'
+            //    +    '{{/each}}';
+            //
+            //var render = template.compile(source);
+            //var html = render({
+            //    list: data.fonts
+            //});
+            //
+            //$(".pop-editer-font .opts").html(html);
+
         })
 
     },
@@ -63,14 +77,15 @@ WisapeEditer = {
 
         //预览
         $("#storyPublish").click(function(){
-            var retHtml = "",retImg = [];
+            var retHtml = '<div class="p-index main" id="con">',retImg = [];
             for(var i = 0;i < WisapeEditer.storyData.length;i++) {
-                retHtml += WisapeEditer.storyData[i];
+                retHtml += '<section class="m-page hide" > <div class="m-img" >' + WisapeEditer.storyData[i] + '</div> </section>';
             }
+            retHtml += '<section class="u-arrow"><img src="file:///android_asset/www/public/img/btn01_arrow.png" /></section></div>';
             pageScroll.find(".pages-img").each(function(){
                 var me = $(this);
                 if(me.hasClass("pages-img-bg")) {
-                    retImg.push(me.css("background-image"));
+                    retImg.push(me.css("background-image").split("url(")[1].split(")")[0]);
                 } else {
                     retImg.push(me.find("img").attr("src"));
                 }
@@ -121,6 +136,31 @@ WisapeEditer = {
                 retHtml += '<li class="tpl-page-item" draggable="false" style="height:' + computedHeight +'px"><span class="drag-handle">☰</span><i class="icon-correct"></i>' + WisapeEditer.storyData[i] + '</li>';
             };
             $("#storyDragBox").html(retHtml);
+
+            for(var k=0; k < $("#storyDragBox li").length; k++){
+
+                (function(k){
+                    var me = $("#storyDragBox li").eq(k)[0];
+                    console.info("press in");
+                    //console.info($(me).html());
+                    var hammerLi = new Hammer(me);
+                    //hammerLi.on("press", function(e){
+                    //    console.log(e.type);
+                    //    $(me).find(".drag-handle").addClass("dragable");
+                    //    console.info($(me).html());
+                    //    $(me).trigger("dragstart")
+                    //
+                    //});
+
+                    hammerLi.on("tap", function(e){
+                        console.log(e.type);
+                        $(me).toggleClass("selected");
+                    });
+
+                })(k);
+
+            }
+
             WisapeEditer.ShowView('main','storyStageList');
         });
 

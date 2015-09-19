@@ -34,6 +34,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,6 +53,8 @@ public class StoryTemplatePlugin extends AbsPlugin{
     private static final String FILE_NAME_TEMPLATE = "stage.html";
     private static final String FILE_NAME_FONT = "fonts.css";
     private static final String DIR_NAME_IMAGE = "img";
+    private static final String PREVIEW_HEADER = "www/views/header.html";
+    private static final String PREVIEW_FOOTER = "www/views/footer.html";
 
     public static final String ACTION_GET_STAGE_CATEGORY = "getStageCategory";
     public static final String ACTION_GET_STAGE_LIST = "getStageList";
@@ -141,10 +144,10 @@ public class StoryTemplatePlugin extends AbsPlugin{
             startLoad(WHAT_SAVE, bundle);
         }else if (ACTION_PREVIEW.equals(action)){//preview
             Bundle bundle = new Bundle();
-            if(null != args && args.length() == 3){
-                bundle.putInt(EXTRA_STORY_ID, args.optInt(0));//story_id
-                bundle.putString(EXTRA_STORY_HTML, args.getString(1));
-                bundle.putString(EXTRA_FILE_PATH, args.getString(2));
+            if(null != args && args.length() == 2){
+//                bundle.putInt(EXTRA_STORY_ID, args.optInt(0));//story_id
+                bundle.putString(EXTRA_STORY_HTML, args.getString(0));
+                bundle.putString(EXTRA_FILE_PATH, args.getString(1));
             }
             startLoad(WHAT_PREVIEW, bundle);
         }else if (ACTION_PUBLISH.equals(action)){//publish
@@ -239,7 +242,7 @@ public class StoryTemplatePlugin extends AbsPlugin{
                 break;
             }
             case WHAT_PREVIEW:{
-                int storyId = args.getInt(EXTRA_STORY_ID, 0);
+//                int storyId = args.getInt(EXTRA_STORY_ID, 0);
                 String html = args.getString(EXTRA_STORY_HTML);
                 String path = args.getString(EXTRA_FILE_PATH);
                 com.alibaba.fastjson.JSONArray paths = JSON.parseArray(path);
@@ -320,10 +323,14 @@ public class StoryTemplatePlugin extends AbsPlugin{
     }
 
     private boolean saveStoryPreview(File previewFile, String html){
+        String header = getFromAssets(PREVIEW_HEADER);
+        String footer = getFromAssets(PREVIEW_FOOTER);
         PrintWriter writer = null;
         try{
             writer = new PrintWriter(previewFile);
-            writer.write(html);
+            writer.println(header);
+            writer.println(html);
+            writer.println(footer);
             writer.close();
         }catch (IOException e){
             Log.e("saveStoryPreview","",e);
@@ -334,6 +341,46 @@ public class StoryTemplatePlugin extends AbsPlugin{
             }
         }
         return true;
+    }
+
+    private String readFile(String path){
+        StringBuffer content = new StringBuffer();
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new FileReader(new File(path)));
+            String line;
+            while ((line = reader.readLine()) != null){
+                content.append(line);
+            }
+            reader.close();
+            return content.toString();
+        }catch (IOException e){
+            return "";
+        }finally {
+            if(reader != null){
+                try{
+                    reader.close();
+                }catch (IOException e){
+
+                }
+
+            }
+        }
+    }
+
+    public String getFromAssets(String fileName){
+        try {
+            InputStreamReader inputReader = new InputStreamReader(cordova.getActivity().getResources().getAssets().open(fileName));
+            BufferedReader bufReader = new BufferedReader(inputReader);
+            String line;
+            StringBuffer result = new StringBuffer();
+            while((line = bufReader.readLine()) != null)
+                result.append(line);
+            return result.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 
     private String readHtml(String path){

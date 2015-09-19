@@ -101,13 +101,13 @@
             <span class="tit">Font Selection</span>
         </div>
         <div class="bd opts">
-            <div class="item"><span class="opt-name">Font1</span><span class="opt-right"><i class="icon-correct"></i></span></div>
-            <div class="item"><span class="opt-name">Font2</span><span class="opt-right"><i class="icon-download"></i></span></div>
-            <div class="item"><span class="opt-name">Font2</span><span class="opt-right"><div class="download-progress-bar"><div class="download-progress-percent" style="width:50%;"></div></div></span></div>
-            <div class="item"><span class="opt-name">Font2</span><span class="opt-right"><i class="icon-download"></i></span></div>
-            <div class="item"><span class="opt-name">Font2</span><span class="opt-right"><i class="icon-download"></i></span></div>
-            <div class="item"><span class="opt-name">Font2</span><span class="opt-right"><i class="icon-download"></i></span></div>
-            <div class="item"><span class="opt-name">Font2</span><span class="opt-right"><i class="icon-download"></i></span></div>
+            <!--<div class="item"><span class="opt-name">Font1</span><span class="opt-right"><i class="icon-correct"></i></span></div>-->
+            <!--<div class="item"><span class="opt-name">Font2</span><span class="opt-right"><i class="icon-download"></i></span></div>-->
+            <!--<div class="item"><span class="opt-name">Font2</span><span class="opt-right"><div class="download-progress-bar"><div class="download-progress-percent" style="width:50%;"></div></div></span></div>-->
+            <!--<div class="item"><span class="opt-name">Font2</span><span class="opt-right"><i class="icon-download"></i></span></div>-->
+            <!--<div class="item"><span class="opt-name">Font2</span><span class="opt-right"><i class="icon-download"></i></span></div>-->
+            <!--<div class="item"><span class="opt-name">Font2</span><span class="opt-right"><i class="icon-download"></i></span></div>-->
+            <!--<div class="item"><span class="opt-name">Font2</span><span class="opt-right"><i class="icon-download"></i></span></div>-->
         </div>
     </div>
 
@@ -346,15 +346,16 @@
             jQuery("#message").text(message);
         }
 
-        function onFontDownloading(progress) {
+        function onFontDownloading(fontname,progress) {
             console.info("onDownloading:");
             console.dir(JSON.stringify(progress));
             console.info(progress.progress);
+            console.info(fontname);
         }
 
-        function onFontCompleted(data) {
+        function onFontCompleted(fontname) {
             console.info("onFontCompleted:");
-            console.dir(JSON.stringify(data));
+            console.dir(JSON.stringify(fontname));
         }
 
 
@@ -407,12 +408,15 @@
                 onUpdate: function (evt){ console.log('onUpdate.bar:', evt.item); },
                 onRemove: function (evt){ console.log('onRemove.bar:', evt.item); },
                 onStart:function(evt){ console.log('onStart.foo:', evt.item);console.info("evt:");console.info(evt);$(evt.item)},
-                onEnd: function(evt){ console.log('onEnd.foo:', evt.item);},
+                onEnd: function(evt){
+                    console.log('onEnd.foo:', evt.item)
+                    //$(evt.item).find(".drag-handle").css({"display":"none"})
+                },
             });
 
-            $("#storyDragBox").delegate(".tpl-page-item","click",function(){
-                $(this).addClass("selected").siblings().removeClass("selected")
-            })
+//            $("#storyDragBox").delegate(".tpl-page-item","click",function(){
+//                $(this).toggleClass("selected")
+//            });
 
             $("#pageDel").click(function(){
                 $("#storyDragBox li.selected").remove();

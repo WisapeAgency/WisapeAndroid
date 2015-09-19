@@ -92,6 +92,10 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name=".activity.StoryPreviewActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".activity.UserProfileActivity"
             android:label="@string/user_profile_label"
             android:screenOrientation="portrait" />

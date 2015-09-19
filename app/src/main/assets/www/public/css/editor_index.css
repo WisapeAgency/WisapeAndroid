@@ -388,8 +388,8 @@ a {text-decoration: none;color:inherit;}
 .pages-txt.edit-area.active {border:1px dashed #ffe400;border-radius:5px;}
 .edit-area.active>.ico-acitve {display: block;}
 
-.drag-handle {display:none;position: absolute; top: 0px; right: 0px; bottom:0;left:0;background: #000; width:100%;height:100%;opacity: 0}
-li.selected .drag-handle {display: block;}
+.drag-handle {display:block;position: absolute; top: 0px; right: 0px; bottom:0;left:0;background: #000; width:100%;height:100%;opacity: 0}
+li.dragable .drag-handle {display: block;}
 .story-page-list .symbol {visibility: hidden;}
 
 

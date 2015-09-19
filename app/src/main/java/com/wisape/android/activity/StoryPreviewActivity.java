@@ -19,7 +19,7 @@ public class StoryPreviewActivity extends AbsCordovaActivity{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         String url = getIntent().getStringExtra("url");
-        loadUrl(url);
+        loadUrl("file://"+url);
     }
 
 
