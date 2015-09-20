@@ -4,7 +4,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-
+    <LinearLayout
+        android:id="@+id/linear_head"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center">
     <ImageView
         android:id="@+id/sdv_user_head_image"
         android:layout_width="wrap_content"
@@ -39,6 +44,7 @@
         android:singleLine="true"
         android:textColor="@color/app_sixth_transparent_50p"
         android:textSize="@dimen/app_text_size_small" />
+    </LinearLayout>
 
     <!--menu item -->
 
@@ -46,7 +52,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/menu_item_background_selector"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_gravity="center">
 
         <TextView
             android:layout_width="wrap_content"

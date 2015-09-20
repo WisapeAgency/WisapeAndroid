@@ -81,6 +81,7 @@ public class StoryEntity extends BaseEntity implements Parcelable{
         entity.shareNum = info.share_num;
         entity.userId = info.uid;
 //        entity.createAt = info.createtime;
+//        entity.storyServerId =
         entity.updateAt = SystemClock.uptimeMillis();
         return entity;
     }

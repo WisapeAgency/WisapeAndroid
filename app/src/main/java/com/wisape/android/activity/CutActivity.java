@@ -33,14 +33,18 @@ public class CutActivity extends BaseActivity {
 
     private static final int LOADER_SAVE_HEADER = 1;
     private static final String ARGS_HADER = "header";
+    private static final String IMG_NAME = "img_name";
+
+    private String thembImg;
 
     private Uri uri;
 
-    public static void launch(Activity activity, Uri imgUri, int width, int height, int requestCode) {
+    public static void launch(Activity activity, Uri imgUri, int width, int height,String thembImg, int requestCode) {
         Intent intent = new Intent(activity.getApplicationContext(), CutActivity.class);
         intent.putExtra(EXTRA_IMAGE_URI, imgUri);
         intent.putExtra(EXRA_WIDTH, width);
         intent.putExtra(EXRA_HEIGHT, height);
+        intent.putExtra(IMG_NAME,thembImg);
         activity.startActivityForResult(intent, requestCode);
     }
 
@@ -54,6 +58,8 @@ public class CutActivity extends BaseActivity {
 
         int clipWidth = getIntent().getExtras().getInt(EXRA_WIDTH);
         int clipHeight = getIntent().getExtras().getInt(EXRA_HEIGHT);
+
+        thembImg = getIntent().getExtras().getString(IMG_NAME);
 
         DisplayMetrics metric = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metric);
@@ -92,12 +98,12 @@ public class CutActivity extends BaseActivity {
     protected Message onLoadBackgroundRunning(int what, Bundle args) throws AsyncLoaderError {
         Message message = Message.obtain();
         Bitmap bitmap = args.getParcelable(ARGS_HADER);
-        File file = new File(EnvironmentUtils.getAppCacheDirectory(), "head");
+
         FileOutputStream fileOutputStream = null;
-        if (!file.exists()) {
-            file.mkdirs();
+        File headerFile = new File(thembImg + ".jpg");
+        if (headerFile.exists()){
+            headerFile.delete();
         }
-        File headerFile = new File(file, Utils.acquireUTCTimestamp() + ".jpg");
         try {
             fileOutputStream = new FileOutputStream(headerFile);
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);

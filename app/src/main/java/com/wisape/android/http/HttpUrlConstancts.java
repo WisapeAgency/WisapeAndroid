@@ -13,6 +13,8 @@ public class HttpUrlConstancts {
 
     private static final String SEPERATOR = "/";
 
+    public static final String SHARE_URL = SERVER_ADDRESS + SEPERATOR + "site/story/";
+
     /**
      * 用户登录
      */
@@ -53,4 +55,6 @@ public class HttpUrlConstancts {
      * 用户活动列表
      */
     public static final String USER_ACTIVE = SERVER_ADDRESS + SEPERATOR + "user/active";
+
+    public static final String STORY_SETTING = SERVER_ADDRESS + SEPERATOR + "story/setting";
 }

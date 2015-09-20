@@ -17,6 +17,8 @@ public class ActiveBroadcastReciver extends BroadcastReceiver {
 
     private static final String TAG = ActiveBroadcastReciver.class.getSimpleName();
 
+    public static final String ACTIVE_ACTION = "com.wisape.android.content.ActiveBroadcastReciver";
+
     /**
      * 消息ID
      */

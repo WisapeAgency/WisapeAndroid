@@ -13,8 +13,13 @@ import android.webkit.WebSettings;
 
 import com.wisape.android.R;
 import com.wisape.android.WisapeApplication;
+import com.wisape.android.api.ApiStory;
 import com.wisape.android.common.StoryManager;
+import com.wisape.android.content.StoryBroadcastReciver;
+import com.wisape.android.content.StoryBroadcastReciverListener;
 import com.wisape.android.database.StoryEntity;
+import com.wisape.android.logic.StoryLogic;
+import com.wisape.android.logic.UserLogic;
 import com.wisape.android.network.Downloader;
 import com.wisape.android.network.WWWConfig;
 import com.wisape.android.util.EnvironmentUtils;
@@ -45,7 +50,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 /**
  * Created by LeiGuoting on 7/7/15.
  */
-public class StoryTemplateActivity extends AbsCordovaActivity{
+public class StoryTemplateActivity extends AbsCordovaActivity {
     private static final String START_URL = "file:///android_asset/www/views/index.html";
     private static final String TEMPLATE_NAME = "stage.html";
     private static final String DOWNLOAD_PROGRESS = "progress";
@@ -66,67 +71,68 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
     private static final int WHAT_DOWNLOAD_COMPLETED = 0x04;
     private static final int WHAT_DOWNLOAD_ERROR = 0x05;
     private static final int WHAT_INIT = 0x06;
+    private static final int LOADER_SAVA_DATA = 0x07;
 
-    public static void launch(Activity activity, int requestCode){
+    public static void launch(Activity activity, int requestCode) {
         Intent intent = new Intent(activity.getApplicationContext(), StoryTemplateActivity.class);
         activity.startActivityForResult(intent, requestCode);
     }
 
-    public static void launch(Activity activity,String html, int requestCode){
+    public static void launch(Activity activity, String html, int requestCode) {
         Intent intent = new Intent(activity.getApplicationContext(), StoryTemplateActivity.class);
         intent.putExtra(EXTRA_EDIT_CONTENT, html);
         activity.startActivityForResult(intent, requestCode);
     }
 
-    public static void launch(Fragment fragment, int requestCode){
+    public static void launch(Fragment fragment, int requestCode) {
         Intent intent = new Intent(fragment.getActivity().getApplicationContext(), StoryTemplateActivity.class);
         fragment.startActivityForResult(intent, requestCode);
     }
 
     private String html;
-    private Handler downloadTemplateHandler = new Handler(){
+    private Handler downloadTemplateHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch (msg.what){
-                case WHAT_DOWNLOAD_PROGRESS:{
-                    int id = msg.getData().getInt(EXTRA_TEMPLATE_ID,0);
-                    int categoryId = msg.getData().getInt(EXTRA_CATEGORY_ID,0);
+            switch (msg.what) {
+                case WHAT_DOWNLOAD_PROGRESS: {
+                    int id = msg.getData().getInt(EXTRA_TEMPLATE_ID, 0);
+                    int categoryId = msg.getData().getInt(EXTRA_CATEGORY_ID, 0);
                     double progress = msg.getData().getDouble(DOWNLOAD_PROGRESS, 0);
-                    try{
+                    try {
                         JSONObject json = new JSONObject();
-                        json.put("id",id);
-                        json.put("category_id",categoryId);
-                        json.put("progress",progress);
+                        json.put("id", id);
+                        json.put("category_id", categoryId);
+                        json.put("progress", progress);
                         loadUrl("javascript:onDownloading(" + json.toString() + ")");
-                    }catch(JSONException e){
+                    } catch (JSONException e) {
 
                     }
                     break;
                 }
-                case WHAT_DOWNLOAD_COMPLETED:{
-                    int id = msg.getData().getInt(EXTRA_TEMPLATE_ID,0);
-                    int categoryId = msg.getData().getInt(EXTRA_CATEGORY_ID,0);
+                case WHAT_DOWNLOAD_COMPLETED: {
+                    int id = msg.getData().getInt(EXTRA_TEMPLATE_ID, 0);
+                    int categoryId = msg.getData().getInt(EXTRA_CATEGORY_ID, 0);
                     String name = msg.getData().getString(EXTRA_TEMPLATE_NAME);
                     String path = msg.getData().getString(EXTRA_TEMPLATE_PATH);
                     File template = getTemplateUnzipDirectory(name);
-                    try{
+                    try {
                         JSONObject json = new JSONObject();
-                        json.put("id",id);
-                        json.put("category_id",categoryId);
+                        json.put("id", id);
+                        json.put("category_id", categoryId);
                         json.put("path", template);
                         System.out.println("Path:" + template);
                         loadUrl("javascript:onCompleted(" + json.toString() + ")");
-                    } catch (JSONException e){
+                    } catch (JSONException e) {
 
                     }
                     unzipTemplate(Uri.fromFile(new File(path)), template);
 //                    downloadFont(template);
                     break;
                 }
-                case WHAT_DOWNLOAD_ERROR:{
-                    int id = msg.getData().getInt(EXTRA_TEMPLATE_ID,0);
-                    loadUrl("javascript:onError("  +id + ")");
+                case WHAT_DOWNLOAD_ERROR: {
+                    int id = msg.getData().getInt(EXTRA_TEMPLATE_ID, 0);
+                    loadUrl("javascript:onError(" + id + ")");
                     break;
                 }
 
@@ -134,39 +140,39 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
         }
     };
 
-    private Handler downloadFontHandler = new Handler(){
+    private Handler downloadFontHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch (msg.what){
-                case WHAT_DOWNLOAD_PROGRESS:{
+            switch (msg.what) {
+                case WHAT_DOWNLOAD_PROGRESS: {
                     String name = msg.getData().getString(EXTRA_FONT_NAME);
                     double progress = msg.getData().getDouble(DOWNLOAD_PROGRESS, 0);
-                    try{
+                    try {
                         JSONObject json = new JSONObject();
-                        json.put("fontName",name);
-                        json.put("progress",progress);
+                        json.put("fontName", name);
+                        json.put("progress", progress);
                         loadUrl("javascript:onFontDownloading(" + json.toString() + ")");
-                    }catch(JSONException e){
+                    } catch (JSONException e) {
 
                     }
                     break;
                 }
-                case WHAT_DOWNLOAD_COMPLETED:{
+                case WHAT_DOWNLOAD_COMPLETED: {
                     String name = msg.getData().getString(EXTRA_FONT_NAME);
-                    try{
+                    try {
                         JSONObject json = new JSONObject();
                         json.put("fontName", name);
                         System.out.println("downloaded font:" + name);
                         loadUrl("javascript:onFontCompleted(" + json.toString() + ")");
-                    } catch (JSONException e){
+                    } catch (JSONException e) {
 
                     }
                     break;
                 }
-                case WHAT_DOWNLOAD_ERROR:{
+                case WHAT_DOWNLOAD_ERROR: {
                     String name = msg.getData().getString(EXTRA_FONT_NAME);
-                    loadUrl("javascript:onFontError("  + name + ")");
+                    loadUrl("javascript:onFontError(" + name + ")");
                     break;
                 }
 
@@ -174,7 +180,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
         }
     };
 
-    public String getContent(){
+    public String getContent() {
         return html;
     }
 
@@ -191,7 +197,20 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
         startLoad(WHAT_INIT, null);
     }
 
-    public void downloadTemplate(String data, int id,int categoryId) throws JSONException{
+    @Override
+    protected boolean onBackNavigation() {
+        return super.onBackNavigation();
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        startLoad(LOADER_SAVA_DATA, null);
+
+        super.onBackPressed();
+    }
+
+    public void downloadTemplate(String data, int id, int categoryId) throws JSONException {
         JSONObject json = new JSONObject(data);
         String name = json.getString(EXTRA_TEMPLATE_NAME);
         String url = json.getString(EXTRA_TEMPLATE_URL);
@@ -204,20 +223,20 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
         startLoad(WHAT_DOWNLOAD_TEMPLATE, args);
     }
 
-    public void downloadFont(String fontName){
+    public void downloadFont(String fontName) {
         Bundle args = new Bundle();
         args.putString(EXTRA_FONT_NAME, fontName);
         startLoad(WHAT_DOWNLOAD_FONT, args);
     }
 
-    private Set<String> parseFont(File template){
+    private Set<String> parseFont(File template) {
         Set<String> fontSet = new HashSet<>();
         File file = new File(template, TEMPLATE_NAME);
-        if (!file.exists()){
+        if (!file.exists()) {
             return fontSet;
         }
         BufferedReader reader = null;
-        try{
+        try {
             reader = new BufferedReader(new FileReader(file));
             String line;
             while ((line = reader.readLine()) != null) {
@@ -229,13 +248,13 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
                 }
             }
             reader.close();
-        }catch (IOException e){
+        } catch (IOException e) {
             Log.d("StoryTemplate", "Error", e);
-        }finally {
-            if(reader != null){
-                try{
+        } finally {
+            if (reader != null) {
+                try {
                     reader.close();
-                }catch(IOException e){
+                } catch (IOException e) {
 
                 }
             }
@@ -243,7 +262,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
         return fontSet;
     }
 
-    public void invokeJavascriptTest(){
+    public void invokeJavascriptTest() {
         loadUrl("javascript:test2()");
     }
 
@@ -251,11 +270,11 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
     protected Message onLoadBackgroundRunning(int what, Bundle args) throws AsyncLoaderError {
         final Message msg = Message.obtain();
         msg.what = what;
-        switch (what){
-            case WHAT_INIT :
+        switch (what) {
+            case WHAT_INIT:
                 WisapeApplication app = WisapeApplication.getInstance();
                 StoryEntity story = app.getStoryEntity();
-                if (story == null){
+                if (story == null) {
                     File storyDirectory = StoryManager.getStoryDirectory();
                     String[] storyFiles = storyDirectory.list(new FilenameFilter() {
                         @Override
@@ -264,7 +283,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
                         }
                     });
                     String storyName = "My story1";
-                    if (storyFiles != null && storyFiles.length != 0){
+                    if (storyFiles != null && storyFiles.length != 0) {
                         Arrays.sort(storyFiles);
                         String fileName = storyFiles[storyFiles.length - 1];
                         int count = Integer.parseInt(fileName.replace("My story", ""));
@@ -272,41 +291,44 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
                     }
                     story = new StoryEntity();
                     story.storyName = storyName;
+                    story.status = ApiStory.AttrStoryInfo.STORY_STATUS_TEMPORARY;
+                    story.userId = WisapeApplication.getInstance().getUserInfo().user_id;
                     story.storyDesc = "Something wonderful is coming";
-                    story.storyLocal = new File(storyDirectory,storyName).getAbsolutePath();
+                    story.storyLocal = new File(storyDirectory, storyName).getAbsolutePath();
                     app.setStoryEntity(story);
                 }
                 break;
-            case WHAT_DOWNLOAD_TEMPLATE:{
+            case WHAT_DOWNLOAD_TEMPLATE: {
                 final int id = args.getInt(EXTRA_TEMPLATE_ID, 0);
-                final int categoryId = args.getInt(EXTRA_CATEGORY_ID,0);
+                final int categoryId = args.getInt(EXTRA_CATEGORY_ID, 0);
                 final String name = args.getString(EXTRA_TEMPLATE_NAME);
                 final String url = args.getString(EXTRA_TEMPLATE_URL);
                 Uri dest = Uri.fromFile(new File(StoryManager.getStoryTemplateDirectory(), name));
-                Downloader.download(Uri.parse(url),dest, new Downloader.DownloaderCallback(){
-                    public void onDownloading(double progress){
+                Downloader.download(Uri.parse(url), dest, new Downloader.DownloaderCallback() {
+                    public void onDownloading(double progress) {
                         Message msg = Message.obtain();
                         Bundle bundle = new Bundle();
                         bundle.putInt(EXTRA_TEMPLATE_ID, id);
-                        bundle.putInt(EXTRA_CATEGORY_ID,categoryId);
+                        bundle.putInt(EXTRA_CATEGORY_ID, categoryId);
                         bundle.putDouble(DOWNLOAD_PROGRESS, progress);
                         msg.what = WHAT_DOWNLOAD_PROGRESS;
                         msg.setData(bundle);
                         downloadTemplateHandler.sendMessage(msg);
                     }
-                    public void onCompleted(Uri downUri){
+
+                    public void onCompleted(Uri downUri) {
                         Message msg = Message.obtain();
                         msg.what = WHAT_DOWNLOAD_COMPLETED;
                         Bundle bundle = new Bundle();
                         bundle.putInt(EXTRA_TEMPLATE_ID, id);
-                        bundle.putInt(EXTRA_CATEGORY_ID,categoryId);
+                        bundle.putInt(EXTRA_CATEGORY_ID, categoryId);
                         bundle.putString(EXTRA_TEMPLATE_NAME, name);
-                        bundle.putString(EXTRA_TEMPLATE_PATH,downUri.getPath());
+                        bundle.putString(EXTRA_TEMPLATE_PATH, downUri.getPath());
                         msg.setData(bundle);
                         downloadTemplateHandler.sendMessage(msg);
                     }
 
-                    public void onError(Uri uri){
+                    public void onError(Uri uri) {
                         Message msg = Message.obtain();
                         msg.what = WHAT_DOWNLOAD_ERROR;
                         Bundle bundle = new Bundle();
@@ -317,14 +339,14 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
                 });
                 break;
             }
-            case WHAT_DOWNLOAD_FONT:{
+            case WHAT_DOWNLOAD_FONT: {
                 final String name = args.getString(EXTRA_FONT_NAME);
 //                final String name = "Trebuc";
                 Uri uri = WWWConfig.acquireUri(getString(R.string.uri_font_download));
                 String url = String.format("%s?name=%s", uri.toString(), name);
                 Uri dest = Uri.fromFile(new File(StoryManager.getStoryFontDirectory(), name + ".zip"));
-                Downloader.download(Uri.parse(url),dest, new Downloader.DownloaderCallback(){
-                    public void onDownloading(double progress){
+                Downloader.download(Uri.parse(url), dest, new Downloader.DownloaderCallback() {
+                    public void onDownloading(double progress) {
                         Message msg = Message.obtain();
                         Bundle bundle = new Bundle();
                         bundle.putString(EXTRA_FONT_NAME, name);
@@ -333,7 +355,8 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
                         msg.setData(bundle);
                         downloadFontHandler.sendMessage(msg);
                     }
-                    public void onCompleted(Uri downUri){
+
+                    public void onCompleted(Uri downUri) {
                         Message msg = Message.obtain();
                         msg.what = WHAT_DOWNLOAD_COMPLETED;
                         Bundle bundle = new Bundle();
@@ -347,7 +370,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
                         appendFont(name);
                     }
 
-                    public void onError(Uri uri){
+                    public void onError(Uri uri) {
                         Message msg = Message.obtain();
                         msg.what = WHAT_DOWNLOAD_ERROR;
                         Bundle bundle = new Bundle();
@@ -358,12 +381,20 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
                 });
                 break;
             }
+            case LOADER_SAVA_DATA:
+                StoryEntity storyEntity = StoryLogic.instance().updateStory(this, WisapeApplication.getInstance().getStoryEntity());
+                WisapeApplication.getInstance().setStoryEntity(storyEntity);
+                Intent intent = new Intent();
+                intent.setAction(StoryBroadcastReciver.STORY_ACTION);
+                intent.putExtra(StoryBroadcastReciver.EXTRAS_TYPE,StoryBroadcastReciverListener.ADD_JUKE_STORY);
+                sendBroadcast(intent);
+                break;
         }
         return msg;
     }
 
-    private synchronized void appendFont(String fontName){
-        File fonts = new File(StoryManager.getStoryFontDirectory(),FONT_FILE_NAME);
+    private synchronized void appendFont(String fontName) {
+        File fonts = new File(StoryManager.getStoryFontDirectory(), FONT_FILE_NAME);
         PrintWriter writer = null;
         try {
             if (!fonts.exists()) {
@@ -371,19 +402,19 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
             }
             writer = new PrintWriter(new FileWriter(fonts, true));
             writer.println("@font-face {");
-            writer.println(String.format("    font-family: '%s';",fontName));
-            writer.println(String.format("    src: url('%s/%s.eot');",fontName,fontName));
-            writer.println(String.format("    src: url('%s/%s.eot?#iefix') format('embedded-opentype'),",fontName,fontName));
-            writer.println(String.format("    url('%s/%s.woff') format('woff'),",fontName,fontName));
-            writer.println(String.format("    url('%s/%s.ttf') format('truetype'),",fontName,fontName));
-            writer.println(String.format("    url('%s/%s.svg') format('svg');",fontName,fontName));
+            writer.println(String.format("    font-family: '%s';", fontName));
+            writer.println(String.format("    src: url('%s/%s.eot');", fontName, fontName));
+            writer.println(String.format("    src: url('%s/%s.eot?#iefix') format('embedded-opentype'),", fontName, fontName));
+            writer.println(String.format("    url('%s/%s.woff') format('woff'),", fontName, fontName));
+            writer.println(String.format("    url('%s/%s.ttf') format('truetype'),", fontName, fontName));
+            writer.println(String.format("    url('%s/%s.svg') format('svg');", fontName, fontName));
             writer.println("    font-weight: normal;");
             writer.println("    font-style: normal;");
             writer.println("}");
-        }catch (Exception e){
+        } catch (Exception e) {
 
-        }finally {
-            if (writer != null){
+        } finally {
+            if (writer != null) {
                 writer.close();
             }
         }
@@ -393,7 +424,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
     private File getTemplateUnzipDirectory(String name) {
         int index = name.lastIndexOf('.');
         String templateDir = name;
-        if(0 < index){
+        if (0 < index) {
             templateDir = name.substring(0, index);
         }
         return new File(StoryManager.getStoryTemplateDirectory(), templateDir);
@@ -402,7 +433,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
     private File getFontUnzipDirectory(String name) {
         int index = name.lastIndexOf('.');
         String templateDir = name;
-        if(0 < index){
+        if (0 < index) {
             templateDir = name.substring(0, index);
         }
         return new File(StoryManager.getStoryFontDirectory(), templateDir);
@@ -410,13 +441,13 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
 
     private void unzipTemplate(Uri downUri, File template) {
         try {
-            if(template.isFile()){
+            if (template.isFile()) {
                 FileUtils.forceDelete(template);
             } else {
                 FileUtils.deleteDirectory(template);
             }
             ZipUtils.unzip(downUri, template);
-        }catch (IOException e){
+        } catch (IOException e) {
             Log.e(TAG, "", e);
             loadUrl("javascript:onError('unzip error!')");
         }
@@ -425,7 +456,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
     private void unzipFont(Uri downUri, File font) {
         try {
             ZipUtils.unzip(downUri, font);
-        }catch (IOException e){
+        } catch (IOException e) {
             Log.e(TAG, "", e);
             loadUrl("javascript:onError('unzip error!')");
         }
@@ -433,19 +464,14 @@ public class StoryTemplateActivity extends AbsCordovaActivity{
 
     @Override
     protected void onLoadCompleted(Message args) {
-        if(isDestroyed() || null == args){
+        if (isDestroyed() || null == args) {
             return;
         }
-        switch (args.what){
-            case WHAT_DOWNLOAD_TEMPLATE:{
+        switch (args.what) {
+            case WHAT_DOWNLOAD_TEMPLATE: {
 
                 break;
             }
         }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
     }
 }

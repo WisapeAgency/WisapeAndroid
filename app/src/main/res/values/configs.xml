@@ -8,7 +8,7 @@
     <string name="www_port">80</string>
     <string name="www_path">index.php/v1</string>
     <string name="www_version">v1</string>
-    <string name="www_timeout_mills">3000</string>
+    <string name="www_timeout_mills">30000</string>
 
     <!--mobihelp config-->
     <string name="freshdesk_domain">https://wisape.freshdesk.com</string>
