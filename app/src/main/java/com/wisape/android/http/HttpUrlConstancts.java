@@ -13,7 +13,7 @@ public class HttpUrlConstancts {
 
     private static final String SEPERATOR = "/";
 
-    public static final String SHARE_URL = SERVER_ADDRESS + SEPERATOR + "site/story/";
+    public static final String SHARE_URL = SERVER_ADDRESS + SEPERATOR + "site/story/id/";
 
     /**
      * 用户登录

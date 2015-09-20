@@ -54,6 +54,7 @@ public class StoryTemplateEntity extends BaseEntity implements Parcelable {
         entity.type = info.type;
         entity.order = info.order;
         entity.orderType = info.order_type;
+        entity.thumbLocal = info.temp_img_local;
         return entity;
     }
 
@@ -72,6 +73,7 @@ public class StoryTemplateEntity extends BaseEntity implements Parcelable {
         info.type = entity.type;
         info.order = entity.order;
         info.order_type = entity.orderType;
+        info.temp_img_local = entity.thumbLocal;
         return info;
     }
 

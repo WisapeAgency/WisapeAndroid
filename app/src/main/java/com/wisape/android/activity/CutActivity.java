@@ -30,21 +30,21 @@ public class CutActivity extends BaseActivity {
     public static final int RQEUST_CODE_CROP_IMG = 0x01;
     public static final String EXRA_WIDTH = "width";
     public static final String EXRA_HEIGHT = "height";
+    public static final String IMG_NAME = "img_name";
 
     private static final int LOADER_SAVE_HEADER = 1;
     private static final String ARGS_HADER = "header";
-    private static final String IMG_NAME = "img_name";
 
     private String thembImg;
 
     private Uri uri;
 
-    public static void launch(Activity activity, Uri imgUri, int width, int height,String thembImg, int requestCode) {
+    public static void launch(Activity activity, Uri imgUri, int width, int height, String thembImg, int requestCode) {
         Intent intent = new Intent(activity.getApplicationContext(), CutActivity.class);
         intent.putExtra(EXTRA_IMAGE_URI, imgUri);
         intent.putExtra(EXRA_WIDTH, width);
         intent.putExtra(EXRA_HEIGHT, height);
-        intent.putExtra(IMG_NAME,thembImg);
+        intent.putExtra(IMG_NAME, thembImg);
         activity.startActivityForResult(intent, requestCode);
     }
 
@@ -56,10 +56,18 @@ public class CutActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cut);
 
+        Intent intent = getIntent();
         int clipWidth = getIntent().getExtras().getInt(EXRA_WIDTH);
         int clipHeight = getIntent().getExtras().getInt(EXRA_HEIGHT);
-
-        thembImg = getIntent().getExtras().getString(IMG_NAME);
+        File file = new File(EnvironmentUtils.getAppCacheDirectory(), "head");
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        File head = new File(file, "/" + Utils.acquireUTCTimestamp());
+        thembImg = getIntent().getStringExtra(IMG_NAME);
+        if(Utils.isEmpty(thembImg)){
+            thembImg = head.getAbsolutePath();
+        }
 
         DisplayMetrics metric = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metric);
@@ -99,10 +107,20 @@ public class CutActivity extends BaseActivity {
         Message message = Message.obtain();
         Bitmap bitmap = args.getParcelable(ARGS_HADER);
 
+        File file = new File(thembImg);
+        if(!file.exists()){
+            file.mkdirs();
+        }
         FileOutputStream fileOutputStream = null;
         File headerFile = new File(thembImg + ".jpg");
-        if (headerFile.exists()){
+        if (headerFile.exists()) {
             headerFile.delete();
+        }else {
+            try{
+                headerFile.createNewFile();
+            }catch (IOException e){
+
+            }
         }
         try {
             fileOutputStream = new FileOutputStream(headerFile);
@@ -128,9 +146,9 @@ public class CutActivity extends BaseActivity {
 
     @Override
     protected void onLoadCompleted(Message data) {
-        if (HttpUrlConstancts.STATUS_SUCCESS == data.arg1){
+        if (HttpUrlConstancts.STATUS_SUCCESS == data.arg1) {
             Intent intent = new Intent();
-            intent.putExtra(EXTRA_IMAGE_URI, (String)data.obj);
+            intent.putExtra(EXTRA_IMAGE_URI, (String) data.obj);
             setResult(RESULT_OK, intent);
         }
         finish();
