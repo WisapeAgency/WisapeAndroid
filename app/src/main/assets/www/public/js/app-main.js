@@ -2,7 +2,8 @@ var WisapeEditer = WisapeEditer || {};
 
 WisapeEditer = {
 
-    currentTplData : '<div class="stage-content edit-area pages-img pages-img-bg" style="background: url(/mnt/sdcard/wisape/com.wisape.android/data/template/dddddddddddd/img/bg.jpg);background-position: 100% 100%;background-size:cover;width:100%;height:100%;" data="600,900"><div class="symbol" style="z-index: 2;"> <div class="pages-img edit-area"><img data-name="img1" style=""  src="/mnt/sdcard/wisape/com.wisape.android/data/template/dddddddddddd/img/icon-earth.png"/ width="50" height="50"> </div> </div><div class="symbol" style="z-index: 2;"> <div class="pages-img edit-area"><img data-name="img1" style="" src="/mnt/sdcard/wisape/com.wisape.android/data/template/dddddddddddd/img/icon-earth.png"/ width="50" height="50"> </div> </div> <div class="symbol" style="z-index: 3;"> <div class="pages-txt edit-area" style="margin:70px auto;width:150px;color:#fff;text-align: center;">As c update of the classictranslation corpus, the combination of network technology and language essence </div> </div> </div>',
+    //currentTplData : '<div class="stage-content edit-area pages-img pages-img-bg" style="background: url(/mnt/sdcard/wisape/com.wisape.android/data/template/dddddddddddd/img/bg.jpg);background-position: 100% 100%;background-size:cover;width:100%;height:100%;" data="600,900"><div class="symbol" style="z-index: 2;"> <div class="pages-img edit-area"><img data-name="img1" style=""  src="/mnt/sdcard/wisape/com.wisape.android/data/template/dddddddddddd/img/icon-earth.png"/ width="50" height="50"> </div> </div><div class="symbol" style="z-index: 2;"> <div class="pages-img edit-area"><img data-name="img1" style="" src="/mnt/sdcard/wisape/com.wisape.android/data/template/dddddddddddd/img/icon-earth.png"/ width="50" height="50"> </div> </div> <div class="symbol" style="z-index: 3;"> <div class="pages-txt edit-area" style="margin:70px auto;width:150px;color:#fff;text-align: center;">As c update of the classictranslation corpus, the combination of network technology and language essence </div> </div> </div>',
+    currentTplData : '',
 
     selectedStagetIndex : 1,
 
@@ -36,25 +37,48 @@ WisapeEditer = {
 
             //获取默认模板模板列表
             console.info("获取默认模板模板列表:" + parseInt(menuScroll.find("li").data("id")));
-            WisapeEditer.LoadTplList(parseInt(menuScroll.find("li").data("id")));
-            menuScroll.find("li").eq(0).addClass("active");
+            WisapeEditer.LoadTplList(parseInt(menuScroll.find("li").data("id")),function(){
+                var _me = menuScroll.find("li").eq(0);
+                _me.addClass("active");
+                WisapeEditer.GetNativeData("read", ["/mnt/sdcard/wisape/com.wisape.android/data/template/" + _me.data("name") + "/stage.html"], function (data) {
+                    console.info("init page data");
+                    console.info(data);
+                    WisapeEditer.currentTplData = data;
+
+                    pageScroll.find("ul").html('<li class="active"><span class="count">' + 1 + '/' + 1 + '</span>' + data + '</li');
+                    WisapeEditer.storyData.push(data);
+                });
+            });
+
+
 
             //默认加载的stage，需入口传递
             WisapeEditer.storyData.push(WisapeEditer.currentTplData);
             var pageScroll = $("#pages-scroll");
             pageScroll.find("li").eq(0).append('<span class="count">1/1</span>');
-
-
-            console.info("WisapeEditer.storyData:");
-            console.info(WisapeEditer.storyData);
-
         });
 
         //获取story数据
         WisapeEditer.GetNativeData("getContent", [],function(data){
             console.info("getContent");
             console.info(JSON.stringify(data));
-
+            if(data == null) return;
+            var ret = [];
+            $('<div id="tpmHtml" style="display: none">'+data + '</div>').insertBefore("body");
+            $("#tpmHtml").find(".m-img").each(function(){
+                ret.push($(this).html());
+            })
+            console.info($("#tpmHtml").length);
+            console.info($("#tpmHtml").find(".m-img").length);
+            console.info(ret);
+            WisapeEditer.storyData = ret;
+            WisapeEditer.LoadStageList(ret,function(){
+                console.info("loadStageList succ");
+                $("#pages-scroll").iScroll( {scrollX: true, scrollY: false, mouseWheel: true, checkDOMChanges: true , preventDefault: false });
+            });
+            setTimeout(function(){
+                $("#tpmHtml").remove();
+            },2000);
         });
 
 
@@ -67,6 +91,7 @@ WisapeEditer = {
         $("#pop-editer-font").click(function(){
             WisapeEditer.GetNativeData("getFonts", [],function(data){
                 console.info("fonts:");
+                console.info(JSON.stringify(data.filePath));
                 console.info(data.fonts);
 
                 //data.fonts.each(function(i,v){
@@ -77,7 +102,7 @@ WisapeEditer = {
                 }
                 var sourceFont = ''
                     +    '{{each listFont as value i}}'
-                    +        '<div class="item  {{if !value.downloaded}}download{{/if}}" data-fontname="{{value.name}}" ><span class="opt-name">{{value.name}}</span> <span class="opt-right"><i class="icon-correct" ></i><i class="icon-download" ></i><div class="download-progress-bar"><div class="download-progress-percent" style="width:0%;"></div></div></span> </div>'
+                    +        '<div class="item {{if !value.downloaded}}download{{/if}}" data-fontname="{{value.name}}" ><span class="opt-name">{{value.name}}</span> <span class="opt-right"><i class="icon-correct" ></i><i class="icon-download" ></i><div class="download-progress-bar"><div class="download-progress-percent" style="width:0%;"></div></div></span> </div>'
                     +    '{{/each}}';
 
                 var render = template.compile(sourceFont);
@@ -86,11 +111,9 @@ WisapeEditer = {
                 });
 
                 console.info(htmlFont);
+                loadjscssfile(data.filePath,"css");
                 $(".pop-editer-font .opts").html(htmlFont);
-
-                WisapeEditer.GetNativeData("downloadFont", ["UniSansHeavy"],function(data){
-
-                });
+                console.info("head :" + $("head").html());
 
             })
         });
@@ -99,8 +122,12 @@ WisapeEditer = {
 
         $(".pop-editer-font").delegate(".item","click",function(){
             console.info("downloadfont");
-            var me = $(this),fontname = me.attr("data-fontname");
-            if(!me.hasClass("download")) return false;
+            var me = $(this),fontname = me.attr("data-fontname"),target = $("#editorText .pages-txt.active");
+            if(!me.hasClass("download")) {
+                target.css({"font-family":fontname});
+                console.info("add font:" + target.css("font-family"));
+                return false
+            };
             WisapeEditer.GetNativeData("downloadFont", [fontname],function(data){
 
             });
@@ -147,7 +174,7 @@ WisapeEditer = {
             console.info("id:" + _me.data("id"));
 
             _me.addClass("active").siblings().removeClass("active");
-            WisapeEditer.LoadTplList(parseInt(_me.data("id")));
+            WisapeEditer.LoadTplList(parseInt(_me.data("id")),null);
         });
 
         //显示隐藏分类
@@ -478,7 +505,7 @@ WisapeEditer = {
     },
 
     //通过接口加载模板列表
-    LoadTplList : function(id){
+    LoadTplList : function(id,cb){
         WisapeEditer.GetNativeData("getStageList", [id],function(data){
             console.info("getStageList");
             console.info(JSON.stringify(data));
@@ -505,6 +532,7 @@ WisapeEditer = {
             document.getElementById('cat-scroll').innerHTML = html;
             catScroll.iScroll( { eventPassthrough: true,scrollX: true, scrollY: false, preventDefault: false });
             catScroll.find("li").eq(0).addClass("active");
+            cb();
         });
     },
 
@@ -518,6 +546,7 @@ WisapeEditer = {
         };
         $("#pages-scroll ul").html(retHtml).find("li").eq("0").addClass("active");
         WisapeEditer.selectedStagetIndex = 1;
+
         cb();
 
     },
@@ -583,4 +612,23 @@ var browser = {
     }(),
     language : (navigator.browserLanguage || navigator.language).toLowerCase()
 };
+
+function loadjscssfile(filename,filetype){
+
+    if(filetype == "js"){
+        var fileref = document.createElement('script');
+        fileref.setAttribute("type","text/javascript");
+        fileref.setAttribute("src",filename);
+    }else if(filetype == "css"){
+
+        var fileref = document.createElement('link');
+        fileref.setAttribute("rel","stylesheet");
+        fileref.setAttribute("type","text/css");
+        fileref.setAttribute("href",filename);
+    }
+    if(typeof fileref != "undefined"){
+        document.getElementsByTagName("head")[0].appendChild(fileref);
+    }
+
+}
 
