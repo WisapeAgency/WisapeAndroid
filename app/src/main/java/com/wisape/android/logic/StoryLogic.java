@@ -501,7 +501,9 @@ public class StoryLogic {
             for (StoryTemplateEntity entity : storyTemplateList) {
                 File file = new File(StoryManager.getStoryTemplateDirectory(),entity.name+"/thumb.jpg");
                 entity.thumbLocal = file.getAbsolutePath();
-                storyTemplateInfoList.add(StoryTemplateEntity.convert(entity));
+                entity.recStatus = "0";
+                StoryTemplateInfo storyTemplateInfo = StoryTemplateEntity.convert(entity);
+                storyTemplateInfoList.add(storyTemplateInfo);
 
             }
         } catch (SQLException e) {
