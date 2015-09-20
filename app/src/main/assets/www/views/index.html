@@ -330,11 +330,9 @@
             console.info(target.find(".download-progress-bar").length);
             target.find(".icon-download").hide();
             target.find(".download-progress-bar").show().find(".download-progress-percent").css({"width":progress.progress*100 + "%"});
-            showMessage(message);
         }
         function onCompleted(path){
             var target = $("[data-id=" + path.id + "]");
-            showMessage("onCompleted:" + path);
             console.dir(JSON.stringify(path));
             target.find(".download-progress-bar").hide();
             target.attr({"data-path":path.path});
@@ -346,16 +344,24 @@
             jQuery("#message").text(message);
         }
 
-        function onFontDownloading(fontname,progress) {
-            console.info("onDownloading:");
-            console.dir(JSON.stringify(progress));
-            console.info(progress.progress);
-            console.info(fontname);
+        function onFontDownloading(data) {
+            console.info("onFontDownloading:");
+            console.dir(JSON.stringify(data));
+            console.info(data.progress);
+            var target = $("[data-fontname=" + data.fontName + "]");
+            target.removeClass("download");
+            target.find(".icon-correct").hide();
+            target.find(".icon-download").hide();
+            target.find(".download-progress-bar").show().find(".download-progress-percent").css({"width":data.progress*100 + "%"});
+
         }
 
-        function onFontCompleted(fontname) {
+        function onFontCompleted(data) {
             console.info("onFontCompleted:");
-            console.dir(JSON.stringify(fontname));
+            console.dir(JSON.stringify(data));
+            var target = $("[data-fontname=" + data.fontName + "]");
+            target.find(".icon-correct").show();
+            target.find(".download-progress-bar").hide();
         }
 
 

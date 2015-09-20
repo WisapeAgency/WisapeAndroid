@@ -296,11 +296,16 @@ a {text-decoration: none;color:inherit;}
 
 .pop-editer-font .tit,.pop-editer-color .tit,.pop-editer-animation .tit {vertical-align: top; font-size: 18px; color: #2d3437; margin-left: 10px;}
 .pop-editer-font .hd i,.pop-editer-color .hd i,.pop-editer-animation .hd i {width:48px;}
-.pop-editer-font .item {padding:10px;}
+.pop-editer-font .item {padding:5px 10px;float:left;clear:both;width:100%;}
 .pop-editer-font .bd {width:100%;overflow: scroll}
 .pop-editer-font .bd i {width:20px;height:20px;background-size: auto 100%;}
 .pop-editer-font .download-progress-bar {margin-top:6px;}
-
+.pop-editer-font img {height:30px;vertical-align: middle}
+.pop-editer-font .icon-download,.pop-editer-font .download-progress-bar {display: none}
+.pop-editer-font .download .icon-correct {display: none}
+.pop-editer-font .download .icon-download {display: inline-block}
+.pop-editer-font .opt-name {float:left;display: inline-block;}
+.pop-editer-font .opt-right {}
 .pop-editer-color .bd {padding:10px;}
 .color-main, .color-sub {width: 100%;overflow: hidden}
 .color-main .color-main-item {float:left;width:10%;height:20px;background:red;}

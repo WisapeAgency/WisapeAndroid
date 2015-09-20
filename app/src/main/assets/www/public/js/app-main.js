@@ -50,6 +50,13 @@ WisapeEditer = {
 
         });
 
+        //获取story数据
+        WisapeEditer.GetNativeData("getContent", [],function(data){
+            console.info("getContent");
+            console.info(JSON.stringify(data));
+
+        });
+
 
     },
 
@@ -61,9 +68,6 @@ WisapeEditer = {
             WisapeEditer.GetNativeData("getFonts", [],function(data){
                 console.info("fonts:");
                 console.info(data.fonts);
-                console.info(JSON.stringify(data.fonts));
-                console.info(JSON.parse(data.fonts));
-                console.info(JSON.parse(data.fonts) instanceof Array);
 
                 //data.fonts.each(function(i,v){
                 //    console.info(v);
@@ -73,7 +77,7 @@ WisapeEditer = {
                 }
                 var sourceFont = ''
                     +    '{{each listFont as value i}}'
-                    +        '<div class="item"> <span class="opt-name">{{value.name}}</span> <span class="opt-right">{{value.downloaded}}</span> </div>'
+                    +        '<div class="item  {{if !value.downloaded}}download{{/if}}" data-fontname="{{value.name}}" ><span class="opt-name">{{value.name}}</span> <span class="opt-right"><i class="icon-correct" ></i><i class="icon-download" ></i><div class="download-progress-bar"><div class="download-progress-percent" style="width:0%;"></div></div></span> </div>'
                     +    '{{/each}}';
 
                 var render = template.compile(sourceFont);
@@ -81,9 +85,25 @@ WisapeEditer = {
                     listFont : JSON.parse(data.fonts)
                 });
 
+                console.info(htmlFont);
                 $(".pop-editer-font .opts").html(htmlFont);
 
+                WisapeEditer.GetNativeData("downloadFont", ["UniSansHeavy"],function(data){
+
+                });
+
             })
+        });
+
+        console.info(".pop-editer-opt:" + $(".pop-editer-font").html());
+
+        $(".pop-editer-font").delegate(".item","click",function(){
+            console.info("downloadfont");
+            var me = $(this),fontname = me.attr("data-fontname");
+            if(!me.hasClass("download")) return false;
+            WisapeEditer.GetNativeData("downloadFont", [fontname],function(data){
+
+            });
         })
 
 
