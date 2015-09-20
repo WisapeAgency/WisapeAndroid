@@ -322,7 +322,11 @@ public class StoryTemplatePlugin extends AbsPlugin{
                 storyAttr.storyStatus = ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE;
                 storyAttr.story = Uri.fromFile(new File(story.storyLocal));
                 storyAttr.storyName = story.storyName;
-                storyAttr.bgMusic = story.storyMusicName;
+                if ("null".equals(story.storyMusicName)){
+                    storyAttr.bgMusic = "";
+                }else {
+                    storyAttr.bgMusic = story.storyMusicName;
+                }
                 storyAttr.storyDescription = story.storyDesc;
                 storyAttr.userId = WisapeApplication.getInstance().getUserInfo().user_id;
                 storyAttr.storyStatus = ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE;
