@@ -1,6 +1,5 @@
 package com.wisape.android.cordova;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -53,7 +52,7 @@ import java.util.regex.Pattern;
 /**
  * Created by tony on 2015/7/19.
  */
-public class StoryTemplatePlugin extends AbsPlugin{
+public class StoryTemplatePlugin extends AbsPlugin {
     private static final String FILE_NAME_THUMB = "thumb.jpg";
     private static final String FILE_NAME_STORY = "story.html";
     private static final String FILE_NAME_PREVIEW = "preview.html";
@@ -104,83 +103,83 @@ public class StoryTemplatePlugin extends AbsPlugin{
     }
 
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
-        if(null == action || 0 == action.length()){
+        if (null == action || 0 == action.length()) {
             return true;
         }
         this.callbackContext = callbackContext;
-        if(ACTION_GET_STAGE_CATEGORY.equals(action)){//getStageCategory
+        if (ACTION_GET_STAGE_CATEGORY.equals(action)) {//getStageCategory
             System.out.println("getStageCategory");
             startLoad(WHAT_GET_STAGE_CATEGORY, null);
-        } else if (ACTION_GET_STAGE_LIST.equals(action)){//getStageList
+        } else if (ACTION_GET_STAGE_LIST.equals(action)) {//getStageList
             System.out.println("getStageList:" + args.getInt(0));
             Bundle bundle = new Bundle();
-            if(null != args && args.length() != 0){
+            if (null != args && args.length() != 0) {
                 bundle.putInt(EXTRA_CATEGORY_ID, args.getInt(0));//
             }
             startLoad(WHAT_GET_STAGE_LIST, bundle);
         } else if (ACTION_START.equals(action)) {//start
             Bundle bundle = new Bundle();
-            if(null != args && args.length() != 0){
+            if (null != args && args.length() != 0) {
                 bundle.putInt(EXTRA_TEMPLATE_ID, args.getInt(0));
                 bundle.putInt(EXTRA_CATEGORY_ID, args.getInt(1));
             }
             startLoad(WHAT_START, bundle);
         } else if (ACTION_READ.equals(action)) {//read
-            if(null != args && args.length() != 0){
+            if (null != args && args.length() != 0) {
                 String path = args.getString(0);//
                 String content = readHtml(path);
                 callbackContext.success(content);
             }
-        }else if (ACTION_MUSIC_PATH.equals(action)){//getMusicPath
-            if(null != args && args.length() == 1){
+        } else if (ACTION_MUSIC_PATH.equals(action)) {//getMusicPath
+            if (null != args && args.length() == 1) {
                 int id = args.getInt(0);
                 getMusicPath(id);
             }
-        }else if (ACTION_GET_FONTS.equals(action)) {//getFonts
-            startLoad(WHAT_GET_FONTS,null);
-        }else if (ACTION_DOWNLOAD_FONT.equals(action)) {
+        } else if (ACTION_GET_FONTS.equals(action)) {//getFonts
+            startLoad(WHAT_GET_FONTS, null);
+        } else if (ACTION_DOWNLOAD_FONT.equals(action)) {
             Bundle bundle = new Bundle();
-            if(null != args && args.length() != 0) {
+            if (null != args && args.length() != 0) {
                 bundle.putString(EXTRA_FONT_NAME, args.getString(0));
             }
             startLoad(WHAT_DOWNLOAD_FONT, bundle);
-        }else if (ACTION_SAVE.equals(action)){//save
+        } else if (ACTION_SAVE.equals(action)) {//save
             Bundle bundle = new Bundle();
-            if(null != args && args.length() == 3){
+            if (null != args && args.length() == 3) {
 //                bundle.putInt(EXTRA_STORY_ID, args.optInt(0));//story_id
                 bundle.putString(EXTRA_STORY_HTML, args.getString(0));
                 bundle.putString(EXTRA_FILE_PATH, args.getString(1));
             }
             startLoad(WHAT_SAVE, bundle);
-        }else if (ACTION_PREVIEW.equals(action)){//preview
+        } else if (ACTION_PREVIEW.equals(action)) {//preview
             Bundle bundle = new Bundle();
-            if(null != args && args.length() == 2){
+            if (null != args && args.length() == 2) {
 //                bundle.putInt(EXTRA_STORY_ID, args.optInt(0));//story_id
                 bundle.putString(EXTRA_STORY_HTML, args.getString(0));
                 bundle.putString(EXTRA_FILE_PATH, args.getString(1));
             }
             startLoad(WHAT_PREVIEW, bundle);
-        }else if (ACTION_PUBLISH.equals(action)){//publish
+        } else if (ACTION_PUBLISH.equals(action)) {//publish
             Bundle bundle = new Bundle();
-            if(null != args && args.length() == 2){
+            if (null != args && args.length() == 2) {
 //                bundle.putInt(EXTRA_STORY_ID, args.optInt(0));//story_id
                 bundle.putString(EXTRA_STORY_HTML, args.getString(0));
                 bundle.putString(EXTRA_FILE_PATH, args.getString(1));
             }
             startLoad(WHAT_PUBLISH, bundle);
-        }else if (ACTION_SETTING.equals(action)){
+        } else if (ACTION_SETTING.equals(action)) {
             StorySettingsActivity.launch(getCurrentActivity(), 0);
-        }else if (ACTION_BACK.equals(action)){
+        } else if (ACTION_BACK.equals(action)) {
             cordova.getActivity().finish();
-        }else if (ACTION_EDIT.equals(action)){
+        } else if (ACTION_EDIT.equals(action)) {
             StoryEntity storyEntity = app.getStoryEntity();
-            if (storyEntity != null){
+            if (storyEntity != null) {
                 doEditStory(storyEntity);
             }
             cordova.getActivity().finish();
-        }else if (ACTION_GET_CONTENT.equals(action)){
-            if (cordova.getActivity() instanceof StoryTemplateActivity){
-                StoryTemplateActivity activity = (StoryTemplateActivity)cordova.getActivity();
+        } else if (ACTION_GET_CONTENT.equals(action)) {
+            if (cordova.getActivity() instanceof StoryTemplateActivity) {
+                StoryTemplateActivity activity = (StoryTemplateActivity) cordova.getActivity();
                 String html = activity.getContent();
                 callbackContext.success(html);
             }
@@ -188,7 +187,7 @@ public class StoryTemplatePlugin extends AbsPlugin{
         return true;
     }
 
-    private void doEditStory(StoryEntity storyEntity){
+    private void doEditStory(StoryEntity storyEntity) {
         File htmlFile = new File(storyEntity.storyLocal, FILE_NAME_STORY);
         String html = readFile(htmlFile.getAbsolutePath());
         callbackContext.success(html);
@@ -197,10 +196,10 @@ public class StoryTemplatePlugin extends AbsPlugin{
     @Override
     protected Message onLoadBackgroundRunning(int what, Bundle args) throws AsyncLoaderError {
         Context context = getCurrentActivity().getApplicationContext();
-        switch (what){
-            default :
+        switch (what) {
+            default:
                 return null;
-            case WHAT_GET_STAGE_CATEGORY : {
+            case WHAT_GET_STAGE_CATEGORY: {
 //                JSONArray jsonStr = logic.listStoryTemplateType(context, null);
                 JSONArray jsonStr = logic.listStoryTemplateTypeLocal(context);
                 callbackContext.success(jsonStr);
@@ -224,21 +223,21 @@ public class StoryTemplatePlugin extends AbsPlugin{
                 attr.id = args.getInt(EXTRA_TEMPLATE_ID, 0);
                 int categoryId = args.getInt(EXTRA_CATEGORY_ID, 1);
                 Requester.ServerMessage message = logic.getStoryTemplateUrl(context, attr, null);
-                if (!message.succeed()){
+                if (!message.succeed()) {
                     callbackContext.error(message.status);
                     return null;
                 }
-                if (cordova.getActivity() instanceof StoryTemplateActivity){
-                    StoryTemplateActivity activity = (StoryTemplateActivity)cordova.getActivity();
+                if (cordova.getActivity() instanceof StoryTemplateActivity) {
+                    StoryTemplateActivity activity = (StoryTemplateActivity) cordova.getActivity();
                     try {
                         activity.downloadTemplate(message.data.toString(), attr.id, categoryId);
-                    }catch (JSONException e){
+                    } catch (JSONException e) {
                         callbackContext.error(-1);
                     }
                 }
                 break;
             }
-            case WHAT_GET_FONTS:{
+            case WHAT_GET_FONTS: {
 
                 StoryFontInfo[] fonts = logic.listFont(context, "getFonts");
                 List<StoryFontInfo> fontList = Arrays.asList(fonts);
@@ -247,13 +246,13 @@ public class StoryTemplatePlugin extends AbsPlugin{
             }
             case WHAT_DOWNLOAD_FONT: {
                 String fontName = args.getString(EXTRA_FONT_NAME);
-                if (cordova.getActivity() instanceof StoryTemplateActivity){
-                    StoryTemplateActivity activity = (StoryTemplateActivity)cordova.getActivity();
+                if (cordova.getActivity() instanceof StoryTemplateActivity) {
+                    StoryTemplateActivity activity = (StoryTemplateActivity) cordova.getActivity();
                     activity.downloadFont(fontName);
                 }
                 break;
             }
-            case WHAT_SAVE:{
+            case WHAT_SAVE: {
 //                int storyId = args.getInt(EXTRA_STORY_ID, 0);
                 String html = args.getString(EXTRA_STORY_HTML);
                 String path = args.getString(EXTRA_FILE_PATH);
@@ -262,16 +261,16 @@ public class StoryTemplatePlugin extends AbsPlugin{
                 StoryEntity story = app.getStoryEntity();
 //                logic.saveStoryLocal(context,story);
                 File myStory = new File(story.storyLocal);
-                if (!myStory.exists()){
+                if (!myStory.exists()) {
                     myStory.mkdirs();
                 }
-                if(!saveStory(myStory,html,paths)){
+                if (!saveStory(myStory, html, paths)) {
                     callbackContext.error(-1);
                     return null;
                 }
                 break;
             }
-            case WHAT_PREVIEW:{
+            case WHAT_PREVIEW: {
 //                int storyId = args.getInt(EXTRA_STORY_ID, 0);
                 String html = args.getString(EXTRA_STORY_HTML);
                 String path = args.getString(EXTRA_FILE_PATH);
@@ -280,22 +279,22 @@ public class StoryTemplatePlugin extends AbsPlugin{
                 StoryEntity story = app.getStoryEntity();
 //                logic.saveStoryLocal(context,story);
                 File myStory = new File(story.storyLocal);
-                if (!myStory.exists()){
+                if (!myStory.exists()) {
                     myStory.mkdirs();
                 }
-                if(!saveStory(myStory,html,paths)){
+                if (!saveStory(myStory, html, paths)) {
                     callbackContext.error(-1);
                     return null;
                 }
-                File previewFile = new File(myStory,FILE_NAME_PREVIEW);
-                if(saveStoryPreview(previewFile,html,story)){
-                    StoryPreviewActivity.launch(cordova.getActivity(),previewFile.getAbsolutePath());
-                }else {
+                File previewFile = new File(myStory, FILE_NAME_PREVIEW);
+                if (saveStoryPreview(previewFile, html, story)) {
+                    StoryPreviewActivity.launch(cordova.getActivity(), previewFile.getAbsolutePath());
+                } else {
                     callbackContext.error(-1);
                 }
                 break;
             }
-            case WHAT_PUBLISH:{
+            case WHAT_PUBLISH: {
 //                int storyId = args.getInt(EXTRA_STORY_ID, 0);
                 String html = args.getString(EXTRA_STORY_HTML);
                 String path = args.getString(EXTRA_FILE_PATH);
@@ -304,15 +303,15 @@ public class StoryTemplatePlugin extends AbsPlugin{
                 StoryEntity story = app.getStoryEntity();
 //                logic.saveStoryLocal(context,story);
                 File myStory = new File(story.storyLocal);
-                if (!myStory.exists()){
+                if (!myStory.exists()) {
                     myStory.mkdirs();
                 }
-                if(!saveStory(myStory, html, paths)){
+                if (!saveStory(myStory, html, paths)) {
                     callbackContext.error(-1);
                     return null;
                 }
                 if ("".equals(story.storyThumbUri)
-                        && !new File(story.storyThumbUri).exists()){
+                        && !new File(story.storyThumbUri).exists()) {
                     copyAssetsFile("www/public/img/photo_cover.png",
                             new File(story.storyLocal, "thumb.png").getAbsolutePath());
                 }
@@ -322,9 +321,9 @@ public class StoryTemplatePlugin extends AbsPlugin{
                 storyAttr.storyStatus = ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE;
                 storyAttr.story = Uri.fromFile(new File(story.storyLocal));
                 storyAttr.storyName = story.storyName;
-                if ("null".equals(story.storyMusicName)){
+                if ("null".equals(story.storyMusicName)) {
                     storyAttr.bgMusic = "";
-                }else {
+                } else {
                     storyAttr.bgMusic = story.storyMusicName;
                 }
                 storyAttr.storyDescription = story.storyDesc;
@@ -346,55 +345,55 @@ public class StoryTemplatePlugin extends AbsPlugin{
         return null;
     }
 
-    private boolean saveStory(File myStory,String html,com.alibaba.fastjson.JSONArray paths){
+    private boolean saveStory(File myStory, String html, com.alibaba.fastjson.JSONArray paths) {
         File templatePath = StoryManager.getStoryTemplateDirectory();
-        html = html.replace(templatePath.getAbsolutePath(),myStory.getAbsolutePath());
-        File storyHTML = new File(myStory,FILE_NAME_STORY);
+        html = html.replace(templatePath.getAbsolutePath(), myStory.getAbsolutePath());
+        File storyHTML = new File(myStory, FILE_NAME_STORY);
         PrintWriter writer = null;
-        try{
+        try {
             writer = new PrintWriter(storyHTML);
             writer.write(html);
             writer.close();
-        }catch (IOException e){
-            Log.e("saveStory","",e);
+        } catch (IOException e) {
+            Log.e("saveStory", "", e);
             return false;
-        }finally {
-            if (writer != null){
+        } finally {
+            if (writer != null) {
                 writer.close();
             }
         }
 
-        File storyImg = new File(myStory,DIR_NAME_IMAGE);
-        if (!storyImg.exists()){
+        File storyImg = new File(myStory, DIR_NAME_IMAGE);
+        if (!storyImg.exists()) {
             storyImg.mkdirs();
         }
-        try{
-            for (int i=0;i<paths.size();i++){
-                String path = paths.getString(i).replace("file://","");
+        try {
+            for (int i = 0; i < paths.size(); i++) {
+                String path = paths.getString(i).replace("file://", "");
                 String newPath = path.replace(templatePath.getAbsolutePath(), myStory.getAbsolutePath());
                 File file = new File(path);
                 File newPathFile = new File(newPath);
                 File imgDirectory = newPathFile.getParentFile();
-                if (!imgDirectory.exists()){
+                if (!imgDirectory.exists()) {
                     imgDirectory.mkdirs();
                 }
-                FileUtils.copyFile(file,new File(imgDirectory, file.getName()));
+                FileUtils.copyFile(file, new File(imgDirectory, file.getName()));
             }
-        }catch (IOException e){
-            Log.e("saveStory","",e);
+        } catch (IOException e) {
+            Log.e("saveStory", "", e);
         }
         return true;
     }
 
-    private boolean saveStoryPreview(File previewFile, String html,StoryEntity story){
+    private boolean saveStoryPreview(File previewFile, String html, StoryEntity story) {
         String header = getFromAssets(PREVIEW_HEADER);
         String footer = getFromAssets(PREVIEW_FOOTER);
         PrintWriter writer = null;
-        try{
+        try {
             writer = new PrintWriter(previewFile);
             writer.println(header);
             writer.println(html);
-            if (!"".equals(story.storyMusicLocal)){
+            if (!"".equals(story.storyMusicLocal)) {
                 writer.println("<div id=\"audio-btn\" class=\"on\">");
                 writer.println(String.format("    <audio loop=\"loop\" src=\"%s\" id=\"media\" preload=\"preload\"></audio>",
                         story.storyMusicLocal));
@@ -402,11 +401,11 @@ public class StoryTemplatePlugin extends AbsPlugin{
             }
             writer.println(footer);
             writer.close();
-        }catch (IOException e){
-            Log.e("saveStoryPreview","",e);
+        } catch (IOException e) {
+            Log.e("saveStoryPreview", "", e);
             return false;
-        }finally {
-            if (writer != null){
+        } finally {
+            if (writer != null) {
                 writer.close();
             }
         }
@@ -428,44 +427,44 @@ public class StoryTemplatePlugin extends AbsPlugin{
             out.flush();
             in.close();
             out.close();
-        }catch (IOException e){
+        } catch (IOException e) {
 
-        }finally {
-            if (in != null){
+        } finally {
+            if (in != null) {
                 try {
                     in.close();
-                }catch (IOException  e){
+                } catch (IOException e) {
 
                 }
             }
-            if (out != null){
+            if (out != null) {
                 try {
                     out.close();
-                }catch (IOException  e){
+                } catch (IOException e) {
 
                 }
             }
         }
     }
 
-    private String readFile(String path){
+    private String readFile(String path) {
         StringBuffer content = new StringBuffer();
         BufferedReader reader = null;
         try {
             reader = new BufferedReader(new FileReader(new File(path)));
             String line;
-            while ((line = reader.readLine()) != null){
+            while ((line = reader.readLine()) != null) {
                 content.append(line);
             }
             reader.close();
             return content.toString();
-        }catch (IOException e){
+        } catch (IOException e) {
             return "";
-        }finally {
-            if(reader != null){
-                try{
+        } finally {
+            if (reader != null) {
+                try {
                     reader.close();
-                }catch (IOException e){
+                } catch (IOException e) {
 
                 }
 
@@ -473,13 +472,13 @@ public class StoryTemplatePlugin extends AbsPlugin{
         }
     }
 
-    public String getFromAssets(String fileName){
+    public String getFromAssets(String fileName) {
         try {
             InputStreamReader inputReader = new InputStreamReader(cordova.getActivity().getResources().getAssets().open(fileName));
             BufferedReader bufReader = new BufferedReader(inputReader);
             String line;
             StringBuffer result = new StringBuffer();
-            while((line = bufReader.readLine()) != null)
+            while ((line = bufReader.readLine()) != null)
                 result.append(line);
             return result.toString();
         } catch (Exception e) {
@@ -488,7 +487,7 @@ public class StoryTemplatePlugin extends AbsPlugin{
         return "";
     }
 
-    private String readHtml(String path){
+    private String readHtml(String path) {
         String parent = new File(path).getParent();
         StringBuffer content = new StringBuffer();
         BufferedReader reader = null;
@@ -496,23 +495,23 @@ public class StoryTemplatePlugin extends AbsPlugin{
             reader = new BufferedReader(new FileReader(new File(path)));
             String line;
             Pattern p = Pattern.compile("img/[a-zA-Z0-9-_]+(\\.jpg|\\.png)");
-            while ((line = reader.readLine()) != null){
+            while ((line = reader.readLine()) != null) {
                 Matcher m = p.matcher(line);
                 while (m.find()) {
                     String result = m.group();
-                    line = line.replace(result, new File(parent,result).getAbsolutePath());
+                    line = line.replace(result, new File(parent, result).getAbsolutePath());
                 }
                 content.append(line);
             }
             reader.close();
             return content.toString();
-        }catch (IOException e){
+        } catch (IOException e) {
             return "";
-        }finally {
-            if(reader != null){
-                try{
+        } finally {
+            if (reader != null) {
+                try {
                     reader.close();
-                }catch (IOException e){
+                } catch (IOException e) {
 
                 }
 
@@ -520,7 +519,7 @@ public class StoryTemplatePlugin extends AbsPlugin{
         }
     }
 
-    private void getFonts(List<StoryFontInfo> fontList){
+    private void getFonts(List<StoryFontInfo> fontList) {
         JSONObject json = new JSONObject();
         List<StoryFontInfo> resultFontlist = new ArrayList<>();
         try {
@@ -533,7 +532,7 @@ public class StoryTemplatePlugin extends AbsPlugin{
                 }
             });
             json.put("filePath", fontFile.getAbsolutePath());
-            if (fontList == null || fontList.size() == 0){
+            if (fontList == null || fontList.size() == 0) {
                 StoryFontInfo fontInfo = null;
                 for (File font : fonts) {
                     fontInfo = new StoryFontInfo();
@@ -541,38 +540,38 @@ public class StoryTemplatePlugin extends AbsPlugin{
                     fontInfo.downloaded = 1;
                     resultFontlist.add(fontInfo);
                 }
-            }else{
+            } else {
                 int serverFontSize = fontList.size();
                 int localFontSize = fonts.length;
                 //如果服务器的字体数量大于本地数量
-                if(serverFontSize  > localFontSize){
-                    for(int i = 0; i < serverFontSize; i++){
+                if (serverFontSize > localFontSize) {
+                    for (int i = 0; i < serverFontSize; i++) {
                         StoryFontInfo serverFontInfo = fontList.get(i);
-                        if(i >= fonts.length){
+                        if (i >= fonts.length) {
                             resultFontlist.add(serverFontInfo);
-                        }else{
+                        } else {
                             String localFonInName = fonts[i].getName();
-                            if(localFonInName.equals(serverFontInfo.name)){
+                            if (localFonInName.equals(serverFontInfo.name)) {
                                 serverFontInfo.downloaded = 1;
-                            }else{
+                            } else {
                                 serverFontInfo.downloaded = 0;
                             }
                             resultFontlist.add(serverFontInfo);
                         }
                     }
-                }else{
-                    for(int i = 0; i < fonts.length; i++){
+                } else {
+                    for (int i = 0; i < fonts.length; i++) {
                         String localFontName = fonts[i].getName();
-                        if(i >= fontList.size()){
+                        if (i >= fontList.size()) {
                             StoryFontInfo storyFontInfo = new StoryFontInfo();
                             storyFontInfo.name = localFontName;
                             storyFontInfo.downloaded = 1;
                             resultFontlist.add(storyFontInfo);
-                        }else{
+                        } else {
                             StoryFontInfo storyFontInfo = fontList.get(i);
-                            if(localFontName.equals(storyFontInfo.name)){
+                            if (localFontName.equals(storyFontInfo.name)) {
                                 storyFontInfo.downloaded = 1;
-                            }else {
+                            } else {
                                 storyFontInfo.downloaded = 0;
                             }
                             resultFontlist.add(storyFontInfo);
@@ -582,18 +581,18 @@ public class StoryTemplatePlugin extends AbsPlugin{
 
             }
             json.put("fonts", resultFontlist);
-        }catch (JSONException e){
+        } catch (JSONException e) {
             callbackContext.success(1);
         }
         callbackContext.success(json);
     }
 
-    private void getMusicPath(int id){
+    private void getMusicPath(int id) {
         Context context = getCurrentActivity().getApplicationContext();
         StoryMusicEntity music = logic.getStoryMusicLocalById(context, id);
-        if(music != null){
+        if (music != null) {
             callbackContext.success(music.musicLocal);
-        }else{
+        } else {
             callbackContext.error(1);//not fond
         }
     }

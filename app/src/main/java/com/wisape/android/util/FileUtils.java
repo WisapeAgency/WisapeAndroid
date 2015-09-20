@@ -5,11 +5,13 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Base64;
+import android.util.Log;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -131,6 +133,32 @@ public class FileUtils {
                 }
             } catch (IOException e) {
                 //do nothing
+            }
+        }
+    }
+
+    /**
+     * 将下载的文件保存到本地
+     *
+     * @param bytes    服务端获取的文件数组
+     * @param filePath 保存到本地的地址
+     */
+    public static void saveByteToFile(byte[] bytes, String filePath) {
+        FileOutputStream fileOuputStream = null;
+        try {
+            fileOuputStream = new FileOutputStream(filePath);
+            fileOuputStream.write(bytes);
+            fileOuputStream.flush();
+            fileOuputStream.close();
+        } catch (Exception e) {
+            System.out.print(e.getMessage());
+        } finally {
+            try {
+                if (null != fileOuputStream) {
+                    fileOuputStream.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
