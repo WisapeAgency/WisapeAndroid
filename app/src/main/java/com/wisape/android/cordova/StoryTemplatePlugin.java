@@ -1,6 +1,8 @@
 package com.wisape.android.cordova;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Message;
@@ -15,6 +17,8 @@ import com.wisape.android.activity.StorySettingsActivity;
 import com.wisape.android.activity.StoryTemplateActivity;
 import com.wisape.android.api.ApiStory;
 import com.wisape.android.common.StoryManager;
+import com.wisape.android.content.StoryBroadcastReciver;
+import com.wisape.android.content.StoryBroadcastReciverListener;
 import com.wisape.android.database.StoryEntity;
 import com.wisape.android.database.StoryMusicEntity;
 import com.wisape.android.logic.StoryLogic;
@@ -256,7 +260,7 @@ public class StoryTemplatePlugin extends AbsPlugin{
                 com.alibaba.fastjson.JSONArray paths = JSON.parseArray(path);
                 WisapeApplication app = WisapeApplication.getInstance();
                 StoryEntity story = app.getStoryEntity();
-                logic.saveStoryLocal(context,story);
+//                logic.saveStoryLocal(context,story);
                 File myStory = new File(story.storyLocal);
                 if (!myStory.exists()){
                     myStory.mkdirs();
@@ -274,7 +278,7 @@ public class StoryTemplatePlugin extends AbsPlugin{
                 com.alibaba.fastjson.JSONArray paths = JSON.parseArray(path);
                 WisapeApplication app = WisapeApplication.getInstance();
                 StoryEntity story = app.getStoryEntity();
-                logic.saveStoryLocal(context,story);
+//                logic.saveStoryLocal(context,story);
                 File myStory = new File(story.storyLocal);
                 if (!myStory.exists()){
                     myStory.mkdirs();
@@ -298,7 +302,7 @@ public class StoryTemplatePlugin extends AbsPlugin{
                 com.alibaba.fastjson.JSONArray paths = JSON.parseArray(path);
                 WisapeApplication app = WisapeApplication.getInstance();
                 StoryEntity story = app.getStoryEntity();
-                logic.saveStoryLocal(context,story);
+//                logic.saveStoryLocal(context,story);
                 File myStory = new File(story.storyLocal);
                 if (!myStory.exists()){
                     myStory.mkdirs();
@@ -320,9 +324,19 @@ public class StoryTemplatePlugin extends AbsPlugin{
                 storyAttr.storyName = story.storyName;
                 storyAttr.bgMusic = story.storyMusicName;
                 storyAttr.storyDescription = story.storyDesc;
+                storyAttr.userId = WisapeApplication.getInstance().getUserInfo().user_id;
+                storyAttr.storyStatus = ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE;
                 storyAttr.imgPrefix = StoryManager.getStoryDirectory().getAbsolutePath();
-                logic.update(cordova.getActivity().getApplicationContext(),storyAttr,"release");
-                StoryReleaseActivity.launch(cordova.getActivity(),1);
+
+                StoryEntity storyEntity = logic.update(cordova.getActivity().getApplicationContext(), storyAttr, "release");
+                WisapeApplication.getInstance().setStoryEntity(storyEntity);
+
+                Intent intent = new Intent();
+                intent.setAction(StoryBroadcastReciver.STORY_ACTION);
+                intent.putExtra(StoryBroadcastReciver.EXTRAS_TYPE, StoryBroadcastReciverListener.TYPE_ADD_STORY);
+                getCurrentActivity().sendBroadcast(intent);
+
+                StoryReleaseActivity.launch(cordova.getActivity());
             }
         }
         return null;

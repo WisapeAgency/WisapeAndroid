@@ -13,8 +13,8 @@ import com.squareup.picasso.Picasso;
 import com.wisape.android.R;
 import com.wisape.android.logic.UserLogic;
 import com.wisape.android.model.UserInfo;
-import com.wisape.android.network.NanoServer;
-import com.wisape.android.util.FileUtils;
+import com.wisape.android.util.EnvironmentUtils;
+import com.wisape.android.util.Utils;
 import com.wisape.android.view.CircleTransform;
 
 import java.io.File;
@@ -79,7 +79,7 @@ public class UserProfileActivity extends BaseActivity {
     }
 
 
-    @OnClick(R.id.user_profile_email_edit)
+    @OnClick(R.id.linear_email)
     @SuppressWarnings("unused")
     protected void onEmailTextOnClicked() {
         String email = emailEdit.getText().toString();
@@ -90,7 +90,7 @@ public class UserProfileActivity extends BaseActivity {
         }
     }
 
-    @OnClick(R.id.user_profile_icon)
+    @OnClick(R.id.linear_photo)
     @SuppressWarnings("unused")
     protected void doIconClicked() {
         PhotoSelectorActivity.launch(this, PhotoSelectorActivity.REQUEST_CODE_PHOTO);
@@ -179,7 +179,12 @@ public class UserProfileActivity extends BaseActivity {
             switch (requestCode) {
                 case PhotoSelectorActivity.REQUEST_CODE_PHOTO:
                     Uri imgUri = extras.getParcelable(PhotoSelectorActivity.EXTRA_IMAGE_URI);
-                    CutActivity.launch(this, imgUri,WIDTH,HEIGHT,CutActivity.RQEUST_CODE_CROP_IMG);
+                    File file = new File(EnvironmentUtils.getAppCacheDirectory(), "head");
+                    if (!file.exists()) {
+                        file.mkdirs();
+                    }
+                    File head = new File(file, "/" + Utils.acquireUTCTimestamp());
+                    CutActivity.launch(this, imgUri,WIDTH,HEIGHT,head.getAbsolutePath(),CutActivity.RQEUST_CODE_CROP_IMG);
                     break;
                 case CutActivity.RQEUST_CODE_CROP_IMG:
                     userIconUri = extras.getString(CutActivity.EXTRA_IMAGE_URI);

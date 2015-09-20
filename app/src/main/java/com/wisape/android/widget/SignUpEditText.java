@@ -209,7 +209,7 @@ public class SignUpEditText extends LinearLayout implements View.OnFocusChangeLi
         warningTxtv = null;
     }
 
-    private static class InnerEditText extends EditText{
+    public static class InnerEditText extends EditText{
         private static final int DRAWABLE_START = 0;
         private static final int DRAWABLE_END = 2;
         private OnActionListener onActionListener;

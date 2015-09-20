@@ -119,7 +119,8 @@
     <LinearLayout
         android:id="@+id/story_settings_gesture_layout"
         android:layout_width="match_parent"
-        android:layout_height="60dp">
+        android:layout_height="60dp"
+        android:visibility="gone">
 
         <android.support.v7.widget.AppCompatTextView
             style="@style/App.TextStyle.Primary"

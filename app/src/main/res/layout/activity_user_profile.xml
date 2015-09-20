@@ -1,130 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginLeft="20dp"
-    android:layout_marginRight="20dp">
+    android:layout_marginRight="20dp"
+    android:orientation="vertical"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
-    <TextView
-        android:id="@+id/user_profile_icon_title"
-        android:layout_width="wrap_content"
-        android:layout_height="100dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:gravity="left|start|center_vertical"
-        android:textColor="@android:color/black"
-        android:text="@string/user_profile_icon_title"/>
-
-    <ImageView
-        android:id="@+id/icon_down"
-        android:layout_width="wrap_content"
-        android:layout_height="100dp"
-        android:scaleType="center"
-        android:gravity="left|start|center_vertical"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:src="@drawable/icon_down"/>
-
-    <ImageView
-        android:id="@+id/user_profile_icon"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_alignRight="@+id/icon_down"
-        android:layout_marginRight="30dp"
-        android:layout_marginTop="25dp"
-        android:src="@mipmap/icon_menu_default_head"
-        />
-    
-    <View
-        android:id="@+id/divider_icon"
-        style="@style/Divider.ForList"
+    <LinearLayout
+        android:id="@+id/linear_photo"
         android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:layout_below="@+id/user_profile_icon_title"/>
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/user_profile_name_title"
-        android:layout_width="wrap_content"
-        android:layout_height="60dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/divider_icon"
-        android:gravity="left|start|center_vertical"
-        android:textColor="@android:color/black"
-        android:text="@string/user_profile_name_title"/>
+        <TextView
+            android:id="@+id/user_profile_icon_title"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="100dp"
+            android:gravity="left|start|center_vertical"
+            android:text="@string/user_profile_icon_title"
+            android:textColor="@android:color/black" />
 
-    <ImageView
-        android:id="@+id/name_down"
-        android:layout_width="wrap_content"
-        android:layout_height="60dp"
-        android:scaleType="center"
-        android:gravity="left|start|center_vertical"
-        android:layout_below="@+id/icon_down"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:src="@drawable/icon_down"/>
+        <ImageView
+            android:id="@+id/user_profile_icon"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center_vertical|left|end"
+            android:src="@mipmap/icon_menu_default_head" />
+    </LinearLayout>
 
-    <EditText
-        android:id="@+id/user_profile_name_edit"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:textColor="@color/app_btn_green_normal"
-        android:textSize="12sp"
-        android:layout_toRightOf="@+id/user_profile_name_title"
-        android:layout_toEndOf="@+id/user_profile_name_title"
-        android:layout_toLeftOf="@+id/name_down"
-        android:layout_toStartOf="@+id/name_down"
-        android:layout_marginRight="30dp"
-        android:layout_marginTop="25dp"
-        android:background="@null"
-        android:layout_below="@+id/user_profile_icon"
-        android:gravity="right|end|center_vertical"/>
 
     <View
-        android:id="@+id/divider_name"
         style="@style/Divider.ForList"
         android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:layout_below="@+id/user_profile_name_title"/>
+        android:layout_height="0.5dp" />
 
-    <TextView
-        android:id="@+id/user_profile_email_title"
-        android:layout_width="wrap_content"
-        android:layout_height="60dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/divider_name"
-        android:gravity="left|start|center_vertical"
-        android:textColor="@android:color/black"
-        android:text="@string/user_profile_email_title"/>
-
-    <ImageView
-        android:id="@+id/email_down"
-        android:layout_width="wrap_content"
-        android:layout_height="60dp"
-        android:scaleType="center"
-        android:gravity="left|start|center_vertical"
-        android:layout_below="@+id/name_down"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:src="@drawable/icon_down"/>
-
-    <TextView
-        android:id="@+id/user_profile_email_edit"
+    <LinearLayout
+        android:id="@+id/linear_name"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_marginRight="30dp"
-        android:layout_marginTop="5dp"
-        android:textColor="@color/app_btn_green_normal"
-        android:layout_toRightOf="@+id/user_profile_email_title"
-        android:layout_toEndOf="@+id/user_profile_email_title"
-        android:layout_toLeftOf="@+id/email_down"
-        android:layout_toStartOf="@+id/email_down"
-        android:layout_below="@+id/user_profile_name_edit"
-        android:gravity="right|end|center_vertical" />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/user_profile_name_title"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:gravity="left|start|center_vertical"
+            android:text="@string/user_profile_name_title"
+            android:textColor="@android:color/black" />
 
 
-</RelativeLayout>
+        <EditText
+            android:id="@+id/user_profile_name_edit"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="@null"
+            android:gravity="right|end|center_vertical"
+            android:text="12312312"
+            android:textColor="@color/app_btn_green_normal"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <View
+        style="@style/Divider.ForList"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp" />
+
+    <LinearLayout
+        android:id="@+id/linear_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="12dp">
+
+        <TextView
+            android:id="@+id/user_profile_email_title"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:gravity="left|start|center_vertical"
+            android:text="@string/user_profile_email_title"
+            android:textColor="@android:color/black" />
+
+
+        <TextView
+            android:id="@+id/user_profile_email_edit"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="5dp"
+            android:gravity="right|end|center_vertical"
+            android:textColor="@color/app_btn_green_normal"
+            android:text="dfsadfsdf"/>
+    </LinearLayout>
+
+
+</LinearLayout>

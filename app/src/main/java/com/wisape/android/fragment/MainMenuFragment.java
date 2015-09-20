@@ -3,7 +3,6 @@ package com.wisape.android.fragment;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,6 @@ import com.wisape.android.activity.AboutActivity;
 import com.wisape.android.activity.BaseActivity;
 import com.wisape.android.activity.MessageCenterActivity;
 import com.wisape.android.activity.SignUpActivity;
-import com.wisape.android.activity.TestActivity;
 import com.wisape.android.activity.UserProfileActivity;
 import com.wisape.android.content.BroadCastReciverListener;
 import com.wisape.android.content.MessageCenterReceiver;
@@ -98,9 +96,9 @@ public class MainMenuFragment extends AbsFragment implements BroadCastReciverLis
         Mobihelp.showSupport(getActivity());
     }
 
-    @OnClick(R.id.tv_name)
+    @OnClick(R.id.linear_head)
     @SuppressWarnings("unused")
-    protected void onNameClicked() {
+    protected void onLinearHeadClicked() {
         UserProfileActivity.launch(this, UserProfileActivity.REQUEST_CODE_PROFILE);
     }
 

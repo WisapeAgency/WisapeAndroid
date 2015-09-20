@@ -4,17 +4,19 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Message;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatTextView;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 import com.wisape.android.R;
+import com.wisape.android.common.StoryManager;
+import com.wisape.android.content.StoryBroadcastReciver;
+import com.wisape.android.content.StoryBroadcastReciverListener;
 import com.wisape.android.database.StoryEntity;
 import com.wisape.android.database.StoryMusicEntity;
-import com.wisape.android.logic.StoryLogic;
 import com.wisape.android.model.StoryGestureInfo;
+import com.wisape.android.util.EnvironmentUtils;
 import com.wisape.android.util.Utils;
 
 import java.io.File;
@@ -30,8 +32,8 @@ import butterknife.OnClick;
 public class StorySettingsActivity extends BaseActivity {
     private static final int LOADER_UPATE_SETTINGS = 0x01;
 
-    private static final int WIDTH = 600;
-    private static final int HEIGHT = 1000;
+    private static final int WIDTH = 800;
+    private static final int HEIGHT = 1200;
 
     public static final int REQUEST_SETTING = 1;
 
@@ -74,8 +76,7 @@ public class StorySettingsActivity extends BaseActivity {
 
         String uri = storyEntity.storyThumbUri;
         if (null != uri) {
-            Uri defaultCover = Uri.parse(uri);
-            Picasso.with(this).load(defaultCover)
+            Picasso.with(this).load(new File(uri))
                     .resize(150, 150)
                     .centerCrop()
                     .into(storyBgView);
@@ -133,8 +134,9 @@ public class StorySettingsActivity extends BaseActivity {
             case PhotoSelectorActivity.REQUEST_CODE_PHOTO:
                 if (RESULT_OK == resultCode) {
                     Uri imageUri = data.getParcelableExtra(PhotoSelectorActivity.EXTRA_IMAGE_URI);
+                    File file = new File(StoryManager.getStoryDirectory(), "/" +storyEntity.storyName + "/thumb.jpg");
                     if (null != imageUri) {
-                        CutActivity.launch(this, imageUri, WIDTH, HEIGHT, CutActivity.RQEUST_CODE_CROP_IMG);
+                        CutActivity.launch(this, imageUri, WIDTH, HEIGHT,file.getAbsolutePath(), CutActivity.RQEUST_CODE_CROP_IMG);
                     }
                 }
                 break;
@@ -170,20 +172,6 @@ public class StorySettingsActivity extends BaseActivity {
         }
     }
 
-    @Override
-    protected Message onLoadBackgroundRunning(int what, Bundle args) throws AsyncLoaderError {
-        Message msg = Message.obtain();
-        msg.obj = StoryLogic.instance().updateStory(this, storyEntity);
-        return msg;
-    }
-
-    @Override
-    protected void onLoadCompleted(Message data) {
-        int result = (int) data.obj;
-        if (1 == result){
-            wisapeApplication.setStoryEntity(storyEntity);
-        }
-    }
 
     @Override
     protected boolean onBackNavigation() {
@@ -200,12 +188,13 @@ public class StorySettingsActivity extends BaseActivity {
     private void doSaveStorySettings() {
         storyEntity.storyName = storyNameEdit.getText().toString();
         storyEntity.storyDesc = storyDescEdit.getText().toString();
-        startLoad(LOADER_UPATE_SETTINGS, null);
+        wisapeApplication.setStoryEntity(storyEntity);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         ButterKnife.reset(this);
+        Intent intent = new Intent();
     }
 }

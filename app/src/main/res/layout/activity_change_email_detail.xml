@@ -13,6 +13,8 @@
         android:drawablePadding="20dp"
         android:drawableTop="@mipmap/icon_modify_email"
         android:gravity="center"
+        style="@style/App.TextStyle.Secondary"
+        android:singleLine="false"
         android:text="@string/change_email_title"
         android:lineSpacingMultiplier="1.4"
         android:paddingLeft="32dp"

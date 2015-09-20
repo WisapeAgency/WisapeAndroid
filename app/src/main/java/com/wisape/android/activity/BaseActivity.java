@@ -90,19 +90,10 @@ public abstract class BaseActivity extends VolleyActivity{
 
 
     protected void startLoadWithProgress(int what,Bundle args){
-        showProgressDialog(R.string.loading_user_story);
+        showProgressDialog(R.string.progress_loading_data);
         startLoad(what, args);
     }
 
-    @Override
-    protected void startLoad(int what, Bundle args) {
-        if(Utils.isNetworkAvailable(this)){
-            super.startLoad(what,args);
-        }else{
-            closeProgressDialog();
-            showToast("Network Error");
-        }
-    }
 
     @Override
     protected void onLoadCompleted(Message data) {

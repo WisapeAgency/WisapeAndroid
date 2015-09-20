@@ -25,7 +25,7 @@
         android:padding="32dp"
         android:layout_marginTop="-50dp"
         android:layout_below="@+id/password_reset_notice_text"
-        android:gravity="start"
+        android:gravity="center"
         android:singleLine="false"
         android:text="@string/change_main_text" />
 

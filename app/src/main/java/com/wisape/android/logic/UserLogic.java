@@ -128,11 +128,6 @@ public class UserLogic {
      * 从本地读取用户信息
      */
     public UserInfo loaderUserFromLocal() {
-        try{
-            DataSynchronizer.getInstance().synchronous(WisapeApplication.getInstance().getApplicationContext());//
-        }catch (Exception e){
-            Log.e(TAG,"首页下载失败:" + e.getMessage());
-        }
         UserInfo userInfo = null;
         SharedPreferences sharedPreferences = WisapeApplication.getInstance().getSharePrefrence();
         String decode = sharedPreferences.getString(EXTRA_USER_INFO, "");
@@ -170,7 +165,7 @@ public class UserLogic {
      * 更新用户信息
      *
      * @param nickName    昵称
-     * @param userIcon    用户图标
+     * @param filePath    用户图标地址
      * @param userEmail   用户邮箱
      * @param accessToken 唯一标志符
      */

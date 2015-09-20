@@ -4,10 +4,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
+import android.util.Log;
 
 import com.wisape.android.R;
+import com.wisape.android.WisapeApplication;
 import com.wisape.android.logic.UserLogic;
 import com.wisape.android.model.UserInfo;
+import com.wisape.android.network.DataSynchronizer;
 
 /**
  * 启动界面
@@ -30,6 +33,10 @@ public class LauncherActivity extends BaseActivity {
 
     @Override
     protected Message onLoadBackgroundRunning(int what, Bundle args) throws AsyncLoaderError {
+        try{
+            DataSynchronizer.getInstance().synchronous(WisapeApplication.getInstance().getApplicationContext());//
+        }catch (Exception e){
+        }
         UserInfo userInfo = UserLogic.instance().loaderUserFromLocal();
         Message message = Message.obtain();
         message.what = what;
