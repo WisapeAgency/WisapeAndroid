@@ -77,7 +77,6 @@ public class StoryReleaseActivity extends BaseActivity {
         activity.startActivity(intent);
     }
 
-
     public static Intent getIntent(Context context) {
         Intent intent = new Intent(context.getApplicationContext(), StoryReleaseActivity.class);
         return intent;
@@ -112,6 +111,7 @@ public class StoryReleaseActivity extends BaseActivity {
                     .centerCrop()
                     .into(storyCoverView);
         }
+        storyLocalImg = storyEntity.storyThumbUri;
         storyUrl = HttpUrlConstancts.SHARE_URL + storyEntity.storyServerId;
     }
 
@@ -127,9 +127,9 @@ public class StoryReleaseActivity extends BaseActivity {
             switch (requestCode) {
                 case PhotoSelectorActivity.REQUEST_CODE_PHOTO:
                     Uri imgUri = extras.getParcelable(PhotoSelectorActivity.EXTRA_IMAGE_URI);
-                    File file = new File(StoryManager.getStoryDirectory(), "/" +storyEntity.storyName + "/thumb.jpg");
+                    File file = new File(StoryManager.getStoryDirectory(), "/" + storyEntity.storyName + "/thumb");
 
-                    CutActivity.launch(this, imgUri, WIDTH, HEIGHT,file.getAbsolutePath(), CutActivity.RQEUST_CODE_CROP_IMG);
+                    CutActivity.launch(this, imgUri, WIDTH, HEIGHT, file.getAbsolutePath(), CutActivity.RQEUST_CODE_CROP_IMG);
                     break;
                 case CutActivity.RQEUST_CODE_CROP_IMG:
                     storyLocalImg = extras.getString(CutActivity.EXTRA_IMAGE_URI);
@@ -199,14 +199,11 @@ public class StoryReleaseActivity extends BaseActivity {
     @SuppressWarnings("unused")
     protected void doShare2Moments() {
         WechatMoments.ShareParams shareParams = new WechatMoments.ShareParams();
-        if (Utils.isEmpty(storyLocalImg)) {
-            shareParams.setImageUrl(storyLocalImg);
-        } else {
-            shareParams.setImagePath(storyLocalImg);
-        }
+        shareParams.setImageUrl(storyLocalImg);
+        shareParams.setImagePath(storyLocalImg);
         shareParams.setUrl(storyUrl);
         shareParams.setTitle(storyNameEdit.getText().toString());
-        shareParams.setText(storyDescEdit.getText().toString() + storyUrl);
+        shareParams.setText(storyUrl);
         shareParams.setShareType(Platform.SHARE_WEBPAGE);
         startShare(WechatMoments.NAME, shareParams);
 
@@ -216,14 +213,12 @@ public class StoryReleaseActivity extends BaseActivity {
     @SuppressWarnings("unused")
     protected void doShare2WeChat() {
         Wechat.ShareParams shareParams = new Wechat.ShareParams();
-        if (Utils.isEmpty(storyLocalImg)) {
-            shareParams.setImageUrl(storyLocalImg);
-        } else {
-            shareParams.setImagePath(storyLocalImg);
-        }
+        shareParams.setImageUrl(storyLocalImg);
+        shareParams.setImagePath(storyLocalImg);
+
         shareParams.setUrl(storyUrl);
         shareParams.setTitle(storyNameEdit.getText().toString());
-        shareParams.setText(storyDescEdit.getText().toString() + storyUrl);
+        shareParams.setText(storyUrl);
         shareParams.setShareType(Platform.SHARE_WEBPAGE);
         startShare(Wechat.NAME, shareParams);
     }
@@ -244,12 +239,10 @@ public class StoryReleaseActivity extends BaseActivity {
         shareParams.setTitle(storyNameEdit.getText().toString());
         shareParams.setTitleUrl(storyUrl);
 
-        if (Utils.isEmpty(storyLocalImg)) {
-            shareParams.setImagePath(storyLocalImg);
-        }else{
-            shareParams.setImageUrl(storyUrl);
-        }
-        shareParams.setText(storyDescEdit.getText().toString() + storyUrl);
+        shareParams.setImagePath(storyLocalImg);
+        shareParams.setImageUrl(storyUrl);
+
+        shareParams.setText(storyUrl);
 
         startShare(LinkedIn.NAME, shareParams);
     }
@@ -258,12 +251,10 @@ public class StoryReleaseActivity extends BaseActivity {
     @SuppressWarnings("unused")
     protected void doShare2Facebook() {
         Facebook.ShareParams shareParams = new Facebook.ShareParams();
-        if (Utils.isEmpty(storyLocalImg)) {
-            shareParams.setImagePath(storyLocalImg);
-        }else{
-            shareParams.setImageUrl(storyUrl);
-        }
-        shareParams.setText(storyDescEdit.getText().toString() + storyUrl);
+        shareParams.setImagePath(storyLocalImg);
+        shareParams.setImageUrl(storyUrl);
+
+        shareParams.setText(storyUrl);
         startShare(Facebook.NAME, shareParams);
     }
 
@@ -272,11 +263,9 @@ public class StoryReleaseActivity extends BaseActivity {
     protected void doShare2Messenger() {
         FacebookMessenger.ShareParams shareParams = new FacebookMessenger.ShareParams();
         shareParams.setAddress(wisapeApplication.getUserInfo().user_email);
-        if (Utils.isEmpty(storyLocalImg)) {
-            shareParams.setImagePath(storyLocalImg);
-        }else{
-            shareParams.setImageUrl(storyUrl);
-        }
+        shareParams.setImagePath(storyLocalImg);
+        shareParams.setImageUrl(storyUrl);
+
         shareParams.setTitle(storyEntity.storyName);
         shareParams.setText(storyUrl);
         startShare(FacebookMessenger.NAME, shareParams);
@@ -287,11 +276,9 @@ public class StoryReleaseActivity extends BaseActivity {
     protected void doShare2GooglePlus() {
         GooglePlus.ShareParams shareParams = new GooglePlus.ShareParams();
         shareParams.setText(storyUrl);
-        if (Utils.isEmpty(storyLocalImg)) {
-            shareParams.setImagePath(storyLocalImg);
-        } else {
-            shareParams.setImageUrl(storyUrl);
-        }
+        shareParams.setImagePath(storyLocalImg);
+        shareParams.setImageUrl(storyUrl);
+
         startShare(GooglePlus.NAME, shareParams);
     }
 
@@ -299,12 +286,9 @@ public class StoryReleaseActivity extends BaseActivity {
     @SuppressWarnings("unused")
     protected void doShare2Twitter() {
         Twitter.ShareParams shareParams = new Twitter.ShareParams();
-        if (Utils.isEmpty(storyLocalImg)) {
-            shareParams.setImagePath(storyLocalImg);
-        } else {
-            shareParams.setImageUrl(storyUrl);
-        }
-        shareParams.setText(storyDescEdit.getText().toString() + storyUrl);
+        shareParams.setImagePath(storyLocalImg);
+        shareParams.setImageUrl(storyUrl);
+        shareParams.setText(storyUrl);
         startShare(Twitter.NAME, shareParams);
     }
 
@@ -314,11 +298,8 @@ public class StoryReleaseActivity extends BaseActivity {
     protected void doShare2Email() {
         Email.ShareParams shareParams = new Email.ShareParams();
         shareParams.setAddress(wisapeApplication.getUserInfo().user_email);
-        if (Utils.isEmpty(storyLocalImg)) {
-            shareParams.setImagePath(storyLocalImg);
-        }else{
-            shareParams.setImageUrl(storyUrl);
-        }
+        shareParams.setImagePath(storyLocalImg);
+        shareParams.setImageUrl(storyUrl);
         shareParams.setTitle(storyEntity.storyName);
         shareParams.setText(storyUrl);
         startShare(Email.NAME, shareParams);
@@ -330,12 +311,9 @@ public class StoryReleaseActivity extends BaseActivity {
 
         ShortMessage.ShareParams shareParams = new ShortMessage.ShareParams();
         shareParams.setTitle(storyNameEdit.getText().toString());
-        shareParams.setText(storyDescEdit.getText().toString());
-        if (Utils.isEmpty(storyLocalImg)) {
-            shareParams.setImagePath(storyLocalImg);
-        } else {
-            shareParams.setImageUrl(storyUrl);
-        }
+        shareParams.setText(storyUrl);
+        shareParams.setImagePath(storyLocalImg);
+        shareParams.setImageUrl(storyUrl);
         startShare(ShortMessage.NAME, shareParams);
     }
 

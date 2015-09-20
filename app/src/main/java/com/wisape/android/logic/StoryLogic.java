@@ -136,7 +136,7 @@ public class StoryLogic {
                 if (1 == size) {
                     entity = entities.get(0);
                     entity.storyServerId = story.id;
-                    entity.createAt = Long.parseLong(Utils.isEmpty(story.createtime)?"0":story.createtime);
+                    entity.createAt = Long.parseLong(Utils.isEmpty(story.createtime) ? "0" : story.createtime);
                     entity.updateAt = System.currentTimeMillis();
                     entity.storyThumbUri = story.small_img;
                     entity.storyUri = story.story_url;
@@ -499,6 +499,8 @@ public class StoryLogic {
                 return storyTemplateInfoList;
             }
             for (StoryTemplateEntity entity : storyTemplateList) {
+                File file = new File(StoryManager.getStoryTemplateDirectory(),entity.name+"/thumb.jpg");
+                entity.thumbLocal = file.getAbsolutePath();
                 storyTemplateInfoList.add(StoryTemplateEntity.convert(entity));
 
             }
@@ -526,7 +528,7 @@ public class StoryLogic {
     }
 
     public StoryTemplateEntity[] listStoryTemplate(Context context, ApiStory.AttrTemplateInfo attrInfo, Object tag) {
-        ApiStory api = ApiStory.instance();
+          ApiStory api = ApiStory.instance();
         StoryTemplateInfo[] storyTemplateInfos = api.listStoryTemplate(context, attrInfo, tag);
         int count = (null == storyTemplateInfos ? 0 : storyTemplateInfos.length);
         if (0 == count) {

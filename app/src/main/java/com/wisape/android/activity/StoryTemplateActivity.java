@@ -386,7 +386,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
                 WisapeApplication.getInstance().setStoryEntity(storyEntity);
                 Intent intent = new Intent();
                 intent.setAction(StoryBroadcastReciver.STORY_ACTION);
-                intent.putExtra(StoryBroadcastReciver.EXTRAS_TYPE,StoryBroadcastReciverListener.ADD_JUKE_STORY);
+                intent.putExtra(StoryBroadcastReciver.EXTRAS_TYPE, StoryBroadcastReciverListener.ADD_JUKE_STORY);
                 sendBroadcast(intent);
                 break;
         }

@@ -16,6 +16,7 @@ import org.apache.cordova.CallbackContext;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.io.File;
 import java.util.HashMap;
 
 /**
@@ -59,10 +60,17 @@ public class PhotoSelectorPlugin extends AbsPlugin {
             switch (requestCode) {
                 case PhotoSelectorActivity.REQUEST_CODE_PHOTO:
                     Uri imgUri = extras.getParcelable(PhotoSelectorActivity.EXTRA_IMAGE_URI);
+
+                    File file = new File(EnvironmentUtils.getAppCacheDirectory(), "head");
+                    if (!file.exists()) {
+                        file.mkdirs();
+                    }
+                    File head = new File(file, "/" + Utils.acquireUTCTimestamp());
                     Intent intent1 = new Intent(getCurrentActivity(), CutActivity.class);
                     intent1.putExtra(CutActivity.EXTRA_IMAGE_URI, imgUri);
-                    intent1.putExtra(CutActivity.EXRA_WIDTH,width);
-                    intent1.putExtra(CutActivity.EXRA_HEIGHT,height);
+                    intent1.putExtra(CutActivity.EXRA_WIDTH, width);
+                    intent1.putExtra(CutActivity.EXRA_HEIGHT, height);
+                    intent1.putExtra(CutActivity.IMG_NAME,head.getAbsoluteFile());
                     startActivityForResult(intent1, CutActivity.RQEUST_CODE_CROP_IMG);
                     break;
                 case CutActivity.RQEUST_CODE_CROP_IMG:
