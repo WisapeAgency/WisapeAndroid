@@ -9,7 +9,7 @@ public interface FileDownloadListener {
     /**
      * 下载与保存成功
      */
-    void onSuccess(String filePath);
+    void onSuccess(byte[] bytes);
 
     /**
      * 下载或者保存失败

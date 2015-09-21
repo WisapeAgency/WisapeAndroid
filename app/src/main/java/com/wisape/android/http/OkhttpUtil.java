@@ -124,56 +124,25 @@ public class OkhttpUtil {
      * 文件下载
      *
      * @param url      文件在服务器端的地址
-     * @param filePath 下载保存到本地的地址
      */
-    public static void downLoadFile(String url, final String filePath, final FileDownloadListener listener) {
-//        Request request = new Request.Builder().url(url)
-//                .addHeader("Content-Type", "application/octet-stream")
-//                .addHeader("Accept-Encoding", "identity")
-//                .build();
-//        mOkHttpClient.newCall(request).enqueue(new Callback() {
-//            @Override
-//            public void onFailure(Request request, IOException e) {
-//                listener.onError(e.getMessage());
-//            }
-//
-//            @Override
-//            public void onResponse(Response response) throws IOException {
-//                if (saveByteToFile(response.body().bytes(), filePath)) {
-//                    listener.onSuccess(filePath + ".zip");
-//                } else {
-//                    listener.onError("save error");
-//                }
-//            }
-//        });
-    }
-
-
-    /**
-     * 将下载的文件保存到本地
-     *
-     * @param bytes    服务端获取的文件数组
-     * @param filePath 保存到本地的地址
-     */
-    private static boolean saveByteToFile(byte[] bytes, String filePath) {
-        FileOutputStream fileOuputStream = null;
-        try {
-            fileOuputStream = new FileOutputStream(filePath);
-            fileOuputStream.write(bytes);
-            fileOuputStream.flush();
-            fileOuputStream.close();
-            return true;
-        } catch (Exception e) {
-            Log.e(TAG, "保存文件到本地失败:" + e.getMessage());
-            return false;
-        } finally {
-            try {
-                if (null != fileOuputStream) {
-                    fileOuputStream.close();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+    public static void downLoadFile(final String url, final FileDownloadListener listener) {
+        final Request request = new Request.Builder().url(url)
+                .addHeader("Content-Type", "application/octet-stream")
+                .addHeader("Accept-Encoding", "identity")
+                .build();
+        mOkHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+                listener.onError(url + e.getMessage());
             }
-        }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                listener.onSuccess(response.body().bytes());
+            }
+        });
     }
+
+
+
 }

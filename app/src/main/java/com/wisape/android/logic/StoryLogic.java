@@ -99,7 +99,7 @@ public class StoryLogic {
                 throw new IllegalStateException(e);
             }
 
-            if (new File(attr.attrStoryThumb.toString()).exists()){
+            if (new File(attr.attrStoryThumb.toString()).exists()) {
                 String thumb = Utils.base64ForImage(attr.attrStoryThumb);
                 attr.storyThumb = thumb;
             }
@@ -130,7 +130,7 @@ public class StoryLogic {
             if (STORY_STATUS_RELEASE.equals(storyStatus)) {
                 QueryBuilder<StoryEntity, Long> qb = storyDao.queryBuilder();
                 Where<StoryEntity, Long> where = qb.where();
-                where.eq("id", entity.id).or().eq("storyServerId",entity.storyServerId);
+                where.eq("id", entity.id).or().eq("storyServerId", entity.storyServerId);
                 List<StoryEntity> entities = where.query();
                 int size = (null == entities ? 0 : entities.size());
                 if (1 == size) {
@@ -499,9 +499,16 @@ public class StoryLogic {
                 return storyTemplateInfoList;
             }
             for (StoryTemplateEntity entity : storyTemplateList) {
-                File file = new File(StoryManager.getStoryTemplateDirectory(),entity.name+"/thumb.jpg");
+                File file = new File(StoryManager.getStoryTemplateDirectory(), entity.name + "/thumb.jpg");
                 entity.thumbLocal = file.getAbsolutePath();
-                storyTemplateInfoList.add(StoryTemplateEntity.convert(entity));
+                File zipFile = new File(StoryManager.getStoryTemplateDirectory(),entity.name + ".zip");
+                if(zipFile.exists()){
+                    entity.recStatus = "1";
+                }else{
+                    entity.recStatus = "0";
+                }
+                StoryTemplateInfo storyTemplateInfo = StoryTemplateEntity.convert(entity);
+                storyTemplateInfoList.add(storyTemplateInfo);
 
             }
         } catch (SQLException e) {
@@ -528,7 +535,7 @@ public class StoryLogic {
     }
 
     public StoryTemplateEntity[] listStoryTemplate(Context context, ApiStory.AttrTemplateInfo attrInfo, Object tag) {
-          ApiStory api = ApiStory.instance();
+        ApiStory api = ApiStory.instance();
         StoryTemplateInfo[] storyTemplateInfos = api.listStoryTemplate(context, attrInfo, tag);
         int count = (null == storyTemplateInfos ? 0 : storyTemplateInfos.length);
         if (0 == count) {
@@ -689,11 +696,6 @@ public class StoryLogic {
         /*服务器端story*/
         List<StoryInfo> serverStoryList = getUserStoryFromServer(access_token);
         if (null != serverStoryList) {
-
-            /*下载服务器端story的压缩包解压*/
-//            for (StoryInfo storyInfo : serverStoryList) {
-//                downLoadStory(storyInfo);
-//            }
             storyEntitYList.addAll(serverStoryToLocalStory(serverStoryList));
         }
 
@@ -779,9 +781,14 @@ public class StoryLogic {
         final File file = new File(StoryManager.getStoryDirectory(), storyInfo.story_name + ".zip");
         if (!file.exists()) {
             Log.e(TAG, "开始下载story:" + storyInfo.story_name);
-            OkhttpUtil.downLoadFile(storyInfo.story_url, file.getPath(), new FileDownloadListener() {
+            OkhttpUtil.downLoadFile(storyInfo.story_url, new FileDownloadListener() {
                 @Override
-                public void onSuccess(String filePath) {
+                public void onSuccess(byte[] bytes) {
+                    if (file.exists()) {
+                        file.delete();
+                    }
+                    FileUtils.saveByteToFile(bytes, file.getAbsolutePath());
+
                     try {
                         ZipUtils.unzip(Uri.fromFile(file),
                                 new File(StoryManager.getStoryDirectory(), storyInfo.story_name));
@@ -881,10 +888,11 @@ public class StoryLogic {
 
     /**
      * 发布story更新状态
+     *
      * @param context
      * @param storyEntity
      */
-    public void publish(Context context,StoryEntity storyEntity){
+    public void publish(Context context, StoryEntity storyEntity) {
 //        String status = storyEntity.status;
 //        DatabaseHelper databaseHelper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
 //        Dao<StoryEntity, Integer> dao;
@@ -907,12 +915,13 @@ public class StoryLogic {
 
     /**
      * 更新story设置
+     *
      * @param storyId
      * @param storyName
      * @param filePath
      * @param desc
      */
-    public Message updateStorySetting(long storyId,String storyName,String filePath,String desc){
+    public Message updateStorySetting(long storyId, String storyName, String filePath, String desc) {
         String iconBase64 = "";
         if (null != filePath && !"".equals(filePath)) {
             iconBase64 = FileUtils.base64ForImage(filePath);
@@ -921,13 +930,13 @@ public class StoryLogic {
                 .add(ATTR_STORY_NAME, storyName)
                 .add(ATTR_STORY_DESC, desc)
                 .add(ATTR_STORY_ID, storyId + "")
-                .add(ATTR_STORY_IMG,iconBase64)
+                .add(ATTR_STORY_IMG, iconBase64)
                 .build();
         Message message = Message.obtain();
 
         try {
             StoryInfo storyInfo = OkhttpUtil.executePost(HttpUrlConstancts.STORY_SETTING, formBody, StoryInfo.class);
-            message.arg1 =  HttpUrlConstancts.STATUS_SUCCESS;
+            message.arg1 = HttpUrlConstancts.STATUS_SUCCESS;
             message.obj = storyInfo;
         } catch (Exception e) {
             message.arg1 = HttpUrlConstancts.STATUS_EXCEPTION;
