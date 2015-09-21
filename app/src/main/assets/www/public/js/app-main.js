@@ -51,14 +51,6 @@ WisapeEditer = {
                     console.info("getContent");
                     console.info(JSON.stringify(data));
                     if (data == null) {//新建story逻辑
-                        WisapeEditer.GetNativeData("read", [localTplPath], function (data) {
-                            console.info("init page data");
-                            console.info("name: " + _me.data("name"));
-                            console.info(data);
-                            WisapeEditer.currentTplData = data;
-                            WisapeEditer.storyData.push(WisapeEditer.currentTplData);
-                            WisapeEditer.LoadStageList(WisapeEditer.storyData, null);
-                        });
 
                         if (!_me.hasClass("tpl-exist")) {
                             console.info("down");
@@ -72,7 +64,7 @@ WisapeEditer = {
                                     console.info("read data:");
                                     console.info(data);
                                     WisapeEditer.currentTplData = data;
-                                    pageScroll.find("ul").html('<li class="active"><span class="count">' + WisapeEditer.selectedStagetIndex + '/' + WisapeEditer.storyData.length + '</span>' + data + "</li>");
+                                    pageScroll.find("ul").html('<li class="active"><span class="count">1/1</span>' + data + "</li>");
                                     WisapeEditer.storyData.push(data);
 
                                     console.info("WisapeEditer.storyData:");
@@ -81,11 +73,11 @@ WisapeEditer = {
                             });
                         } else {
                             console.info("read:");
-                            WisapeEditer.GetNativeData("read", ["/mnt/sdcard/wisape/com.wisape.android/data/template/" + _me.data("name") + "/stage.html"], function (data) {
+                            WisapeEditer.GetNativeData("read", [localTplPath], function (data) {
                                 console.info("read data:");
                                 console.info(data);
                                 WisapeEditer.currentTplData = data;
-                                pageScroll.find("ul").html('<li class="active"><span class="count">' + WisapeEditer.selectedStagetIndex + '/' + WisapeEditer.storyData.length + '</span>' + data + "</li>");
+                                pageScroll.find("ul").html('<li class="active"><span class="count">1/1</span>' + data + "</li>");
                                 WisapeEditer.storyData.push(data);
 
                                 console.info("WisapeEditer.storyData:");
