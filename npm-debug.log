@@ -1,0 +1,53 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'node', '/usr/local/bin/npm', 'install', 'weinre' ]
+2 info using npm@2.11.3
+3 info using node@v0.12.7
+4 verbose install initial load of /Users/apple/Desktop/workspace/Alex/WisapeAndroid/package.json
+5 verbose readDependencies loading dependencies from /Users/apple/Desktop/workspace/Alex/WisapeAndroid/package.json
+6 silly cache add args [ 'weinre', null ]
+7 verbose cache add spec weinre
+8 silly cache add parsed spec { raw: 'weinre',
+8 silly cache add   scope: null,
+8 silly cache add   name: 'weinre',
+8 silly cache add   rawSpec: '',
+8 silly cache add   spec: '*',
+8 silly cache add   type: 'range' }
+9 silly addNamed weinre@*
+10 verbose addNamed "*" is a valid semver range for weinre
+11 silly addNameRange { name: 'weinre', range: '*', hasData: false }
+12 silly mapToRegistry name weinre
+13 silly mapToRegistry using default registry
+14 silly mapToRegistry registry https://registry.npmjs.org/
+15 silly mapToRegistry uri https://registry.npmjs.org/weinre
+16 verbose addNameRange registry:https://registry.npmjs.org/weinre not in flight; fetching
+17 verbose request uri https://registry.npmjs.org/weinre
+18 verbose request no auth needed
+19 info attempt registry request try #1 at 14:55:36
+20 verbose request id 52d489f65878f6ac
+21 http request GET https://registry.npmjs.org/weinre
+22 info retry will retry, error on last attempt: Error: socket hang up
+23 info attempt registry request try #2 at 14:56:49
+24 http request GET https://registry.npmjs.org/weinre
+25 info retry will retry, error on last attempt: Error: socket hang up
+26 info attempt registry request try #3 at 14:58:54
+27 http request GET https://registry.npmjs.org/weinre
+28 verbose stack Error: socket hang up
+28 verbose stack     at createHangUpError (_http_client.js:215:15)
+28 verbose stack     at TLSSocket.socketOnEnd (_http_client.js:300:23)
+28 verbose stack     at TLSSocket.emit (events.js:129:20)
+28 verbose stack     at _stream_readable.js:908:16
+28 verbose stack     at process._tickCallback (node.js:355:11)
+29 verbose cwd /Users/apple/Desktop/workspace/Alex/WisapeAndroid
+30 error Darwin 14.5.0
+31 error argv "node" "/usr/local/bin/npm" "install" "weinre"
+32 error node v0.12.7
+33 error npm  v2.11.3
+34 error code ECONNRESET
+35 error network socket hang up
+35 error network This is most likely not a problem with npm itself
+35 error network and is related to network connectivity.
+35 error network In most cases you are behind a proxy or have bad network settings.
+35 error network
+35 error network If you are behind a proxy, please make sure that the
+35 error network 'proxy' config is set properly.  See: 'npm help config'
+36 verbose exit [ 1, true ]

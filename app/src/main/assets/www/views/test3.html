@@ -12,7 +12,7 @@
     var catScroll = $("#cat-scroll");
     var source = ''
             +    '{{each list as value i}}'
-            +        '{{if value.title}}1 {{/if}}'
+            +        '{{if value.title == 0}}1 111111{{/if}}'
             +    '{{/each}}'
             + '</ul>';
 
@@ -20,7 +20,7 @@
 
     var render = template.compile(source);
     var html = render({
-        list: [{title : 0,content:"http://106.75.196.252/uploads/fonts/preview_image/Bookman Old Style.png"},{title:1,content:"content2"}]
+        list: [{title : "0",content:"http://106.75.196.252/uploads/fonts/preview_image/Bookman Old Style.png"},{title:"0",content:"content2"}]
     });
 
     document.getElementById('test').innerHTML = html;
