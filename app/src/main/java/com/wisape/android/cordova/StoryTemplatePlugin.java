@@ -348,7 +348,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
 
     private boolean saveStory(File myStory, String html, com.alibaba.fastjson.JSONArray paths) {
         for (int i = 0; i < paths.size(); i++){
-            String path = paths.getString(i).replace("file://", "");
+            String path = paths.getString(i);
             File imagePath = new File(path).getParentFile();
             html = html.replace(imagePath.getAbsolutePath(), myStory.getAbsolutePath());
         }
@@ -373,7 +373,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
         }
         for (int i = 0; i < paths.size(); i++) {
             try {
-                String path = paths.getString(i).replace("file://", "");
+                String path = paths.getString(i);
                 File imagePath = new File(path).getParentFile();
                 String newPath = path.replace(imagePath.getAbsolutePath(), myStory.getAbsolutePath());
                 File file = new File(path);
