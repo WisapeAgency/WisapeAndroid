@@ -349,8 +349,15 @@ public class StoryTemplatePlugin extends AbsPlugin {
     private boolean saveStory(File myStory, String html, com.alibaba.fastjson.JSONArray paths) {
         for (int i = 0; i < paths.size(); i++){
             String path = paths.getString(i);
+            System.out.println("saveStory:" + path);
             File imagePath = new File(path).getParentFile();
-            html = html.replace(imagePath.getAbsolutePath(), myStory.getAbsolutePath());
+            if (imagePath.getParentFile().getName().equals(StoryManager.TEMPLATE_DIRECTORY)){
+                String templateName = imagePath.getName();
+                File newImagePath = new File(myStory.getAbsolutePath(),templateName);
+                html = html.replace(imagePath.getAbsolutePath(), newImagePath.getAbsolutePath());
+            }else{
+                html = html.replace(imagePath.getAbsolutePath(), myStory.getAbsolutePath());
+            }
         }
         File storyHTML = new File(myStory, FILE_NAME_STORY);
         PrintWriter writer = null;
@@ -375,7 +382,14 @@ public class StoryTemplatePlugin extends AbsPlugin {
             try {
                 String path = paths.getString(i);
                 File imagePath = new File(path).getParentFile();
-                String newPath = path.replace(imagePath.getAbsolutePath(), myStory.getAbsolutePath());
+                String newPath;
+                if (imagePath.getParentFile().getName().equals(StoryManager.TEMPLATE_DIRECTORY)){
+                    String templateName = imagePath.getName();
+                    File newImagePath = new File(myStory.getAbsolutePath(),templateName);
+                    newPath = path.replace(imagePath.getAbsolutePath(), newImagePath.getAbsolutePath());
+                }else{
+                    newPath = path.replace(imagePath.getAbsolutePath(), myStory.getAbsolutePath());
+                }
                 File file = new File(path);
                 File newPathFile = new File(newPath);
                 File imgDirectory = newPathFile.getParentFile();
