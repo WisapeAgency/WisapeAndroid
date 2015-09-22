@@ -526,6 +526,7 @@ public class ApiStory extends ApiBase{
         public static final String ATTR_STORY = "zip_file";
         public static final String ATTR_MUSIC = "bg_music";
         public static final String ATTR_PREFIX = "img_prefix";
+        public static final String ATTR_STORY_ID = "sid";
 
         public long userId;
         public String storyName;
@@ -533,6 +534,7 @@ public class ApiStory extends ApiBase{
         public String storyStatus;
         public String bgMusic;
         public String imgPrefix;
+        public long sid;
 
         /**
          * Base64
@@ -551,6 +553,7 @@ public class ApiStory extends ApiBase{
             params.put(ATTR_STORY_THUMB, storyThumb);
             params.put(ATTR_MUSIC,bgMusic);
             params.put(ATTR_PREFIX,imgPrefix);
+            params.put(ATTR_STORY_ID,Long.toString(sid));
         }
 
         @Override

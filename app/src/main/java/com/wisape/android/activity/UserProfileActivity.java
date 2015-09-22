@@ -183,7 +183,7 @@ public class UserProfileActivity extends BaseActivity {
                     if (!file.exists()) {
                         file.mkdirs();
                     }
-                    File head = new File(file, "/" + Utils.acquireUTCTimestamp());
+                    File head = new File(file, Utils.acquireUTCTimestamp());
                     CutActivity.launch(this, imgUri,WIDTH,HEIGHT,head.getAbsolutePath(),CutActivity.RQEUST_CODE_CROP_IMG);
                     break;
                 case CutActivity.RQEUST_CODE_CROP_IMG:

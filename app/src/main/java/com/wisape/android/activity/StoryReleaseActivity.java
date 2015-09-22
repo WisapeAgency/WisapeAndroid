@@ -20,9 +20,7 @@ import com.wisape.android.database.StoryEntity;
 import com.wisape.android.http.HttpUrlConstancts;
 import com.wisape.android.logic.StoryLogic;
 import com.wisape.android.model.StoryInfo;
-import com.wisape.android.model.StorySettingsInfo;
 import com.wisape.android.util.Utils;
-import com.wisape.android.view.CircleTransform;
 import com.wisape.android.widget.QrDialogFragment;
 
 import java.io.File;
@@ -105,8 +103,7 @@ public class StoryReleaseActivity extends BaseActivity {
         storyDescEdit.setText(storyEntity.storyDesc);
         String uri = storyEntity.storyThumbUri;
         if (!Utils.isEmpty(uri)) {
-            Uri cover = Uri.parse(storyEntity.storyThumbUri);
-            Picasso.with(this).load(cover)
+            Picasso.with(this).load(uri)
                     .resize(80, 80)
                     .centerCrop()
                     .into(storyCoverView);
@@ -140,6 +137,12 @@ public class StoryReleaseActivity extends BaseActivity {
                                 .error(R.mipmap.icon_about_logo)
                                 .centerCrop()
                                 .into(storyCoverView);
+                        Bundle args = new Bundle();
+                        args.putString(EXTRAS_STORY_NAME, storyNameEdit.getText().toString());
+                        args.putString(EXTRAS_STORY_DESC, storyDescEdit.getText().toString());
+                        args.putLong(EXTRAS_STROY_ID, storyEntity.storyServerId);
+                        args.putString(EXTRAS_STROY_IMG, storyLocalImg);
+                        startLoad(LOADER_UPDATE_STORYSETTING, args);
                     }
                     break;
             }
@@ -159,14 +162,12 @@ public class StoryReleaseActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        if (isStorySettingChange()) {
-            Bundle args = new Bundle();
-            args.putString(EXTRAS_STORY_NAME, storyNameEdit.getText().toString());
-            args.putString(EXTRAS_STORY_DESC, storyDescEdit.getText().toString());
-            args.putLong(EXTRAS_STROY_ID, storyEntity.storyServerId);
-            args.putString(EXTRAS_STROY_IMG, storyLocalImg);
-            startLoad(LOADER_UPDATE_STORYSETTING, args);
-        }
+        Bundle args = new Bundle();
+        args.putString(EXTRAS_STORY_NAME, storyNameEdit.getText().toString());
+        args.putString(EXTRAS_STORY_DESC, storyDescEdit.getText().toString());
+        args.putLong(EXTRAS_STROY_ID, storyEntity.storyServerId);
+        args.putString(EXTRAS_STROY_IMG, storyLocalImg);
+        startLoad(LOADER_UPDATE_STORYSETTING, args);
         MainActivity.launch(this);
         super.onBackPressed();
     }
@@ -182,10 +183,13 @@ public class StoryReleaseActivity extends BaseActivity {
         Message msg = StoryLogic.instance().updateStorySetting(args.getLong(EXTRAS_STROY_ID),
                 args.getString(EXTRAS_STORY_NAME), args.getString(EXTRAS_STROY_IMG),
                 args.getString(EXTRAS_STORY_DESC));
+
         StoryInfo storyInfo = (StoryInfo) msg.obj;
+
         storyEntity.storyName = storyInfo.story_name;
         storyEntity.storyDesc = storyInfo.description;
         storyEntity.storyThumbUri = storyInfo.small_img;
+
 
         Intent intent = new Intent();
         intent.setAction(StoryBroadcastReciver.STORY_ACTION);
@@ -199,8 +203,7 @@ public class StoryReleaseActivity extends BaseActivity {
     @SuppressWarnings("unused")
     protected void doShare2Moments() {
         WechatMoments.ShareParams shareParams = new WechatMoments.ShareParams();
-        shareParams.setImageUrl(storyLocalImg);
-        shareParams.setImagePath(storyLocalImg);
+        shareParams.setImageUrl(storyEntity.storyThumbUri);
         shareParams.setUrl(storyUrl);
         shareParams.setTitle(storyNameEdit.getText().toString());
         shareParams.setText(storyUrl);
@@ -213,9 +216,7 @@ public class StoryReleaseActivity extends BaseActivity {
     @SuppressWarnings("unused")
     protected void doShare2WeChat() {
         Wechat.ShareParams shareParams = new Wechat.ShareParams();
-        shareParams.setImageUrl(storyLocalImg);
-        shareParams.setImagePath(storyLocalImg);
-
+        shareParams.setImageUrl(storyEntity.storyThumbUri);
         shareParams.setUrl(storyUrl);
         shareParams.setTitle(storyNameEdit.getText().toString());
         shareParams.setText(storyUrl);
@@ -239,8 +240,7 @@ public class StoryReleaseActivity extends BaseActivity {
         shareParams.setTitle(storyNameEdit.getText().toString());
         shareParams.setTitleUrl(storyUrl);
 
-        shareParams.setImagePath(storyLocalImg);
-        shareParams.setImageUrl(storyUrl);
+        shareParams.setImageUrl(storyEntity.storyThumbUri);
 
         shareParams.setText(storyUrl);
 
@@ -251,8 +251,7 @@ public class StoryReleaseActivity extends BaseActivity {
     @SuppressWarnings("unused")
     protected void doShare2Facebook() {
         Facebook.ShareParams shareParams = new Facebook.ShareParams();
-        shareParams.setImagePath(storyLocalImg);
-        shareParams.setImageUrl(storyUrl);
+        shareParams.setImageUrl(storyEntity.storyThumbUri);
 
         shareParams.setText(storyUrl);
         startShare(Facebook.NAME, shareParams);
@@ -263,8 +262,7 @@ public class StoryReleaseActivity extends BaseActivity {
     protected void doShare2Messenger() {
         FacebookMessenger.ShareParams shareParams = new FacebookMessenger.ShareParams();
         shareParams.setAddress(wisapeApplication.getUserInfo().user_email);
-        shareParams.setImagePath(storyLocalImg);
-        shareParams.setImageUrl(storyUrl);
+        shareParams.setImageUrl(storyEntity.storyThumbUri);
 
         shareParams.setTitle(storyEntity.storyName);
         shareParams.setText(storyUrl);
@@ -276,8 +274,7 @@ public class StoryReleaseActivity extends BaseActivity {
     protected void doShare2GooglePlus() {
         GooglePlus.ShareParams shareParams = new GooglePlus.ShareParams();
         shareParams.setText(storyUrl);
-        shareParams.setImagePath(storyLocalImg);
-        shareParams.setImageUrl(storyUrl);
+        shareParams.setImageUrl(storyEntity.storyThumbUri);
 
         startShare(GooglePlus.NAME, shareParams);
     }
@@ -286,8 +283,7 @@ public class StoryReleaseActivity extends BaseActivity {
     @SuppressWarnings("unused")
     protected void doShare2Twitter() {
         Twitter.ShareParams shareParams = new Twitter.ShareParams();
-        shareParams.setImagePath(storyLocalImg);
-        shareParams.setImageUrl(storyUrl);
+        shareParams.setImageUrl(storyEntity.storyThumbUri);
         shareParams.setText(storyUrl);
         startShare(Twitter.NAME, shareParams);
     }
@@ -298,8 +294,7 @@ public class StoryReleaseActivity extends BaseActivity {
     protected void doShare2Email() {
         Email.ShareParams shareParams = new Email.ShareParams();
         shareParams.setAddress(wisapeApplication.getUserInfo().user_email);
-        shareParams.setImagePath(storyLocalImg);
-        shareParams.setImageUrl(storyUrl);
+        shareParams.setImageUrl(storyEntity.storyThumbUri);
         shareParams.setTitle(storyEntity.storyName);
         shareParams.setText(storyUrl);
         startShare(Email.NAME, shareParams);
@@ -312,8 +307,7 @@ public class StoryReleaseActivity extends BaseActivity {
         ShortMessage.ShareParams shareParams = new ShortMessage.ShareParams();
         shareParams.setTitle(storyNameEdit.getText().toString());
         shareParams.setText(storyUrl);
-        shareParams.setImagePath(storyLocalImg);
-        shareParams.setImageUrl(storyUrl);
+        shareParams.setImageUrl(storyEntity.storyThumbUri);
         startShare(ShortMessage.NAME, shareParams);
     }
 

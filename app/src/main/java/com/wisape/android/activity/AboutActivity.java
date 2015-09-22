@@ -13,6 +13,7 @@ import com.wisape.android.R;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 
 /**
  * about界面
@@ -28,6 +29,22 @@ public class AboutActivity extends BaseActivity {
         Intent intent = new Intent(fragment.getActivity(), AboutActivity.class);
         fragment.startActivity(intent);
     }
+
+    @OnClick(R.id.text_privacy)
+    public void onivacyClick(){
+        AboutWebViewActivity.launch(this, "http://106.75.196.252/custom/privacy_policy.html", getResources().getString(R.string.about_privacy_policy));
+    }
+
+    @OnClick(R.id.text_terms)
+    public void onTermsClick(){
+        AboutWebViewActivity.launch(this,"http://106.75.196.252/custom/term_service.html",getResources().getString(R.string.about_terms_of_service));
+    }
+
+    @OnClick(R.id.text_rate)
+    public void onRateClick(){
+        AboutWebViewActivity.launch(this,"http://106.75.196.252/custom/term_service.html",getResources().getString(R.string.about_rate));
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +70,5 @@ public class AboutActivity extends BaseActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.about_menu, menu);
         return true;
-
     }
 }

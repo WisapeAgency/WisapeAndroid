@@ -11,6 +11,8 @@ import android.provider.MediaStore;
 import android.util.DisplayMetrics;
 
 import com.wisape.android.R;
+import com.wisape.android.WisapeApplication;
+import com.wisape.android.common.StoryManager;
 import com.wisape.android.http.HttpUrlConstancts;
 import com.wisape.android.util.EnvironmentUtils;
 import com.wisape.android.util.Utils;
@@ -59,13 +61,16 @@ public class CutActivity extends BaseActivity {
         Intent intent = getIntent();
         int clipWidth = getIntent().getExtras().getInt(EXRA_WIDTH);
         int clipHeight = getIntent().getExtras().getInt(EXRA_HEIGHT);
-        File file = new File(EnvironmentUtils.getAppCacheDirectory(), "head");
-        if (!file.exists()) {
-            file.mkdirs();
-        }
-        File head = new File(file, "/" + Utils.acquireUTCTimestamp());
+
+
         thembImg = getIntent().getStringExtra(IMG_NAME);
         if(Utils.isEmpty(thembImg)){
+            File file = new File(StoryManager.getStoryDirectory(), WisapeApplication.getInstance()
+                    .getStoryEntity().storyLocal+"/img");
+            if (!file.exists()) {
+                file.mkdirs();
+            }
+            File head = new File(file,Utils.acquireUTCTimestamp());
             thembImg = head.getAbsolutePath();
         }
 
@@ -106,11 +111,6 @@ public class CutActivity extends BaseActivity {
     protected Message onLoadBackgroundRunning(int what, Bundle args) throws AsyncLoaderError {
         Message message = Message.obtain();
         Bitmap bitmap = args.getParcelable(ARGS_HADER);
-
-        File file = new File(thembImg);
-        if(!file.exists()){
-            file.mkdirs();
-        }
         FileOutputStream fileOutputStream = null;
         File headerFile = new File(thembImg + ".jpg");
         if (headerFile.exists()) {

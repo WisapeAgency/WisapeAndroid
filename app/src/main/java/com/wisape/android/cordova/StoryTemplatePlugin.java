@@ -24,6 +24,7 @@ import com.wisape.android.logic.StoryLogic;
 import com.wisape.android.model.StoryFontInfo;
 import com.wisape.android.model.StoryTemplateInfo;
 import com.wisape.android.network.Requester;
+import com.wisape.android.util.Utils;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.cordova.CallbackContext;
@@ -260,7 +261,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 WisapeApplication app = WisapeApplication.getInstance();
                 StoryEntity story = app.getStoryEntity();
 //                logic.saveStoryLocal(context,story);
-                File myStory = new File(story.storyLocal);
+                File myStory = new File(StoryManager.getStoryDirectory(), story.storyLocal);
                 if (!myStory.exists()) {
                     myStory.mkdirs();
                 }
@@ -278,7 +279,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 WisapeApplication app = WisapeApplication.getInstance();
                 StoryEntity story = app.getStoryEntity();
 //                logic.saveStoryLocal(context,story);
-                File myStory = new File(story.storyLocal);
+                File myStory = new File(StoryManager.getStoryDirectory(), story.storyLocal);
                 if (!myStory.exists()) {
                     myStory.mkdirs();
                 }
@@ -295,14 +296,12 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 break;
             }
             case WHAT_PUBLISH: {
-//                int storyId = args.getInt(EXTRA_STORY_ID, 0);
                 String html = args.getString(EXTRA_STORY_HTML);
                 String path = args.getString(EXTRA_FILE_PATH);
                 com.alibaba.fastjson.JSONArray paths = JSON.parseArray(path);
                 WisapeApplication app = WisapeApplication.getInstance();
                 StoryEntity story = app.getStoryEntity();
-//                logic.saveStoryLocal(context,story);
-                File myStory = new File(story.storyLocal);
+                File myStory = new File(StoryManager.getStoryDirectory(), story.storyLocal);
                 if (!myStory.exists()) {
                     myStory.mkdirs();
                 }
@@ -310,18 +309,18 @@ public class StoryTemplatePlugin extends AbsPlugin {
                     callbackContext.error(-1);
                     return null;
                 }
-                if ("".equals(story.storyThumbUri)
-                        && !new File(story.storyThumbUri).exists()) {
-                    copyAssetsFile("www/public/img/photo_cover.png",
-                            new File(story.storyLocal, "thumb.png").getAbsolutePath());
+                if (Utils.isEmpty(story.storyThumbUri) || !new File(story.storyThumbUri).exists()) {
+                    com.wisape.android.util.FileUtils.copyAssetsFile(getCurrentActivity(), "www/public/img/photo_cover.png",
+                            new File(StoryManager.getStoryDirectory(), story.storyLocal + "/thumb.jpg").getAbsolutePath());
                 }
                 ApiStory.AttrStoryInfo storyAttr = new ApiStory.AttrStoryInfo();
-                Uri thumb = Uri.fromFile(new File(story.storyLocal, "thumb.png"));
+
+                Uri thumb = Uri.parse((new File(StoryManager.getStoryDirectory(), story.storyLocal + "/thumb.jpg")).getAbsolutePath());
                 storyAttr.attrStoryThumb = thumb;
                 storyAttr.storyStatus = ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE;
-                storyAttr.story = Uri.fromFile(new File(story.storyLocal));
+                storyAttr.story = Uri.fromFile(new File(StoryManager.getStoryDirectory(), story.storyLocal));
                 storyAttr.storyName = story.storyName;
-                if ("null".equals(story.storyMusicName)) {
+                if (Utils.isEmpty(story.storyMusicName)) {
                     storyAttr.bgMusic = "";
                 } else {
                     storyAttr.bgMusic = story.storyMusicName;
@@ -330,9 +329,9 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 storyAttr.userId = WisapeApplication.getInstance().getUserInfo().user_id;
                 storyAttr.storyStatus = ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE;
                 storyAttr.imgPrefix = StoryManager.getStoryDirectory().getAbsolutePath();
+                storyAttr.sid = story.storyServerId;
 
-                StoryEntity storyEntity = logic.update(cordova.getActivity().getApplicationContext(), storyAttr, "release");
-                WisapeApplication.getInstance().setStoryEntity(storyEntity);
+                logic.update(cordova.getActivity().getApplicationContext(), storyAttr, "release");
 
                 Intent intent = new Intent();
                 intent.setAction(StoryBroadcastReciver.STORY_ACTION);
@@ -367,8 +366,8 @@ public class StoryTemplatePlugin extends AbsPlugin {
         if (!storyImg.exists()) {
             storyImg.mkdirs();
         }
-        try {
-            for (int i = 0; i < paths.size(); i++) {
+        for (int i = 0; i < paths.size(); i++) {
+            try {
                 String path = paths.getString(i).replace("file://", "");
                 String newPath = path.replace(templatePath.getAbsolutePath(), myStory.getAbsolutePath());
                 File file = new File(path);
@@ -378,9 +377,9 @@ public class StoryTemplatePlugin extends AbsPlugin {
                     imgDirectory.mkdirs();
                 }
                 FileUtils.copyFile(file, new File(imgDirectory, file.getName()));
+            } catch (IOException e) {
+                Log.e("saveStory", "", e);
             }
-        } catch (IOException e) {
-            Log.e("saveStory", "", e);
         }
         return true;
     }

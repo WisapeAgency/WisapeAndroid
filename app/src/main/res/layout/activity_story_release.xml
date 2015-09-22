@@ -88,6 +88,8 @@
             <android.support.v7.widget.AppCompatTextView
                 style="@style/StoryRelease.ItemStyle"
                 android:id="@+id/story_release_fb"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:drawableTop="@drawable/release_fb_selector"
                 android:text="@string/title_facebook"
                 />
@@ -95,6 +97,8 @@
             <android.support.v7.widget.AppCompatTextView
                 style="@style/StoryRelease.ItemStyle"
                 android:id="@+id/story_release_messenger"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:drawableTop="@drawable/release_messenger_selector"
                 android:text="@string/title_messenger"
                 />
@@ -102,6 +106,8 @@
             <android.support.v7.widget.AppCompatTextView
                 style="@style/StoryRelease.ItemStyle"
                 android:id="@+id/story_release_twitter"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:drawableTop="@drawable/release_t_selector"
                 android:text="@string/title_twitter"
                 />
@@ -109,6 +115,8 @@
             <android.support.v7.widget.AppCompatTextView
                 style="@style/StoryRelease.ItemStyle"
                 android:id="@+id/story_release_linkedin"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:drawableTop="@drawable/release_linkedin_selector"
                 android:text="@string/title_linkedin"
                 />
@@ -123,6 +131,8 @@
 
             <android.support.v7.widget.AppCompatTextView
                 style="@style/StoryRelease.ItemStyle"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:id="@+id/story_release_wechat"
                 android:drawableTop="@drawable/release_wechat_selector"
                 android:text="@string/title_wechat"
@@ -130,6 +140,8 @@
 
             <android.support.v7.widget.AppCompatTextView
                 style="@style/StoryRelease.ItemStyle"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:id="@+id/story_release_moments"
                 android:drawableTop="@drawable/release_moments_selector"
                 android:text="@string/title_moments"
@@ -137,6 +149,8 @@
 
             <android.support.v7.widget.AppCompatTextView
                 style="@style/StoryRelease.ItemStyle"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:id="@+id/story_release_google_plus"
                 android:drawableTop="@drawable/release_g_selector"
                 android:text="@string/title_google_plus"
@@ -145,6 +159,8 @@
             <android.support.v7.widget.AppCompatTextView
                 style="@style/StoryRelease.ItemStyle"
                 android:id="@+id/story_release_link"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:drawableTop="@drawable/release_link_selector"
                 android:text="@string/title_link"
                 />
@@ -160,6 +176,8 @@
             <android.support.v7.widget.AppCompatTextView
                 style="@style/StoryRelease.ItemStyle"
                 android:id="@+id/story_release_qr"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:drawableTop="@drawable/release_qrcode_selector"
                 android:text="@string/title_qr_code"
                 />
@@ -167,6 +185,8 @@
             <android.support.v7.widget.AppCompatTextView
                 style="@style/StoryRelease.ItemStyle"
                 android:id="@+id/story_release_email"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:drawableTop="@drawable/release_email_selector"
                 android:text="@string/title_email"
                 />
@@ -174,6 +194,8 @@
             <android.support.v7.widget.AppCompatTextView
                 style="@style/StoryRelease.ItemStyle"
                 android:id="@+id/story_release_sms"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:drawableTop="@drawable/release_sms_selector"
                 android:text="@string/title_sms"
                 />
@@ -181,6 +203,8 @@
             <android.support.v7.widget.AppCompatTextView
                 style="@style/StoryRelease.ItemStyle"
                 android:id="@+id/story_release_more"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:drawableTop="@drawable/release_more_selector"
                 android:text="@string/title_more"
                 />

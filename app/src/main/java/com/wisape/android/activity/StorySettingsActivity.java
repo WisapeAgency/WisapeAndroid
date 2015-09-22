@@ -134,7 +134,7 @@ public class StorySettingsActivity extends BaseActivity {
             case PhotoSelectorActivity.REQUEST_CODE_PHOTO:
                 if (RESULT_OK == resultCode) {
                     Uri imageUri = data.getParcelableExtra(PhotoSelectorActivity.EXTRA_IMAGE_URI);
-                    File file = new File(StoryManager.getStoryDirectory(), "/" +storyEntity.storyName + "/thumb");
+                    File file = new File(StoryManager.getStoryDirectory(), storyEntity.storyName + "/thumb");
                     if (null != imageUri) {
                         CutActivity.launch(this, imageUri, WIDTH, HEIGHT,file.getAbsolutePath(), CutActivity.RQEUST_CODE_CROP_IMG);
                     }

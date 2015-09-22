@@ -23,6 +23,7 @@ import com.wisape.android.logic.UserLogic;
 import com.wisape.android.network.Downloader;
 import com.wisape.android.network.WWWConfig;
 import com.wisape.android.util.EnvironmentUtils;
+import com.wisape.android.util.Utils;
 import com.wisape.android.util.ZipUtils;
 
 import org.apache.commons.io.FileUtils;
@@ -275,26 +276,47 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
                 WisapeApplication app = WisapeApplication.getInstance();
                 StoryEntity story = app.getStoryEntity();
                 if (story == null) {
-                    File storyDirectory = StoryManager.getStoryDirectory();
-                    String[] storyFiles = storyDirectory.list(new FilenameFilter() {
-                        @Override
-                        public boolean accept(File file, String name) {
-                            return file.isDirectory() && name.startsWith("My story");
-                        }
-                    });
-                    String storyName = "My story1";
-                    if (storyFiles != null && storyFiles.length != 0) {
-                        Arrays.sort(storyFiles);
-                        String fileName = storyFiles[storyFiles.length - 1];
-                        int count = Integer.parseInt(fileName.replace("My story", ""));
-                        storyName = "My story" + (count + 1);
-                    }
+//                    File storyDirectory = StoryManager.getStoryDirectory();
+//                    String[] storyFiles = storyDirectory.list(new FilenameFilter() {
+//                        @Override
+//                        public boolean accept(File file, String name) {
+//                            return file.isDirectory() && name.startsWith("My story");
+//                        }
+//                    });
+//                    String storyName = "My story1";
+//                    if (storyFiles != null && storyFiles.length != 0) {
+//                        Arrays.sort(storyFiles);
+//                        String fileName = storyFiles[storyFiles.length - 1];
+//                        int count = Integer.parseInt(fileName.replace("My story", ""));
+//                        storyName = "My story" + (count + 1);
+//                    }
+
                     story = new StoryEntity();
-                    story.storyName = storyName;
+                    story.storyName = Utils.acquireUTCTimestamp();
                     story.status = ApiStory.AttrStoryInfo.STORY_STATUS_TEMPORARY;
                     story.userId = WisapeApplication.getInstance().getUserInfo().user_id;
                     story.storyDesc = "Something wonderful is coming";
-                    story.storyLocal = new File(storyDirectory, storyName).getAbsolutePath();
+                    story.storyLocal = Utils.acquireUTCTimestamp();
+                    try{
+                        File file = new File(StoryManager.getStoryDirectory(),story.storyLocal);
+                        if(!file.exists()){
+                            file.mkdirs();
+                        }
+                    }catch (Exception e){
+                        Log.e(TAG,e.getMessage());
+                    }
+                    try{
+                        File file = new File(StoryManager.getStoryDirectory(),story.storyLocal + "/img");
+                        if(!file.exists()){
+                            file.mkdirs();
+                        }
+                    }catch (Exception e){
+                        Log.e(TAG,e.getMessage());
+                    }
+                    //设置默认背景图片
+                    com.wisape.android.util.FileUtils.copyAssetsFile(this,"www/public/img/photo_cover.png",
+                            new File(StoryManager.getStoryDirectory(), story.storyLocal + "/thumb.jpg").getAbsolutePath());
+                    story.storyThumbUri = new File(StoryManager.getStoryDirectory(), story.storyLocal + "/thumb.jpg").getAbsolutePath();
                     app.setStoryEntity(story);
                 }
                 break;
@@ -386,7 +408,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
                 WisapeApplication.getInstance().setStoryEntity(storyEntity);
                 Intent intent = new Intent();
                 intent.setAction(StoryBroadcastReciver.STORY_ACTION);
-                intent.putExtra(StoryBroadcastReciver.EXTRAS_TYPE, StoryBroadcastReciverListener.ADD_JUKE_STORY);
+                intent.putExtra(StoryBroadcastReciver.EXTRAS_TYPE, StoryBroadcastReciverListener.TYPE_ADD_STORY);
                 sendBroadcast(intent);
                 break;
         }

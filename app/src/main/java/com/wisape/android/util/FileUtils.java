@@ -14,6 +14,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * 文件操作工具
@@ -159,6 +160,41 @@ public class FileUtils {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+            }
+        }
+    }
+
+    public static void copyAssetsFile(Context context,String src, String dest) {
+        InputStream in = null;
+        OutputStream out = null;
+        try {
+            out = new FileOutputStream(dest);
+            in = context.getAssets().open(src);
+            byte[] buffer = new byte[1024];
+            int length = in.read(buffer);
+            while (length > 0) {
+                out.write(buffer, 0, length);
+                length = in.read(buffer);
+            }
+            out.flush();
+            in.close();
+            out.close();
+        } catch (IOException e) {
+
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+
+                }
+            }
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (IOException e) {
+
+                }
             }
         }
     }

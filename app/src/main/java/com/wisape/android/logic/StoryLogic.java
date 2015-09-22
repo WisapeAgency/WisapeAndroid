@@ -78,16 +78,13 @@ public class StoryLogic {
     private StoryLogic() {
     }
 
-    public StoryEntity update(Context context, ApiStory.AttrStoryInfo attr, Object tag) {
+    public void update(Context context, ApiStory.AttrStoryInfo attr, Object tag) {
         final String storyStatus = attr.storyStatus;
         if (null == storyStatus || 0 == storyStatus.length() || STORY_STATUS_DELETE.equals(storyStatus)) {
-            return null;
+            return ;
         }
-
-
         Uri storyUri = attr.story;
         Log.d(TAG, "#update story' uri:" + storyUri);
-
         StoryInfo story;
         if (STORY_STATUS_RELEASE.equals(storyStatus)) {
             try {
@@ -96,12 +93,16 @@ public class StoryLogic {
                 Uri storyZip = ZipUtils.zip(storyUri, EnvironmentUtils.getAppTemporaryDirectory(), zipName);
                 attr.story = storyZip;
             } catch (IOException e) {
+                Log.e(TAG, "生成story压缩包出错!");
                 throw new IllegalStateException(e);
             }
 
-            if (new File(attr.attrStoryThumb.toString()).exists()) {
+            File thumbFile = new File(attr.attrStoryThumb.toString());
+            if (thumbFile.exists()) {
                 String thumb = Utils.base64ForImage(attr.attrStoryThumb);
                 attr.storyThumb = thumb;
+            } else {
+                attr.storyThumb = "";
             }
 
             ApiStory api = ApiStory.instance();
@@ -118,11 +119,15 @@ public class StoryLogic {
         }
 
         Log.d(TAG, "#update story:" + story);
-        //save to local
+        //保存或者更新到本地数据库
         DatabaseHelper helper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
         SQLiteDatabase db = helper.getWritableDatabase();
         db.beginTransaction();
-        StoryEntity entity = WisapeApplication.getInstance().getStoryEntity();
+        StoryEntity storyEntity = WisapeApplication.getInstance().getStoryEntity();
+        storyEntity.storyThumbUri = story.small_img;
+        storyEntity.storyServerId = story.id;
+        storyEntity.storyUri = story.story_url;
+        storyEntity.status = story.rec_status;
 
         try {
             Dao<StoryEntity, Long> storyDao = helper.getDao(StoryEntity.class);
@@ -130,34 +135,14 @@ public class StoryLogic {
             if (STORY_STATUS_RELEASE.equals(storyStatus)) {
                 QueryBuilder<StoryEntity, Long> qb = storyDao.queryBuilder();
                 Where<StoryEntity, Long> where = qb.where();
-                where.eq("id", entity.id).or().eq("storyServerId", entity.storyServerId);
-                List<StoryEntity> entities = where.query();
-                int size = (null == entities ? 0 : entities.size());
-                if (1 == size) {
-                    entity = entities.get(0);
-                    entity.storyServerId = story.id;
-                    entity.createAt = Long.parseLong(Utils.isEmpty(story.createtime) ? "0" : story.createtime);
-                    entity.updateAt = System.currentTimeMillis();
-                    entity.storyThumbUri = story.small_img;
-                    entity.storyUri = story.story_url;
-                    entity.storyName = story.story_name;
-                    entity.storyDesc = story.description;
-                    entity.likeNum = story.like_num;
-                    entity.viewNum = story.view_num;
-                    entity.shareNum = story.share_num;
-                    entity.status = story.rec_status;
-                    entity.storyLocal = attr.story.toString();
-                    storyDao.update(entity);
-                    createIfNeed = false;
-                } else if (1 < size) {
-                    storyDao.delete(entities);
+                where.eq("id", storyEntity.id);
+                StoryEntity entity = where.queryForFirst();
+                if (null != entity) {
+                    storyDao.update(storyEntity);
+                } else {
+                    StoryEntity result = storyDao.createIfNotExists(storyEntity);
+                    storyEntity.id = result.id;
                 }
-            }
-
-            if (createIfNeed) {
-                entity = StoryEntity.transform(story);
-                entity.storyLocal = attr.story.toString();
-                entity = storyDao.createIfNotExists(entity);
             }
             db.setTransactionSuccessful();
         } catch (SQLException e) {
@@ -167,7 +152,6 @@ public class StoryLogic {
             db.endTransaction();
             OpenHelperManager.releaseHelper();
         }
-        return entity;
     }
 
 
@@ -501,10 +485,10 @@ public class StoryLogic {
             for (StoryTemplateEntity entity : storyTemplateList) {
                 File file = new File(StoryManager.getStoryTemplateDirectory(), entity.name + "/thumb.jpg");
                 entity.thumbLocal = file.getAbsolutePath();
-                File zipFile = new File(StoryManager.getStoryTemplateDirectory(),entity.name + ".zip");
-                if(zipFile.exists()){
+                File zipFile = new File(StoryManager.getStoryTemplateDirectory(), entity.name + ".zip");
+                if (zipFile.exists()) {
                     entity.recStatus = "1";
-                }else{
+                } else {
                     entity.recStatus = "0";
                 }
                 StoryTemplateInfo storyTemplateInfo = StoryTemplateEntity.convert(entity);
@@ -695,7 +679,7 @@ public class StoryLogic {
 
         /*服务器端story*/
         List<StoryInfo> serverStoryList = getUserStoryFromServer(access_token);
-        if (null != serverStoryList) {
+        if (null != serverStoryList && serverStoryList.size() > 0) {
             storyEntitYList.addAll(serverStoryToLocalStory(serverStoryList));
         }
 
@@ -717,12 +701,38 @@ public class StoryLogic {
         if (null != storyInfoList && storyInfoList.size() > 0) {
             for (StoryInfo storyInfo : storyInfoList) {
                 StoryEntity storyEntity = StoryEntity.transform(storyInfo);
-                storyEntity.storyLocal = StoryManager.getStoryDirectory().getAbsolutePath() + "/" + storyEntity.storyName;
+                getStoryByServerId(storyEntity);
                 localStoryEntyList.add(storyEntity);
             }
         }
         return localStoryEntyList;
     }
+
+    private void getStoryByServerId(StoryEntity storyEntity) {
+        DatabaseHelper databaseHelper = OpenHelperManager.getHelper(WisapeApplication.getInstance(), DatabaseHelper.class);
+        Dao<StoryEntity, Log> dao;
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+        db.beginTransaction();
+        try {
+            dao = databaseHelper.getDao(StoryEntity.class);
+            StoryEntity result = dao.queryBuilder().where().eq("storyServerId", storyEntity.storyServerId).queryForFirst();
+            if (result == null) {
+                storyEntity.storyLocal = Utils.acquireUTCTimestamp();
+
+                dao.createIfNotExists(storyEntity);
+            } else {
+                storyEntity.storyLocal = result.storyLocal;
+                storyEntity.id = result.id;
+            }
+            db.setTransactionSuccessful();
+        } catch (SQLException e) {
+            Log.e(TAG, "", e);
+        } finally {
+            db.endTransaction();
+            OpenHelperManager.releaseHelper();
+        }
+    }
+
 
     /**
      * 获取默认story信息
@@ -872,11 +882,18 @@ public class StoryLogic {
         Dao<StoryEntity, Integer> dao;
         SQLiteDatabase database = databaseHelper.getWritableDatabase();
         database.beginTransaction();
+        StoryEntity resultEntity = null;
         try {
             dao = databaseHelper.getDao(StoryEntity.class);
-            StoryEntity entity = dao.createIfNotExists(storyEntity);
+            StoryEntity localStoryEntity = dao.queryBuilder().where().eq("id", storyEntity.id).queryForFirst();
+            if (null != localStoryEntity) {
+                dao.update(storyEntity);
+                resultEntity = storyEntity;
+            } else {
+                resultEntity = dao.createIfNotExists(storyEntity);
+            }
             database.setTransactionSuccessful();
-            return entity;
+            return resultEntity;
         } catch (SQLException e) {
             Log.e(TAG, e.getMessage());
             return null;
