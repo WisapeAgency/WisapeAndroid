@@ -191,7 +191,8 @@ public class StoryTemplatePlugin extends AbsPlugin {
     private void doEditStory(StoryEntity storyEntity) {
         File htmlFile = new File(storyEntity.storyLocal, FILE_NAME_STORY);
         String html = readFile(htmlFile.getAbsolutePath());
-        callbackContext.success(html);
+        StoryTemplateActivity.launch(getCurrentActivity(),html,0);
+//        callbackContext.success(html);
     }
 
     @Override
@@ -269,6 +270,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
                     callbackContext.error(-1);
                     return null;
                 }
+                cordova.getActivity().finish();
                 break;
             }
             case WHAT_PREVIEW: {
