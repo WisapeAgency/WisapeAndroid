@@ -191,7 +191,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
     private void doEditStory(StoryEntity storyEntity) {
         File htmlFile = new File(storyEntity.storyLocal, FILE_NAME_STORY);
         String html = readFile(htmlFile.getAbsolutePath());
-        StoryTemplateActivity.launch(getCurrentActivity(),html,0);
+        StoryTemplateActivity.launch(getCurrentActivity(), html, 0);
 //        callbackContext.success(html);
     }
 
@@ -347,8 +347,11 @@ public class StoryTemplatePlugin extends AbsPlugin {
     }
 
     private boolean saveStory(File myStory, String html, com.alibaba.fastjson.JSONArray paths) {
-        File templatePath = StoryManager.getStoryTemplateDirectory();
-        html = html.replace(templatePath.getAbsolutePath(), myStory.getAbsolutePath());
+        for (int i = 0; i < paths.size(); i++){
+            String path = paths.getString(i).replace("file://", "");
+            File imagePath = new File(path).getParentFile();
+            html = html.replace(imagePath.getAbsolutePath(), myStory.getAbsolutePath());
+        }
         File storyHTML = new File(myStory, FILE_NAME_STORY);
         PrintWriter writer = null;
         try {
@@ -371,7 +374,8 @@ public class StoryTemplatePlugin extends AbsPlugin {
         for (int i = 0; i < paths.size(); i++) {
             try {
                 String path = paths.getString(i).replace("file://", "");
-                String newPath = path.replace(templatePath.getAbsolutePath(), myStory.getAbsolutePath());
+                File imagePath = new File(path).getParentFile();
+                String newPath = path.replace(imagePath.getAbsolutePath(), myStory.getAbsolutePath());
                 File file = new File(path);
                 File newPathFile = new File(newPath);
                 File imgDirectory = newPathFile.getParentFile();
