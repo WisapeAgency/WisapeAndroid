@@ -1,30 +1,6 @@
-<html>
-<head>
-    <title>Angular JS Custom Directives</title>
-</head>
-<body>
-<div id="test">
-
-</div>
-<script src="../cs/public/js/jquery.js"></script>
-<script src="../public/js/template.js"></script>
-<script>
-    var catScroll = $("#cat-scroll");
-    var source = ''
-            +    '{{each list as value i}}'
-            +        '{{if value.title == 0}}1 111111{{/if}}'
-            +    '{{/each}}'
-            + '</ul>';
-
-
-
-    var render = template.compile(source);
-    var html = render({
-        list: [{title : "0",content:"http://106.75.196.252/uploads/fonts/preview_image/Bookman Old Style.png"},{title:"0",content:"content2"}]
-    });
-
-    document.getElementById('test').innerHTML = html;
-
-</script>
-</body>
-</html>
+前缀
+/storage/emulated/0/wisape/com.wisape.android/data/story/20150922084743
+替换前：
+<div  class="p-index main" id="con"><section class="m-page hide" style=""> <div class="m-img"><span class="count">1/2</span><div class="stage-content edit-area pages-img pages-img-bg" style="background: url(/mnt/sdcard/wisape/com.wisape.android/data/template/tpl1/img/bg.jpg);background-size: cover;background-position:100% 100%;width:100%;height:100%;">            <div class="symbol active">                <div class="pages-img edit-area"><img data-name="img1" style="" width="50" height="50" src="/mnt/sdcard/wisape/com.wisape.android/data/template/tpl1/img/icon-earth.png"></div>            </div>            <div class="symbol" style="background:green;">                <div class="pages-img edit-area"><img data-name="img1" style="" width="50" height="50" src="/mnt/sdcard/wisape/com.wisape.android/data/template/tpl1/img/icon-earth.png"></div>            </div>            <div class="symbol" style="z-index: 3;">                <div class="pages-txt edit-area active" style="margin: 70px auto; width: 150px; color: rgb(0, 255, 1); text-align: center;">asdfasdasfadsfasdf As c update of the classictranslation corpus, the combination of network technology and language essence                </div>            </div>        </div></div> </section><section class="m-page show" style=""> <div class="m-img"><div class="stage-content edit-area pages-img pages-img-bg" style="background: url(/storage/emulated/0/wisape/com.wisape.android/data/story/20150922084743/tpl1/img/bg.jpg);background-size: cover;background-position:100% 100%;width:100%;height:100%;">            <div class="symbol">                <div class="pages-img edit-area"><img data-name="img1" style="" width="50" height="50" src="/storage/emulated/0/wisape/com.wisape.android/data/story/20150922084743/tpl1/img/icon-earth.png"></div>            </div>            <div class="symbol" style="background:green;">                <div class="pages-img edit-area"><img data-name="img1" style="" width="50" height="50" src="/storage/emulated/0/wisape/com.wisape.android/data/story/20150922084743/tpl1/img/icon-earth.png"></div>            </div>            <div class="symbol" style="z-index: 3;">                <div class="pages-txt edit-area" style="margin:70px auto;width:150px;color:#fff;text-align: center;">asdfasdasfadsfasdf As c update of the classictranslation corpus, the combination of network technology and language essence                </div>            </div>        </div></div> </section><section class="u-arrow" style="display: none;"><img src="file:///android_asset/www/public/img/btn01_arrow.png"></section></div>
+替换后：
+<div  class="p-index main" id="con"><section class="m-page hide" style=""> <div class="m-img"><span class="count">1/2</span><div class="stage-content edit-area pages-img pages-img-bg" style="background: url(/mnt/sdcard/wisape/com.wisape.android/data/template/tpl1/img/bg.jpg);background-size: cover;background-position:100% 100%;width:100%;height:100%;">            <div class="symbol active">                <div class="pages-img edit-area"><img data-name="img1" style="" width="50" height="50" src="/mnt/sdcard/wisape/com.wisape.android/data/template/tpl1/img/icon-earth.png"></div>            </div>            <div class="symbol" style="background:green;">                <div class="pages-img edit-area"><img data-name="img1" style="" width="50" height="50" src="/mnt/sdcard/wisape/com.wisape.android/data/template/tpl1/img/icon-earth.png"></div>            </div>            <div class="symbol" style="z-index: 3;">                <div class="pages-txt edit-area active" style="margin: 70px auto; width: 150px; color: rgb(0, 255, 1); text-align: center;">asdfasdasfadsfasdf As c update of the classictranslation corpus, the combination of network technology and language essence                </div>            </div>        </div></div> </section><section class="m-page show" style=""> <div class="m-img"><div class="stage-content edit-area pages-img pages-img-bg" style="background: url(http://106.75.196.252/html/1457/20150922/44138c89bf0d7c0034660d70d20e14bb/tpl1/img/bg.jpg);background-size: cover;background-position:100% 100%;width:100%;height:100%;">            <div class="symbol">                <div class="pages-img edit-area"><img data-name="img1" style="" width="50" height="50" src="http://106.75.196.252/html/1457/20150922/44138c89bf0d7c0034660d70d20e14bb/tpl1/img/icon-earth.png"></div>            </div>            <div class="symbol" style="background:green;">                <div class="pages-img edit-area"><img data-name="img1" style="" width="50" height="50" src="http://106.75.196.252/html/1457/20150922/44138c89bf0d7c0034660d70d20e14bb/tpl1/img/icon-earth.png"></div>            </div>            <div class="symbol" style="z-index: 3;">                <div class="pages-txt edit-area" style="margin:70px auto;width:150px;color:#fff;text-align: center;">asdfasdasfadsfasdf As c update of the classictranslation corpus, the combination of network technology and language essence                </div>            </div>        </div></div> </section><section class="u-arrow" style="display: none;"><img src="/android_asset/www/public/img/btn01_arrow.png"></section></div>

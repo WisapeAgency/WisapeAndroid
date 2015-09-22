@@ -88,7 +88,7 @@ a {text-decoration: none;color:inherit;}
 .icon-layout{
     background-image: url(../img/icon-layout.png);
 }
-.icon-layout-active{
+.icon-layout.active{
     background-image: url(../img/icon-layout-active.png);
 }
 .icon-list{
@@ -216,7 +216,7 @@ a {text-decoration: none;color:inherit;}
 .download-progress-bar {width: 60px; height: 6px; background: #d4d5d5; border-radius: 5px; overflow: hidden}
 .download-progress-percent {width:0%;background:#f08308;height:6px;}
 
-.tpl-item {width:200px;height:280px;position: relative;border-radius: 10px;overflow: hidden;margin:0 auto;}
+.tpl-item {position: relative;border-radius: 10px;overflow: hidden;margin:0 auto;}
 
 .tpl-page-cat {background:#f5f5f5;}
 .tpl-page-cat .hd {
@@ -256,7 +256,6 @@ a {text-decoration: none;color:inherit;}
 .pages {width:100%;padding:15px 0;height:310px;position:relative;overflow: hidden;}
 .pages li {width:200px;height:280px;float:left;position: relative;margin-left:15px;opacity: 0.5;}
 .pages li.active  {opacity: 1}
-.pages li .pages-txt.active {border:1px dashed #ffe400;border-radius:5px;}
 .pages li .count {position: absolute;left:0;bottom:0;background:rgba(82,181,2,0.5);color:#fff;font-size:14px;padding:2px 6px;}
 .pages-item .pages-item-thumb {width:100%;}
 
@@ -389,8 +388,9 @@ a {text-decoration: none;color:inherit;}
 #editorText .pages .count {display: none}
 .stage-content .symbol {transform: scale(0.8);}
 .stage-content .edit-area {display:inline-block;position: relative;}
-.edit-area .ico-acitve {display: none;background-image: url(../img/icon-edit-pic.png);width:36px;height:36px;position: absolute;;top:0;right:0;background-size: 100% 100%;}
-.pages-txt.edit-area.active {border:1px dashed #ffe400;border-radius:5px;}
+.edit-area .ico-acitve {display: none;background-image: url(../img/icon-edit-pic.png);width:36px;height:36px;position: absolute;;top:10px;right:10px;background-size: 100% 100%;}
+.pages-txt.edit-area {border:1px dashed transparent;border-radius:5px;}
+.pages-txt.edit-area.active {border-color:#ffe400;}
 .edit-area.active>.ico-acitve {display: block;}
 
 .drag-handle {display:block;position: absolute; top: 0px; right: 0px; bottom:0;left:0;background: #000; width:100%;height:100%;opacity: 0}

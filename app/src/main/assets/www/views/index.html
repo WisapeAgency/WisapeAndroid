@@ -16,11 +16,11 @@
 <div id="main" class="page">
     <div class="header">
         <div class="pull-left">
-            <a class="icon-arrow-left"></a>
+            <a class="icon-arrow-left" id="storySave"></a>
         </div>
         <div class="pull-right">
             <ul class="list-inline">
-                <li><a class="icon-play" id="storyPublish"></a></li>
+                <li><a class="icon-play" id="storyPreview"></a></li>
                 <li><a class="icon-layout" id="toggleCat" ></a></li>
                 <li><a class="icon-list" id="manageStageList"></a></li>
                 <li><a class="icon-settings" onclick="setting(1);"></a></li>
@@ -77,9 +77,9 @@
         </div>
     </div>
     <div class="pages editable">
-        <div class="tpl-item" style="background: url(../public/img/temp/stage_example.jpg);background-size: 100% 100%;">
-            <div id="test" class="pages-txt selected" contenteditable="true" style="margin:70px auto;width:150px;color:#fff;text-align: left;background:rgba(0,0,0,0.5);">As c update of the classic translation corpus, the combination of network technology and language essence</div>
-        </div>
+        <!--<div class="tpl-item" style="background: url(../public/img/temp/stage_example.jpg);background-size: 100% 100%;">-->
+            <!--<div id="test" class="pages-txt selected" contenteditable="true" style="margin:70px auto;width:150px;color:#fff;text-align: left;background:rgba(0,0,0,0.5);">As c update of the classic translation corpus, the combination of network technology and language essence</div>-->
+        <!--</div>-->
     </div>
     <div class="pop-layer pop-editer-opt" style="display: none">
         <div class="hd">
@@ -331,11 +331,14 @@
             target.find(".icon-download").hide();
             target.find(".download-progress-bar").show().find(".download-progress-percent").css({"width":progress.progress*100 + "%"});
         }
+        var firstTplDown = false;
         function onCompleted(path){
             var target = $("[data-id=" + path.id + "]");
             console.dir(JSON.stringify(path));
             target.find(".download-progress-bar").hide();
             target.attr({"data-path":path.path});
+            console.info("firstTplDown: " + firstTplDown);
+            firstTplDown = true;
         }
         function onError(){
             alert("download error!");
@@ -343,6 +346,7 @@
         function showMessage(message){
             jQuery("#message").text(message);
         }
+
 
         function onFontDownloading(data) {
             console.info("onFontDownloading:");

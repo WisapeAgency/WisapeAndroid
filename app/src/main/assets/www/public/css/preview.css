@@ -1,0 +1,19 @@
+[class*="icon-"] {
+    display: inline-block;
+    background-repeat: no-repeat;
+    background-position: center center;
+    width: 48px;
+    height: 48px;
+    background-size: auto 70%;
+}
+.icon-publish-circle{
+    background-image: url(../img/icon-publish-circle.png);
+}
+.icon-pencil-circle{
+    background-image: url(../img/icon-pencil-circle.png);
+}
+.icon-arrow-left-cirle{
+    background-image: url(../img/icon-arrow-left-cirle.png);
+}
+#audio-btn {top:80px;right:20px;}
+

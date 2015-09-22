@@ -2,7 +2,6 @@ var WisapeEditer = WisapeEditer || {};
 
 WisapeEditer = {
 
-    //currentTplData : '<div class="stage-content edit-area pages-img pages-img-bg" style="background: url(/mnt/sdcard/wisape/com.wisape.android/data/template/dddddddddddd/img/bg.jpg);background-position: 100% 100%;background-size:cover;width:100%;height:100%;" data="600,900"><div class="symbol" style="z-index: 2;"> <div class="pages-img edit-area"><img data-name="img1" style=""  src="/mnt/sdcard/wisape/com.wisape.android/data/template/dddddddddddd/img/icon-earth.png"/ width="50" height="50"> </div> </div><div class="symbol" style="z-index: 2;"> <div class="pages-img edit-area"><img data-name="img1" style="" src="/mnt/sdcard/wisape/com.wisape.android/data/template/dddddddddddd/img/icon-earth.png"/ width="50" height="50"> </div> </div> <div class="symbol" style="z-index: 3;"> <div class="pages-txt edit-area" style="margin:70px auto;width:150px;color:#fff;text-align: center;">As c update of the classictranslation corpus, the combination of network technology and language essence </div> </div> </div>',
     currentTplData: '',
 
     selectedStagetIndex: 1,
@@ -11,7 +10,7 @@ WisapeEditer = {
 
     storyData: [],
 
-    initial: function () {
+    Init: function () {
 
         var menuScroll = $("#menu-scroll"),
             catScroll = $("#cat-scroll"),
@@ -35,6 +34,7 @@ WisapeEditer = {
 
             document.getElementById('menu-scroll').innerHTML = html;
             menuScroll.iScroll({eventPassthrough: true, scrollX: true, scrollY: false, preventDefault: false});
+            $("#menu-scroll").find("li").eq(0).addClass("active");
 
 
             //获取默认模板模板列表
@@ -46,40 +46,45 @@ WisapeEditer = {
                 console.info("path:" + localTplPath);
 
 
-                //获取story数据
+                //获取pages数据
                 WisapeEditer.GetNativeData("getContent", [], function (data) {
                     console.info("getContent");
                     console.info(JSON.stringify(data));
-                    if (data == null) {//新建story逻辑
+                    if (data == null) {//新建默认page逻辑
 
                         if (!_me.hasClass("tpl-exist")) {
                             console.info("down");
                             WisapeEditer.GetNativeData("start", [parseInt(_me.data("id")), parseInt(_me.data("type"))], function (data) {
-                                console.info("down data:");
-                                console.info(data);
-                                _me.removeClass("tpl-exist");
 
-                                console.info("read:");
-                                WisapeEditer.GetNativeData("read", [localTplPath], function (data) {
-                                    console.info("read data:");
-                                    console.info(data);
-                                    WisapeEditer.currentTplData = data;
-                                    pageScroll.find("ul").html('<li class="active"><span class="count">1/1</span>' + data + "</li>");
-                                    WisapeEditer.storyData.push(data);
-
-                                    console.info("WisapeEditer.storyData:");
-                                    console.info(WisapeEditer.storyData);
-                                });
                             });
+                            var firstTplDownTimer = setInterval(function(){
+                                console.info("firstTplDown:" + firstTplDown);
+                                if(firstTplDown) {
+                                    console.info("read:");
+                                    WisapeEditer.GetNativeData("read", [localTplPath], function (data) {
+                                        console.info("read data:");
+                                        console.info(data);
+                                        WisapeEditer.currentTplData = data;
+                                        pageScroll.find("ul").html('<li class="active"><span class="count">1/1</span>' + data + "</li>");
+                                        WisapeEditer.storyData.push(data);
+
+                                        console.info("WisapeEditer.storyData:");
+                                        console.info(WisapeEditer.storyData);
+                                        clearInterval(firstTplDownTimer);
+                                    });
+
+                                }
+
+                            },1)
+
                         } else {
                             console.info("read:");
                             WisapeEditer.GetNativeData("read", [localTplPath], function (data) {
                                 console.info("read data:");
                                 console.info(data);
                                 WisapeEditer.currentTplData = data;
-                                pageScroll.find("ul").html('<li class="active"><span class="count">1/1</span>' + data + "</li>");
                                 WisapeEditer.storyData.push(data);
-
+                                pageScroll.find("ul").html('<li class="active"><span class="count">1/1</span>' + data + "</li>");
                                 console.info("WisapeEditer.storyData:");
                                 console.info(WisapeEditer.storyData);
                             });
@@ -116,16 +121,12 @@ WisapeEditer = {
             });
 
 
-            ////默认加载的stage，需入口传递
-            //WisapeEditer.storyData.push(WisapeEditer.currentTplData);
-            //var pageScroll = $("#pages-scroll");
-            //pageScroll.find("li").eq(0).append('<span class="count">1/1</span>');
         });
 
 
     },
 
-    event: function () {
+    Event: function () {
 
 
         //获取字体接口数据
@@ -160,7 +161,6 @@ WisapeEditer = {
         });
 
         console.info(".pop-editer-opt:" + $(".pop-editer-font").html());
-
         $(".pop-editer-font").delegate(".item", "click", function () {
             console.info("downloadfont");
             var me = $(this), fontname = me.attr("data-fontname"), target = $("#editorText .pages-txt.active");
@@ -177,8 +177,8 @@ WisapeEditer = {
 
 
         //预览
-        $("#storyPublish").click(function () {
-            var retHtml = '<div class="p-index main" id="con">', retImg = [];
+        $("#storyPreview,#storySave").click(function () {
+            var retHtml = '<div class="p-index main" id="con">', retImg = [],type="";
             for (var i = 0; i < WisapeEditer.storyData.length; i++) {
                 retHtml += '<section class="m-page hide" > <div class="m-img" >' + WisapeEditer.storyData[i] + '</div> </section>';
             }
@@ -195,9 +195,14 @@ WisapeEditer = {
             console.info("storyPublish");
             console.info(retHtml);
             console.info(retImg);
+            if($(this).attr("id") == "storySave") {
+                type = "save";
+            } else {
+                type = "preview";
+            }
 
-            WisapeEditer.GetNativeData("preview", [retHtml, retImg], function () {
-                console.info("publis done");
+            WisapeEditer.GetNativeData(type, [retHtml, retImg], function () {
+                console.info(type + " done!!!");
             })
 
 
@@ -208,12 +213,9 @@ WisapeEditer = {
             pageScroll = $("#pages-scroll");
         console.info("menu-scroll length:" + menuScroll.length);
         menuScroll.delegate("li", "click", function () {
-
             var _me = $(this);
-
             console.info("menu-scroll click");
             console.info("id:" + _me.data("id"));
-
             _me.addClass("active").siblings().removeClass("active");
             WisapeEditer.LoadTplList(parseInt(_me.data("id")), null);
         });
@@ -221,6 +223,7 @@ WisapeEditer = {
         //显示隐藏分类
         $("#toggleCat").click(function () {
             $(".tpl-page-cat").toggle();
+            $(this).toggleClass("active");
         });
 
         //管理stage列表
@@ -234,8 +237,7 @@ WisapeEditer = {
             console.info(computedHeight);
             for (var i in WisapeEditer.storyData) {
                 retHtml += '<li class="tpl-page-item" draggable="false" style="height:' + computedHeight + 'px"><span class="drag-handle">☰</span><i class="icon-correct"></i>' + WisapeEditer.storyData[i] + '</li>';
-            }
-            ;
+            };
             $("#storyDragBox").html(retHtml);
 
             for (var k = 0; k < $("#storyDragBox li").length; k++) {
@@ -285,21 +287,20 @@ WisapeEditer = {
         var catScroll = $("#cat-scroll");
         catScroll.delegate("li", "click", function () {
 
-            var _me = $(this);
+            var _me = $(this),localTplPath = _me.find(".stage-thumb").attr("src").split("/thumb.jpg")[0] + "/stage.html";
+            _me.addClass("active");
 
             _me.addClass("active").siblings().removeClass("active");
             console.info("page click:");
             console.info(!_me.hasClass("tpl-exist"));
             if (!_me.hasClass("tpl-exist")) {
                 console.info("down");
+                _me.addClass("tpl-exist");
                 WisapeEditer.GetNativeData("start", [parseInt(_me.data("id")), parseInt(_me.data("type"))], function (data) {
-                    console.info("down data:");
-                    console.info(data);
-                    _me.removeClass("tpl-exist");
                 });
             } else {
                 console.info("read:");
-                WisapeEditer.GetNativeData("read", ["/mnt/sdcard/wisape/com.wisape.android/data/template/" + _me.data("name") + "/stage.html"], function (data) {
+                WisapeEditer.GetNativeData("read", [localTplPath], function (data) {
                     console.info("read data:");
                     console.info(data);
                     WisapeEditer.currentTplData = data;
@@ -321,14 +322,21 @@ WisapeEditer = {
         });
 
         pageScroll.delegate("li.active .pages-img", "click", function (event) {
-            var _me = $(this);
+            var _me = $(this),wh = [];
             console.info(_me.parent().html());
+
             if (!_me.hasClass("active")) {
                 pageScroll.find(".edit-area").removeClass("active");
                 _me.addClass("active");
                 if (_me.children(".ico-acitve").length == 0) _me.append('<i class="ico-acitve"></i>');
                 return false;
+            };
+            if (_me.hasClass("pages-img-bg")) {
+                wh = [800,1000]
+            } else {
+                wh = [parseInt(_me.find("img").width()),parseInt(_me.find("img").height())];
             }
+            console.info("wh:" + wh);
             cordova.exec(function (retval) {
                 console.info("PhotoSelector:" + retval);
                 console.info("_me:" + _me.html());
@@ -346,7 +354,7 @@ WisapeEditer = {
 
             }, function (e) {
                 alert("Error: " + e);
-            }, "PhotoSelector", "execute", [800, 600]);
+            }, "PhotoSelector", "execute", [50,50]);
             event.stopPropagation();
 
         });
@@ -591,8 +599,7 @@ WisapeEditer = {
         var retHtml = "";
         for (var i in arr) {
             retHtml += '<li><span class="count">' + (parseInt(i) + 1) + '/' + WisapeEditer.storyData.length + '</span>' + arr[i] + '</li>';
-        }
-        ;
+        };
         $("#pages-scroll ul").html(retHtml).find("li").eq("0").addClass("active");
         WisapeEditer.selectedStagetIndex = 1;
         console.info($("#pages-scroll ul").html());
@@ -602,7 +609,7 @@ WisapeEditer = {
 
     //更新选中的主界面的stage
     UpdateSelectedStage: function (tplIndex, symbolInex) {
-        var pagesScroll = $("#pages-scroll li").eq(tplIndex - 1);
+        var curPage = $("#pages-scroll li").eq(tplIndex - 1);
         var eidtPage = $("#editorText .pages");
         var curPagesTxt = eidtPage.find(".symbol").eq(symbolInex).find(".pages-txt");
         var curAnimation = "";
@@ -615,7 +622,7 @@ WisapeEditer = {
             eidtPage.find('.anim-item i').eq(0).addClass("active");
         }
         console.info("symbolInex:" + eidtPage.find(".symbol").eq(symbolInex).html());
-        eidtPage.html(pagesScroll.html()).find(".symbol").eq(symbolInex).addClass("active").find(".pages-txt").attr({"contenteditable": "true"});
+        eidtPage.html(curPage.html()).find(".symbol").eq(symbolInex).addClass("active").find(".pages-txt").attr({"contenteditable": "true"});
     },
 
     //生成发布，保存的story

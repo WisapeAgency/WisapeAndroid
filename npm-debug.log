@@ -1,53 +1,200 @@
 0 info it worked if it ends with ok
-1 verbose cli [ 'node', '/usr/local/bin/npm', 'install', 'weinre' ]
+1 verbose cli [ 'node',
+1 verbose cli   '/usr/local/bin/npm',
+1 verbose cli   'install',
+1 verbose cli   '-g',
+1 verbose cli   'ripple-emulator' ]
 2 info using npm@2.11.3
 3 info using node@v0.12.7
-4 verbose install initial load of /Users/apple/Desktop/workspace/Alex/WisapeAndroid/package.json
-5 verbose readDependencies loading dependencies from /Users/apple/Desktop/workspace/Alex/WisapeAndroid/package.json
-6 silly cache add args [ 'weinre', null ]
-7 verbose cache add spec weinre
-8 silly cache add parsed spec { raw: 'weinre',
+4 verbose install initial load of /usr/local/lib/package.json
+5 verbose readDependencies loading dependencies from /usr/local/lib/package.json
+6 silly cache add args [ 'ripple-emulator', null ]
+7 verbose cache add spec ripple-emulator
+8 silly cache add parsed spec { raw: 'ripple-emulator',
 8 silly cache add   scope: null,
-8 silly cache add   name: 'weinre',
+8 silly cache add   name: 'ripple-emulator',
 8 silly cache add   rawSpec: '',
 8 silly cache add   spec: '*',
 8 silly cache add   type: 'range' }
-9 silly addNamed weinre@*
-10 verbose addNamed "*" is a valid semver range for weinre
-11 silly addNameRange { name: 'weinre', range: '*', hasData: false }
-12 silly mapToRegistry name weinre
+9 silly addNamed ripple-emulator@*
+10 verbose addNamed "*" is a valid semver range for ripple-emulator
+11 silly addNameRange { name: 'ripple-emulator', range: '*', hasData: false }
+12 silly mapToRegistry name ripple-emulator
 13 silly mapToRegistry using default registry
 14 silly mapToRegistry registry https://registry.npmjs.org/
-15 silly mapToRegistry uri https://registry.npmjs.org/weinre
-16 verbose addNameRange registry:https://registry.npmjs.org/weinre not in flight; fetching
-17 verbose request uri https://registry.npmjs.org/weinre
+15 silly mapToRegistry uri https://registry.npmjs.org/ripple-emulator
+16 verbose addNameRange registry:https://registry.npmjs.org/ripple-emulator not in flight; fetching
+17 verbose request uri https://registry.npmjs.org/ripple-emulator
 18 verbose request no auth needed
-19 info attempt registry request try #1 at 14:55:36
-20 verbose request id 52d489f65878f6ac
-21 http request GET https://registry.npmjs.org/weinre
-22 info retry will retry, error on last attempt: Error: socket hang up
-23 info attempt registry request try #2 at 14:56:49
-24 http request GET https://registry.npmjs.org/weinre
-25 info retry will retry, error on last attempt: Error: socket hang up
-26 info attempt registry request try #3 at 14:58:54
-27 http request GET https://registry.npmjs.org/weinre
-28 verbose stack Error: socket hang up
-28 verbose stack     at createHangUpError (_http_client.js:215:15)
-28 verbose stack     at TLSSocket.socketOnEnd (_http_client.js:300:23)
-28 verbose stack     at TLSSocket.emit (events.js:129:20)
-28 verbose stack     at _stream_readable.js:908:16
-28 verbose stack     at process._tickCallback (node.js:355:11)
-29 verbose cwd /Users/apple/Desktop/workspace/Alex/WisapeAndroid
-30 error Darwin 14.5.0
-31 error argv "node" "/usr/local/bin/npm" "install" "weinre"
-32 error node v0.12.7
-33 error npm  v2.11.3
-34 error code ECONNRESET
-35 error network socket hang up
-35 error network This is most likely not a problem with npm itself
-35 error network and is related to network connectivity.
-35 error network In most cases you are behind a proxy or have bad network settings.
-35 error network
-35 error network If you are behind a proxy, please make sure that the
-35 error network 'proxy' config is set properly.  See: 'npm help config'
-36 verbose exit [ 1, true ]
+19 info attempt registry request try #1 at 21:43:08
+20 verbose request id 1691c04886efe44d
+21 http request GET https://registry.npmjs.org/ripple-emulator
+22 http 200 https://registry.npmjs.org/ripple-emulator
+23 silly get cb [ 200,
+23 silly get   { server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+23 silly get     etag: '"6PK344INPAZQBTNXYHAYZ5U5T"',
+23 silly get     'content-type': 'application/json',
+23 silly get     'cache-control': 'max-age=60',
+23 silly get     'content-length': '31423',
+23 silly get     'accept-ranges': 'bytes',
+23 silly get     date: 'Mon, 21 Sep 2015 13:43:09 GMT',
+23 silly get     via: '1.1 varnish',
+23 silly get     age: '0',
+23 silly get     connection: 'keep-alive',
+23 silly get     'x-served-by': 'cache-nrt6131-NRT',
+23 silly get     'x-cache': 'MISS',
+23 silly get     'x-cache-hits': '0',
+23 silly get     'x-timer': 'S1442842988.875439,VS0,VE739',
+23 silly get     vary: 'Accept' } ]
+24 verbose get saving ripple-emulator to /Users/apple/.npm/registry.npmjs.org/ripple-emulator/.cache.json
+25 silly addNameRange number 2 { name: 'ripple-emulator', range: '*', hasData: true }
+26 silly addNameRange versions [ 'ripple-emulator',
+26 silly addNameRange   [ '0.9.15',
+26 silly addNameRange     '0.9.16',
+26 silly addNameRange     '0.9.17',
+26 silly addNameRange     '0.9.18',
+26 silly addNameRange     '0.9.19',
+26 silly addNameRange     '0.9.20',
+26 silly addNameRange     '0.9.21',
+26 silly addNameRange     '0.9.22',
+26 silly addNameRange     '0.9.23',
+26 silly addNameRange     '0.9.24',
+26 silly addNameRange     '0.9.28',
+26 silly addNameRange     '0.9.29',
+26 silly addNameRange     '0.9.30',
+26 silly addNameRange     '0.9.31',
+26 silly addNameRange     '0.9.32' ] ]
+27 silly addNamed ripple-emulator@0.9.32
+28 verbose addNamed "0.9.32" is a plain semver version for ripple-emulator
+29 silly mapToRegistry name ripple-emulator
+30 silly mapToRegistry using default registry
+31 silly mapToRegistry registry https://registry.npmjs.org/
+32 silly mapToRegistry uri https://registry.npmjs.org/ripple-emulator
+33 verbose addRemoteTarball https://registry.npmjs.org/ripple-emulator/-/ripple-emulator-0.9.32.tgz not in flight; adding
+34 verbose addRemoteTarball [ 'https://registry.npmjs.org/ripple-emulator/-/ripple-emulator-0.9.32.tgz',
+34 verbose addRemoteTarball   '9e8c6041ac467a4f508dfd9cb84dbdb73ed3d6af' ]
+35 info retry fetch attempt 1 at 21:43:09
+36 info attempt registry request try #1 at 21:43:09
+37 http fetch GET https://registry.npmjs.org/ripple-emulator/-/ripple-emulator-0.9.32.tgz
+38 http fetch 200 https://registry.npmjs.org/ripple-emulator/-/ripple-emulator-0.9.32.tgz
+39 silly fetchAndShaCheck shasum 9e8c6041ac467a4f508dfd9cb84dbdb73ed3d6af
+40 verbose addTmpTarball /var/folders/sb/tz3mm3wd3w551__2myzdqbrw0000gn/T/npm-1950-cb5aef3b/registry.npmjs.org/ripple-emulator/-/ripple-emulator-0.9.32.tgz not in flight; adding
+41 verbose addTmpTarball already have metadata; skipping unpack for ripple-emulator@0.9.32
+42 silly cache afterAdd ripple-emulator@0.9.32
+43 verbose afterAdd /Users/apple/.npm/ripple-emulator/0.9.32/package/package.json not in flight; writing
+44 verbose afterAdd /Users/apple/.npm/ripple-emulator/0.9.32/package/package.json written
+45 silly install resolved [ { name: 'ripple-emulator',
+45 silly install resolved     version: '0.9.32',
+45 silly install resolved     description: 'A browser based html5 mobile application development and testing tool',
+45 silly install resolved     homepage: 'http://ripple.incubator.apache.org/',
+45 silly install resolved     author:
+45 silly install resolved      { name: 'Apache Ripple Community',
+45 silly install resolved        url: 'http://ripple.incubator.apache.org/' },
+45 silly install resolved     licenses: [ [Object] ],
+45 silly install resolved     repository:
+45 silly install resolved      { type: 'git',
+45 silly install resolved        url: 'https://git-wip-us.apache.org/repos/asf/incubator-ripple.git' },
+45 silly install resolved     keywords:
+45 silly install resolved      [ 'cordova',
+45 silly install resolved        'phonegap',
+45 silly install resolved        'ripple',
+45 silly install resolved        'mobile',
+45 silly install resolved        'testing',
+45 silly install resolved        'test',
+45 silly install resolved        'emulator' ],
+45 silly install resolved     bin: { ripple: './bin/ripple' },
+45 silly install resolved     main: './lib/index',
+45 silly install resolved     dependencies:
+45 silly install resolved      { accounting: '0.x.x',
+45 silly install resolved        colors: '0.6.0-1',
+45 silly install resolved        'connect-xcors': '0.5.2',
+45 silly install resolved        express: '3.1.0',
+45 silly install resolved        moment: '1.x.x',
+45 silly install resolved        open: '0.0.3',
+45 silly install resolved        request: '2.12.0' },
+45 silly install resolved     devDependencies:
+45 silly install resolved      { bower: '1.3.12',
+45 silly install resolved        connect: '2.3.6',
+45 silly install resolved        coverjs: '0.0.14',
+45 silly install resolved        cssmin: '0.3.1',
+45 silly install resolved        'html-minifier': '0.4.5',
+45 silly install resolved        jsdom: '3.1.0',
+45 silly install resolved        jWorkflow: '0.x.x',
+45 silly install resolved        semver: '^4.3.1',
+45 silly install resolved        xmlhttprequest: '1.4.2',
+45 silly install resolved        shelljs: '^0.4.0' },
+45 silly install resolved     files:
+45 silly install resolved      [ 'README.md',
+45 silly install resolved        'DISCLAIMER',
+45 silly install resolved        'LICENSE',
+45 silly install resolved        'NOTICE',
+45 silly install resolved        'lib/index.js',
+45 silly install resolved        'lib/server',
+45 silly install resolved        'lib/cli',
+45 silly install resolved        'assets/server',
+45 silly install resolved        'pkg/hosted',
+45 silly install resolved        'doc',
+45 silly install resolved        'bin' ],
+45 silly install resolved     engines: { node: '>= 0.12.0', npm: '>= 2.5.1' },
+45 silly install resolved     _id: 'ripple-emulator@0.9.32',
+45 silly install resolved     _shasum: '9e8c6041ac467a4f508dfd9cb84dbdb73ed3d6af',
+45 silly install resolved     _resolved: 'https://registry.npmjs.org/ripple-emulator/-/ripple-emulator-0.9.32.tgz',
+45 silly install resolved     _from: 'ripple-emulator@*',
+45 silly install resolved     scripts: {},
+45 silly install resolved     _npmVersion: '2.11.2',
+45 silly install resolved     _nodeVersion: '0.12.6',
+45 silly install resolved     _npmUser: { name: 'timbarham', email: 'npmjs@barhams.info' },
+45 silly install resolved     dist:
+45 silly install resolved      { shasum: '9e8c6041ac467a4f508dfd9cb84dbdb73ed3d6af',
+45 silly install resolved        tarball: 'http://registry.npmjs.org/ripple-emulator/-/ripple-emulator-0.9.32.tgz' },
+45 silly install resolved     maintainers: [ [Object], [Object], [Object], [Object], [Object], [Object] ],
+45 silly install resolved     directories: {} } ]
+46 info install ripple-emulator@0.9.32 into /usr/local/lib
+47 info installOne ripple-emulator@0.9.32
+48 verbose installOne of ripple-emulator to /usr/local/lib not in flight; installing
+49 verbose lock using /Users/apple/.npm/_locks/ripple-emulator-7fde78f973912142.lock for /usr/local/lib/node_modules/ripple-emulator
+50 silly install write writing ripple-emulator 0.9.32 to /usr/local/lib/node_modules/ripple-emulator
+51 verbose unbuild lib/node_modules/ripple-emulator
+52 silly gentlyRm /usr/local/lib/node_modules/ripple-emulator is being purged from base /usr/local
+53 verbose gentlyRm don't care about contents; nuking /usr/local/lib/node_modules/ripple-emulator
+54 verbose tar unpack /Users/apple/.npm/ripple-emulator/0.9.32/package.tgz
+55 verbose tar unpacking to /usr/local/lib/node_modules/ripple-emulator
+56 silly gentlyRm /usr/local/lib/node_modules/ripple-emulator is being purged
+57 verbose gentlyRm don't care about contents; nuking /usr/local/lib/node_modules/ripple-emulator
+58 silly gunzTarPerm modes [ '755', '644' ]
+59 error tar.unpack untar error /Users/apple/.npm/ripple-emulator/0.9.32/package.tgz
+60 verbose unlock done using /Users/apple/.npm/_locks/ripple-emulator-7fde78f973912142.lock for /usr/local/lib/node_modules/ripple-emulator
+61 verbose fstream_path /usr/local/lib/node_modules/ripple-emulator
+62 verbose fstream_type Directory
+63 verbose fstream_class DirWriter
+64 verbose stack Error: EACCES, mkdir '/usr/local/lib/node_modules/ripple-emulator'
+64 verbose stack     at Error (native)
+65 verbose fstream_stack /usr/local/lib/node_modules/npm/node_modules/fstream/lib/dir-writer.js:35:25
+65 verbose fstream_stack /usr/local/lib/node_modules/npm/node_modules/mkdirp/index.js:47:53
+65 verbose fstream_stack FSReqWrap.oncomplete (fs.js:95:15)
+66 verbose cwd /Users/apple/Desktop/workspace/Alex/WisapeAndroid
+67 error Darwin 14.5.0
+68 error argv "node" "/usr/local/bin/npm" "install" "-g" "ripple-emulator"
+69 error node v0.12.7
+70 error npm  v2.11.3
+71 error path /usr/local/lib/node_modules/ripple-emulator
+72 error code EACCES
+73 error errno -13
+74 error Error: EACCES, mkdir '/usr/local/lib/node_modules/ripple-emulator'
+74 error     at Error (native)
+74 error  { [Error: EACCES, mkdir '/usr/local/lib/node_modules/ripple-emulator']
+74 error   errno: -13,
+74 error   code: 'EACCES',
+74 error   path: '/usr/local/lib/node_modules/ripple-emulator',
+74 error   fstream_type: 'Directory',
+74 error   fstream_path: '/usr/local/lib/node_modules/ripple-emulator',
+74 error   fstream_class: 'DirWriter',
+74 error   fstream_stack:
+74 error    [ '/usr/local/lib/node_modules/npm/node_modules/fstream/lib/dir-writer.js:35:25',
+74 error      '/usr/local/lib/node_modules/npm/node_modules/mkdirp/index.js:47:53',
+74 error      'FSReqWrap.oncomplete (fs.js:95:15)' ] }
+75 error Please try running this command again as root/Administrator.
+76 verbose exit [ -13, true ]
+77 verbose unbuild lib/node_modules/ripple-emulator
+78 silly gentlyRm /usr/local/lib/node_modules/ripple-emulator is being purged from base /usr/local
+79 verbose gentlyRm don't care about contents; nuking /usr/local/lib/node_modules/ripple-emulator
