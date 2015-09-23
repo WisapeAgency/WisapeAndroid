@@ -298,6 +298,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 File previewFile = new File(myStory, FILE_NAME_PREVIEW);
                 if (saveStoryPreview(previewFile, html, story)) {
                     StoryPreviewActivity.launch(cordova.getActivity(), previewFile.getAbsolutePath());
+                    cordova.getActivity().finish();
                 } else {
                     callbackContext.error(-1);
                 }
