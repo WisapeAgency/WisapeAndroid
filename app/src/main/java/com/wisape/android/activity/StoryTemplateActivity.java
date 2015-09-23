@@ -10,6 +10,7 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.webkit.WebSettings;
+import android.widget.Toast;
 
 import com.wisape.android.R;
 import com.wisape.android.WisapeApplication;
@@ -206,9 +207,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
     @Override
     public void onBackPressed() {
 
-        startLoad(LOADER_SAVA_DATA, null);
-
-        super.onBackPressed();
+        Toast.makeText(this,"请点击界面上返回按钮!",Toast.LENGTH_SHORT).show();;
     }
 
     public void downloadTemplate(String data, int id, int categoryId) throws JSONException {
@@ -403,14 +402,6 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
                 });
                 break;
             }
-            case LOADER_SAVA_DATA:
-                StoryEntity storyEntity = StoryLogic.instance().updateStory(this, WisapeApplication.getInstance().getStoryEntity());
-                WisapeApplication.getInstance().setStoryEntity(storyEntity);
-                Intent intent = new Intent();
-                intent.setAction(StoryBroadcastReciver.STORY_ACTION);
-                intent.putExtra(StoryBroadcastReciver.EXTRAS_TYPE, StoryBroadcastReciverListener.TYPE_ADD_STORY);
-                sendBroadcast(intent);
-                break;
         }
         return msg;
     }

@@ -350,7 +350,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
         for (int i = 0; i < paths.size(); i++){
             String path = paths.getString(i);
             System.out.println("saveStory:" + path);
-            File imagePath = new File(path).getParentFile();
+            File imagePath = new File(path).getParentFile().getParentFile();
             if (imagePath.getParentFile().getName().equals(StoryManager.TEMPLATE_DIRECTORY)){
                 String templateName = imagePath.getName();
                 File newImagePath = new File(myStory.getAbsolutePath(),templateName);
@@ -381,7 +381,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
         for (int i = 0; i < paths.size(); i++) {
             try {
                 String path = paths.getString(i);
-                File imagePath = new File(path).getParentFile();
+                File imagePath = new File(path).getParentFile().getParentFile();
                 String newPath;
                 if (imagePath.getParentFile().getName().equals(StoryManager.TEMPLATE_DIRECTORY)){
                     String templateName = imagePath.getName();
@@ -396,7 +396,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 if (!imgDirectory.exists()) {
                     imgDirectory.mkdirs();
                 }
-                FileUtils.copyFile(file, new File(newPathFile, file.getName()));
+                FileUtils.copyFile(file, new File(imgDirectory, file.getName()));
             } catch (IOException e) {
                 Log.e("saveStory", "", e);
             }

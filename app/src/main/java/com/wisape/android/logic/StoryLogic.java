@@ -723,6 +723,7 @@ public class StoryLogic {
             } else {
                 storyEntity.storyLocal = result.storyLocal;
                 storyEntity.id = result.id;
+                storyEntity.storyMusicLocal = result.storyMusicLocal;
             }
             db.setTransactionSuccessful();
         } catch (SQLException e) {

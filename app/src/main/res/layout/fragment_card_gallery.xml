@@ -77,14 +77,12 @@
         android:layout_marginTop="@dimen/span_space" />
 
 
-    <com.getbase.floatingactionbutton.AddFloatingActionButton
+    <Button
         android:id="@+id/add_story"
         android:layout_width="56dp"
         android:layout_height="56dp"
         android:layout_gravity="right"
         android:layout_marginBottom="@dimen/span_space"
         android:layout_marginRight="@dimen/span_space"
-        fab:fab_colorNormal="@color/app_float_btn_normal"
-        fab:fab_colorPressed="@color/app_float_btn_pressed"
-        fab:fab_plusIconColor="@color/app_primary" />
+        android:text="新增" />
 </LinearLayout>
