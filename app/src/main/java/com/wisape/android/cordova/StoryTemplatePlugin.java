@@ -392,9 +392,9 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 }
                 File file = new File(path);
                 File newPathFile = new File(newPath);
-//                File imgDirectory = newPathFile.getParentFile();
-                if (!newPathFile.exists()) {
-                    newPathFile.mkdirs();
+                File imgDirectory = newPathFile.getParentFile();
+                if (!imgDirectory.exists()) {
+                    imgDirectory.mkdirs();
                 }
                 FileUtils.copyFile(file, new File(newPathFile, file.getName()));
             } catch (IOException e) {
