@@ -146,7 +146,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
             startLoad(WHAT_DOWNLOAD_FONT, bundle);
         } else if (ACTION_SAVE.equals(action)) {//save
             Bundle bundle = new Bundle();
-            if (null != args && args.length() == 3) {
+            if (null != args && args.length() == 2) {
 //                bundle.putInt(EXTRA_STORY_ID, args.optInt(0));//story_id
                 bundle.putString(EXTRA_STORY_HTML, args.getString(0));
                 bundle.putString(EXTRA_FILE_PATH, args.getString(1));
@@ -270,6 +270,12 @@ public class StoryTemplatePlugin extends AbsPlugin {
                     callbackContext.error(-1);
                     return null;
                 }
+                StoryEntity storyEntity = StoryLogic.instance().updateStory(getCurrentActivity(), WisapeApplication.getInstance().getStoryEntity());
+                WisapeApplication.getInstance().setStoryEntity(storyEntity);
+                Intent intent = new Intent();
+                intent.setAction(StoryBroadcastReciver.STORY_ACTION);
+                intent.putExtra(StoryBroadcastReciver.EXTRAS_TYPE, StoryBroadcastReciverListener.TYPE_ADD_STORY);
+                getCurrentActivity().sendBroadcast(intent);
                 cordova.getActivity().finish();
                 break;
             }
@@ -415,7 +421,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
             if (!"".equals(story.storyMusicLocal)) {
                 writer.println("<div id=\"audio-btn\" class=\"on\">");
                 writer.println(String.format("    <audio loop=\"loop\" src=\"%s\" id=\"media\" preload=\"preload\"></audio>",
-                        story.storyMusicLocal));
+                        story.storyMusicLocal.replace("file://","")));
                 writer.println("</div>");
             }
             writer.println(footer);

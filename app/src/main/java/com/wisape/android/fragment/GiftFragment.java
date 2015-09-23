@@ -15,6 +15,7 @@ import android.widget.RelativeLayout;
 
 import com.squareup.picasso.Picasso;
 import com.wisape.android.R;
+import com.wisape.android.activity.AboutWebViewActivity;
 import com.wisape.android.http.HttpUrlConstancts;
 import com.wisape.android.logic.ActiveLogic;
 import com.wisape.android.model.ActiveInfo;
@@ -100,8 +101,11 @@ public class GiftFragment extends AbsFragment {
         ButterKnife.reset(this);
     }
 
+    public void gotoActive(String url,String title){
+        AboutWebViewActivity.launch(getActivity(),url,title);
+    }
 
-    public static class GalleryAdapter extends RecyclerView.Adapter<GHolder> {
+    public class GalleryAdapter extends RecyclerView.Adapter<GHolder> {
 
         private Context mContext;
         private List<ActiveInfo> activeInfoList;
@@ -118,13 +122,13 @@ public class GiftFragment extends AbsFragment {
         }
 
         @Override
-        public void onBindViewHolder(GHolder holder, int position) {
+        public void onBindViewHolder(final GHolder holder, int position) {
             final ActiveInfo activeInfo = activeInfoList.get(position);
             Picasso.with(mContext).load(activeInfo.getBg_img()).centerCrop().resize(600,800).into(holder.imgContent);
             holder.imgContent.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.e(TAG,"点击某个活动的Id:" + activeInfo.getId());
+                    gotoActive(activeInfo.getUrl(),activeInfo.getTitle());
                 }
             });
         }

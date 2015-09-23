@@ -89,6 +89,7 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
     private StoryBroadcastReciver storyBroadcastReciver;
     private GalleryAdapter mGalleryAdapter;
     private List<StoryEntity> storyEntityList;
+    private int clickPostion;
 
 
     @Override
@@ -338,6 +339,10 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
 
     @Override
     public void onEditClick() {
+        if(0 == clickPostion){
+            showToast("默认story不能编辑");
+            return;
+        }
         File file = new File(StoryManager.getStoryDirectory(), wisapeApplication.getStoryEntity().storyLocal + "/story.html");
         StringBuilder sb = new StringBuilder();
         FileInputStream fileInputStream = null;
@@ -385,6 +390,10 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
 
     @Override
     public void onPublishClick() {
+        if(0 == clickPostion){
+            showToast("默认story不能发布");
+            return;
+        }
         if (ApiStory.AttrStoryInfo.STORY_STATUS_TEMPORARY.equals(wisapeApplication.getStoryEntity().status)) {
             Bundle args = new Bundle();
             args.putParcelable(EXTRAS_STORY_ENTITY, wisapeApplication.getStoryEntity());
@@ -396,10 +405,10 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
 
     @Override
     public void onDeleteClick() {
-//        if (0 == clickPosition) {
-//            showToast("默认story不能删除");
-//            return;
-//        }
+        if (0 == clickPostion) {
+            showToast("默认story不能删除");
+            return;
+        }
         boolean isSever = true;
         /*如果是草稿story只进行本地删除*/
         if (ApiStory.AttrStoryInfo.STORY_STATUS_TEMPORARY.equals(wisapeApplication.getStoryEntity().status)) {
@@ -538,6 +547,7 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
             holder.imageShare.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    clickPostion = position;
                     wisapeApplication.setStoryEntity(storyEntity);
                     if (!popupWindow.isShowing()) {
                         popupWindow.showAtLocation(getView(),

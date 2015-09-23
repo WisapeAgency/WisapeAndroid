@@ -164,7 +164,8 @@ public class StorySettingsActivity extends BaseActivity {
                 if (RESULT_OK == resultCode) {
                     StoryMusicEntity selectedMusic = data.getParcelableExtra(StoryMusicActivity.EXTRA_SELECTED_MUSIC);
                     this.storyEntity.storyMusicName = selectedMusic.name;
-                    this.storyEntity.storyMusicLocal = selectedMusic.musicLocal;
+                    String path = Uri.parse(selectedMusic.musicLocal).getPath();
+                    this.storyEntity.storyMusicLocal = path;
                     this.storyMusicTxtv.setText(selectedMusic.name);
                     this.storyEntity.musicServerId = selectedMusic.serverId;
                 }

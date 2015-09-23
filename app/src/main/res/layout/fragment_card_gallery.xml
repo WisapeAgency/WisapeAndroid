@@ -84,5 +84,5 @@
         android:layout_gravity="right"
         android:layout_marginBottom="@dimen/span_space"
         android:layout_marginRight="@dimen/span_space"
-        android:text="新增" />
+        android:background="@drawable/btn_add_story_selector" />
 </LinearLayout>
