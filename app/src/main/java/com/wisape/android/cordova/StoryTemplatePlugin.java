@@ -189,8 +189,8 @@ public class StoryTemplatePlugin extends AbsPlugin {
     }
 
     private void doEditStory(StoryEntity storyEntity) {
-        File htmlFile = new File(storyEntity.storyLocal, FILE_NAME_STORY);
-        String html = readFile(htmlFile.getAbsolutePath());
+        File file = new File(StoryManager.getStoryDirectory(), storyEntity.storyLocal + "/story.html");
+        String html = readFile(file.getAbsolutePath());
         StoryTemplateActivity.launch(getCurrentActivity(), html, 0);
 //        callbackContext.success(html);
     }
