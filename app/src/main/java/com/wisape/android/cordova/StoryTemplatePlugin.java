@@ -5,10 +5,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Message;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.google.gson.Gson;
+import com.wisape.android.R;
 import com.wisape.android.WisapeApplication;
 import com.wisape.android.activity.StoryPreviewActivity;
 import com.wisape.android.activity.StoryReleaseActivity;
@@ -20,11 +22,13 @@ import com.wisape.android.content.StoryBroadcastReciver;
 import com.wisape.android.content.StoryBroadcastReciverListener;
 import com.wisape.android.database.StoryEntity;
 import com.wisape.android.database.StoryMusicEntity;
+import com.wisape.android.logic.MessageCenterLogic;
 import com.wisape.android.logic.StoryLogic;
 import com.wisape.android.model.StoryFontInfo;
 import com.wisape.android.model.StoryTemplateInfo;
 import com.wisape.android.network.Requester;
 import com.wisape.android.util.Utils;
+import com.wisape.android.widget.CustomProgress;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.cordova.CallbackContext;
@@ -95,8 +99,35 @@ public class StoryTemplatePlugin extends AbsPlugin {
     private static final String EXTRA_FILE_PATH = "extra_file_path";
 
     private CallbackContext callbackContext;
+    private CustomProgress customProgress;
     private StoryLogic logic = StoryLogic.instance();
     private WisapeApplication app = WisapeApplication.getInstance();
+
+    /**
+     * 显示进度对话框
+     */
+    public void showProgressDialog(){
+
+        if(customProgress == null){
+            customProgress = CustomProgress.show(getCurrentActivity(),getCurrentActivity().getResources()
+                    .getString(R.string.progress_loading_data),true);
+        }
+        if(customProgress.isShowing()){
+            customProgress.setMessage(getCurrentActivity().getResources().getString(R.string.progress_loading_data));
+            return;
+        }
+        customProgress.setMessage(getCurrentActivity().getResources().getString(R.string.progress_loading_data));
+        customProgress.show();
+    }
+
+    /**
+     * 关闭进度对话框
+     */
+    public void closeProgressDialog(){
+        if(customProgress != null && customProgress.isShowing()){
+            customProgress.dismiss();
+        }
+    }
 
     @Override
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
@@ -167,6 +198,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 bundle.putString(EXTRA_STORY_HTML, args.getString(0));
                 bundle.putString(EXTRA_FILE_PATH, args.getString(1));
             }
+            showProgressDialog();
             startLoad(WHAT_PUBLISH, bundle);
         } else if (ACTION_SETTING.equals(action)) {
             StorySettingsActivity.launch(getCurrentActivity(), 0);
@@ -298,7 +330,6 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 File previewFile = new File(myStory, FILE_NAME_PREVIEW);
                 if (saveStoryPreview(previewFile, html, story)) {
                     StoryPreviewActivity.launch(cordova.getActivity(), previewFile.getAbsolutePath());
-                    cordova.getActivity().finish();
                 } else {
                     callbackContext.error(-1);
                 }
@@ -337,7 +368,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 storyAttr.storyDescription = story.storyDesc;
                 storyAttr.userId = WisapeApplication.getInstance().getUserInfo().user_id;
                 storyAttr.storyStatus = ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE;
-                storyAttr.imgPrefix = StoryManager.getStoryDirectory().getAbsolutePath();
+                storyAttr.imgPrefix = StoryManager.getStoryDirectory().getAbsolutePath() + "/" + story.storyLocal;
                 storyAttr.sid = story.storyServerId;
 
                 logic.update(cordova.getActivity().getApplicationContext(), storyAttr, "release");
@@ -348,9 +379,15 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 getCurrentActivity().sendBroadcast(intent);
 
                 StoryReleaseActivity.launch(cordova.getActivity());
+                getCurrentActivity().finish();
             }
         }
-        return null;
+        return Message.obtain();
+    }
+
+    @Override
+    protected void onLoadCompleted(Message data) {
+        closeProgressDialog();
     }
 
     private boolean saveStory(File myStory, String html, com.alibaba.fastjson.JSONArray paths) {
@@ -419,10 +456,10 @@ public class StoryTemplatePlugin extends AbsPlugin {
             writer = new PrintWriter(previewFile);
             writer.println(header);
             writer.println(html);
-            if (!"".equals(story.storyMusicLocal)) {
+            if (!Utils.isEmpty(story.storyMusicLocal)) {
                 writer.println("<div id=\"audio-btn\" class=\"on\">");
                 writer.println(String.format("    <audio loop=\"loop\" src=\"%s\" id=\"media\" preload=\"preload\"></audio>",
-                        story.storyMusicLocal.replace("file://","")));
+                        story.storyMusicLocal));
                 writer.println("</div>");
             }
             writer.println(footer);

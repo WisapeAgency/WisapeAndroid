@@ -135,8 +135,15 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
                         , args.getString(EXTRAS_ACCESS_TOKEN), args.getBoolean(EXRAS_IS_SERVER));
                 break;
             case LOADER_PREVIEW_STORY:
-                File file = new File(StoryManager.getStoryDirectory(),
-                        wisapeApplication.getStoryEntity().storyLocal + "/story.html");
+                File file = null;
+                if(0 == clickPostion){
+                    file = new File(StoryManager.getStoryDirectory(),
+                            wisapeApplication.getStoryEntity().storyName + "/story.html");
+                }else{
+                    file = new File(StoryManager.getStoryDirectory(),
+                            wisapeApplication.getStoryEntity().storyLocal + "/story.html");
+                }
+
                 StringBuilder sb = new StringBuilder();
                 FileInputStream fileInputStream = null;
                 try {
@@ -176,7 +183,7 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
                 storyAttr.storyName = story.storyName;
                 storyAttr.bgMusic = story.storyMusicName;
                 storyAttr.storyDescription = story.storyDesc;
-                storyAttr.imgPrefix = StoryManager.getStoryDirectory().getAbsolutePath();
+                storyAttr.imgPrefix = StoryManager.getStoryDirectory().getAbsolutePath() + "/" + story.storyLocal;
                 storyAttr.userId = wisapeApplication.getUserInfo().user_id;
                 storyAttr.sid = story.storyServerId;
 
