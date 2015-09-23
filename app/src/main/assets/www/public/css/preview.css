@@ -15,5 +15,6 @@
 .icon-arrow-left-cirle{
     background-image: url(../img/icon-arrow-left-cirle.png);
 }
+.count {display: none;}
 #audio-btn {top:80px;right:20px;}
 

@@ -1,45 +1,100 @@
-<html>
-<head>
-    <title>Angular JS Custom Directives</title>
-</head>
-<body ng-app='app'>
-<style>
-    .expander {
-        border: 1px solid black;
-        width: 250px;
-    }
+<section class="m-page hide">
+    <div class="m-img"><span class="count">1/2</span>
 
-    .expander>.title {
-        background-color: black;
-        color: white;
-        padding: .1em .3em;
-        cursor: pointer;
-    }
-
-    .expander>.body {
-        padding: .1em .3em;
-    }
-</style>
-<div ng-controller='MyController'>
-    <div ng-repeat='thing in things'>
-        {{thing}}.<hello></hello>
+        <div class="stage-content edit-area pages-img pages-img-bg active"
+             style="background-attachment: initial; background-origin: initial; background-clip: initial; background-color: initial; background-size: cover; width: 100%; height: 100%; background-image: url(file:///mnt/sdcard/wisape/com.wisape.android/data/story/20120118075657/img/20120118075703.jpg); background-position: 100% 100%; background-repeat: initial initial; ">
+            <div class="symbol">
+                <div class="pages-img edit-area"><img data-name="img1" style="" width="50" height="50"
+                                                      src="/mnt/sdcard/wisape/com.wisape.android/data/template/tpl1/img/icon-earth.png">
+                </div>
+            </div>
+            <div class="symbol" style="background:green;">
+                <div class="pages-img edit-area"><img data-name="img1" style="" width="50" height="50"
+                                                      src="/mnt/sdcard/wisape/com.wisape.android/data/template/tpl1/img/icon-earth.png">
+                </div>
+            </div>
+            <div class="symbol" style="z-index: 3;">
+                <div class="pages-txt edit-area" style="margin:70px auto;width:150px;color:#fff;text-align: center;">
+                    asdfasdasfadsfasdf As c update of the classictranslation corpus, the combination of network
+                    technology and language essence
+                </div>
+            </div>
+            <i class="ico-acitve"></i></div>
     </div>
-</div>
-<script src="../cs/public/js/angular.min.js"></script>
-<script>
-    var appModule = angular.module('app', []);
-    appModule.directive('hello', function() {
-        return {
-            restrict: 'E',
-            template: '<span>Hi there</span>',
-            replace: true
-        };
-    });
-    appModule.controller('MyController',function($scope) {
-        $scope.things = [1,2,3,4,5,6];
-    });
+</section>
+<section class="m-page hide">
+    <div class="m-img"><span class="count">2/2</span>
+        <div class="stage-content edit-area pages-img pages-img-bg active"
+             style="background-attachment: initial; background-origin: initial; background-clip: initial; background-color: initial; background-size: cover; width: 100%; height: 100%; background-image: url(file:///mnt/sdcard/wisape/com.wisape.android/data/story/20120118075657/img/20120118075717.jpg); background-position: 100% 100%; background-repeat: initial initial; ">
+            <div class="symbol">
+                <div class="pages-img edit-area"><img data-name="img1" style="" width="50" height="50"
+                                                      src="/mnt/sdcard/wisape/com.wisape.android/data/template/tpl1/img/icon-earth.png">
+                </div>
+            </div>
+            <div class="symbol" style="background:green;">
+                <div class="pages-img edit-area"><img data-name="img1" style="" width="50" height="50"
+                                                      src="/mnt/sdcard/wisape/com.wisape.android/data/template/tpl1/img/icon-earth.png">
+                </div>
+            </div>
+            <div class="symbol" style="z-index: 3;">
+                <div class="pages-txt edit-area" style="margin:70px auto;width:150px;color:#fff;text-align: center;">
+                    asdfasdasfadsfasdf As c update of the classictranslation corpus, the combination of network
+                    technology and language essence
+                </div>
+            </div>
+            <i class="ico-acitve"></i></div>
+    </div>
+</section>
+<section class="m-page hide">
+    <div class="m-img">
+        <div class="stage-content edit-area pages-img pages-img-bg"
+             style="background: url(/mnt/sdcard/wisape/com.wisape.android/data/template/tpl1/img/bg.jpg);background-size: cover;background-position:100% 100%;width:100%;height:100%;">
+            <div class="symbol">
+                <div class="pages-img edit-area"><img data-name="img1" style="" width="50" height="50"
+                                                      src="/mnt/sdcard/wisape/com.wisape.android/data/template/tpl1/img/icon-earth.png">
+                </div>
+            </div>
+            <div class="symbol" style="background:green;">
+                <div class="pages-img edit-area"><img data-name="img1" style="" width="50" height="50"
+                                                      src="/mnt/sdcard/wisape/com.wisape.android/data/template/tpl1/img/icon-earth.png">
+                </div>
+            </div>
+            <div class="symbol" style="z-index: 3;">
+                <div class="pages-txt edit-area" style="margin:70px auto;width:150px;color:#fff;text-align: center;">
+                    asdfasdasfadsfasdf As c update of the classictranslation corpus, the combination of network
+                    technology and language essence
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="m-page hide">
+    <div class="m-img">
+        <div class="stage-content edit-area pages-img pages-img
 
 
-</script>
-</body>
-</html>
+
+/mnt/sdcard/wisape/com.wisape.android/data/story/20120118073032/img/20120118073100.jpg,
+/mnt/sdcard/wisape/com.wisape.android/data/story/20120118073032/tpl1/img/icon-earth.png,
+/mnt/sdcard/wisape/com.wisape.android/data/story/20120118073032/tpl1/img/icon-earth.png,
+
+/mnt/sdcard/wisape/com.wisape.android/data/story/20120118073032/tpl1/img/bg.jpg,
+/mnt/sdcard/wisape/com.wisape.android/data/story/20120118073032/tpl1/img/icon-earth.png,
+/mnt/sdcard/wisape/com.wisape.android/data/story/20120118073032/tpl1/img/icon-earth.png,
+/mnt/sdcard/wisape/com.wisape.android/data/story/20120118073032/tpl1/img/bg.jpg,
+/mnt/sdcard/wisape/com.wisape.android/data/story/20120118073032/tpl1/img/icon-earth.png,
+
+/mnt/sdcard/wisape/com.wisape.android/data/story/20120118073032/tpl1/img/icon-earth.png,
+/mnt/sdcard/wisape/com.wisape.android/data/story/20120118073032/tpl1/img/bg.jpg,
+/mnt/sdcard/wisape/com.wisape.android/data/story/20120118073032/tpl1/img/icon-earth.png,
+/mnt/sdcard/wisape/com.wisape.android/data/story/20120118073032/tpl1/img/icon-earth.png,
+/mnt/sdcard/wisape/com.wisape.android/data/story/20120118073032/tpl1/img/bg.jpg,
+/mnt/sdcard/wisape/com.wisape.android/data/story/20120118073032/tpl1/img/icon-earth.png,
+/mnt/sdcard/wisape/com.wisape.android/data/story/20120118073032/tpl1/img/icon-earth.png,
+/mnt/sdcard/wisape/com.wisape.android/data/story/20120118073032/tpl1/img/bg.jpg,
+/mnt/sdcard/wisape/com.wisape.android/data/story/20120118073032/tpl1/img/icon-earth.png,
+/mnt/sdcard/wisape/com.wisape.android/data/story/20120118073032/tpl1/img/icon-earth.png,
+/mnt/sdcard/wisape/com.wisape.android/data/story/20120118073032/tpl1/img/bg.jpg,
+/mnt/sdcard/wisape/com.wisape.android/data/story/20120118073032/tpl1/img/icon-earth.png,
+/mnt/sdcard/wisape/com.wisape.android/data/story/20120118073032/tpl1/img/icon-earth.png at file:///android_asset/www/public/js/preview.js:30
+

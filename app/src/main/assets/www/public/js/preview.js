@@ -2,7 +2,7 @@ $(function(){
     $("#prBack").click(function(){
         console.info("prBack");
         cordova.exec(function(retval) {
-            showMessage(retval);
+            console(retval);
         }, function(e) {
         }, "StoryTemplate", "back", []);
     });
@@ -14,17 +14,20 @@ $(function(){
     });
     $("#publish").click(function(){
         console.info("#publish");
-        var retHtml = '<div  class="p-index main" id="con">',retImg = [], $con= $("#con");
-        retHtml += $con.html();
-        retHtml += '</div>';
+        var retHtml = '',retImg = [], $con= $("#con");
+        $con.find(".pages-item").each(function(i,v){
+            retHtml += '<section class="m-page hide" >' + $(this).html().replace("file://","") + "</section>";
+        })
         $con.find(".pages-img").each(function(){
             var me = $(this);
             if(me.hasClass("pages-img-bg")) {
-                retImg.push(me.css("background-image").split("url(")[1].split(")")[0]);
+                retImg.push((me.css("background-image").split("url(")[1].split(")")[0]+"").replace("file://",""));
             } else {
-                retImg.push(me.find("img").attr("src"));
+                retImg.push(me.find("img").attr("src").replace("file://",""));
             }
         });
+        console.info(retHtml);
+        console.info(retImg);
         cordova.exec(function(retval) {
         }, function(e) {
         }, "StoryTemplate", "publish", [retHtml,retImg]);

@@ -135,10 +135,6 @@ WisapeEditer = {
                 console.info("fonts:");
                 console.info(JSON.stringify(data.filePath));
                 console.info(data.fonts);
-
-                //data.fonts.each(function(i,v){
-                //    console.info(v);
-                //})
                 for (var i = 0; i < JSON.parse(data.fonts).length; i++) {
                     console.info(JSON.parse(data.fonts)[i])
                 }
@@ -180,15 +176,15 @@ WisapeEditer = {
         $("#storyPreview,#storySave").click(function () {
             var retHtml = '<div class="p-index main" id="con">', retImg = [],type="";
             for (var i = 0; i < WisapeEditer.storyData.length; i++) {
-                retHtml += '<section class="m-page hide" > <div class="m-img" >' + WisapeEditer.storyData[i] + '</div> </section>';
+                retHtml += '<section class="m-page hide pages-item" > <div class="m-img" >' + WisapeEditer.storyData[i].replace("file://","") + '</div> </section>';
             }
             retHtml += '<section class="u-arrow"><img src="file:///android_asset/www/public/img/btn01_arrow.png" /></section></div>';
             pageScroll.find(".pages-img").each(function () {
                 var me = $(this);
                 if (me.hasClass("pages-img-bg")) {
-                    retImg.push(me.css("background-image").split("url(")[1].split(")")[0]);
+                    retImg.push((me.css("background-image").split("url(")[1].split(")")[0]+"").replace("file://",""));
                 } else {
-                    retImg.push(me.find("img").attr("src"));
+                    retImg.push(me.find("img").attr("src").replace("file://",""));
                 }
             });
 
@@ -341,10 +337,12 @@ WisapeEditer = {
                 console.info("PhotoSelector:" + retval);
                 console.info("_me:" + _me.html());
                 console.info("_me.hasClass:" + _me.hasClass("pages-img-bg"));
+                var imgurl = retval.replace("file://","");
+                console.info(imgurl);
                 if (_me.hasClass("pages-img-bg")) {
-                    _me.css({"background-image": "url(" + retval + ")"})
+                    _me.css({"background-image": "url(" + imgurl + ")"})
                 } else {
-                    _me.find("img").attr({"src": retval})
+                    _me.find("img").attr({"src": imgurl})
                 }
 
                 WisapeEditer.storyData[WisapeEditer.selectedStagetIndex - 1] = pageScroll.find("li.active").html();
@@ -354,7 +352,7 @@ WisapeEditer = {
 
             }, function (e) {
                 alert("Error: " + e);
-            }, "PhotoSelector", "execute", [50,50]);
+            }, "PhotoSelector", "execute", wh);
             event.stopPropagation();
 
         });
@@ -366,9 +364,10 @@ WisapeEditer = {
                 pageScroll.find(".edit-area").removeClass("active");
                 _me.addClass("active");
                 return false;
-            }
-            ;
-            WisapeEditer.UpdateSelectedStage(WisapeEditer.selectedStagetIndex, _me.parents(".stage-content").find(".edit-area.active").index());
+            };
+            console.info("pages-txt click:" + _me.parents(".stage-content").html());
+            console.info("index:" + _me.parents(".stage-content").find(".edit-area.active"));
+            WisapeEditer.UpdateSelectedStage(WisapeEditer.selectedStagetIndex);
             WisapeEditer.ShowView('main', 'editorText');
             event.stopPropagation();
         });
@@ -409,13 +408,13 @@ WisapeEditer = {
         $("#editorText .backToMain").click(function () {//返回主界面，并保存
 
             var pagesScroll = $("#pages-scroll li").eq(WisapeEditer.selectedStagetIndex - 1);
-            var eidtPage = $("#editorText .pages");
-            eidtPage.find(".pages-txt").removeAttr("contenteditable").removeClass(preAnimation);
+            var editPage = $("#editorText .pages");
+            editPage.find(".pages-txt").removeAttr("contenteditable").removeClass(preAnimation);
             console.info(preAnimation);
-            eidtPage.find(".pages-txt").removeClass(preAnimation);
-            console.info(eidtPage.find(".pages-txt").parent().html());
-            console.info(eidtPage.html());
-            var ret = eidtPage.html();
+            editPage.find(".pages-txt").removeClass(preAnimation);
+            console.info(editPage.find(".pages-txt").parent().html());
+            console.info(editPage.html());
+            var ret = editPage.html();
             console.info("back html:" + ret);
             pagesScroll.html(ret);
 
@@ -608,21 +607,22 @@ WisapeEditer = {
     },
 
     //更新选中的主界面的stage
-    UpdateSelectedStage: function (tplIndex, symbolInex) {
+    UpdateSelectedStage: function (tplIndex) {
         var curPage = $("#pages-scroll li").eq(tplIndex - 1);
-        var eidtPage = $("#editorText .pages");
-        var curPagesTxt = eidtPage.find(".symbol").eq(symbolInex).find(".pages-txt");
+        var editPage = $("#editorText .pages");
+        var curPagesTxt = editPage.find(".edit-area.active");
         var curAnimation = "";
         //初始化编辑菜单
-        eidtPage.find(".opt-val-color").css({"color": curPagesTxt.css("color")});
+        editPage.find(".opt-val-color").css({"color": curPagesTxt.css("color")});
         if (curPagesTxt.attr("data-animation")) {
             curAnimation = curPagesTxt.attr("data-animation").split(" ")[1];
             console.info('i[data-animation=' + curAnimation + ']');
-            console.info(eidtPage.find(".anim-item").eq(0).html());
-            eidtPage.find('.anim-item i').eq(0).addClass("active");
+            console.info(editPage.find(".anim-item").eq(0).html());
+            editPage.find('.anim-item i').eq(0).addClass("active");
         }
-        console.info("symbolInex:" + eidtPage.find(".symbol").eq(symbolInex).html());
-        eidtPage.html(curPage.html()).find(".symbol").eq(symbolInex).addClass("active").find(".pages-txt").attr({"contenteditable": "true"});
+
+        editPage.html(curPage.html()).find(".edit-area.active").attr({"contenteditable": "true"});
+        console.info("editPage:" + editPage.html());
     },
 
     //生成发布，保存的story
