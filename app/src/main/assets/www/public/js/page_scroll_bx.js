@@ -287,7 +287,7 @@ var Msize = $(".m-page").size(), 	//页面的数目
 
 
 
-
+var gd = true;//true:无限滚动，false:到最后页不能再滚
 /*
 ** 页面加载初始化
 */
@@ -304,3 +304,19 @@ var Msize = $(".m-page").size(), 	//页面的数目
 	}(initPage());
 
 
+var lanren = {
+	changeClass: function (target, id) {
+		var className = $(target).attr('class');
+		var ids = document.getElementById(id);
+		(className == 'on') ? $(target).removeClass('on').addClass('off') : $(target).removeClass('off').addClass('on');
+		(className == 'on') ? ids.pause() : ids.play();
+	}, play: function () {
+		document.getElementById('media').play();
+	}
+}
+lanren.play();
+$(function () {
+	$("#audio-btn").click(function () {
+		lanren.changeClass(this, 'media')
+	});
+})

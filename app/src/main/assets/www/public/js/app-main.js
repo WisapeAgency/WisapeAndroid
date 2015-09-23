@@ -33,7 +33,9 @@ WisapeEditer = {
             });
 
             document.getElementById('menu-scroll').innerHTML = html;
-            menuScroll.iScroll({eventPassthrough: true, scrollX: true, scrollY: false, preventDefault: false});
+            var myMenuScroll;
+            set_wrap_width($("#menu-scroll"));
+            new IScroll('#menu-scroll', { scrollX: true, scrollY: false, mouseWheel: true });
             $("#menu-scroll").find("li").eq(0).addClass("active");
 
 
@@ -104,13 +106,8 @@ WisapeEditer = {
                     WisapeEditer.storyData = ret;
                     WisapeEditer.LoadStageList(ret, function () {
                         console.info("loadStageList succ");
-                        $("#pages-scroll").iScroll({
-                            scrollX: true,
-                            scrollY: false,
-                            mouseWheel: true,
-                            checkDOMChanges: true,
-                            preventDefault: false
-                        });
+                        set_wrap_width($("#pages-scroll"));
+                        new IScroll('#pages-scroll', { scrollX: true, scrollY: false, mouseWheel: true });
                     });
                     setTimeout(function () {
                         $("#tpmHtml").remove();
@@ -172,7 +169,7 @@ WisapeEditer = {
         })
 
 
-        //预览
+        //预览，保存
         $("#storyPreview,#storySave").click(function () {
             var retHtml = '<div class="p-index main" id="con">', retImg = [],type="";
             for (var i = 0; i < WisapeEditer.storyData.length; i++) {
@@ -330,7 +327,7 @@ WisapeEditer = {
             if (_me.hasClass("pages-img-bg")) {
                 wh = [800,1000]
             } else {
-                wh = [parseInt(_me.find("img").width()),parseInt(_me.find("img").height())];
+                wh = [parseInt(_me.find("img").width())<51 ? 200 : parseInt(_me.find("img").width()),parseInt(_me.find("img").height())<51 ? 200 : parseInt(_me.find("img").height())];
             }
             console.info("wh:" + wh);
             cordova.exec(function (retval) {
@@ -383,18 +380,17 @@ WisapeEditer = {
             console.info("WisapeEditer.storyData:");
             console.info(WisapeEditer.storyData);
 
-            if (WisapeEditer.storyData.length > 0) {
-                pageScroll.find("li").removeClass("active").find(".pages-img,.pages-txt").removeClass("active");
-                target.after('<li class="active"><span class="count">' + WisapeEditer.selectedStagetIndex++ + '/' + WisapeEditer.storyData.length + '</span>' + WisapeEditer.currentTplData + '</li>');
-            } else {
-                target.find("ul").html('<li class="active">' + WisapeEditer.currentTplData + '</li>');
-            }
+            //if (WisapeEditer.storyData.length > 0) {
+            //    pageScroll.find("li").removeClass("active").find(".pages-img,.pages-txt").removeClass("active");
+            //    target.after('<li class="active"><span class="count">' + WisapeEditer.selectedStagetIndex++ + '/' + WisapeEditer.storyData.length + '</span>' + WisapeEditer.currentTplData + '</li>');
+            //} else {
+            //    target.find("ul").html('<li class="active">' + WisapeEditer.currentTplData + '</li>');
+            //}
 
-            pageScroll.find("li").each(function (i) {
-                var me = $(this);
-                me.find(".count").html((i + 1) + "/" + WisapeEditer.storyData.length);
-            })
-
+            var html = '<li class="active"> <div class="stage-content edit-area pages-img pages-img-bg" style="background-image:url(../public/img/bg.png);background-size: cover;background-position:50% 50%;width:100%;height:100%;"> <div class="symbol" style="background:red;"> <div class="pages-img edit-area"><img data-name="img1" style="" src="../public/img/bg.png"/ width="50" height="50"> </div> </div> <div class="symbol" style="background: green;"> <div class="pages-img edit-area"><img data-name="img1" style="" src="../public/img/bg.png"/ width="50" height="50"> </div> </div> <div class="symbol" style="z-index: 3;"> <div class="pages-txt edit-area" style="margin:70px auto;width:150px;color:#fff;text-align: center;">As c update of the classictranslation corpus, the combination of network technology and language essence </div> </div> </div> </li>';
+            pageScroll.find("li").removeClass("active").find(".pages-img,.pages-txt").removeClass("active");
+            target.after('<li class="active"><span class="count">' + WisapeEditer.selectedStagetIndex++ + '/' + WisapeEditer.storyData.length + '</span>' + WisapeEditer.currentTplData + '</li>');
+            set_wrap_width(pageScroll);
             pageScroll.iScroll({
                 scrollX: true,
                 scrollY: false,
@@ -402,6 +398,10 @@ WisapeEditer = {
                 checkDOMChanges: true,
                 preventDefault: false
             });
+            pageScroll.find("li").each(function (i) {
+                var me = $(this);
+                me.find(".count").html((i + 1) + "/" + WisapeEditer.storyData.length);
+            })
         })
 
         //文本编辑事件
@@ -687,5 +687,17 @@ function loadjscssfile(filename, filetype) {
         document.getElementsByTagName("head")[0].appendChild(fileref);
     }
 
+}
+
+function set_wrap_width(dom){
+    var wid = 0;
+    var ul = dom.find('ul');
+    var li = dom.find('li');
+    li.each(function(){
+        wid += $(this).outerWidth(true);
+    });
+    ul.css('width',wid+1);
+    console.info("scroll width:" + (wid+1));
+    console.info("scroll length:" + li.length);
 }
 
