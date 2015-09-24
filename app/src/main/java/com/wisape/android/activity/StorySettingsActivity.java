@@ -4,19 +4,16 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatTextView;
 import android.widget.ImageView;
 
-import com.squareup.picasso.Picasso;
 import com.wisape.android.R;
 import com.wisape.android.common.StoryManager;
-import com.wisape.android.content.StoryBroadcastReciver;
-import com.wisape.android.content.StoryBroadcastReciverListener;
 import com.wisape.android.database.StoryEntity;
 import com.wisape.android.database.StoryMusicEntity;
 import com.wisape.android.model.StoryGestureInfo;
-import com.wisape.android.util.EnvironmentUtils;
 import com.wisape.android.util.Utils;
 
 import java.io.File;
@@ -30,12 +27,14 @@ import butterknife.OnClick;
  * Created by tony on 2015/7/21.
  */
 public class StorySettingsActivity extends BaseActivity {
-    private static final int LOADER_UPATE_SETTINGS = 0x01;
 
-    private static final int WIDTH = 800;
-    private static final int HEIGHT = 1200;
+    private static final int WIDTH = 600;
+    private static final int HEIGHT = 800;
+    public static final int REQEUST_CODE_CROP_IMG = 0x01;
 
-    public static final int REQUEST_SETTING = 1;
+    private Uri bgUri;
+
+
 
     public static void launch(Activity activity, int requestCode) {
         Intent intent = new Intent(activity.getApplicationContext(), StorySettingsActivity.class);
@@ -73,14 +72,8 @@ public class StorySettingsActivity extends BaseActivity {
         if (!Utils.isEmpty(storyDesc)) {
             storyDescEdit.setText(storyDesc);
         }
+        Utils.loadImg(this,storyEntity.storyThumbUri,storyBgView);
 
-        String uri = storyEntity.storyThumbUri;
-        if (null != uri) {
-            Picasso.with(this).load(new File(uri))
-                    .resize(150, 150)
-                    .centerCrop()
-                    .into(storyBgView);
-        }
         String storyMusicName = storyEntity.storyMusicName;
         if (!Utils.isEmpty(storyMusicName)) {
             storyMusicTxtv.setText(storyMusicName);
@@ -134,22 +127,33 @@ public class StorySettingsActivity extends BaseActivity {
             case PhotoSelectorActivity.REQUEST_CODE_PHOTO:
                 if (RESULT_OK == resultCode) {
                     Uri imageUri = data.getParcelableExtra(PhotoSelectorActivity.EXTRA_IMAGE_URI);
-                    File file = new File(StoryManager.getStoryDirectory(), storyEntity.storyName + "/thumb");
-                    if (null != imageUri) {
-                        CutActivity.launch(this, imageUri, WIDTH, HEIGHT,file.getAbsolutePath(), CutActivity.RQEUST_CODE_CROP_IMG);
-                    }
+                    File file = new File(StoryManager.getStoryDirectory(), storyEntity.storyName + "/thumb.jpg");
+                    bgUri = Uri.fromFile(file);
+
+                    Intent intent = new Intent("com.android.camera.action.CROP");
+                    intent.setDataAndType(imageUri, "image/*");
+                    //下面这个crop=true是设置在开启的Intent中设置显示的VIEW可裁剪
+                    intent.putExtra("crop", "true");
+                    // aspectX aspectY 是宽高的比例
+                    intent.putExtra("aspectX", 1);
+                    intent.putExtra("aspectY", 2);
+                    intent.putExtra("scale", false);
+
+                    // outputX outputY 是裁剪图片宽高
+                    intent.putExtra("outputX", WIDTH);
+                    intent.putExtra("outputY", HEIGHT);
+                    intent.putExtra("return-data", false);
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, bgUri);
+                    intent.putExtra("noFaceDetection", true); // no face detection
+                    startActivityForResult(intent, REQEUST_CODE_CROP_IMG);
                 }
                 break;
 
-            case CutActivity.RQEUST_CODE_CROP_IMG:
+            case REQEUST_CODE_CROP_IMG:
                 if (RESULT_OK == resultCode) {
-                    String storyCoverUri = data.getStringExtra(CutActivity.EXTRA_IMAGE_URI);
-                    if (null != storyCoverUri) {
-                        storyEntity.storyThumbUri = storyCoverUri.toString();
-                        Picasso.with(this).load(new File(storyCoverUri))
-                                .resize(80, 80)
-                                .centerCrop()
-                                .into(storyBgView);
+                    if (null != bgUri) {
+                        storyEntity.storyThumbUri = bgUri.getPath();
+                        Utils.loadImg(this,storyEntity.storyThumbUri,storyBgView);
                     }
                 }
                 break;
@@ -164,8 +168,7 @@ public class StorySettingsActivity extends BaseActivity {
                 if (RESULT_OK == resultCode) {
                     StoryMusicEntity selectedMusic = data.getParcelableExtra(StoryMusicActivity.EXTRA_SELECTED_MUSIC);
                     this.storyEntity.storyMusicName = selectedMusic.name;
-                    String path = Uri.parse(selectedMusic.musicLocal).getPath();
-                    this.storyEntity.storyMusicLocal = path;
+                    this.storyEntity.storyMusicLocal = Uri.parse(selectedMusic.musicLocal).getPath();
                     this.storyMusicTxtv.setText(selectedMusic.name);
                     this.storyEntity.musicServerId = selectedMusic.serverId;
                 }
@@ -196,6 +199,5 @@ public class StorySettingsActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         ButterKnife.reset(this);
-        Intent intent = new Intent();
     }
 }

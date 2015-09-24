@@ -56,7 +56,7 @@ public class TestActivity extends BaseActivity{
     @SuppressWarnings("unused")
     protected void doQr(){
         //startLoad(6, null);
-        StoryReleaseActivity.launch(this, StoryReleaseActivity.REQUEST_CODE_STORY_RELEASE);
+//        StoryReleaseActivity.launch(this, StoryReleaseActivity.REQUEST_CODE_STORY_RELEASE);
     }
 
     @OnClick(R.id.list_template)
@@ -93,7 +93,6 @@ public class TestActivity extends BaseActivity{
     /**
      * 分享功能
      *
-     * @param context
      *            上下文
      * @param activityTitle
      *            Activity的名字

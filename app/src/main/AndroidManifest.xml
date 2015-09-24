@@ -123,10 +123,6 @@
 
         </activity>
 
-        <activity android:name=".activity.CutActivity"
-            android:label="@string/crop_activity_label"
-            android:screenOrientation="portrait"/>
-
         <activity
             android:name=".activity.AboutWebViewActivity"
             android:screenOrientation="portrait" />

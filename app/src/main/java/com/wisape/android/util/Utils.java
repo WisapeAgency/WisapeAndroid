@@ -22,6 +22,7 @@ import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.zxing.BarcodeFormat;
@@ -29,6 +30,7 @@ import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
+import com.squareup.picasso.Picasso;
 import com.wisape.android.R;
 import com.wisape.android.activity.BaseActivity;
 import com.wisape.android.activity.MainActivity;
@@ -37,6 +39,7 @@ import com.wisape.android.activity.MessageCenterDetailActivity;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -158,7 +161,7 @@ public class Utils {
         return code;
     }
 
-    public static String getCountry(Context context){
+    public static String getCountry(Context context) {
         return context.getResources().getConfiguration().locale.getCountry();
     }
 
@@ -174,13 +177,13 @@ public class Utils {
         return true;
     }
 
-    public static void sendNotificatio(Context context,Class<? extends BaseActivity> activity,int msgId,String msgTile,String msgSubject){
+    public static void sendNotificatio(Context context, Class<? extends BaseActivity> activity, int msgId, String msgTile, String msgSubject) {
 
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         Intent intent = getIntent(context, activity, msgId);
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(context,0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         Notification notify = new Notification.Builder(context)
                 .setSmallIcon(R.mipmap.logo)
                 .setTicker(msgTile)
@@ -194,9 +197,9 @@ public class Utils {
         manager.notify(1, notify);
     }
 
-    private static Intent getIntent(Context context,Class<? extends BaseActivity> activity,int messageID){
-        Intent intent = new Intent(context,activity);
-        intent.putExtra(MessageCenterDetailActivity.MESSAGE_ID,messageID);
+    private static Intent getIntent(Context context, Class<? extends BaseActivity> activity, int messageID) {
+        Intent intent = new Intent(context, activity);
+        intent.putExtra(MessageCenterDetailActivity.MESSAGE_ID, messageID);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         return intent;
     }
@@ -207,10 +210,8 @@ public class Utils {
     /**
      * 生成一个二维码图像
      *
-     * @param url
-     *            传入的字符串，通常是一个URL
-     * @param widthAndHeight
-     *           图像的宽高
+     * @param url            传入的字符串，通常是一个URL
+     * @param widthAndHeight 图像的宽高
      * @return
      */
     public static Bitmap createQRCode(String url, int widthAndHeight)
@@ -227,7 +228,7 @@ public class Utils {
             for (int x = 0; x < width; x++) {
                 if (matrix.get(x, y)) {
                     pixels[y * width + x] = BLACK;
-                }else{
+                } else {
                     pixels[y * width + x] = WITHE;
                 }
             }
@@ -238,24 +239,38 @@ public class Utils {
         return bitmap;
     }
 
-    public static void clipText(Context context,String text){
+    public static void clipText(Context context, String text) {
         if (android.os.Build.VERSION.SDK_INT > 11) {
             ClipboardManager clip = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
             clip.setPrimaryClip(ClipData.newPlainText("http://www.baiud.com", text));
-        }else{
-            android.text.ClipboardManager c = (android.text.ClipboardManager)context.getSystemService(Context.CLIPBOARD_SERVICE);
+        } else {
+            android.text.ClipboardManager c = (android.text.ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
             c.setText(text);
         }
     }
 
-    public static boolean isEmpty(String str){
-        if(null == str || "".equals(str.trim())){
+    public static boolean isEmpty(String str) {
+        if (null == str || "".equals(str.trim())) {
             return true;
         }
         return false;
     }
 
-    public static void showToast(Context context,String msg){
+    public static void showToast(Context context, String msg) {
         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
     }
+
+    public static void loadImg(Context context, String imgPath, ImageView imageView) {
+        if (imgPath.contains("http")) {
+            Picasso.with(context).load(imgPath)
+                    .placeholder(R.mipmap.icon_camera)
+                    .error(R.mipmap.icon_login_email)
+                    .into(imageView);
+        } else {
+            Picasso.with(context).load(new File(imgPath))
+                    .placeholder(R.mipmap.icon_camera)
+                    .error(R.mipmap.icon_login_email).into(imageView);
+        }
+    }
+
 }

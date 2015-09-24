@@ -30,9 +30,7 @@ import com.wisape.android.model.StoryFontInfo;
 import com.wisape.android.model.StoryInfo;
 import com.wisape.android.model.StoryMusicInfo;
 import com.wisape.android.model.StoryMusicTypeInfo;
-import com.wisape.android.model.StorySettingsInfo;
 import com.wisape.android.model.StoryTemplateInfo;
-import com.wisape.android.model.UserInfo;
 import com.wisape.android.network.Downloader;
 import com.wisape.android.network.Requester;
 import com.wisape.android.util.EnvironmentUtils;
@@ -57,19 +55,22 @@ import java.util.Map;
 
 import static com.wisape.android.api.ApiStory.AttrStoryInfo.STORY_STATUS_DELETE;
 import static com.wisape.android.api.ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE;
-import static com.wisape.android.api.ApiStory.AttrStoryInfo.STORY_STATUS_TEMPORARY;
 
 /**
+ * 业务逻辑
  * Created by LeiGuoting on 9/7/15.
  */
 public class StoryLogic {
     private static final String TAG = StoryLogic.class.getSimpleName();
+
     private static final String SUFFIX_STORY_COMPRESS = "wis";
     public static final String PREFERENCES = "_story";
     private static final String EXTRA_STORY_TEMPLATE_TYPE = "_story_template_type";
-
     private static final String ATTR_ACCESS_TOKEN = "access_token";
     private static final String ATTR_STORY_ID = "sid";
+    private static final String ATTR_STORY_NAME = "story_name";
+    private static final String ATTR_STORY_DESC = "description";
+    private static final String ATTR_STORY_IMG = "small_img";
 
     public static StoryLogic instance() {
         return new StoryLogic();
@@ -81,7 +82,7 @@ public class StoryLogic {
     public void update(Context context, ApiStory.AttrStoryInfo attr, Object tag) {
         final String storyStatus = attr.storyStatus;
         if (null == storyStatus || 0 == storyStatus.length() || STORY_STATUS_DELETE.equals(storyStatus)) {
-            return ;
+            return;
         }
         Uri storyUri = attr.story;
         Log.d(TAG, "#update story' uri:" + storyUri);
@@ -131,7 +132,6 @@ public class StoryLogic {
 
         try {
             Dao<StoryEntity, Long> storyDao = helper.getDao(StoryEntity.class);
-            boolean createIfNeed = true;
             if (STORY_STATUS_RELEASE.equals(storyStatus)) {
                 QueryBuilder<StoryEntity, Long> qb = storyDao.queryBuilder();
                 Where<StoryEntity, Long> where = qb.where();
@@ -154,51 +154,46 @@ public class StoryLogic {
         }
     }
 
+//    public StoryInfo[] listStory(Context context, Object tag) {
+//        DatabaseHelper helper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
+//        StoryInfo[] storyArray = null;
+//        try {
+//            Dao<StoryEntity, Long> storyDao = helper.getDao(StoryEntity.class);
+//            QueryBuilder<StoryEntity, Long> builder = storyDao.queryBuilder();
+//            Where<StoryEntity, Long> where = builder.where();
+//            where.eq("status", ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE);
+//            where.eq("status", ApiStory.AttrStoryInfo.STORY_STATUS_TEMPORARY);
+//            builder.orderBy("status", false);
+//            List<StoryEntity> storyList = builder.query();
+//            int size = (null == storyList ? 0 : storyList.size());
+//            if (0 < size) {
+//                storyArray = new StoryInfo[size];
+//                int index = 0;
+//                for (StoryEntity entity : storyList) {
+//                    storyArray[index] = StoryEntity.convert(entity);
+//                }
+//            }
+//        } catch (SQLException e) {
+//            Log.e(TAG, "", e);
+//            throw new IllegalStateException(e);
+//        } finally {
+//            OpenHelperManager.releaseHelper();
+//        }
+//        return storyArray;
+//    }
 
-    public StoryInfo[] listReleaseStory(Context context, Object tag) {
-        return null;
-    }
-
-    public StoryInfo[] listStory(Context context, Object tag) {
-        DatabaseHelper helper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
-        StoryInfo[] storyArray = null;
-        try {
-            Dao<StoryEntity, Long> storyDao = helper.getDao(StoryEntity.class);
-            QueryBuilder<StoryEntity, Long> builder = storyDao.queryBuilder();
-            Where<StoryEntity, Long> where = builder.where();
-            where.eq("status", ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE);
-            where.eq("status", ApiStory.AttrStoryInfo.STORY_STATUS_TEMPORARY);
-            builder.orderBy("status", false);
-            List<StoryEntity> storyList = builder.query();
-            int size = (null == storyList ? 0 : storyList.size());
-            if (0 < size) {
-                storyArray = new StoryInfo[size];
-                int index = 0;
-                for (StoryEntity entity : storyList) {
-                    storyArray[index] = StoryEntity.convert(entity);
-                }
-            }
-        } catch (SQLException e) {
-            Log.e(TAG, "", e);
-            throw new IllegalStateException(e);
-        } finally {
-            OpenHelperManager.releaseHelper();
-        }
-        return storyArray;
-    }
-
-    public StoryEntity getStoryLocalById(Context context, int id) {
-        DatabaseHelper helper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
-        try {
-            Dao<StoryEntity, Integer> storyDao = helper.getDao(StoryEntity.class);
-            return storyDao.queryForId(id);
-        } catch (SQLException e) {
-            Log.e(TAG, "", e);
-            throw new IllegalStateException(e);
-        } finally {
-            OpenHelperManager.releaseHelper();
-        }
-    }
+//    public StoryEntity getStoryLocalById(Context context, int id) {
+//        DatabaseHelper helper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
+//        try {
+//            Dao<StoryEntity, Integer> storyDao = helper.getDao(StoryEntity.class);
+//            return storyDao.queryForId(id);
+//        } catch (SQLException e) {
+//            Log.e(TAG, "", e);
+//            throw new IllegalStateException(e);
+//        } finally {
+//            OpenHelperManager.releaseHelper();
+//        }
+//    }
 
     public boolean saveStoryLocal(Context context, StoryEntity story) {
         DatabaseHelper helper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
@@ -251,28 +246,28 @@ public class StoryLogic {
         }
     }
 
-    public StoryMusicTypeEntity[] listStoryMusicTypeLocal(Context context) {
-        DatabaseHelper helper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
-        StoryMusicTypeEntity storyMusicTypeArray[];
-        Dao<StoryMusicTypeEntity, Long> dao;
-        try {
-            dao = helper.getDao(StoryMusicTypeEntity.class);
-            List<StoryMusicTypeEntity> storyMusicTypeList = dao.queryForAll();
-            int count = (null == storyMusicTypeList ? 0 : storyMusicTypeList.size());
-            if (0 == count) {
-                storyMusicTypeArray = null;
-            } else {
-                storyMusicTypeArray = new StoryMusicTypeEntity[count];
-                storyMusicTypeArray = storyMusicTypeList.toArray(storyMusicTypeArray);
-            }
-        } catch (SQLException e) {
-            Log.e(TAG, "", e);
-            throw new IllegalStateException(e);
-        } finally {
-            OpenHelperManager.releaseHelper();
-        }
-        return storyMusicTypeArray;
-    }
+//    public StoryMusicTypeEntity[] listStoryMusicTypeLocal(Context context) {
+//        DatabaseHelper helper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
+//        StoryMusicTypeEntity storyMusicTypeArray[];
+//        Dao<StoryMusicTypeEntity, Long> dao;
+//        try {
+//            dao = helper.getDao(StoryMusicTypeEntity.class);
+//            List<StoryMusicTypeEntity> storyMusicTypeList = dao.queryForAll();
+//            int count = (null == storyMusicTypeList ? 0 : storyMusicTypeList.size());
+//            if (0 == count) {
+//                storyMusicTypeArray = null;
+//            } else {
+//                storyMusicTypeArray = new StoryMusicTypeEntity[count];
+//                storyMusicTypeArray = storyMusicTypeList.toArray(storyMusicTypeArray);
+//            }
+//        } catch (SQLException e) {
+//            Log.e(TAG, "", e);
+//            throw new IllegalStateException(e);
+//        } finally {
+//            OpenHelperManager.releaseHelper();
+//        }
+//        return storyMusicTypeArray;
+//    }
 
     public StoryMusicAdapter.StoryMusicDataInfo[] listMusicUIDataLocal(Context context) {
         DatabaseHelper helper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
@@ -504,19 +499,19 @@ public class StoryLogic {
         return storyTemplateInfoList;
     }
 
-    public StoryTemplateEntity getStoryTemplateLocalById(Context context, int id) {
-        DatabaseHelper helper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
-        Dao<StoryTemplateEntity, Integer> dao;
-        try {
-            dao = helper.getDao(StoryTemplateEntity.class);
-            return dao.queryForId(id);
-        } catch (SQLException e) {
-            Log.e(TAG, "", e);
-            throw new IllegalStateException(e);
-        } finally {
-            OpenHelperManager.releaseHelper();
-        }
-    }
+//    public StoryTemplateEntity getStoryTemplateLocalById(Context context, int id) {
+//        DatabaseHelper helper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
+//        Dao<StoryTemplateEntity, Integer> dao;
+//        try {
+//            dao = helper.getDao(StoryTemplateEntity.class);
+//            return dao.queryForId(id);
+//        } catch (SQLException e) {
+//            Log.e(TAG, "", e);
+//            throw new IllegalStateException(e);
+//        } finally {
+//            OpenHelperManager.releaseHelper();
+//        }
+//    }
 
     public StoryTemplateEntity[] listStoryTemplate(Context context, ApiStory.AttrTemplateInfo attrInfo, Object tag) {
         ApiStory api = ApiStory.instance();
@@ -646,7 +641,7 @@ public class StoryLogic {
 
         //save to local
         SharedPreferences preferences = getSharedPreferences(context);
-        preferences.edit().putString(EXTRA_STORY_TEMPLATE_TYPE, templateTypeJson.toString()).commit();
+        preferences.edit().putString(EXTRA_STORY_TEMPLATE_TYPE, templateTypeJson.toString()).apply();
         return templateTypeJson;
     }
 
@@ -673,7 +668,10 @@ public class StoryLogic {
 
         StoryInfo defaultStoryInfo = getDefaultStoryInfo();
         if (null != defaultStoryInfo) {
-            storyEntitYList.add(0, StoryEntity.transform(defaultStoryInfo));
+            StoryEntity defaultEntity = StoryEntity.transform(defaultStoryInfo);
+            defaultEntity.storyLocal = defaultStoryInfo.story_name;
+            defaultEntity.status = -1+"";
+            storyEntitYList.add(0, defaultEntity);
             downLoadStory(defaultStoryInfo);
         }
 
@@ -687,7 +685,6 @@ public class StoryLogic {
         List<StoryEntity> storyLocalEntityList = getUserStoryFromLocal(WisapeApplication.getInstance()
                 .getApplicationContext());
         storyEntitYList.addAll(storyLocalEntityList);
-
 
         Message message = Message.obtain();
         message.arg1 = HttpUrlConstancts.STATUS_SUCCESS;
@@ -749,8 +746,6 @@ public class StoryLogic {
 
     /**
      * 从数据库查询查询用户所有的story
-     *
-     * @param context
      */
     private List<StoryEntity> getUserStoryFromLocal(Context context) {
         long userId = WisapeApplication.getInstance().getUserInfo().user_id;
@@ -817,15 +812,6 @@ public class StoryLogic {
         }
     }
 
-    /**
-     * 删除服务器与本地数据库story
-     *
-     * @param context
-     * @param storyEntity
-     * @param access_token
-     * @param isServer
-     * @return
-     */
     public Message deleteStory(Context context, StoryEntity storyEntity, String access_token, boolean isServer) {
         Message message = Message.obtain();
         if (isServer) {
@@ -838,6 +824,7 @@ public class StoryLogic {
             } catch (IOException e) {
                 Log.e(TAG, "删除服务器上用户story失败");
                 message.arg1 = HttpUrlConstancts.STATUS_EXCEPTION;
+                return  message;
             }
         }
         deleteLocalStroy(context, storyEntity);
@@ -847,13 +834,9 @@ public class StoryLogic {
 
     /**
      * 删除本地数据库story
-     *
-     * @param storyEntity
-     * @return
      */
     private void deleteLocalStroy(Context context, StoryEntity storyEntity) {
         storyEntity.status = ApiStory.AttrStoryInfo.STORY_STATUS_DELETE;
-        long userId = WisapeApplication.getInstance().getUserInfo().user_id;
         DatabaseHelper databaseHelper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
         Dao<StoryEntity, Log> dao;
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
@@ -873,9 +856,9 @@ public class StoryLogic {
     /**
      * 更新本地数据story信息
      *
-     * @param context
-     * @param storyEntity
-     * @return
+     * @param context     上下文
+     * @param storyEntity 需要新增或者修改的实体
+     * @return 出入数据库后返回的实体
      */
     public StoryEntity updateStory(Context context, StoryEntity storyEntity) {
         storyEntity.status = ApiStory.AttrStoryInfo.STORY_STATUS_TEMPORARY;
@@ -904,42 +887,11 @@ public class StoryLogic {
         }
     }
 
-    /**
-     * 发布story更新状态
-     *
-     * @param context
-     * @param storyEntity
-     */
-    public void publish(Context context, StoryEntity storyEntity) {
-//        String status = storyEntity.status;
-//        DatabaseHelper databaseHelper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
-//        Dao<StoryEntity, Integer> dao;
-//        SQLiteDatabase database = databaseHelper.getWritableDatabase();
-//        database.beginTransaction();
-//        storyEntity.status = "1";
-//        try {
-//            dao = databaseHelper.getDao(StoryEntity.class);
-//            int result = dao.update(storyEntity);
-//            database.setTransactionSuccessful();
-//        } catch (SQLException e) {
-//            Log.e(TAG, e.getMessage());
-//        } finally {
-//            database.endTransaction();
-//            OpenHelperManager.releaseHelper();
-//        }
-//        storyEntity.status = status;
-    }
-
 
     /**
      * 更新story设置
-     *
-     * @param storyId
-     * @param storyName
-     * @param filePath
-     * @param desc
      */
-    public Message updateStorySetting(long storyId, String storyName, String filePath, String desc) {
+    public Message updateStorySetting(StoryEntity storyEntity, String storyName, String filePath, String desc) {
         String iconBase64 = "";
         if (null != filePath && !"".equals(filePath)) {
             iconBase64 = FileUtils.base64ForImage(filePath);
@@ -947,7 +899,7 @@ public class StoryLogic {
         RequestBody formBody = new FormEncodingBuilder()
                 .add(ATTR_STORY_NAME, storyName)
                 .add(ATTR_STORY_DESC, desc)
-                .add(ATTR_STORY_ID, storyId + "")
+                .add(ATTR_STORY_ID, storyEntity.storyServerId + "")
                 .add(ATTR_STORY_IMG, iconBase64)
                 .build();
         Message message = Message.obtain();
@@ -955,16 +907,17 @@ public class StoryLogic {
         try {
             StoryInfo storyInfo = OkhttpUtil.executePost(HttpUrlConstancts.STORY_SETTING, formBody, StoryInfo.class);
             message.arg1 = HttpUrlConstancts.STATUS_SUCCESS;
-            message.obj = storyInfo;
+            //同时更新本地数据库
+            storyEntity.storyThumbUri = storyInfo.small_img;
+            storyEntity.storyName = storyInfo.story_name;
+            storyEntity.storyDesc = storyInfo.description;
+            storyEntity = updateStory(WisapeApplication.getInstance(),storyEntity);
+            message.obj = storyEntity;
+
         } catch (Exception e) {
             message.arg1 = HttpUrlConstancts.STATUS_EXCEPTION;
             message.obj = e.getMessage();
         }
         return message;
     }
-
-    private static final String ATTR_STORY_NAME = "story_name";
-    private static final String ATTR_STORY_DESC = "description";
-    private static final String ATTR_STORY_IMG = "small_img";
-
 }

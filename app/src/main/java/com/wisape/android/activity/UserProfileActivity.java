@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.widget.ImageView;
@@ -32,11 +33,12 @@ public class UserProfileActivity extends BaseActivity {
     private static final String TAG = UserProfileActivity.class.getSimpleName();
 
     public static final int REQUEST_CODE_PROFILE = 0x102;
+    public static final int REQEUST_CODE_CROP_IMG = 0x01;
 
     private static final int LOADER_WHAT_PROFILE_UPDATE = 1;
 
-    private static final int WIDTH = 400;
-    private static final int HEIGHT = 600;
+    private static final int WIDTH = 200;
+    private static final int HEIGHT = 200;
 
     public static final String EXTRAS_EMAIL = "email";
     public static final String EXTRAS_NAME = "nickName";
@@ -57,7 +59,7 @@ public class UserProfileActivity extends BaseActivity {
     @InjectView(R.id.user_profile_email_edit)
     protected TextView emailEdit;
 
-    private String userIconUri;
+    private Uri userIconUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,11 +72,7 @@ public class UserProfileActivity extends BaseActivity {
         emailEdit.setText(wisapeApplication.getUserInfo().user_email);
         String iconUrl = wisapeApplication.getUserInfo().user_ico_n;
         if (null != iconUrl && 0 < iconUrl.length()) {
-            Picasso.with(this).load(Uri.parse(iconUrl))
-                    .resize(150, 150)
-                    .transform(new CircleTransform())
-                    .centerCrop()
-                    .into(iconView);
+            Utils.loadImg(this,iconUrl,iconView);
         }
     }
 
@@ -131,7 +129,7 @@ public class UserProfileActivity extends BaseActivity {
         Bundle args = new Bundle();
         args.putString(EXTRAS_NAME, newName);
         args.putString(EXTRAS_EMAIL, newEmail);
-        args.putString(EXTRAS_ICON_URI, userIconUri);
+        args.putString(EXTRAS_ICON_URI,userIconUri.getPath());
         startLoadWithProgress(LOADER_WHAT_PROFILE_UPDATE, args);
     }
 
@@ -147,10 +145,10 @@ public class UserProfileActivity extends BaseActivity {
     @Override
     protected void onLoadCompleted(Message data) {
         super.onLoadCompleted(data);
-        if(STATUS_SUCCESS == data.arg1){
+        if (STATUS_SUCCESS == data.arg1) {
             wisapeApplication.setUserInfo((UserInfo) data.obj);
             setResult(RESULT_OK);
-        }else{
+        } else {
             showToast((String) data.obj);
             setResult(RESULT_CANCELED);
         }
@@ -183,17 +181,34 @@ public class UserProfileActivity extends BaseActivity {
                     if (!file.exists()) {
                         file.mkdirs();
                     }
-                    File head = new File(file, Utils.acquireUTCTimestamp());
-                    CutActivity.launch(this, imgUri,WIDTH,HEIGHT,head.getAbsolutePath(),CutActivity.RQEUST_CODE_CROP_IMG);
+                    File head = new File(file, Utils.acquireUTCTimestamp()+".jpg");
+                    userIconUri = Uri.fromFile(head);
+
+                    Intent intent = new Intent("com.android.camera.action.CROP");
+                    intent.setDataAndType(imgUri, "image/*");
+                    //下面这个crop=true是设置在开启的Intent中设置显示的VIEW可裁剪
+                    intent.putExtra("crop", "true");
+                    // aspectX aspectY 是宽高的比例
+                    intent.putExtra("aspectX", 1);
+                    intent.putExtra("aspectY", 1);
+                    intent.putExtra("scale", false);
+
+                    // outputX outputY 是裁剪图片宽高
+                    intent.putExtra("outputX", WIDTH);
+                    intent.putExtra("outputY", HEIGHT);
+                    intent.putExtra("return-data", false);
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, userIconUri);
+                    intent.putExtra("noFaceDetection", true); // no face detection
+                    startActivityForResult(intent, REQEUST_CODE_CROP_IMG);
+
                     break;
-                case CutActivity.RQEUST_CODE_CROP_IMG:
-                    userIconUri = extras.getString(CutActivity.EXTRA_IMAGE_URI);
-                    if (null != userIconUri) {
-                        Picasso.with(this).load(new File(userIconUri))
+                case REQEUST_CODE_CROP_IMG:
+                    if(null != userIconUri){
+                        Utils.loadImg(this,userIconUri.getPath(),iconView);
+                        Picasso.with(this).load(new File(userIconUri.getPath()))
                                 .resize(150, 150)
                                 .transform(new CircleTransform())
-                                .placeholder(R.mipmap.icon_camera)
-                                .error(R.mipmap.icon_about_logo)
+
                                 .centerCrop()
                                 .into(iconView);
                     }

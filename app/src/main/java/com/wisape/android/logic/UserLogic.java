@@ -1,7 +1,6 @@
 package com.wisape.android.logic;
 
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Message;
 import android.util.Base64;
 import android.util.Log;
@@ -13,7 +12,6 @@ import com.wisape.android.WisapeApplication;
 import com.wisape.android.http.HttpUrlConstancts;
 import com.wisape.android.http.OkhttpUtil;
 import com.wisape.android.model.UserInfo;
-import com.wisape.android.network.DataSynchronizer;
 import com.wisape.android.util.FileUtils;
 
 import java.io.IOException;

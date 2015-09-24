@@ -58,38 +58,6 @@ public class PhotoSelectorActivity extends AppCompatActivity implements LoaderMa
         activity.startActivityForResult(intent,requestCode);
     }
 
-//    public static Uri buildCropUri(Context context, int type){
-//        if(!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())){
-//            throw new IllegalStateException("We can not found External Storage.");
-//        }
-//
-//        File parentDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-//        final String header = String.format("_crop_%1$s", Integer.toString(type));
-//        final String parentPath = parentDir.getPath();
-//        String[] children = parentDir.list(new FilenameFilter() {
-//            @Override
-//            public boolean accept(File dir, String filename) {
-//                return dir.getPath().equals(parentPath) && filename.startsWith(header);
-//            }
-//        });
-//
-//        int count = (null == children ? 0 : children.length);
-//        if(0 < count){
-//            File child;
-//            for (String path : children){
-//                child = new File(path);
-//                if(child.exists() && !child.delete()){
-//                    child.deleteOnExit();
-//                }
-//            }
-//        }
-//        String fileName = String.format("%1$s_%2$s.jpeg", header, Long.toString(SystemClock.uptimeMillis()));
-//        File cropPhoto = new File(parentDir,  fileName);
-//        Uri uri = Uri.fromFile(cropPhoto);
-//        Log.d(TAG, "#buildCropUri uri:" + uri);
-//        return uri;
-//    }
-
     private long bucketId;
 
     @Override

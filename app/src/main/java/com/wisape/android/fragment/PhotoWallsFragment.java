@@ -66,7 +66,8 @@ public class PhotoWallsFragment extends AbsFragment implements PhotoWallsAdapter
             startActivityForResult(intent, REQUEST_CODE_CAMERA);
         }else{
             if(null != callback){
-                callback.onPhotoSelected(Uri.parse(photo.data));
+                File file = new File(photo.data);
+                callback.onPhotoSelected(Uri.fromFile(file));
             }
         }
     }

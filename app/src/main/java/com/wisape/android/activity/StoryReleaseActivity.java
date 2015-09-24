@@ -1,11 +1,11 @@
 package com.wisape.android.activity;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.support.v7.widget.AppCompatEditText;
 import android.util.Log;
 import android.widget.ImageView;
@@ -19,7 +19,6 @@ import com.wisape.android.content.StoryBroadcastReciverListener;
 import com.wisape.android.database.StoryEntity;
 import com.wisape.android.http.HttpUrlConstancts;
 import com.wisape.android.logic.StoryLogic;
-import com.wisape.android.model.StoryInfo;
 import com.wisape.android.util.Utils;
 import com.wisape.android.widget.QrDialogFragment;
 
@@ -51,33 +50,19 @@ public class StoryReleaseActivity extends BaseActivity {
     private static final String TAG = StoryReleaseActivity.class.getSimpleName();
 
     public static final int REQUEST_CODE_STORY_RELEASE = 110;
-    private static final String EXTRA_STORYINFO = "story_info";
+    public static final int REQEUST_CODE_CROP_IMG = 0x01;
     private static final int LOADER_UPDATE_STORYSETTING = 1;
-
     private static final String EXTRAS_STORY_NAME = "stroy_name";
     private static final String EXTRAS_STORY_DESC = "story_desc";
-    private static final String EXTRAS_STROY_IMG = "stroy_img";
-    private static final String EXTRAS_STROY_ID = "story_id";
-
-    private static final int WIDTH = 800;
-    private static final int HEIGHT = 1200;
-
+    private static final int WIDTH = 600;
+    private static final int HEIGHT = 800;
     private String storyUrl;
-    private String storyLocalImg;
+    private Uri bgUri;
 
-
-    public static void launch(Activity activity, int requestCode) {
-        activity.startActivityForResult(getIntent(activity), requestCode);
-    }
 
     public static void launch(Activity activity) {
         Intent intent = new Intent(activity.getApplicationContext(), StoryReleaseActivity.class);
         activity.startActivity(intent);
-    }
-
-    public static Intent getIntent(Context context) {
-        Intent intent = new Intent(context.getApplicationContext(), StoryReleaseActivity.class);
-        return intent;
     }
 
     @InjectView(R.id.story_settings_name)
@@ -102,17 +87,12 @@ public class StoryReleaseActivity extends BaseActivity {
         storyNameEdit.setText(storyEntity.storyName);
         storyDescEdit.setText(storyEntity.storyDesc);
         String uri = storyEntity.storyThumbUri;
-        if (!Utils.isEmpty(uri)) {
-            Picasso.with(this).load(uri)
-                    .resize(80, 80)
-                    .centerCrop()
-                    .into(storyCoverView);
-        }
-        storyLocalImg = storyEntity.storyThumbUri;
+        Utils.loadImg(this,uri,storyCoverView);
         storyUrl = HttpUrlConstancts.SHARE_URL + storyEntity.storyServerId;
     }
 
     @OnClick(R.id.linear_picture)
+    @SuppressWarnings("unused")
     public void onPictureClick() {
         PhotoSelectorActivity.launch(this, PhotoSelectorActivity.REQUEST_CODE_PHOTO);
     }
@@ -124,26 +104,31 @@ public class StoryReleaseActivity extends BaseActivity {
             switch (requestCode) {
                 case PhotoSelectorActivity.REQUEST_CODE_PHOTO:
                     Uri imgUri = extras.getParcelable(PhotoSelectorActivity.EXTRA_IMAGE_URI);
-                    File file = new File(StoryManager.getStoryDirectory(), "/" + storyEntity.storyName + "/thumb");
+                    File file = new File(StoryManager.getStoryDirectory(), storyEntity.storyName + "/thumb.jpg");
+                    bgUri = Uri.fromFile(file);
+                    Intent intent = new Intent("com.android.camera.action.CROP");
+                    intent.setDataAndType(imgUri, "image/*");
+                    //下面这个crop=true是设置在开启的Intent中设置显示的VIEW可裁剪
+                    intent.putExtra("crop", "true");
+                    // aspectX aspectY 是宽高的比例
+                    intent.putExtra("aspectX", 1);
+                    intent.putExtra("aspectY", 2);
+                    intent.putExtra("scale", false);
 
-                    CutActivity.launch(this, imgUri, WIDTH, HEIGHT, file.getAbsolutePath(), CutActivity.RQEUST_CODE_CROP_IMG);
+                    // outputX outputY 是裁剪图片宽高
+                    intent.putExtra("outputX", WIDTH);
+                    intent.putExtra("outputY", HEIGHT);
+                    intent.putExtra("return-data", false);
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, bgUri);
+                    intent.putExtra("noFaceDetection", true); // no face detection
+                    startActivityForResult(intent, REQEUST_CODE_CROP_IMG);
                     break;
-                case CutActivity.RQEUST_CODE_CROP_IMG:
-                    storyLocalImg = extras.getString(CutActivity.EXTRA_IMAGE_URI);
-                    if (null != storyLocalImg) {
-                        Picasso.with(this).load(new File(storyLocalImg))
-                                .resize(150, 150)
-                                .placeholder(R.mipmap.icon_camera)
-                                .error(R.mipmap.icon_about_logo)
-                                .centerCrop()
-                                .into(storyCoverView);
-                        Bundle args = new Bundle();
-                        args.putString(EXTRAS_STORY_NAME, storyNameEdit.getText().toString());
-                        args.putString(EXTRAS_STORY_DESC, storyDescEdit.getText().toString());
-                        args.putLong(EXTRAS_STROY_ID, storyEntity.storyServerId);
-                        args.putString(EXTRAS_STROY_IMG, storyLocalImg);
-                        startLoad(LOADER_UPDATE_STORYSETTING, args);
-                    }
+                case REQEUST_CODE_CROP_IMG:
+
+                    Bundle args = new Bundle();
+                    args.putString(EXTRAS_STORY_NAME, storyNameEdit.getText().toString());
+                    args.putString(EXTRAS_STORY_DESC, storyDescEdit.getText().toString());
+                    startLoadWithProgress(LOADER_UPDATE_STORYSETTING, args);
                     break;
             }
         }
@@ -152,22 +137,17 @@ public class StoryReleaseActivity extends BaseActivity {
     private boolean isStorySettingChange() {
         String storyName = storyNameEdit.getText().toString();
         String storyDesc = storyDescEdit.getText().toString();
-        if (storyName.equals(storyEntity.storyName) && storyDesc.equals(storyEntity.storyDesc)
-                && Utils.isEmpty(storyLocalImg)) {
-            return false;
-        } else {
-            return true;
-        }
+        return (storyName.equals(storyEntity.storyName) && storyDesc.equals(storyEntity.storyDesc));
     }
 
     @Override
     public void onBackPressed() {
-        Bundle args = new Bundle();
-        args.putString(EXTRAS_STORY_NAME, storyNameEdit.getText().toString());
-        args.putString(EXTRAS_STORY_DESC, storyDescEdit.getText().toString());
-        args.putLong(EXTRAS_STROY_ID, storyEntity.storyServerId);
-        args.putString(EXTRAS_STROY_IMG, storyLocalImg);
-        startLoad(LOADER_UPDATE_STORYSETTING, args);
+        if(isStorySettingChange()){
+            Bundle args = new Bundle();
+            args.putString(EXTRAS_STORY_NAME, storyNameEdit.getText().toString());
+            args.putString(EXTRAS_STORY_DESC, storyDescEdit.getText().toString());
+            startLoad(LOADER_UPDATE_STORYSETTING, args);
+        }
         MainActivity.launch(this);
         super.onBackPressed();
     }
@@ -180,24 +160,24 @@ public class StoryReleaseActivity extends BaseActivity {
 
     @Override
     protected Message onLoadBackgroundRunning(int what, Bundle args) throws AsyncLoaderError {
-        Message msg = StoryLogic.instance().updateStorySetting(args.getLong(EXTRAS_STROY_ID),
-                args.getString(EXTRAS_STORY_NAME), args.getString(EXTRAS_STROY_IMG),
+        return StoryLogic.instance().updateStorySetting(storyEntity,
+                args.getString(EXTRAS_STORY_NAME), bgUri.getPath(),
                 args.getString(EXTRAS_STORY_DESC));
-
-        StoryInfo storyInfo = (StoryInfo) msg.obj;
-
-        storyEntity.storyName = storyInfo.story_name;
-        storyEntity.storyDesc = storyInfo.description;
-        storyEntity.storyThumbUri = storyInfo.small_img;
-
-
-        Intent intent = new Intent();
-        intent.setAction(StoryBroadcastReciver.STORY_ACTION);
-        intent.putExtra(StoryBroadcastReciver.EXTRAS_TYPE, StoryBroadcastReciverListener.UPDATE_STORY_SETTING);
-        sendBroadcast(intent);
-        return msg;
     }
 
+    @Override
+    protected void onLoadCompleted(Message data) {
+        closeProgressDialog();
+        if (HttpUrlConstancts.STATUS_SUCCESS == data.arg1) {
+            Utils.loadImg(this, storyEntity.storyThumbUri, storyCoverView);
+            Intent intent = new Intent();
+            intent.setAction(StoryBroadcastReciver.STORY_ACTION);
+            intent.putExtra(StoryBroadcastReciver.EXTRAS_TYPE, StoryBroadcastReciverListener.UPDATE_STORY_SETTING);
+            sendBroadcast(intent);
+        } else {
+            showToast("更新封面失败");
+        }
+    }
 
     @OnClick(R.id.story_release_moments)
     @SuppressWarnings("unused")
@@ -206,7 +186,7 @@ public class StoryReleaseActivity extends BaseActivity {
         shareParams.setImageUrl(storyEntity.storyThumbUri);
         shareParams.setUrl(storyUrl);
         shareParams.setTitle(storyNameEdit.getText().toString());
-        shareParams.setText(storyUrl);
+        shareParams.setText(storyNameEdit.getText().toString() + ":" + storyUrl);
         shareParams.setShareType(Platform.SHARE_WEBPAGE);
         startShare(WechatMoments.NAME, shareParams);
 
