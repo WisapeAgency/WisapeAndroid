@@ -52,43 +52,17 @@ WisapeEditer = {
                     console.info(JSON.stringify(data));
                     if (data == null) {//新建默认page逻辑
 
-                        if (!_me.hasClass("tpl-exist")) {
-                            console.info("down");
-                            WisapeEditer.GetNativeData("start", [parseInt(_me.data("id")), parseInt(_me.data("type"))], function (data) {
-
-                            });
-                            var firstTplDownTimer = setInterval(function(){
-                                console.info("firstTplDown:" + firstTplDown);
-                                if(firstTplDown) {
-                                    console.info("read:");
-                                    WisapeEditer.GetNativeData("read", [localTplPath], function (data) {
-                                        console.info("read data:");
-                                        console.info(data);
-                                        WisapeEditer.currentTplData = data;
-                                        pageScroll.find("ul").html('<li class="active"><span class="count">1/1</span>' + data + "</li>");
-                                        WisapeEditer.storyData.push(data);
-
-                                        console.info("WisapeEditer.storyData:");
-                                        console.info(WisapeEditer.storyData);
-                                        clearInterval(firstTplDownTimer);
-                                    });
-
-                                }
-
-                            },1)
-
-                        } else {
-                            console.info("read:");
-                            WisapeEditer.GetNativeData("read", [localTplPath], function (data) {
-                                console.info("read data:");
-                                console.info(data);
-                                WisapeEditer.currentTplData = data;
-                                WisapeEditer.storyData.push(data);
-                                pageScroll.find("ul").html('<li class="active"><span class="count">1/1</span>' + data + "</li>");
-                                console.info("WisapeEditer.storyData:");
-                                console.info(WisapeEditer.storyData);
-                            });
-                        }
+                        console.info("read:");
+                        WisapeEditer.GetNativeData("read", [localTplPath], function (data) {
+                            console.info("read data:");
+                            console.info(data);
+                            WisapeEditer.currentTplData = data;
+                            WisapeEditer.storyData.push(data);
+                            pageScroll.find("ul").html('<li class="active"><span class="count">1/1</span>' + data + "</li>");
+                            console.info("WisapeEditer.storyData:");
+                            console.info(WisapeEditer.storyData);
+                            $(".loading").hide();
+                        });
 
                         return false;
                     };
@@ -106,10 +80,13 @@ WisapeEditer = {
                         console.info("loadStageList succ");
                         set_wrap_width($("#pages-scroll"));
                         new IScroll('#pages-scroll', { scrollX: true, scrollY: false, mouseWheel: true });
+                        $(".loading").hide();
                     });
                     setTimeout(function () {
                         $("#tpmHtml").remove();
                     }, 2000);
+
+
                 });
             });
         });
@@ -131,7 +108,7 @@ WisapeEditer = {
                 }
                 var sourceFont = ''
                     + '{{each listFont as value i}}'
-                    + '<div class="item {{if !value.downloaded}}download{{/if}}" data-fontname="{{value.name}}" ><span class="opt-img"><img src="http://106.75.196.252/uploads/fonts/preview_image/miso.png" alt=""/></span> <span class="opt-right"><i class="icon-correct" ></i><i class="icon-download" ></i><div class="download-progress-bar"><div class="download-progress-percent" style="width:0%;"></div></div></span> </div>'
+                    + '<div class="item {{if !value.downloaded}}download{{/if}}" data-fontname="{{value.name}}" ><span class="opt-img">{{value.name}}</span> <span class="opt-right"><i class="icon-correct" ></i><i class="icon-download" ></i><div class="download-progress-bar"><div class="download-progress-percent" style="width:0%;"></div></div></span> </div>'
                     + '{{/each}}';
 
                 var render = template.compile(sourceFont);

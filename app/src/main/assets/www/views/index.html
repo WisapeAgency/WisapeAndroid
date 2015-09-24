@@ -11,6 +11,8 @@
     <link href="../public/css/editor_index.css" rel="stylesheet"/>
 </head>
 <body>
+<div class="loading" style="position: fixed;left:0;top:0;bottom:0;right:0;background-image:url(../public/img/loading.gif);background-position:50% 50%;background-size:cover;z-index: 10000">
+</div>
 <div id="main" class="page">
     <div class="header">
         <div class="pull-left">
@@ -372,6 +374,28 @@
             console.info(WisapeEditer);
             WisapeEditer.Init();
             WisapeEditer.Event();
+        }
+
+        function doSaveStory(){
+            var pageScroll = $("#pages-scroll");
+            var retHtml = '<div class="p-index main" id="con">', retImg = [],type="";
+            for (var i = 0; i < WisapeEditer.storyData.length; i++) {
+                retHtml += '<section class="m-page hide pages-item" > <div class="m-img" >' + WisapeEditer.storyData[i].replace("file://","") + '</div> </section>';
+            }
+            retHtml += '<section class="u-arrow"><img src="file:///android_asset/www/public/img/btn01_arrow.png" /></section></div>';
+            pageScroll.find(".pages-img").each(function () {
+                var me = $(this);
+                if (me.hasClass("pages-img-bg")) {
+                    retImg.push((me.css("background-image").split("url(")[1].split(")")[0]+"").replace("file://",""));
+                } else {
+                    retImg.push(me.find("img").attr("src").replace("file://",""));
+                }
+            });
+
+            console.info("phy save!!!")
+            WisapeEditer.GetNativeData("save", [retHtml, retImg], function () {
+                console.info(type + " done!!!");
+            })
         }
 
 

@@ -39,6 +39,7 @@
     //document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
     document.addEventListener("deviceready", function(){
         console.log('Device is Ready!');
+
         WisapeEditer.GetNativeData("checkInitState",[],function(){
 
         });
