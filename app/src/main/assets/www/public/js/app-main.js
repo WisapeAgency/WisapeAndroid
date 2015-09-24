@@ -1,5 +1,4 @@
 var WisapeEditer = WisapeEditer || {};
-
 WisapeEditer = {
 
     currentTplData: '',
@@ -11,7 +10,6 @@ WisapeEditer = {
     storyData: [],
 
     Init: function () {
-
         var menuScroll = $("#menu-scroll"),
             catScroll = $("#cat-scroll"),
             pageScroll = $("#pages-scroll");
@@ -113,11 +111,7 @@ WisapeEditer = {
                         $("#tpmHtml").remove();
                     }, 2000);
                 });
-
-
             });
-
-
         });
 
 
@@ -137,7 +131,7 @@ WisapeEditer = {
                 }
                 var sourceFont = ''
                     + '{{each listFont as value i}}'
-                    + '<div class="item {{if !value.downloaded}}download{{/if}}" data-fontname="{{value.name}}" ><span class="opt-name">{{value.name}}</span> <span class="opt-right"><i class="icon-correct" ></i><i class="icon-download" ></i><div class="download-progress-bar"><div class="download-progress-percent" style="width:0%;"></div></div></span> </div>'
+                    + '<div class="item {{if !value.downloaded}}download{{/if}}" data-fontname="{{value.name}}" ><span class="opt-img"><img src="http://106.75.196.252/uploads/fonts/preview_image/miso.png" alt=""/></span> <span class="opt-right"><i class="icon-correct" ></i><i class="icon-download" ></i><div class="download-progress-bar"><div class="download-progress-percent" style="width:0%;"></div></div></span> </div>'
                     + '{{/each}}';
 
                 var render = template.compile(sourceFont);
@@ -149,20 +143,20 @@ WisapeEditer = {
                 loadjscssfile(data.filePath, "css");
                 $(".pop-editer-font .opts").html(htmlFont);
                 console.info("head :" + $("head").html());
-
             })
         });
 
         console.info(".pop-editer-opt:" + $(".pop-editer-font").html());
         $(".pop-editer-font").delegate(".item", "click", function () {
-            console.info("downloadfont");
+            console.info("set-font");
             var me = $(this), fontname = me.attr("data-fontname"), target = $("#editorText .pages-txt.active");
             if (!me.hasClass("download")) {
+                me.addClass("selected").siblings().removeClass("selected");
                 target.css({"font-family": fontname});
                 console.info("add font:" + target.css("font-family"));
+                console.info("font-box:" + me.parent().html())
                 return false
-            }
-            ;
+            };
             WisapeEditer.GetNativeData("downloadFont", [fontname], function (data) {
 
             });
@@ -327,7 +321,7 @@ WisapeEditer = {
             if (_me.hasClass("pages-img-bg")) {
                 wh = [800,1000]
             } else {
-                wh = [parseInt(_me.find("img").width())<51 ? 200 : parseInt(_me.find("img").width()),parseInt(_me.find("img").height())<51 ? 200 : parseInt(_me.find("img").height())];
+                wh = [parseInt(_me.find("img").width()),parseInt(_me.find("img").height())];
             }
             console.info("wh:" + wh);
             cordova.exec(function (retval) {

@@ -11,8 +11,6 @@
     <link href="../public/css/editor_index.css" rel="stylesheet"/>
 </head>
 <body>
-
-
 <div id="main" class="page">
     <div class="header">
         <div class="pull-left">
@@ -117,19 +115,20 @@
             <span class="tit">Animation</span>
         </div>
         <div class="bd">
-            <span class="anim-item"><i data-animation="slideInDown" class="icon-enter-from-bottom"></i><span class="anim-name">bottom</span></span>
-            <span class="anim-item"><i data-animation="slideInLeft" class="icon-enter-from-left"></i><span class="anim-name">left</span></span>
-            <span class="anim-item"><i data-animation="slideInRight" class="icon-enter-from-right"></i><span class="anim-name">right</span></span>
-            <span class="anim-item"><i data-animation="slideInUp" class="icon-enter-from-top"></i><span class="anim-name">top</span></span>
-            <span class="anim-item"><i data-animation="fadeInDown" class="icon-fadeIn-from-bottom"></i><span class="anim-name">dsfadfs</span></span>
-            <span class="anim-item"><i data-animation="fadeInLeft" class="icon-fadeIn-from-left"></i><span class="anim-name">dsfadfs</span></span>
-            <span class="anim-item"><i data-animation="fadeInRight" class="icon-fadeIn-from-right"></i><span class="anim-name">dsfadfs</span></span>
-            <span class="anim-item"><i data-animation="fadeInIp" class="icon-fadeIn-from-top"></i><span class="anim-name">dsfadfs</span></span>
-            <span class="anim-item"><i data-animation="pulse" class="icon-tuxian"></i><span class="anim-name">dsfadfs</span></span>
-            <span class="anim-item"><i data-animation="wobble"  class="icon-tanru-from-top"></i><span class="anim-name">抖动</span></span>
-            <span class="anim-item"><i data-animation="flash"  class="icon-tanru-from-top"></i><span class="anim-name">闪烁</span></span>
-            <span class="anim-item"><i data-animation="bounceInDown"  class="icon-tanru-from-top"></i><span class="anim-name">下落抖动</span></span>
-            <span class="anim-item"><i class="icon-tanru-from-top"></i><span class="anim-name">roate</span></span>
+            <span class="anim-item"><i data-animation="slideInUp" class="icon-enter-from-bottom"></i></span>
+            <span class="anim-item"><i data-animation="slideInLeft" class="icon-enter-from-left"></i></span>
+            <span class="anim-item"><i data-animation="slideInRight" class="icon-enter-from-right"></i></span>
+            <span class="anim-item"><i data-animation="slideInDown" class="icon-enter-from-top"></i></span>
+            <span class="anim-item"><i data-animation="fadeInUp" class="icon-fadeIn-from-bottom"></i></span>
+            <span class="anim-item"><i data-animation="fadeInLeft" class="icon-fadeIn-from-left"></i></span>
+            <span class="anim-item"><i data-animation="fadeInRight" class="icon-fadeIn-from-right"></i></span>
+            <span class="anim-item"><i data-animation="fadeInDown" class="icon-fadeIn-from-top"></i></span>
+            <span class="anim-item"><i data-animation="pulse" class="icon-tuxian"></i></span>
+            <span class="anim-item"><i data-animation="wobble"  class="icon-tanru-from-top"></i></span>
+            <span class="anim-item"><i data-animation="flash"  class="icon-flash"></i></span>
+            <span class="anim-item"><i data-animation="bounce"  class="icon-bounce"></i></span>
+            <span class="anim-item"><i data-animation="bounceInDown"  class="icon-tanru-from-top"></i></span>
+            <span class="anim-item"><i data-animation="rotateIn"  class="icon-rotation"></i></span>
         </div>
     </div>
 
@@ -242,6 +241,7 @@
 <script src="../public/js/cordova.js"></script>
 <script type="text/javascript" charset="utf-8" src="cordova.file.js"></script>
 <script src="../public/js/jquery2.1.4.min.js"></script>
+<script src="../public/js/fastclick.js"></script>
 
 <script src="../public/js/template.js"></script>
 <script src="../public/js/hammer.min.js"></script>
@@ -363,14 +363,25 @@
             console.info("onFontCompleted:");
             console.dir(JSON.stringify(data));
             var target = $("[data-fontname=" + data.fontName + "]");
-            target.find(".icon-correct").show();
             target.find(".download-progress-bar").hide();
+            target.removeClass("download");
+        }
+
+        function onInitCompleted(){
+            console.info("onInitCompleted");
+            console.info(WisapeEditer);
+            WisapeEditer.Init();
+            WisapeEditer.Event();
         }
 
 
     </script>
 <script>
         $(function(){
+
+            FastClick.attach(document.body);
+
+
             var ColorArr = [
                 ["#000000", "#444444", "#999999", "#999999", "#b7b7b7", "#d9d9d9", "#d9d9d9", "#ffffff"],
                 ["#5b0f01", "#85200c", "#a61c00", "#980000", "#cccccc", "#cc4025", "#e7b8b0", "#ffffff"],
@@ -432,6 +443,8 @@
             })
 
         })
+
+
     </script>
 </body>
 </html>

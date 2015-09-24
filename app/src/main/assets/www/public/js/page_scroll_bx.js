@@ -317,6 +317,8 @@ var lanren = {
 lanren.play();
 $(function () {
 	$("#audio-btn").click(function () {
-		lanren.changeClass(this, 'media')
+		//console.info("audio-btn-click:" + $(this).attr("class"));
+		//lanren.changeClass(this, 'media')
+		$(this).toggleClass("on");
 	});
 })

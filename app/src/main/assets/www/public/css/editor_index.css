@@ -11,6 +11,11 @@
 body{
     font-family: Helvetica;
 }
+* {
+
+    -webkit-tap-highlight-color: transparent;
+    -webkit-appearance: none;
+}
 *:focus {outline: none;}
 a {text-decoration: none;color:inherit;}
 .text-black{
@@ -184,10 +189,10 @@ a {text-decoration: none;color:inherit;}
 .icon-tuxian.active {
     background-image: url(../img/tuxian-active.png);
 }
-.icon-fadeIn {
+.icon-flash {
     background-image: url(../img/fadeIn.png);
 }
-.icon-fadeIn.active {
+.icon-flash.active {
     background-image: url(../img/fadeIn-active.png);
 }
 .icon-tanru-from-top {
@@ -195,6 +200,18 @@ a {text-decoration: none;color:inherit;}
 }
 .icon-tanru-from-top.active {
     background-image: url(../img/tanru-from-top-active.png);
+}
+.icon-bounce {
+    background-image: url(../img/icon-bounce.png);
+}
+.icon-bounce.active {
+    background-image: url(../img/icon-bounce-active.png);
+}
+.icon-rotation {
+    background-image: url(../img/icon-rotate.png);
+}
+.icon-rotation.active {
+    background-image: url(../img/icon-rotate-active.png);
 }
 .header{
     height: 48px;line-height: 48px;
@@ -295,14 +312,14 @@ a {text-decoration: none;color:inherit;}
 
 .pop-editer-font .tit,.pop-editer-color .tit,.pop-editer-animation .tit {vertical-align: top; font-size: 18px; color: #2d3437; margin-left: 10px;}
 .pop-editer-font .hd i,.pop-editer-color .hd i,.pop-editer-animation .hd i {width:48px;}
-.pop-editer-font .item {padding:5px 10px;float:left;clear:both;width:100%;}
+.pop-editer-font .item {padding:8px 3%;float:left;clear:both;box-sizing:content-box;width:94%;margin:1px 0;height:20px;line-height: 20px;}
 .pop-editer-font .bd {width:100%;overflow: scroll}
 .pop-editer-font .bd i {width:20px;height:20px;background-size: auto 100%;}
 .pop-editer-font .download-progress-bar {margin-top:6px;}
-.pop-editer-font img {height:30px;vertical-align: middle}
-.pop-editer-font .icon-download,.pop-editer-font .download-progress-bar {display: none}
-.pop-editer-font .download .icon-correct {display: none}
+.pop-editer-font img {height:30px;max-width:200px;vertical-align: middle}
+.pop-editer-font .icon-download,.pop-editer-font .download-progress-bar,.pop-editer-font .icon-correct  {display: none}
 .pop-editer-font .download .icon-download {display: inline-block}
+.pop-editer-font .item.selected .icon-correct {display: inline-block!important;}
 .pop-editer-font .opt-name {float:left;display: inline-block;}
 .pop-editer-font .opt-right {}
 .pop-editer-color .bd {padding:10px;}
