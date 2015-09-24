@@ -169,7 +169,7 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
                     }
                     inputStream.close();
                     message.arg1 = HttpUrlConstancts.STATUS_SUCCESS;
-                    message.obj = builder;
+                    message.obj = builder.toString();
                 } catch (IOException e) {
                     message.arg1 = HttpUrlConstancts.STATUS_EXCEPTION;
                     message.obj = "获取story数据出错";
