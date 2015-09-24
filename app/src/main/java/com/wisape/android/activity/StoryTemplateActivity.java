@@ -206,10 +206,12 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
 
     @Override
     public void onBackPressed() {
-
-        Toast.makeText(this,"请点击界面上返回按钮!",Toast.LENGTH_SHORT).show();;
+        loadUrl("javascript:doSaveStory()");
     }
 
+    public void onInitCompleted(){
+        loadUrl("javascript:onInitCompleted()");
+    }
     public void downloadTemplate(String data, int id, int categoryId) throws JSONException {
         JSONObject json = new JSONObject(data);
         String name = json.getString(EXTRA_TEMPLATE_NAME);
