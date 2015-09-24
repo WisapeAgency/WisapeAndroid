@@ -272,7 +272,6 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 break;
             }
             case WHAT_GET_FONTS: {
-
                 StoryFontInfo[] fonts = logic.listFont(context, "getFonts");
                 List<StoryFontInfo> fontList = Arrays.asList(fonts);
                 System.out.println(fontList);
