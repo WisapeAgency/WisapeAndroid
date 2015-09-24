@@ -47,11 +47,7 @@ public class DataSynchronizer {
     }
 
     public boolean isDownloading() {
-        return isDownloading;
-    }
-
-    public void setIsDownloading(boolean isDownloading) {
-        this.isDownloading = isDownloading;
+        return downloadTempQueue.size() != 0;
     }
 
     public void synchronous(Context context) {

@@ -26,6 +26,7 @@ import com.wisape.android.logic.MessageCenterLogic;
 import com.wisape.android.logic.StoryLogic;
 import com.wisape.android.model.StoryFontInfo;
 import com.wisape.android.model.StoryTemplateInfo;
+import com.wisape.android.network.DataSynchronizer;
 import com.wisape.android.network.Requester;
 import com.wisape.android.util.Utils;
 import com.wisape.android.widget.CustomProgress;
@@ -81,6 +82,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
     public static final String ACTION_BACK = "back";
     public static final String ACTION_EDIT = "edit";
     public static final String ACTION_GET_CONTENT = "getContent";
+    public static final String ACTION_CHECK_DOWNLOAD = "checkInitState";//onInitCompleted
 
     private static final int WHAT_GET_STAGE_CATEGORY = 0x01;
     private static final int WHAT_GET_STAGE_LIST = 0x02;
@@ -90,6 +92,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
     private static final int WHAT_PUBLISH = 0x06;
     private static final int WHAT_GET_FONTS = 0x07;
     private static final int WHAT_DOWNLOAD_FONT = 0x08;
+    private static final int WHAT_EDIT_INIT = 0x09;
 
     private static final String EXTRA_CATEGORY_ID = "extra_category_id";
     private static final String EXTRA_TEMPLATE_ID = "extra_template_id";
@@ -215,6 +218,12 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 StoryTemplateActivity activity = (StoryTemplateActivity) cordova.getActivity();
                 String html = activity.getContent();
                 callbackContext.success(html);
+            }
+        } else if (ACTION_CHECK_DOWNLOAD.equals(action)){
+            if (!DataSynchronizer.getInstance().isDownloading()){
+                ((StoryTemplateActivity)cordova.getActivity()).onInitCompleted();
+            } else {
+                startLoad(WHAT_EDIT_INIT, null);
             }
         }
         return true;
@@ -380,6 +389,19 @@ public class StoryTemplatePlugin extends AbsPlugin {
 
                 StoryReleaseActivity.launch(cordova.getActivity());
                 getCurrentActivity().finish();
+            }
+            case WHAT_EDIT_INIT:{
+                boolean isCompleted = false;
+                while (!isCompleted){
+                    try{
+                        Thread.sleep(200);
+                    }catch (InterruptedException e) {
+                    }
+                    isCompleted = DataSynchronizer.getInstance().isDownloading();
+                    if (isCompleted){
+                        ((StoryTemplateActivity)cordova.getActivity()).onInitCompleted();
+                    }
+                }
             }
         }
         return Message.obtain();
