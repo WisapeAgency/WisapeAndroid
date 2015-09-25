@@ -430,7 +430,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
             }
             case WHAT_INIT_COMPLETED:{
                 System.out.println("javascript:onInitCompleted()");
-                initHandler.sendMessage(msg);
+                initHandler.sendMessage(Message.obtain());
             }
         }
         return msg;
