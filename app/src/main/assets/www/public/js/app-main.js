@@ -59,6 +59,7 @@ WisapeEditer = {
                             WisapeEditer.currentTplData = data;
                             WisapeEditer.storyData.push(data);
                             pageScroll.find("ul").html('<li class="active"><span class="count">1/1</span>' + data + "</li>");
+                            console.info("pageScroll html:" + pageScroll.html());
                             console.info("WisapeEditer.storyData:");
                             console.info(WisapeEditer.storyData);
                             $(".loading").hide();
@@ -395,12 +396,7 @@ WisapeEditer = {
             console.info(WisapeEditer.storyData);
 
 
-            //reset Editer
-            if ($("#TextEditerOpt").hasClass("active")) {
-                $("#TextEditerOpt").click();
-            }
-            $(".pop-editer-opt i,.pop-editer-animation i").removeClass("active");
-            $(".input-href").val("http://");
+
 
             WisapeEditer.ShowView('editorText', 'main');
 
@@ -579,19 +575,56 @@ WisapeEditer = {
 
     //更新选中的主界面的stage
     UpdateSelectedStage: function (tplIndex) {
-        var curPage = $("#pages-scroll li").eq(tplIndex - 1);
-        var editPage = $("#editorText .pages");
-        var curPagesTxt = editPage.find(".edit-area.active");
-        var curAnimation = "";
+        var curPage = $("#pages-scroll li").eq(tplIndex - 1),
+            editPage = $("#editorText .pages"),
+            curTxt = editPage.find(".edit-area.active"),
+            curAnimation = "",
+            curColor = curTxt.css("color"),
+            //curFamily = curTxt.css("font-family").split(",")[0],
+            curFamily = curTxt.css("font-family"),
+            fontWight = curTxt.css("font-weight"),
+            fontStyle = curTxt.css("font-style"),
+            fontAlign = curTxt.css("text-align");
         //初始化编辑菜单
-        editPage.find(".opt-val-color").css({"color": curPagesTxt.css("color")});
-        if (curPagesTxt.attr("data-animation")) {
-            curAnimation = curPagesTxt.attr("data-animation").split(" ")[1];
+        editPage.find(".opt-val-color").css({"color": curTxt.css("color")});
+        if (curTxt.attr("data-animation")) {//动画
+            curAnimation = curTxt.attr("data-animation").split(" ")[1];
             console.info('i[data-animation=' + curAnimation + ']');
+            console.info($('i[data-animation=' + curAnimation + ']').attr("class"));
             console.info(editPage.find(".anim-item").eq(0).html());
             editPage.find('.anim-item i').eq(0).addClass("active");
+            $(".opt-animation-val i").attr({"class":$('i[data-animation=' + curAnimation + ']').attr("class")});
         }
 
+        if ($("#TextEditerOpt").hasClass("active")) {//弹出层
+            $("#TextEditerOpt").click();
+        }
+
+        if(curTxt.find("a").length != 0 ) {//链接
+            $(".input-href").val(curTxt.find("a").attr("href"));
+            $("#setFontLink").addClass("active")
+        }
+
+        if(fontWight == "normal"){
+            $("#setFontWeight").removeClass("active");
+        } else {
+            $("#setFontWeight").addClass("active");
+        }
+
+        if(fontStyle == "normal") {
+            $("#setFontStyle").removeClass("active");
+        } else {
+            $("#setFontStyle").addClass("active");
+        }
+
+        $("#setFontAlign").attr({"css":"icon-align-" + fontAlign});
+
+        $(".opt-font-val").html(curFamily);//字体
+
+        $(".opt-color-val").css({"background-color":curColor});//字体颜色
+
+
+        //替换html
         editPage.html(curPage.html()).find(".edit-area.active").attr({"contenteditable": "true"});
         console.info("editPage:" + editPage.html());
     },
@@ -604,6 +637,10 @@ WisapeEditer = {
         console.info(from + " to " + to);
         $("#" + from).hide();
         $("#" + to).show();
+    },
+
+    SetTextEditer : function(opts){
+
     },
 
     GetNativeData: function (fn, params, cb) {
@@ -670,5 +707,23 @@ function set_wrap_width(dom){
     ul.css('width',wid+1);
     console.info("scroll width:" + (wid+1));
     console.info("scroll length:" + li.length);
+}
+
+function zero_fill_hex(num, digits) {
+    var s = num.toString(16);
+    while (s.length < digits)
+        s = "0" + s;
+    return s;
+}
+
+
+function rgb2hex(rgb) {
+
+    if (rgb.charAt(0) == '#')
+        return rgb;
+
+    var ds = rgb.split(/\D+/);
+    var decimal = Number(ds[1]) * 65536 + Number(ds[2]) * 256 + Number(ds[3]);
+    return "#" + zero_fill_hex(decimal, 6);
 }
 

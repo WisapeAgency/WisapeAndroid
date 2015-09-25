@@ -11,10 +11,10 @@
 </head>
 <body>
 
-<div class="loading" style="position: fixed;left:0;top:0;bottom:0;right:0;background-image:url(../public/img/loading.gif);background-position:50% 50%;background-size:cover;z-index: 10000">
+<div class="loading" style="display:none;position: fixed;left:0;top:0;bottom:0;right:0;background-image:url(../public/img/loading.gif);background-position:50% 50%;background-size:cover;z-index: 10000">
 </div>
 
-<div id="main" class="page" style="display: block">
+<div id="main" class="page" style="display: none">
     <div class="header">
         <div class="pull-left">
             <a class="icon-arrow-left" id="storySave"></a>
@@ -65,7 +65,7 @@
     <span class="icon-add-stage" id="AddNewStage"></span>
 </div>
 
-<div id="editorText" style="display: none">
+<div id="editorText" style="display: block">
     <div class="header">
         <div class="pull-left">
             <a class="icon-arrow-left backToMain" ></a>
@@ -82,7 +82,7 @@
         <div id="test" class="pages-txt selected active" contenteditable="true" style="margin:70px auto;width:150px;color:#fff;text-align: left;background:rgba(0,0,0,0.5);">As c update of the classic translation corpus, the combination of network technology and language essence</div>
         </div>
     </div>
-    <div class="pop-layer pop-editer-opt" style="display: none">
+    <div class="pop-layer pop-editer-opt" style="display: block">
         <div class="hd">
             <i class="icon-bold" id="setFontWeight" ></i>
             <i class="icon-italic" id="setFontStyle"></i>
@@ -91,12 +91,12 @@
         </div>
         <div class="bd opts">
             <div class="item" data-name="pop-editer-color"><span class="opt-name">Color</span><span class="opt-right"><span class="opt-val-color" style="background-color: #fff"></span><i class="icon-arrow-right-list"></i></span></div>
-            <div class="item" id="pop-editer-font" data-name="pop-editer-font"><span class="opt-name">Font</span><span class="opt-right"><span class="opt-val">Hevele</span><i class="icon-arrow-right-list"></i></span></div>
-            <div class="item" data-name="pop-editer-animation"><span class="opt-name">Animation</span><span class="opt-right"><span class="opt-val">Animation1</span><i class="icon-arrow-right-list"></i></span></div>
+            <div class="item" id="pop-editer-font" data-name="pop-editer-font"><span class="opt-name">Font</span><span class="opt-right"><span class="opt-font-val">Hevele</span><i class="icon-arrow-right-list"></i></span></div>
+            <div class="item" data-name="pop-editer-animation"><span class="opt-name">Animation</span><span class="opt-right"><span class="opt-animation-val"><i></i></span><i class="icon-arrow-right-list"></i></span></div>
         </div>
     </div>
 
-    <div class="pop-layer pop-editer-font" style="display: block">
+    <div class="pop-layer pop-editer-font" style="display: none">
         <div class="hd">
             <i class="icon-arrow-left backPopLayerOpt"></i>
             <span class="tit">Font Selection</span>
@@ -500,6 +500,8 @@
         })
 
     })
+
+
 </script>
 </body>
 </html>
