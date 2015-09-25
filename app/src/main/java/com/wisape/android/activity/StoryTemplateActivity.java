@@ -21,6 +21,7 @@ import com.wisape.android.content.StoryBroadcastReciverListener;
 import com.wisape.android.database.StoryEntity;
 import com.wisape.android.logic.StoryLogic;
 import com.wisape.android.logic.UserLogic;
+import com.wisape.android.network.DataSynchronizer;
 import com.wisape.android.network.Downloader;
 import com.wisape.android.network.WWWConfig;
 import com.wisape.android.util.EnvironmentUtils;
@@ -73,7 +74,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
     private static final int WHAT_DOWNLOAD_COMPLETED = 0x04;
     private static final int WHAT_DOWNLOAD_ERROR = 0x05;
     private static final int WHAT_INIT = 0x06;
-    private static final int LOADER_SAVA_DATA = 0x07;
+    private static final int WHAT_INIT_COMPLETED = 0x07;
 
     public static void launch(Activity activity, int requestCode) {
         Intent intent = new Intent(activity.getApplicationContext(), StoryTemplateActivity.class);
@@ -209,8 +210,28 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
         loadUrl("javascript:doSaveStory()");
     }
 
-    public void onInitCompleted(){
-        loadUrl("javascript:onInitCompleted()");
+    public void onInitCompleted() {
+        startLoad(WHAT_INIT_COMPLETED, null);
+    }
+    public void onInitCompleted2(){
+        startLoad(WHAT_INIT_COMPLETED, null);
+//            new Handler() {
+//                boolean isCompleted = false;
+//                @Override
+//                public void handleMessage(Message msg) {
+//                    super.handleMessage(msg);
+//                    while (!isCompleted){
+//                        try{
+//                            Thread.sleep(200);
+//                        }catch (InterruptedException e) {
+//                        }
+//                        isCompleted = DataSynchronizer.getInstance().isDownloading();
+//                        if (isCompleted){
+//                            loadUrl("javascript:onInitCompleted()");
+//                        }
+//                    }
+//                }
+//            }.sendEmptyMessage(1);
     }
     public void downloadTemplate(String data, int id, int categoryId) throws JSONException {
         JSONObject json = new JSONObject(data);
@@ -404,9 +425,21 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
                 });
                 break;
             }
+            case WHAT_INIT_COMPLETED:{
+                System.out.println("javascript:onInitCompleted()");
+                initHandler.sendMessage(msg);
+            }
         }
         return msg;
     }
+
+    private Handler initHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            loadUrl("javascript:onInitCompleted()");
+        }
+    };
 
     private synchronized void appendFont(String fontName) {
         File fonts = new File(StoryManager.getStoryFontDirectory(), FONT_FILE_NAME);

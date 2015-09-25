@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -389,19 +390,11 @@ public class StoryTemplatePlugin extends AbsPlugin {
 
                 StoryReleaseActivity.launch(cordova.getActivity());
                 getCurrentActivity().finish();
+                break;
             }
             case WHAT_EDIT_INIT:{
-                boolean isCompleted = false;
-                while (!isCompleted){
-                    try{
-                        Thread.sleep(200);
-                    }catch (InterruptedException e) {
-                    }
-                    isCompleted = DataSynchronizer.getInstance().isDownloading();
-                    if (isCompleted){
-                        ((StoryTemplateActivity)cordova.getActivity()).onInitCompleted();
-                    }
-                }
+                ((StoryTemplateActivity)cordova.getActivity()).onInitCompleted2();
+                break;
             }
         }
         return Message.obtain();
