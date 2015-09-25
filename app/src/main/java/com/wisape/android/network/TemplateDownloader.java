@@ -57,6 +57,9 @@ public class TemplateDownloader implements Runnable {
         if (!EnvironmentUtils.isMounted()) {
             return;
         }
+        if (DataSynchronizer.getInstance().getFirstTemplate() == null){
+            DataSynchronizer.getInstance().setFirstTemplate(templateInfo);
+        }
         File destFile = new File(StoryManager.getStoryTemplateDirectory(), templateInfo.temp_name + ".zip");
         if (destFile.exists()){
             return;

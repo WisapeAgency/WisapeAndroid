@@ -21,6 +21,7 @@ import com.wisape.android.content.StoryBroadcastReciverListener;
 import com.wisape.android.database.StoryEntity;
 import com.wisape.android.logic.StoryLogic;
 import com.wisape.android.logic.UserLogic;
+import com.wisape.android.model.StoryTemplateInfo;
 import com.wisape.android.network.DataSynchronizer;
 import com.wisape.android.network.Downloader;
 import com.wisape.android.network.WWWConfig;
@@ -49,6 +50,8 @@ import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by LeiGuoting on 7/7/15.
@@ -437,9 +440,47 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            loadUrl("javascript:onInitCompleted()");
+            StoryTemplateInfo templateInfo = DataSynchronizer.getInstance().getFirstTemplate();
+            String content = "";
+            if (templateInfo != null){
+                File path = new File(StoryManager.getStoryTemplateDirectory(),templateInfo.temp_name + "/" + "stage.html");
+                content = readHtml(path.getAbsolutePath());
+            }
+            loadUrl("javascript:onInitCompleted(" + content + ")");
         }
     };
+
+    private String readHtml(String path) {
+        String parent = new File(path).getParent();
+        StringBuffer content = new StringBuffer();
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new FileReader(new File(path)));
+            String line;
+            Pattern p = Pattern.compile("img/[a-zA-Z0-9-_]+(\\.jpg|\\.png)");
+            while ((line = reader.readLine()) != null) {
+                Matcher m = p.matcher(line);
+                while (m.find()) {
+                    String result = m.group();
+                    line = line.replace(result, new File(parent, result).getAbsolutePath());
+                }
+                content.append(line);
+            }
+            reader.close();
+            return content.toString();
+        } catch (IOException e) {
+            return "";
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+
+                }
+
+            }
+        }
+    }
 
     private synchronized void appendFont(String fontName) {
         File fonts = new File(StoryManager.getStoryFontDirectory(), FONT_FILE_NAME);

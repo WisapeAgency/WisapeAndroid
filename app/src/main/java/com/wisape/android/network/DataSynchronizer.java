@@ -37,13 +37,21 @@ public class DataSynchronizer {
 
     private Context context;
     private WisapeApplication application;
-    private boolean isDownloading = false;
+    private StoryTemplateInfo firstTemplate;
     private StoryLogic logic = StoryLogic.instance();
     private BlockingQueue<StoryTemplateInfo> downloadQueue = new LinkedBlockingQueue<>();
     private BlockingQueue<StoryTemplateInfo> downloadTempQueue = new LinkedBlockingQueue<>();
 
     private DataSynchronizer() {
 
+    }
+
+    public StoryTemplateInfo getFirstTemplate() {
+        return firstTemplate;
+    }
+
+    void setFirstTemplate(StoryTemplateInfo firstTemplate) {
+        this.firstTemplate = firstTemplate;
     }
 
     public boolean isDownloading() {
