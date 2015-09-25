@@ -129,7 +129,11 @@ public class UserProfileActivity extends BaseActivity {
         Bundle args = new Bundle();
         args.putString(EXTRAS_NAME, newName);
         args.putString(EXTRAS_EMAIL, newEmail);
-        args.putString(EXTRAS_ICON_URI,userIconUri.getPath());
+        if(null == userIconUri){
+            args.putString(EXTRAS_ICON_URI,"");
+        }else{
+            args.putString(EXTRAS_ICON_URI,userIconUri.getPath());
+        }
         startLoadWithProgress(LOADER_WHAT_PROFILE_UPDATE, args);
     }
 
@@ -149,7 +153,7 @@ public class UserProfileActivity extends BaseActivity {
             wisapeApplication.setUserInfo((UserInfo) data.obj);
             setResult(RESULT_OK);
         } else {
-            showToast((String) data.obj);
+            showToast("error");
             setResult(RESULT_CANCELED);
         }
         finish();
@@ -172,6 +176,9 @@ public class UserProfileActivity extends BaseActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(data == null){
+            return;
+        }
         if (resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
             switch (requestCode) {

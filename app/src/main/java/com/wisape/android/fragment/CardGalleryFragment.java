@@ -149,6 +149,9 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
                     }
                 }
                 File previewFile = new File(StoryManager.getStoryDirectory(), wisapeApplication.getStoryEntity().storyLocal + "/preview.html");
+                if(previewFile.exists()){
+                    previewFile.delete();
+                }
                 if (saveStoryPreview(previewFile, sb.toString(), wisapeApplication.getStoryEntity())) {
                     message.obj = previewFile.getAbsolutePath();
                     message.arg1 = HttpUrlConstancts.STATUS_SUCCESS;

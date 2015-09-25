@@ -42,41 +42,44 @@ public class PhotoSelectorPlugin extends AbsPlugin {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-            Bundle extras = intent.getExtras();
-            switch (requestCode) {
-                case PhotoSelectorActivity.REQUEST_CODE_PHOTO:
-                    Uri imgUri = extras.getParcelable(PhotoSelectorActivity.EXTRA_IMAGE_URI);
+        if (intent == null) {
+            return;
+        }
+        Bundle extras = intent.getExtras();
+        switch (requestCode) {
+            case PhotoSelectorActivity.REQUEST_CODE_PHOTO:
+                Uri imgUri = extras.getParcelable(PhotoSelectorActivity.EXTRA_IMAGE_URI);
 
-                    File file = new File(StoryManager.getStoryDirectory(), WisapeApplication.getInstance()
-                            .getStoryEntity().storyLocal+"/img");
-                    if (!file.exists()) {
-                        file.mkdirs();
-                    }
-                    File head = new File(file,Utils.acquireUTCTimestamp()+".jpg");
-                    bgUri = Uri.fromFile(head);
+                File file = new File(StoryManager.getStoryDirectory(), WisapeApplication.getInstance()
+                        .getStoryEntity().storyLocal + "/img");
+                if (!file.exists()) {
+                    file.mkdirs();
+                }
+                File head = new File(file, Utils.acquireUTCTimestamp() + ".jpg");
+                bgUri = Uri.fromFile(head);
 
-                    Intent intent1 = new Intent("com.android.camera.action.CROP");
-                    intent1.setDataAndType(imgUri, "image/*");
-                    //下面这个crop=true是设置在开启的Intent中设置显示的VIEW可裁剪
-                    intent1.putExtra("crop", "true");
-                    // aspectX aspectY 是宽高的比例
-                    intent1.putExtra("aspectX", 1);
-                    intent1.putExtra("aspectY", 1);
-                    intent1.putExtra("scale", false);
+                Intent intent1 = new Intent("com.android.camera.action.CROP");
+                intent1.setDataAndType(imgUri, "image/*");
+                //下面这个crop=true是设置在开启的Intent中设置显示的VIEW可裁剪
+                intent1.putExtra("crop", "true");
+                // aspectX aspectY 是宽高的比例
+                intent1.putExtra("aspectX", 1);
+                intent1.putExtra("aspectY", 1);
+                intent1.putExtra("scale", false);
 
-                    // outputX outputY 是裁剪图片宽高
-                    intent1.putExtra("outputX", width);
-                    intent1.putExtra("outputY", height);
-                    intent1.putExtra("return-data", false);
-                    intent1.putExtra(MediaStore.EXTRA_OUTPUT, bgUri);
-                    intent1.putExtra("noFaceDetection", true); // no face detection
-                    startActivityForResult(intent1, REQEUST_CODE_CROP_IMG);
-                    break;
-                case REQEUST_CODE_CROP_IMG:
-                    callbackContext.success(bgUri.getPath());
-                    bgUri = null;
-                    break;
-            }
+                // outputX outputY 是裁剪图片宽高
+                intent1.putExtra("outputX", width);
+                intent1.putExtra("outputY", height);
+                intent1.putExtra("return-data", false);
+                intent1.putExtra(MediaStore.EXTRA_OUTPUT, bgUri);
+                intent1.putExtra("noFaceDetection", true); // no face detection
+                startActivityForResult(intent1, REQEUST_CODE_CROP_IMG);
+                break;
+            case REQEUST_CODE_CROP_IMG:
+                callbackContext.success(bgUri.getPath());
+                bgUri = null;
+                break;
+        }
     }
 
     @Override

@@ -76,11 +76,12 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
 //    compile files('libs/libammsdk.jar')
     compile files('libs/Parse-1.2.0.jar')
-    compile files('libs/bugtags-lib-1.0.4.jar')
-    compile project(':oauth')
+    compile files('libs/FlurryAnalytics-6.0.0.jar')
+//    compile files('libs/bugtags-lib-1.0.4.jar')
+//    compile project(':oauth')
     compile project(':mobihelp_sdk_android_v1_4')
     compile project(':cordova')
-    compile project(':nanohttpd')
+//    compile project(':nanohttpd')
     compile project(':VolleyPlus')
     compile project(':lplayer')
     compile files('libs/MobTools.jar')
@@ -96,18 +97,17 @@ dependencies {
     compile files('libs/ShareSDK-Twitter-2.6.3.jar')
     compile files('libs/ShareSDK-Core-2.6.3.jar')
     compile files('libs/MobLogCollector.jar')
-    compile "com.android.support:appcompat-v7:${ANDROID_SUPPORT_VERSION}"
+//    compile "com.android.support:appcompat-v7:${ANDROID_SUPPORT_VERSION}"
     compile "com.android.support:recyclerview-v7:${ANDROID_SUPPORT_VERSION}"
 //    compile "com.android.support:support-v4:${ANDROID_SUPPORT_VERSION}"
     compile "com.squareup.okhttp:okhttp-urlconnection:${OKHTTP_VERSION}"
     compile 'com.jakewharton:butterknife:6.1.0'
     compile 'com.alibaba:fastjson:1.2.6'
-//    compile 'com.getbase:floatingactionbutton:1.9.1'
     compile 'com.google.zxing:core:3.2.0'
     compile 'com.j256.ormlite:ormlite-core:4.48'
     compile 'com.j256.ormlite:ormlite-android:4.48'
     compile 'com.squareup.picasso:picasso:2.5.2'
-    compile 'com.google.android.gms:play-services:7.5.0'
+    compile 'com.bugtags.library:bugtags-lib:1.0.4'
 
 
 

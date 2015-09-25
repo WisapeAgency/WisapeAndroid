@@ -136,6 +136,9 @@ public abstract class AbsCompatActivity extends AppCompatActivity implements Loa
 
         @Override
         public Message loadInBackground() {
+            if(args == null){
+                return  null;
+            }
             int what = args.getInt(EXTRA_WHAT, 0);
             Message msg;
             try{

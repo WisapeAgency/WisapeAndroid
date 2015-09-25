@@ -7,7 +7,7 @@ import android.view.MotionEvent;
 import android.widget.Toast;
 
 import com.bugtags.library.Bugtags;
-import com.google.android.gms.analytics.GoogleAnalytics;
+import com.flurry.android.FlurryAgent;
 import com.wisape.android.R;
 import com.wisape.android.WisapeApplication;
 import com.wisape.android.util.Utils;
@@ -27,7 +27,7 @@ public abstract class BaseActivity extends VolleyActivity{
     @Override
     protected void onStart() {
         super.onStart();
-        GoogleAnalytics.getInstance(this).reportActivityStart(this);
+        FlurryAgent.onStartSession(this);
     }
 
     @Override
@@ -51,14 +51,13 @@ public abstract class BaseActivity extends VolleyActivity{
     @Override
     protected void onStop() {
         super.onStop();
-        GoogleAnalytics.getInstance(this).reportActivityStop(this);
+        FlurryAgent.onEndSession(this);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         wisapeApplication = WisapeApplication.getInstance();
-        wisapeApplication.getTracker(WisapeApplication.TrackerName.APP_TRACKER);
     }
 
 

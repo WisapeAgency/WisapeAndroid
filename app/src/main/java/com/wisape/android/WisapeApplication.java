@@ -6,8 +6,7 @@ import android.content.SharedPreferences;
 import android.support.multidex.MultiDex;
 
 import com.bugtags.library.Bugtags;
-import com.google.android.gms.analytics.GoogleAnalytics;
-import com.google.android.gms.analytics.Tracker;
+import com.flurry.android.FlurryAgent;
 import com.parse.Parse;
 import com.parse.ParseInstallation;
 import com.parse.PushService;
@@ -17,7 +16,7 @@ import com.wisape.android.model.StoryTemplateInfo;
 import com.wisape.android.model.StoryTemplateTypeInfo;
 import com.wisape.android.model.UserInfo;
 import com.wisape.android.network.WWWConfig;
-import com.wisape.android.service.NanoService;
+//import com.wisape.android.service.NanoService;
 import com.wisape.android.util.Utils;
 
 import org.cubieline.lplayer.PlayerProxy;
@@ -50,28 +49,6 @@ public class WisapeApplication extends Application {
     private StoryEntity storyEntity;
 
 
-    public enum TrackerName {
-        APP_TRACKER,
-        // Tracker used only in this app.
-        GLOBAL_TRACKER,
-        // Tracker used by all the apps from a company.
-    }
-
-    private Map<TrackerName,Tracker> mTrackers = new HashMap<>();
-
-    public synchronized Tracker getTracker(TrackerName trackerId) {
-        if (!mTrackers.containsKey(trackerId)) {
-
-            GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
-            Tracker t = (trackerId == TrackerName.APP_TRACKER) ? analytics.newTracker(R.xml.app_tracker)
-                    : (trackerId ==
-                    TrackerName.GLOBAL_TRACKER) ? analytics.newTracker(PROPERTY_ID)
-                    : analytics.newTracker(R.xml.global_tracker);
-            mTrackers.put(trackerId, t);
-        }
-        return mTrackers.get(trackerId);
-    }
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -79,10 +56,12 @@ public class WisapeApplication extends Application {
         final Context context = getApplicationContext();
         sharedPreferences = getSharedPreferences(PREFERENCES_NAME, MODE_PRIVATE);
         WWWConfig.initialize(context);
-        NanoService.startNanoServer(context);
+        FlurryAgent.init(this, "BKNHHSXHP986YBR666ZY");
+
         PlayerProxy.launch(context);
-        Bugtags.start("f6843af99861f31d1af2ae6d74a8e9a9", this, Bugtags.BTGInvocationEventNone);
+        Bugtags.start("f6843af99861f31d1af2ae6d74a8e9a9", this, Bugtags.BTGInvocationEventShake);
         Bugtags.setTrackingCrashes(true);
+        Bugtags.setTrackingUserSteps(true);
         //初始化parse通讯
         Parse.initialize(this, "L3WrrhBJmbPhRoJ4GYIUDMIErlR8IlvkJuQQJ0Px", "yfC5kFI4jLLeeDaKlepK1hgAGiYJJEHjXfnpaCks");
         PushService.subscribe(this, "abcde", MainActivity.class);

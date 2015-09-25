@@ -42,8 +42,12 @@ import com.wisape.android.widget.StoryMusicAdapter;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -670,9 +674,9 @@ public class StoryLogic {
         if (null != defaultStoryInfo) {
             StoryEntity defaultEntity = StoryEntity.transform(defaultStoryInfo);
             defaultEntity.storyLocal = defaultStoryInfo.story_name;
-            defaultEntity.status = -1+"";
+            defaultEntity.status = -1 + "";
             storyEntitYList.add(0, defaultEntity);
-            downLoadStory(defaultStoryInfo);
+            downLoadStory(defaultEntity);
         }
 
         /*服务器端story*/
@@ -783,34 +787,34 @@ public class StoryLogic {
     /**
      * 下载story压缩包并且解压
      **/
-    public void downLoadStory(final StoryInfo storyInfo) {
-        final File file = new File(StoryManager.getStoryDirectory(), storyInfo.story_name + ".zip");
+    public void downLoadStory(final StoryEntity storyInfo) {
+        final File file = new File(StoryManager.getStoryDirectory(), storyInfo.storyLocal + ".zip");
         if (!file.exists()) {
-            Log.e(TAG, "开始下载story:" + storyInfo.story_name);
-            OkhttpUtil.downLoadFile(storyInfo.story_url, new FileDownloadListener() {
+            Log.e(TAG, "开始下载story:" + storyInfo.storyLocal);
+            OkhttpUtil.downLoadFile(storyInfo.storyUri, new FileDownloadListener() {
                 @Override
                 public void onSuccess(byte[] bytes) {
                     if (file.exists()) {
                         file.delete();
                     }
                     FileUtils.saveByteToFile(bytes, file.getAbsolutePath());
-
                     try {
-                        ZipUtils.unzip(Uri.fromFile(file),
-                                new File(StoryManager.getStoryDirectory(), storyInfo.story_name));
+                        File unZipeFile = new File(StoryManager.getStoryDirectory(), storyInfo.storyLocal);
+                        ZipUtils.unzip(Uri.fromFile(file), unZipeFile);
                     } catch (IOException e) {
-                        Log.e(TAG, "解压story文件失败:" + storyInfo.story_name + ":" +
+                        Log.e(TAG, "解压story文件失败:" + storyInfo.storyName + ":" +
                                 file.getAbsolutePath());
                     }
                 }
 
                 @Override
                 public void onError(String msg) {
-                    Log.e(TAG, "下载story文件失败:" + storyInfo.story_name + ":" + msg);
+                    Log.e(TAG, "下载story文件失败:" + storyInfo.storyName + ":" + msg);
                 }
             });
         }
     }
+
 
     public Message deleteStory(Context context, StoryEntity storyEntity, String access_token, boolean isServer) {
         Message message = Message.obtain();
@@ -824,7 +828,7 @@ public class StoryLogic {
             } catch (IOException e) {
                 Log.e(TAG, "删除服务器上用户story失败");
                 message.arg1 = HttpUrlConstancts.STATUS_EXCEPTION;
-                return  message;
+                return message;
             }
         }
         deleteLocalStroy(context, storyEntity);
@@ -911,7 +915,7 @@ public class StoryLogic {
             storyEntity.storyThumbUri = storyInfo.small_img;
             storyEntity.storyName = storyInfo.story_name;
             storyEntity.storyDesc = storyInfo.description;
-            storyEntity = updateStory(WisapeApplication.getInstance(),storyEntity);
+            storyEntity = updateStory(WisapeApplication.getInstance(), storyEntity);
             message.obj = storyEntity;
 
         } catch (Exception e) {
