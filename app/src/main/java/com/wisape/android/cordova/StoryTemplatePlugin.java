@@ -380,7 +380,12 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 storyAttr.userId = WisapeApplication.getInstance().getUserInfo().user_id;
                 storyAttr.storyStatus = ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE;
                 storyAttr.imgPrefix = StoryManager.getStoryDirectory().getAbsolutePath() + "/" + story.storyLocal;
-                storyAttr.sid = story.storyServerId;
+
+                if ("-1".equals(story.status)) {
+                    storyAttr.sid = -1;
+                }else{
+                    storyAttr.sid = story.storyServerId;
+                }
 
                 logic.update(cordova.getActivity().getApplicationContext(), storyAttr, "release");
 

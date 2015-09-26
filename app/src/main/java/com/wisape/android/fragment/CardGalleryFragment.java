@@ -130,7 +130,7 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
                 File file = new File(StoryManager.getStoryDirectory(),
                         wisapeApplication.getStoryEntity().storyLocal + "/story.html");
                 File previewFile = new File(StoryManager.getStoryDirectory(), wisapeApplication.getStoryEntity().storyLocal + "/preview.html");
-                if(previewFile.exists()){
+                if (previewFile.exists()) {
                     previewFile.delete();
                 }
                 if (saveStoryPreview(previewFile, FileUtils.readFileToString(file), wisapeApplication.getStoryEntity())) {
@@ -179,7 +179,11 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
                 storyAttr.storyDescription = story.storyDesc;
                 storyAttr.imgPrefix = StoryManager.getStoryDirectory().getAbsolutePath() + "/" + story.storyLocal;
                 storyAttr.userId = wisapeApplication.getUserInfo().user_id;
-                storyAttr.sid = story.storyServerId;
+                if ("-1".equals(story.status)) {
+                    storyAttr.sid = -1;
+                }else{
+                    storyAttr.sid = story.storyServerId;
+                }
 
                 StoryLogic.instance().update(getActivity().getApplicationContext(),
                         storyAttr, "release");
@@ -236,7 +240,7 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
                     StoryTemplateActivity.launch(getActivity(), (String) data.obj, 0);
 
                 } else {
-                    showToast((String)data.obj);
+                    showToast((String) data.obj);
                 }
                 break;
         }
@@ -436,7 +440,7 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
         String footer = getFromAssets(PREVIEW_FOOTER);
         PrintWriter writer = null;
         try {
-            writer = new PrintWriter(previewFile,"utf-8");
+            writer = new PrintWriter(previewFile, "utf-8");
             writer.println(header);
             writer.println(html);
             if (!Utils.isEmpty(story.storyMusicLocal)) {
