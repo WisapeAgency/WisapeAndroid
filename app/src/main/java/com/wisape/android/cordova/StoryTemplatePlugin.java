@@ -614,72 +614,24 @@ public class StoryTemplatePlugin extends AbsPlugin {
 
     private void getFonts(List<StoryFontInfo> fontList) {
         JSONObject json = new JSONObject();
-        List<StoryFontInfo> resultFontlist = new ArrayList<>();
         try {
             File fontDirectory = StoryManager.getStoryFontDirectory();
             File fontFile = new File(fontDirectory, FILE_NAME_FONT);
-            File[] fonts = fontDirectory.listFiles(new FileFilter() {
-                @Override
-                public boolean accept(File file) {
-                    return file.isDirectory() && file.list().length > 1;
-                }
-            });
-            json.put("filePath", fontFile.getAbsolutePath());
-            if (fontList == null || fontList.size() == 0) {
-                StoryFontInfo fontInfo = null;
-                for (File font : fonts) {
-                    fontInfo = new StoryFontInfo();
-                    fontInfo.name = font.getName();
-                    fontInfo.downloaded = 1;
-                    resultFontlist.add(fontInfo);
-                }
-            } else {
-                int serverFontSize = fontList.size();
-                int localFontSize = fonts.length;
-                //如果服务器的字体数量大于本地数量
-                if (serverFontSize > localFontSize) {
-                    for (int i = 0; i < serverFontSize; i++) {
-                        StoryFontInfo serverFontInfo = fontList.get(i);
-                        if (i >= fonts.length) {
-                            resultFontlist.add(serverFontInfo);
-                        } else {
-                            String localFonInName = fonts[i].getName();
-                            if (localFonInName.equals(serverFontInfo.name)) {
-                                serverFontInfo.downloaded = 1;
-                            } else {
-                                serverFontInfo.downloaded = 0;
-                            }
-                            resultFontlist.add(serverFontInfo);
-                        }
-                    }
-                } else {
-                    for (int i = 0; i < fonts.length; i++) {
-                        String localFontName = fonts[i].getName();
-                        if (i >= fontList.size()) {
-                            StoryFontInfo storyFontInfo = new StoryFontInfo();
-                            storyFontInfo.name = localFontName;
-                            storyFontInfo.downloaded = 1;
-                            resultFontlist.add(storyFontInfo);
-                        } else {
-                            StoryFontInfo storyFontInfo = fontList.get(i);
-                            if (localFontName.equals(storyFontInfo.name)) {
-                                storyFontInfo.downloaded = 1;
-                            } else {
-                                storyFontInfo.downloaded = 0;
-                            }
-                            resultFontlist.add(storyFontInfo);
-                        }
-                    }
-                }
-
+            if (!fontFile.exists()){
+                fontFile.createNewFile();
             }
-            for (StoryFontInfo font : resultFontlist){
+            json.put("filePath", fontFile.getAbsolutePath());
+
+            for (StoryFontInfo font : fontList){
                 File fontNameDirectory = new File(StoryManager.getStoryFontDirectory(), font.name);
                 File previewFile = new File(fontNameDirectory, "preview.jpg");
-                font.preview_img_local = previewFile.getAbsolutePath();
+                if (previewFile.exists()){
+                    font.preview_img_local = previewFile.getAbsolutePath();
+                }
+                font.downloaded = fontNameDirectory.listFiles().length == 5 ? 1 : 0;
             }
-            json.put("fonts", resultFontlist);
-        } catch (JSONException e) {
+            json.put("fonts", fontList);
+        } catch (Exception e) {
             callbackContext.success(1);
         }
         callbackContext.success(json);
