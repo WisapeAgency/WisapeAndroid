@@ -8,6 +8,7 @@ import com.wisape.android.api.ApiStory;
 import com.wisape.android.common.StoryManager;
 import com.wisape.android.database.StoryTemplateEntity;
 import com.wisape.android.logic.StoryLogic;
+import com.wisape.android.model.StoryFontInfo;
 import com.wisape.android.model.StoryTemplateInfo;
 import com.wisape.android.model.StoryTemplateTypeInfo;
 
@@ -17,6 +18,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -39,6 +41,7 @@ public class DataSynchronizer {
     private WisapeApplication application;
     private StoryTemplateInfo firstTemplate;
     private StoryLogic logic = StoryLogic.instance();
+    private BlockingQueue<StoryFontInfo> fontPreviewQueue = new LinkedBlockingQueue<>();
     private BlockingQueue<StoryTemplateInfo> downloadQueue = new LinkedBlockingQueue<>();
     private BlockingQueue<StoryTemplateInfo> downloadTempQueue = new LinkedBlockingQueue<>();
 
@@ -66,8 +69,10 @@ public class DataSynchronizer {
         service.execute(new ThumbDownloader(downloadQueue));
         service.execute(new ThumbDownloader(downloadQueue));
         service.execute(new TemplateDownloader(downloadTempQueue));
+        service.execute(new FontPreviewDownloader(fontPreviewQueue));
         service.shutdown();
 
+        //获取story模板
         JSONArray localData = logic.listStoryTemplateTypeLocal(context);
         JSONArray remoteData = logic.listStoryTemplateType(context, null);
         System.out.println(remoteData);
@@ -79,6 +84,10 @@ public class DataSynchronizer {
         } catch (JSONException e) {
             Log.e("DataSynchronizer", "", e);
         }
+
+        //获取字体模板
+        StoryFontInfo[] fonts = logic.listFont(context, "getFonts");
+        fontPreviewQueue.addAll(Arrays.asList(fonts));
     }
 
     private void getStoryTemplate(JSONObject obj) throws JSONException {

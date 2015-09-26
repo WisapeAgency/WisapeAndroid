@@ -620,7 +620,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
             File[] fonts = fontDirectory.listFiles(new FileFilter() {
                 @Override
                 public boolean accept(File file) {
-                    return file.isDirectory();
+                    return file.isDirectory() && file.list().length > 1;
                 }
             });
             json.put("filePath", fontFile.getAbsolutePath());
@@ -671,6 +671,11 @@ public class StoryTemplatePlugin extends AbsPlugin {
                     }
                 }
 
+            }
+            for (StoryFontInfo font : resultFontlist){
+                File fontNameDirectory = new File(StoryManager.getStoryFontDirectory(), font.name);
+                File previewFile = new File(fontNameDirectory, "preview.jpg");
+                font.preview_img_local = previewFile.getAbsolutePath();
             }
             json.put("fonts", resultFontlist);
         } catch (JSONException e) {

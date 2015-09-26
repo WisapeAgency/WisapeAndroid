@@ -8,6 +8,7 @@ public class StoryFontInfo extends ServerInfo{
     public long id;
     public String name;
     public String preview_img;
+    public String preview_img_local;
     public String zip_url;
     public int default_down;
     public int downloaded;
@@ -17,13 +18,13 @@ public class StoryFontInfo extends ServerInfo{
             return null;
         }
 
-        StoryFontInfo music = new StoryFontInfo();
-        music.id = json.optLong("id");
-        music.name = json.optString("name");
-        music.preview_img = json.optString("preview_img");
-        music.zip_url = json.optString("zip_url");
-        music.default_down = json.optInt("default_down");
-        return music;
+        StoryFontInfo font = new StoryFontInfo();
+        font.id = json.optLong("id");
+        font.name = json.optString("name");
+        font.preview_img = json.optString("preview_img");
+        font.zip_url = json.optString("zip_url");
+        font.default_down = json.optInt("default_down");
+        return font;
     }
 
     @Override
