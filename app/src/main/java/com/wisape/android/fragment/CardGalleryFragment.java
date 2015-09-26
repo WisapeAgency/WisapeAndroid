@@ -34,6 +34,7 @@ import com.wisape.android.content.StoryBroadcastReciverListener;
 import com.wisape.android.database.StoryEntity;
 import com.wisape.android.http.HttpUrlConstancts;
 import com.wisape.android.logic.StoryLogic;
+import com.wisape.android.util.FileUtils;
 import com.wisape.android.util.Utils;
 import com.wisape.android.view.GalleryView;
 import com.wisape.android.widget.PopupWindowMenu;
@@ -128,31 +129,11 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
             case LOADER_PREVIEW_STORY:
                 File file = new File(StoryManager.getStoryDirectory(),
                         wisapeApplication.getStoryEntity().storyLocal + "/story.html");
-                StringBuilder sb = new StringBuilder();
-                FileInputStream fileInputStream = null;
-                try {
-                    int ch = 0;
-                    fileInputStream = new FileInputStream(file);
-                    while ((ch = fileInputStream.read()) != -1) {
-                        sb.append((char) ch);
-                    }
-                    fileInputStream.close();
-                } catch (IOException e) {
-                    message.arg1 = HttpUrlConstancts.STATUS_EXCEPTION;
-                    break;
-                } finally {
-                    if (null != fileInputStream) {
-                        try {
-                            fileInputStream.close();
-                        } catch (IOException e) {
-                        }
-                    }
-                }
                 File previewFile = new File(StoryManager.getStoryDirectory(), wisapeApplication.getStoryEntity().storyLocal + "/preview.html");
                 if(previewFile.exists()){
                     previewFile.delete();
                 }
-                if (saveStoryPreview(previewFile, sb.toString(), wisapeApplication.getStoryEntity())) {
+                if (saveStoryPreview(previewFile, FileUtils.readFileToString(file), wisapeApplication.getStoryEntity())) {
                     message.obj = previewFile.getAbsolutePath();
                     message.arg1 = HttpUrlConstancts.STATUS_SUCCESS;
                 } else {
@@ -385,12 +366,12 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
 
     @Override
     public void onPublishClick() {
-        if (ApiStory.AttrStoryInfo.STORY_STATUS_TEMPORARY.equals(wisapeApplication.getStoryEntity().status)) {
+        if (ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE.equals(wisapeApplication.getStoryEntity().status)) {
+            StoryReleaseActivity.launch(getActivity());
+        } else {
             Bundle args = new Bundle();
             args.putParcelable(EXTRAS_STORY_ENTITY, wisapeApplication.getStoryEntity());
             startLoadWithProgress(LOADER_PUBLISH_STORY, args);
-        } else {
-            StoryReleaseActivity.launch(getActivity());
         }
     }
 
@@ -455,7 +436,7 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
         String footer = getFromAssets(PREVIEW_FOOTER);
         PrintWriter writer = null;
         try {
-            writer = new PrintWriter(previewFile);
+            writer = new PrintWriter(previewFile,"utf-8");
             writer.println(header);
             writer.println(html);
             if (!Utils.isEmpty(story.storyMusicLocal)) {

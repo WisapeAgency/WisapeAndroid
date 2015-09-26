@@ -1,20 +1,21 @@
 package com.wisape.android.util;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.net.Uri;
-import android.provider.MediaStore;
 import android.util.Base64;
-import android.util.Log;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 
 /**
  * 文件操作工具
@@ -37,7 +38,7 @@ public class FileUtils {
         if (folder.exists()) {
             if (folder.isDirectory()) {
                 File[] fileList = folder.listFiles();
-                for (File file: fileList) {
+                for (File file : fileList) {
                     deleteAllFile(file.getPath());
 
                 }
@@ -78,20 +79,10 @@ public class FileUtils {
      * @return
      */
     public static String getRealPathFromURI(Context context, Uri contentUri) {
-        if(contentUri  == null){
+        if (contentUri == null) {
             return "";
         }
         return contentUri.toString();
-//        String res = null;
-//        String[] proj = {MediaStore.Images.Media.DATA};
-//        Cursor cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
-//        if (cursor.moveToFirst()) {
-//            ;
-//            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-//            res = cursor.getString(column_index);
-//        }
-//        cursor.close();
-//        return res;
     }
 
     /**
@@ -164,7 +155,13 @@ public class FileUtils {
         }
     }
 
-    public static void copyAssetsFile(Context context,String src, String dest) {
+    /**
+     * 复制assest目录下的文件
+     * @param context  上下文
+     * @param src   源
+     * @param dest  目标
+     */
+    public static void copyAssetsFile(Context context, String src, String dest) {
         InputStream in = null;
         OutputStream out = null;
         try {
@@ -198,4 +195,74 @@ public class FileUtils {
             }
         }
     }
+
+
+    /**
+     * 文件路径替换
+     *
+     * @param oldPath 需要被替换的路径
+     * @param newPath 替换后的路径
+     * @param file    要替换路径的文件
+     */
+    public static void replacePath(String oldPath, String newPath, File file) {
+        String result = readFileToString(file).replace(oldPath, newPath);
+        saveFile(result, file);
+    }
+
+    /**
+     * 保存文件
+     *
+     * @param content 要保存的内容
+     * @param file    保存到的文件
+     */
+    public static void saveFile(String content, File file) {
+        BufferedWriter writer = null;
+        StringBuilder local = new StringBuilder();
+        try {
+            writer = new BufferedWriter(new OutputStreamWriter(
+                    new FileOutputStream(file.getAbsoluteFile()), "UTF-8"));
+            writer.write(content);
+            writer.close();
+        } catch (IOException e) {
+            if (null != writer) {
+                try {
+                    writer.close();
+                } catch (IOException e1) {
+
+                }
+            }
+        }
+    }
+
+
+    /**
+     * 将文件转换为字符串
+     *
+     * @param file
+     * @return
+     */
+    public static String readFileToString(File file) {
+        BufferedReader reader = null;
+        StringBuilder local = new StringBuilder();
+        String line = null;
+        try {
+            reader = new BufferedReader(new InputStreamReader(
+                    new FileInputStream(file.getAbsoluteFile()), "UTF-8"));
+            while ((line = reader.readLine()) != null) {
+                local.append(line);
+            }
+            reader.close();
+        } catch (IOException e) {
+
+            if (null != reader) {
+                try {
+                    reader.close();
+                } catch (IOException e1) {
+
+                }
+            }
+        }
+        return local.toString();
+    }
+
 }
