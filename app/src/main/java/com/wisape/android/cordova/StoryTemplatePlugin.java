@@ -221,11 +221,12 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 callbackContext.success(html);
             }
         } else if (ACTION_CHECK_DOWNLOAD.equals(action)){
-            if (!DataSynchronizer.getInstance().isDownloading()){
-                ((StoryTemplateActivity)cordova.getActivity()).onInitCompleted();
-            } else {
-                startLoad(WHAT_EDIT_INIT, null);
-            }
+//            if (!DataSynchronizer.getInstance().isDownloading()){
+//                ((StoryTemplateActivity)cordova.getActivity()).onInitCompleted();
+//            } else {
+//                startLoad(WHAT_EDIT_INIT, null);
+//            }
+            startLoad(WHAT_EDIT_INIT, null);
         }
         return true;
     }
@@ -393,7 +394,15 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 break;
             }
             case WHAT_EDIT_INIT:{
-                ((StoryTemplateActivity)cordova.getActivity()).onInitCompleted2();
+//                ((StoryTemplateActivity)cordova.getActivity()).onInitCompleted2();
+                StoryTemplateInfo templateInfo = DataSynchronizer.getInstance().getFirstTemplate();
+                String content = "";
+                if (templateInfo != null){
+                    File path = new File(StoryManager.getStoryTemplateDirectory(),templateInfo.temp_name + "/" + "stage.html");
+                    content = readHtml(path.getAbsolutePath());
+                }
+                callbackContext.success(content);
+//            loadUrl("javascript:onInitCompleted(" + content + ")");
                 break;
             }
         }

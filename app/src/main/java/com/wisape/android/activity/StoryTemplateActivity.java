@@ -446,7 +446,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
                 File path = new File(StoryManager.getStoryTemplateDirectory(),templateInfo.temp_name + "/" + "stage.html");
                 content = readHtml(path.getAbsolutePath());
             }
-            loadUrl("javascript:onInitCompleted(" + content + ")");
+//            loadUrl("javascript:onInitCompleted(" + content + ")");
         }
     };
 
