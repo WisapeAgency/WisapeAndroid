@@ -26,14 +26,19 @@ WisapeEditer = {
                 + '</ul>';
 
             var render = template.compile(source);
-            var html = render({
+            var htmlStr = render({
                 list: data
             });
 
-            document.getElementById('menu-scroll').innerHTML = html;
-            var myMenuScroll;
+            $("#menu-scroll").html(htmlStr);
             set_wrap_width($("#menu-scroll"));
-            new IScroll('#menu-scroll', { scrollX: true, scrollY: false, mouseWheel: true });
+            $("#menu-scroll").iScroll({
+                scrollX: true,
+                scrollY: false,
+                mouseWheel: true,
+                checkDOMChanges: true,
+                preventDefault: false
+            });
             $("#menu-scroll").find("li").eq(0).addClass("active");
 
 
@@ -75,6 +80,7 @@ WisapeEditer = {
                 //    console.info(WisapeEditer.storyData);
                 //    $(".loading").hide();
                 //});
+                $(".loading").hide();
 
                 return false;
             };
@@ -93,7 +99,13 @@ WisapeEditer = {
             WisapeEditer.LoadStageList(ret, function () {
                 console.info("loadStageList succ");
                 set_wrap_width($("#pages-scroll"));
-                new IScroll('#pages-scroll', { scrollX: true, scrollY: false, mouseWheel: true });
+                $("#pages-scroll").iScroll({
+                    scrollX: true,
+                    scrollY: false,
+                    mouseWheel: true,
+                    checkDOMChanges: true,
+                    preventDefault: false
+                });
                 $(".loading").hide();
             });
             setTimeout(function () {
@@ -106,6 +118,10 @@ WisapeEditer = {
 
     Event: function () {
 
+        var menuScroll = $("#menu-scroll"),
+            pageScroll = $("#pages-scroll"),
+            catScroll = $("#cat-scroll"),
+            AddNewStage = $("#AddNewStage");
 
         //获取字体接口数据
         $("#pop-editer-font").click(function () {
@@ -119,7 +135,7 @@ WisapeEditer = {
                 }
                 var sourceFont = ''
                     + '{{each listFont as value i}}'
-                    + '<div class="item {{if !value.downloaded}}download{{/if}}" data-fontname="{{value.name}}" ><span class="opt-img">{{value.name}}</span> <span class="opt-right"><i class="icon-correct" ></i><i class="icon-download" ></i><div class="download-progress-bar"><div class="download-progress-percent" style="width:0%;"></div></div></span> </div>'
+                    + '<div class="item {{if !value.downloaded}}download{{/if}}" data-fontname="{{value.name}}" ><span class="opt-img"><img src="{{value.preview_img_local}}" alt=""/></span> <span class="opt-right"><i class="icon-correct" ></i><i class="icon-download" ></i><div class="download-progress-bar"><div class="download-progress-percent" style="width:0%;"></div></div></span> </div>'
                     + '{{/each}}';
 
                 var render = template.compile(sourceFont);
@@ -128,6 +144,7 @@ WisapeEditer = {
                 });
 
                 console.info(htmlFont);
+                console.info("font path:" + data.filePath);
                 loadjscssfile(data.filePath, "css");
                 $(".pop-editer-font .opts").html(htmlFont);
                 $(".pop-editer-font .opts .item").each(function(){
@@ -144,8 +161,8 @@ WisapeEditer = {
         console.info(".pop-editer-opt:" + $(".pop-editer-font").html());
         $(".pop-editer-font").delegate(".item", "click", function () {
             console.info("set-font");
-            var me = $(this), fontname = me.attr("data-fontname"), target = $("#editorText .pages-txt.active");
-            if (!me.hasClass("download")) {
+            var me = $(this), fontname = me.attr("data-fontname"), target = $("#editorText .pages-txt.active"),isDownloading = (me.find(".download-progress-bar").css("display") == "block");
+            if (!me.hasClass("download") && !isDownloading) {
                 me.addClass("selected").siblings().removeClass("selected");
                 target.css({"font-family": fontname});
                 console.info("add font:" + target.css("font-family"));
@@ -153,7 +170,8 @@ WisapeEditer = {
                 $(".opt-font-val").html(fontname);
                 return false
             };
-            WisapeEditer.GetNativeData("downloadFont", [fontname], function (data) {
+            console.info("font name:" + fontname);
+            !isDownloading && WisapeEditer.GetNativeData("downloadFont", [fontname], function (data) {
 
             });
         })
@@ -192,8 +210,6 @@ WisapeEditer = {
         })
 
         //模板分类事件
-        var menuScroll = $("#menu-scroll"),
-            pageScroll = $("#pages-scroll");
         console.info("menu-scroll length:" + menuScroll.length);
         menuScroll.delegate("li", "click", function () {
             var _me = $(this);
@@ -268,7 +284,6 @@ WisapeEditer = {
         })
 
         //模板列表事件
-        var catScroll = $("#cat-scroll");
         catScroll.delegate("li", "click", function () {
 
             var _me = $(this),localTplPath = _me.find(".stage-thumb").attr("src").split("/thumb.jpg")[0] + "/stage.html";
@@ -298,7 +313,6 @@ WisapeEditer = {
         });
 
         //stage列表事件
-        var pageScroll = $("#pages-scroll");
         pageScroll.delegate("li", "click", function () {
             var _me = $(this);
             WisapeEditer.selectedStagetIndex = _me.index() + 1;
@@ -361,10 +375,8 @@ WisapeEditer = {
         });
 
         //新建stage事件
-        var AddNewStage = $("#AddNewStage");
         AddNewStage.click(function () {
-            var target = pageScroll.find("li.active"),
-                pageScrollLi = pageScroll.find("li");
+            var target = pageScroll.find("li.active");
 
             WisapeEditer.storyData.push(WisapeEditer.currentTplData);
 
@@ -572,7 +584,14 @@ WisapeEditer = {
             });
 
             document.getElementById('cat-scroll').innerHTML = html;
-            catScroll.iScroll({eventPassthrough: true, scrollX: true, scrollY: false, preventDefault: false});
+            set_wrap_width(catScroll);
+            catScroll.iScroll({
+                scrollX: true,
+                scrollY: false,
+                mouseWheel: true,
+                checkDOMChanges: true,
+                preventDefault: false
+            });
             catScroll.find("li").eq(0).addClass("active");
             if (cb !== null)cb();
         });
@@ -590,6 +609,15 @@ WisapeEditer = {
         WisapeEditer.selectedStagetIndex = 1;
         console.info($("#pages-scroll ul").html());
         if (cb !== null)cb();
+
+        set_wrap_width($("#pages-scroll"));
+        $("#pages-scroll").iScroll({
+            scrollX: true,
+            scrollY: false,
+            mouseWheel: true,
+            checkDOMChanges: true,
+            preventDefault: false
+        });
 
     },
 

@@ -11,7 +11,7 @@
     <link href="../public/css/editor_index.css" rel="stylesheet"/>
 </head>
 <body>
-<div class="loading" style="display:none;position: fixed;left:0;top:0;bottom:0;right:0;background-image:url(../public/img/loading.gif);background-position:50% 50%;background-size:cover;z-index: 10000">
+<div class="loading" style="position: fixed;left:0;top:0;bottom:0;right:0;background-image:url(../public/img/loading.gif);background-position:50% 50%;background-size:cover;z-index: 10000">
 </div>
 <div id="main" class="page">
     <div class="header">
@@ -29,6 +29,8 @@
     </div>
     <div class="tpl-page-cat">
         <div class="hd" id="menu-scroll" >
+            <ul class="tabcon-item">
+            </ul>
         </div>
         <div class="bd" id="cat-scroll">
         </div>
@@ -369,14 +371,6 @@
             target.removeClass("download");
         }
 
-//        function onInitCompleted(data){
-//            console.info("onInitCompleted");
-//            console.info(data);
-//            $(".loading").hide();
-////            WisapeEditer.Init();
-////            WisapeEditer.Event();
-//            //WisapeEditer.LoadDefaultData(data);
-//        }
 
         function doSaveStory(){
             var pageScroll = $("#pages-scroll");
