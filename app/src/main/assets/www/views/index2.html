@@ -37,29 +37,29 @@
     </div>
     <div class="pages" id="pages-scroll" >
         <ul>
-            <!--<li class="active">-->
-            <!--<div class="stage-content edit-area pages-img pages-img-bg"-->
-            <!--style="background-image: url(/mnt/sdcard/wisape/com.wisape.android/data/template/dddddddddddd/img/bg.jpg);background-size: cover;background-position:50% 50%;width:100%;height:100%;">-->
-            <!--<div class="symbol" style="background:red;">-->
-            <!--<div class="pages-img edit-area"><img data-name="img1" style=""-->
-            <!--src="/mnt/sdcard/wisape/com.wisape.android/data/template/dddddddddddd/img/icon-earth.png"/-->
-            <!--width="50" height="50">-->
-            <!--</div>-->
-            <!--</div>-->
-            <!--<div class="symbol" style="background: green;">-->
-            <!--<div class="pages-img edit-area"><img data-name="img1" style=""-->
-            <!--src="/mnt/sdcard/wisape/com.wisape.android/data/template/dddddddddddd/img/icon-earth.png"/-->
-            <!--width="50" height="50">-->
-            <!--</div>-->
-            <!--</div>-->
-            <!--<div class="symbol" style="z-index: 3;">-->
-            <!--<div class="pages-txt edit-area"-->
-            <!--style="margin:70px auto;width:150px;color:#fff;text-align: center;">As c update of the-->
-            <!--classictranslation corpus, the combination of network technology and language essence-->
-            <!--</div>-->
-            <!--</div>-->
-            <!--</div>-->
-            <!--</li>-->
+            <li class="active">
+            <div class="stage-content edit-area pages-img pages-img-bg"
+            style="background-image: url(/mnt/sdcard/wisape/com.wisape.android/data/template/dddddddddddd/img/bg.jpg);background-size: cover;background-position:50% 50%;width:100%;height:100%;">
+            <div class="symbol" style="background:red;">
+            <div class="pages-img edit-area"><img data-name="img1" style=""
+            src="/mnt/sdcard/wisape/com.wisape.android/data/template/dddddddddddd/img/icon-earth.png"/
+            width="50" height="50">
+            </div>
+            </div>
+            <div class="symbol" style="background: green;">
+            <div class="pages-img edit-area"><img data-name="img1" style=""
+            src="/mnt/sdcard/wisape/com.wisape.android/data/template/dddddddddddd/img/icon-earth.png"/
+            width="50" height="50">
+            </div>
+            </div>
+            <div class="symbol" style="z-index: 3;">
+            <div class="pages-txt edit-area"
+            style="margin:70px auto;width:150px;color:red;text-align: center;">As c update of the
+            classictranslation corpus, the combination of network technology and language essence
+            </div>
+            </div>
+            </div>
+            </li>
         </ul>
     </div>
     <span class="icon-add-stage" id="AddNewStage"></span>
@@ -78,11 +78,27 @@
         </div>
     </div>
     <div class="pages editable">
-        <div class="tpl-item" style="background: url(../public/img/temp/stage_example.jpg);background-size: 100% 100%;">
-        <div id="test" class="pages-txt selected active" contenteditable="true" style="margin:70px auto;width:150px;color:#fff;text-align: left;background:rgba(0,0,0,0.5);">As c update of the classic translation corpus, the combination of network technology and language essence</div>
+        <div class="stage-content edit-area pages-img pages-img-bg"
+             style="background: url(/mnt/sdcard/wisape/com.wisape.android/data/template/tpl1/img/bg.jpg);background-size: cover;background-position:100% 100%;width:100%;height:100%;">
+            <div class="symbol">
+                <div class="pages-img edit-area"><img data-name="img1" style="" width="50" height="50"
+                                                      src="/mnt/sdcard/wisape/com.wisape.android/data/template/tpl1/img/icon-earth.png">
+                </div>
+            </div>
+            <div class="symbol" style="background:green;">
+                <div class="pages-img edit-area"><img data-name="img1" style="" width="50" height="50"
+                                                      src="/mnt/sdcard/wisape/com.wisape.android/data/template/tpl1/img/icon-earth.png">
+                </div>
+            </div>
+            <div class="symbol" style="z-index: 3;">
+                <div class="pages-txt edit-area active" style="margin:70px auto;width:150px;color:red;text-align: center;"
+                     contenteditable="true">asdfasdasfadsfasdf As c update of the classictranslation corpus, the combination of
+                    network technology and language essence
+                </div>
+            </div>
         </div>
     </div>
-    <div class="pop-layer pop-editer-opt" style="display: block">
+    <div class="pop-layer pop-editer-opt" style="display: none">
         <div class="hd">
             <i class="icon-bold" id="setFontWeight" ></i>
             <i class="icon-italic" id="setFontStyle"></i>
@@ -96,7 +112,7 @@
         </div>
     </div>
 
-    <div class="pop-layer pop-editer-font" style="display: none">
+    <div class="pop-layer pop-editer-font" style="display: block">
         <div class="hd">
             <i class="icon-arrow-left backPopLayerOpt"></i>
             <span class="tit">Font Selection</span>
@@ -104,7 +120,7 @@
         <div class="bd opts">
             <div class="item"><span class="opt-img"><img
                     src="http://106.75.196.252/uploads/fonts/preview_image/Bookman Old Style.png" alt=""/></span><span class="opt-right"><i class="icon-correct"></i></span></div>
-            <div class="item"><span class="opt-name">Font1</span><span class="opt-right"><i class="icon-correct"></i></span></div>
+            <div class="item" data-fontname="xxx"><span class="opt-name">Font1</span><span class="opt-right"><i class="icon-correct"></i></span></div>
             <div class="item"><span class="opt-name">Font1</span><span class="opt-right"><i class="icon-correct"></i></span></div>
             <div class="item"><span class="opt-name">Font1</span><span class="opt-right"><i class="icon-correct"></i></span></div>
             <div class="item"><span class="opt-name">Font1</span><span class="opt-right"><i class="icon-correct"></i></span></div>
@@ -255,8 +271,8 @@
 <script src="../public/js/iscroll-lite.js"></script>
 <script src="../public/js/animation.js"></script>
 
-<script src="../public/js/app-main.js"></script>
-<script src="../public/js/common.js"></script>
+<!--<script src="../public/js/app-main.js"></script>-->
+<!--<script src="../public/js/common.js"></script>-->
 <script src="../public/js/Sortable.js"></script>
 <script type="text/javascript">
     function test(args){

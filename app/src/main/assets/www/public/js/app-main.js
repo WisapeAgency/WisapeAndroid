@@ -44,55 +44,63 @@ WisapeEditer = {
                 var _me = catScroll.find("li").eq(0), localTplPath = _me.find(".stage-thumb").attr("src").split("/thumb.jpg")[0] + "/stage.html";
                 _me.addClass("active");
                 console.info("path:" + localTplPath);
-
-
-                //获取pages数据
-                WisapeEditer.GetNativeData("getContent", [], function (data) {
-                    console.info("getContent");
-                    console.info(JSON.stringify(data));
-                    if (data == null) {//新建默认page逻辑
-
-                        console.info("read:");
-                        WisapeEditer.GetNativeData("read", [localTplPath], function (data) {
-                            console.info("read data:");
-                            console.info(data);
-                            WisapeEditer.currentTplData = data;
-                            WisapeEditer.storyData.push(data);
-                            pageScroll.find("ul").html('<li class="active"><span class="count">1/1</span>' + data + "</li>");
-                            console.info("pageScroll html:" + pageScroll.html());
-                            console.info("WisapeEditer.storyData:");
-                            console.info(WisapeEditer.storyData);
-                            $(".loading").hide();
-                        });
-
-                        return false;
-                    };
-                    //编辑story逻辑
-                    var ret = [];
-                    $('<div id="tpmHtml" style="display: none">' + data + '</div>').insertBefore("body");
-                    $("#tpmHtml").find(".m-img").each(function () {
-                        ret.push($(this).html());
-                    })
-                    console.info($("#tpmHtml").length);
-                    console.info($("#tpmHtml").find(".m-img").length);
-                    console.info(ret);
-                    WisapeEditer.storyData = ret;
-                    WisapeEditer.LoadStageList(ret, function () {
-                        console.info("loadStageList succ");
-                        set_wrap_width($("#pages-scroll"));
-                        new IScroll('#pages-scroll', { scrollX: true, scrollY: false, mouseWheel: true });
-                        $(".loading").hide();
-                    });
-                    setTimeout(function () {
-                        $("#tpmHtml").remove();
-                    }, 2000);
-
-
-                });
             });
         });
 
 
+    },
+
+    LoadDefaultData : function(data){
+
+        var firstPageData = data;
+        console.info("firstPageData:" + firstPageData);
+        //获取pages数据
+        WisapeEditer.GetNativeData("getContent", [], function (data) {
+            console.info("getContent");
+            console.info(JSON.stringify(data));
+            console.info(data == null);
+            if (data == null) {//新建stroy 直接返回
+
+                WisapeEditer.currentTplData = firstPageData;
+                WisapeEditer.storyData.push(firstPageData);
+                $("#pages-scroll").find("ul").html('<li class="active"><span class="count">1/1</span>' + firstPageData + "</li>");
+                //console.info("read:");
+                //WisapeEditer.GetNativeData("read", [localTplPath], function (data) {
+                //    console.info("read data:");
+                //    console.info(data);
+                //
+                //    pageScroll.find("ul").html('<li class="active"><span class="count">1/1</span>' + data + "</li>");
+                //    console.info("pageScroll html:" + pageScroll.html());
+                //    console.info("WisapeEditer.storyData:");
+                //    console.info(WisapeEditer.storyData);
+                //    $(".loading").hide();
+                //});
+
+                return false;
+            };
+            //编辑story逻辑
+            console.info("编辑story逻辑");
+            var ret = [];
+            $('<div id="tpmHtml" style="display: none">' + data + '</div>').insertBefore("body");
+            $("#tpmHtml").find(".m-img").each(function () {
+                ret.push($(this).html());
+            })
+            console.info($("#tpmHtml").length);
+            console.info($("#tpmHtml").find(".m-img").length);
+            console.info(ret);
+            WisapeEditer.storyData = ret;
+            WisapeEditer.LoadStageList(ret, function () {
+                console.info("loadStageList succ");
+                set_wrap_width($("#pages-scroll"));
+                new IScroll('#pages-scroll', { scrollX: true, scrollY: false, mouseWheel: true });
+                $(".loading").hide();
+            });
+            setTimeout(function () {
+                $("#tpmHtml").remove();
+            }, 2000);
+
+
+        });
     },
 
     Event: function () {
@@ -101,6 +109,7 @@ WisapeEditer = {
         //获取字体接口数据
         $("#pop-editer-font").click(function () {
             WisapeEditer.GetNativeData("getFonts", [], function (data) {
+                var curFamily = $("#editorText").find(".edit-area.active").css("font-family").split(",")[0];
                 console.info("fonts:");
                 console.info(JSON.stringify(data.filePath));
                 console.info(data.fonts);
@@ -120,6 +129,13 @@ WisapeEditer = {
                 console.info(htmlFont);
                 loadjscssfile(data.filePath, "css");
                 $(".pop-editer-font .opts").html(htmlFont);
+                $(".pop-editer-font .opts .item").each(function(){
+                    console.info("curFamily" + curFamily);
+                    console.info("data-fontname" + $(this).attr("data-fontname"));
+                    if(curFamily == $(this).attr("data-fontname")) {
+                        $(this).addClass("selected");
+                    }
+                })
                 console.info("head :" + $("head").html());
             })
         });
@@ -132,7 +148,8 @@ WisapeEditer = {
                 me.addClass("selected").siblings().removeClass("selected");
                 target.css({"font-family": fontname});
                 console.info("add font:" + target.css("font-family"));
-                console.info("font-box:" + me.parent().html())
+                console.info("font-box:" + me.parent().html());
+                $(".opt-font-val").html(fontname);
                 return false
             };
             WisapeEditer.GetNativeData("downloadFont", [fontname], function (data) {
@@ -195,7 +212,8 @@ WisapeEditer = {
         $("#manageStageList").click(function () {
             console.info("manageStageList:");
             console.info(typeof WisapeEditer.storyData);
-            $("#pageScroll li").find(".ico-acitve,.count").remove();
+            $("#pageScroll li").find(".ico-acitve").remove();
+            $("#pageScroll li").find(".count").remove();
             var retHtml = "";
             var computedHeight = parseInt($(document).width() / 3 * 1.67);
             console.info($(document).width());
@@ -326,7 +344,7 @@ WisapeEditer = {
 
         });
 
-        pageScroll.delegate("li.active .pages-txt ", "click", function (event) {
+        pageScroll.delegate("li.active .pages-txt", "click", function (event) {
             var _me = $(this);
             if (!_me.hasClass("active")) {
                 console.info(pageScroll.find(".edit-area").length);
@@ -359,7 +377,6 @@ WisapeEditer = {
             //    target.find("ul").html('<li class="active">' + WisapeEditer.currentTplData + '</li>');
             //}
 
-            var html = '<li class="active"> <div class="stage-content edit-area pages-img pages-img-bg" style="background-image:url(../public/img/bg.png);background-size: cover;background-position:50% 50%;width:100%;height:100%;"> <div class="symbol" style="background:red;"> <div class="pages-img edit-area"><img data-name="img1" style="" src="../public/img/bg.png"/ width="50" height="50"> </div> </div> <div class="symbol" style="background: green;"> <div class="pages-img edit-area"><img data-name="img1" style="" src="../public/img/bg.png"/ width="50" height="50"> </div> </div> <div class="symbol" style="z-index: 3;"> <div class="pages-txt edit-area" style="margin:70px auto;width:150px;color:#fff;text-align: center;">As c update of the classictranslation corpus, the combination of network technology and language essence </div> </div> </div> </li>';
             pageScroll.find("li").removeClass("active").find(".pages-img,.pages-txt").removeClass("active");
             target.after('<li class="active"><span class="count">' + WisapeEditer.selectedStagetIndex++ + '/' + WisapeEditer.storyData.length + '</span>' + WisapeEditer.currentTplData + '</li>');
             set_wrap_width(pageScroll);
@@ -381,7 +398,7 @@ WisapeEditer = {
 
             var pagesScroll = $("#pages-scroll li").eq(WisapeEditer.selectedStagetIndex - 1);
             var editPage = $("#editorText .pages");
-            editPage.find(".pages-txt").removeAttr("contenteditable").removeClass(preAnimation);
+            //editPage.find(".pages-txt").removeAttr("contenteditable").removeClass(preAnimation);
             console.info(preAnimation);
             editPage.find(".pages-txt").removeClass(preAnimation);
             console.info(editPage.find(".pages-txt").parent().html());
@@ -509,6 +526,7 @@ WisapeEditer = {
             if (me.hasClass("active")) {
                 me.removeClass("active");
                 selected.removeClass(animtionClassName);
+                $(".opt-animation-val i").hide();
                 selected.attr({"data-animation": ""});
             } else {
                 me.addClass("active");
@@ -516,6 +534,7 @@ WisapeEditer = {
                 selected.removeClass(preAnimation).addClass(animtionClassName).attr({"data-animation": animtionClassName});
                 selected.attr({"data-animation": animtionClassName});
                 preAnimation = animtionClassName;
+                $(".opt-animation-val i").attr({"class":$('i[data-animation=' + me.data("animation") + ']').attr("class")}).show();
                 console.info(selected.parent().html());
             }
             ;
@@ -575,25 +594,36 @@ WisapeEditer = {
 
     //更新选中的主界面的stage
     UpdateSelectedStage: function (tplIndex) {
+
         var curPage = $("#pages-scroll li").eq(tplIndex - 1),
-            editPage = $("#editorText .pages"),
-            curTxt = editPage.find(".edit-area.active"),
+            editPage = $("#editorText .pages");
+
+        //替换html
+        editPage.html(curPage.html()).find(".edit-area.active").attr({"contenteditable": "true"});
+        var curTxt = editPage.find(".edit-area.active"),
             curAnimation = "",
-            curColor = curTxt.css("color"),
-            //curFamily = curTxt.css("font-family").split(",")[0],
-            curFamily = curTxt.css("font-family"),
+            curColor = rgb2hex(curTxt.css("color")),
+            curFamily = curTxt.css("font-family").split(",")[0],
             fontWight = curTxt.css("font-weight"),
             fontStyle = curTxt.css("font-style"),
             fontAlign = curTxt.css("text-align");
+        console.info(curColor);
+        console.info(curFamily);
+        console.info(fontWight);
+        console.info(fontStyle);
+        console.info(fontAlign);
         //初始化编辑菜单
-        editPage.find(".opt-val-color").css({"color": curTxt.css("color")});
+
         if (curTxt.attr("data-animation")) {//动画
             curAnimation = curTxt.attr("data-animation").split(" ")[1];
             console.info('i[data-animation=' + curAnimation + ']');
             console.info($('i[data-animation=' + curAnimation + ']').attr("class"));
-            console.info(editPage.find(".anim-item").eq(0).html());
-            editPage.find('.anim-item i').eq(0).addClass("active");
-            $(".opt-animation-val i").attr({"class":$('i[data-animation=' + curAnimation + ']').attr("class")});
+            $('i[data-animation=' + curAnimation + ']').addClass("active").parent().siblings().find("i").removeClass("active");
+            $(".opt-animation-val i").attr({"class":$('i[data-animation=' + curAnimation + ']').attr("class")}).show();
+        } else {
+            console.info("animation none");
+            $(".opt-animation-val i").hide();
+            $(".pop-editer-animation i").removeClass("active");
         }
 
         if ($("#TextEditerOpt").hasClass("active")) {//弹出层
@@ -603,12 +633,15 @@ WisapeEditer = {
         if(curTxt.find("a").length != 0 ) {//链接
             $(".input-href").val(curTxt.find("a").attr("href"));
             $("#setFontLink").addClass("active")
+        } else {
+            $("#setFontLink").removeClass("active")
         }
 
-        if(fontWight == "normal"){
-            $("#setFontWeight").removeClass("active");
-        } else {
+        console.info(">500:" + (parseInt(fontWight) >500));
+        if(fontWight == "bold" || fontWight == "bolder" || (parseInt(fontWight) >500)){
             $("#setFontWeight").addClass("active");
+        } else {
+            $("#setFontWeight").removeClass("active");
         }
 
         if(fontStyle == "normal") {
@@ -620,27 +653,20 @@ WisapeEditer = {
         $("#setFontAlign").attr({"css":"icon-align-" + fontAlign});
 
         $(".opt-font-val").html(curFamily);//字体
+        $(".pop-editer-font").find(".item");
+        $(".pop-editer-font").find('.item[data-fontname=' + curFamily+ ']').addClass("selected").siblings().removeClass("selected");
+
 
         $(".opt-color-val").css({"background-color":curColor});//字体颜色
+        $(".color-sub").find("span").removeClass("selected");
 
-
-        //替换html
-        editPage.html(curPage.html()).find(".edit-area.active").attr({"contenteditable": "true"});
         console.info("editPage:" + editPage.html());
-    },
-
-    //生成发布，保存的story
-    GenerateStory: function () {
     },
 
     ShowView: function (from, to) {
         console.info(from + " to " + to);
         $("#" + from).hide();
         $("#" + to).show();
-    },
-
-    SetTextEditer : function(opts){
-
     },
 
     GetNativeData: function (fn, params, cb) {
@@ -715,7 +741,6 @@ function zero_fill_hex(num, digits) {
         s = "0" + s;
     return s;
 }
-
 
 function rgb2hex(rgb) {
 

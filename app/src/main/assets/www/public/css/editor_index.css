@@ -308,7 +308,7 @@ a {text-decoration: none;color:inherit;}
 .pop-editer-opt .opt-right,.pop-editer-font .opt-right {float:right;color:#19c702;}
 .pop-editer-opt .opt-right i.icon-arrow-right-list {width:10px;height:15px;background-size: auto 100%;margin-left:5px;vertical-align: 3px;}
 .pop-editer-opt .opt-val {float:left;}
-.pop-editer-opt .opt-val-color {background:#fff;border:1px solid #ddd;width:20px;height:20px;display:inline-block;border-radius: 20px;}
+.pop-editer-opt .opt-color-val {background:#fff;border:1px solid #ddd;width:20px;height:20px;display:inline-block;border-radius: 20px;}
 .pop-editer-opt .opt-animation-val i {display: inline-block;width:20px;height:20px;background-size: 100% 100%;border-radius: 20px;border:1px solid #52b502;}
 
 .pop-editer-font .tit,.pop-editer-color .tit,.pop-editer-animation .tit {vertical-align: top; font-size: 18px; color: #2d3437; margin-left: 10px;}
@@ -400,11 +400,11 @@ a {text-decoration: none;color:inherit;}
 .input-href {width:100%;padding:10px 0;border-bottom:1px solid green;}
 .input-href input {border:none;}
 
-.stage-content .symbol {transform: scale(0.8);display: inline-block;}
+.stage-content .symbol {}
 .stage { border-radius: 5px;overflow: hidden;}
-#editorText .pages {width:80%;margin:0 10%;}
+#editorText .pages {width:190px;margin:0 auto;}
 #editorText .pages .count {display: none}
-.stage-content .symbol {transform: scale(0.8);}
+.stage-content .symbol {transform: scale(0.5);}
 .stage-content .edit-area {display:inline-block;position: relative;}
 .edit-area .ico-acitve {display: none;background-image: url(../img/icon-edit-pic.png);width:36px;height:36px;position: absolute;;top:10px;right:10px;background-size: 100% 100%;}
 .pages-txt.edit-area {border:1px dashed transparent;border-radius:5px;}

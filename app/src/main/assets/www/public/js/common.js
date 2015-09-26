@@ -40,8 +40,12 @@
     document.addEventListener("deviceready", function(){
         console.log('Device is Ready!');
 
-        WisapeEditer.GetNativeData("checkInitState",[],function(){
 
+        WisapeEditer.GetNativeData("checkInitState",[],function(data){
+            console.info(data);
+            WisapeEditer.Init();
+            WisapeEditer.Event();
+            WisapeEditer.LoadDefaultData(data);
         });
     }, false);
 

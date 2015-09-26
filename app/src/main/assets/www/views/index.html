@@ -11,7 +11,7 @@
     <link href="../public/css/editor_index.css" rel="stylesheet"/>
 </head>
 <body>
-<div class="loading" style="position: fixed;left:0;top:0;bottom:0;right:0;background-image:url(../public/img/loading.gif);background-position:50% 50%;background-size:cover;z-index: 10000">
+<div class="loading" style="display:none;position: fixed;left:0;top:0;bottom:0;right:0;background-image:url(../public/img/loading.gif);background-position:50% 50%;background-size:cover;z-index: 10000">
 </div>
 <div id="main" class="page">
     <div class="header">
@@ -89,7 +89,7 @@
             <i class="icon-align-left" id="setFontAlign"></i>
         </div>
         <div class="bd opts">
-            <div class="item" data-name="pop-editer-color"><span class="opt-name">Color</span><span class="opt-right"><span class="opt-val-color" style="background-color: #fff"></span><i class="icon-arrow-right-list"></i></span></div>
+            <div class="item" data-name="pop-editer-color"><span class="opt-name">Color</span><span class="opt-right"><span class="opt-color-val" style="background-color: #fff"></span><i class="icon-arrow-right-list"></i></span></div>
             <div class="item" id="pop-editer-font" data-name="pop-editer-font"><span class="opt-name">Font</span><span class="opt-right"><span class="opt-font-val">Hevele</span><i class="icon-arrow-right-list"></i></span></div>
             <div class="item" data-name="pop-editer-animation"><span class="opt-name">Animation</span><span class="opt-right"><span class="opt-animation-val"><i ></i></span><i class="icon-arrow-right-list"></i></span></div>
         </div>
@@ -369,12 +369,14 @@
             target.removeClass("download");
         }
 
-        function onInitCompleted(){
-            console.info("onInitCompleted");
-            console.info(WisapeEditer);
-            WisapeEditer.Init();
-            WisapeEditer.Event();
-        }
+//        function onInitCompleted(data){
+//            console.info("onInitCompleted");
+//            console.info(data);
+//            $(".loading").hide();
+////            WisapeEditer.Init();
+////            WisapeEditer.Event();
+//            //WisapeEditer.LoadDefaultData(data);
+//        }
 
         function doSaveStory(){
             var pageScroll = $("#pages-scroll");
@@ -435,7 +437,8 @@
                 var color = $(this).attr("data-color");
                 $(this).addClass("selected").siblings().removeClass("selected");
                 $("#editorText .pages-txt.active,#editorText .pages-txt.active a").css({"color":color});
-                $("#editorText .opt-val-color").css({"background-color":color});
+                console.info("color:" + color)
+                $("#editorText .opt-color-val").css({"background-color":color});
             });
 
             function ChangeSubColor (i) {
