@@ -140,12 +140,12 @@ public class StorySettingsActivity extends BaseActivity {
                     intent.putExtra("crop", "true");
                     // aspectX aspectY 是宽高的比例
                     intent.putExtra("aspectX", 1);
-                    intent.putExtra("aspectY", 2);
+                    intent.putExtra("aspectY", 1.5);
                     intent.putExtra("scale", true);
 
                     // outputX outputY 是裁剪图片宽高
-                    intent.putExtra("outputX", WIDTH);
-                    intent.putExtra("outputY", HEIGHT);
+//                    intent.putExtra("outputX", WIDTH);
+//                    intent.putExtra("outputY", HEIGHT);
                     intent.putExtra("return-data", false);
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, bgUri);
                     intent.putExtra("noFaceDetection", true); // no face detection

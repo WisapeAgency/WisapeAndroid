@@ -115,12 +115,12 @@ public class StoryReleaseActivity extends BaseActivity {
                     intent.putExtra("crop", "true");
                     // aspectX aspectY 是宽高的比例
                     intent.putExtra("aspectX", 1);
-                    intent.putExtra("aspectY", 2);
+                    intent.putExtra("aspectY", 1.5);
                     intent.putExtra("scale", false);
 
                     // outputX outputY 是裁剪图片宽高
-                    intent.putExtra("outputX", WIDTH);
-                    intent.putExtra("outputY", HEIGHT);
+//                    intent.putExtra("outputX", WIDTH);
+//                    intent.putExtra("outputY", HEIGHT);
                     intent.putExtra("return-data", false);
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, bgUri);
                     intent.putExtra("noFaceDetection", true); // no face detection
@@ -177,12 +177,12 @@ public class StoryReleaseActivity extends BaseActivity {
                 Picasso.with(this).load(imgPath)
                         .placeholder(R.mipmap.icon_camera)
                         .error(R.mipmap.icon_login_email)
-                        .resize(600,800)
+                        .resize(200,400)
                         .centerCrop()
                         .into(storyCoverView);
             } else {
                 Picasso.with(this).load(new File(imgPath))
-                        .resize(600,800)
+                        .resize(200,400)
                         .centerCrop()
                         .placeholder(R.mipmap.icon_camera)
                         .error(R.mipmap.icon_login_email)
