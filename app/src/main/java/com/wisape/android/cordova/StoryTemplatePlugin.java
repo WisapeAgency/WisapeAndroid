@@ -68,6 +68,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
     private static final String DIR_NAME_IMAGE = "img";
     private static final String PREVIEW_HEADER = "www/views/header.html";
     private static final String PREVIEW_FOOTER = "www/views/footer.html";
+    private static final String PLACE_HODLER_FONT_CSS = "FONT_STYLE_FILE_LOCATION";
 
     public static final String ACTION_GET_STAGE_CATEGORY = "getStageCategory";
     public static final String ACTION_GET_STAGE_LIST = "getStageList";
@@ -571,9 +572,12 @@ public class StoryTemplatePlugin extends AbsPlugin {
             BufferedReader bufReader = new BufferedReader(inputReader);
             String line;
             StringBuffer result = new StringBuffer();
-            while ((line = bufReader.readLine()) != null)
+            while ((line = bufReader.readLine()) != null) {
                 result.append(line);
-            return result.toString();
+            }
+            File fontDirectory = StoryManager.getStoryFontDirectory();
+            String fontFile = new File(fontDirectory, FILE_NAME_FONT).getAbsolutePath();
+            return result.toString().replace(PLACE_HODLER_FONT_CSS, fontFile);
         } catch (Exception e) {
             e.printStackTrace();
         }
