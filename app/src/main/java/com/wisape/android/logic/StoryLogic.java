@@ -46,8 +46,10 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.nio.Buffer;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -801,6 +803,8 @@ public class StoryLogic {
                     try {
                         File unZipeFile = new File(StoryManager.getStoryDirectory(), storyInfo.storyLocal);
                         ZipUtils.unzip(Uri.fromFile(file), unZipeFile);
+                        File storyFile = new File(StoryManager.getStoryDirectory(),storyInfo.storyLocal + "/story.html");
+                        FileUtils.replacePath("CLIENT_DEFAULT_STORY_PATH",unZipeFile.getAbsolutePath(),storyFile);
                     } catch (IOException e) {
                         Log.e(TAG, "解压story文件失败:" + storyInfo.storyName + ":" +
                                 file.getAbsolutePath());
@@ -814,7 +818,6 @@ public class StoryLogic {
             });
         }
     }
-
 
     public Message deleteStory(Context context, StoryEntity storyEntity, String access_token, boolean isServer) {
         Message message = Message.obtain();
