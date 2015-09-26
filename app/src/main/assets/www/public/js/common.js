@@ -43,8 +43,6 @@
 
         WisapeEditer.GetNativeData("checkInitState",[],function(data){
             console.info(data);
-            WisapeEditer.Init();
-            WisapeEditer.Event();
             WisapeEditer.LoadDefaultData(data);
         });
     }, false);

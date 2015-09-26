@@ -34,7 +34,7 @@ WisapeEditer = {
 
             $("#menu-scroll").html(htmlStr);
             set_wrap_width($("#menu-scroll"));
-            $("#menu-scroll").iScroll({
+            ($("#menu-scroll").width() > $(window).width()) && $("#menu-scroll").iScroll({
                 scrollX: true,
                 scrollY: false,
                 mouseWheel: true,
@@ -63,6 +63,10 @@ WisapeEditer = {
         console.info("firstPageData:" + firstPageData);
         //获取pages数据
         WisapeEditer.GetNativeData("getContent", [], function (data) {
+
+            WisapeEditer.Init();
+            WisapeEditer.Event();
+
             console.info("getContent");
             console.info(JSON.stringify(data));
             console.info(data == null);
