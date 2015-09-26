@@ -302,23 +302,3 @@ var gd = true;//true:无限滚动，false:到最后页不能再滚
 		//调试图片的尺寸
 		if(RegExp("iPhone").test(navigator.userAgent)||RegExp("iPod").test(navigator.userAgent)||RegExp("iPad").test(navigator.userAgent)) $('.m-page').css('height','101%');
 	}(initPage());
-
-
-var lanren = {
-	changeClass: function (target, id) {
-		var className = $(target).attr('class');
-		var ids = document.getElementById(id);
-		(className == 'on') ? $(target).removeClass('on').addClass('off') : $(target).removeClass('off').addClass('on');
-		(className == 'on') ? ids.pause() : ids.play();
-	}, play: function () {
-		document.getElementById('media').play();
-	}
-}
-lanren.play();
-$(function () {
-	$("#audio-btn").click(function () {
-		//console.info("audio-btn-click:" + $(this).attr("class"));
-		//lanren.changeClass(this, 'media')
-		$(this).toggleClass("on");
-	});
-})
