@@ -1,6 +1,7 @@
 package com.wisape.android.activity;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Message;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.wisape.android.R;
+import com.wisape.android.content.UpdateUserInfoBroadcastReciver;
 import com.wisape.android.logic.UserLogic;
 import com.wisape.android.model.UserInfo;
 import com.wisape.android.util.EnvironmentUtils;
@@ -67,12 +69,13 @@ public class UserProfileActivity extends BaseActivity {
 
         setContentView(R.layout.activity_user_profile);
         ButterKnife.inject(this);
-
-        nameEdit.setText(wisapeApplication.getUserInfo().nick_name);
-        emailEdit.setText(wisapeApplication.getUserInfo().user_email);
-        String iconUrl = wisapeApplication.getUserInfo().user_ico_n;
-        if (null != iconUrl && 0 < iconUrl.length()) {
-            Utils.loadImg(this,iconUrl,iconView);
+        if(null != wisapeApplication.getUserInfo()){
+            nameEdit.setText(wisapeApplication.getUserInfo().nick_name);
+            emailEdit.setText(wisapeApplication.getUserInfo().user_email);
+            String iconUrl = wisapeApplication.getUserInfo().user_ico_n;
+            if (null != iconUrl && 0 < iconUrl.length()) {
+                Utils.loadImg(this,iconUrl,iconView);
+            }
         }
     }
 
@@ -152,6 +155,9 @@ public class UserProfileActivity extends BaseActivity {
         if (STATUS_SUCCESS == data.arg1) {
             wisapeApplication.setUserInfo((UserInfo) data.obj);
             setResult(RESULT_OK);
+            Intent intent = new Intent();
+            intent.setAction(UpdateUserInfoBroadcastReciver.ACTION);
+            sendBroadcast(intent);
         } else {
             showToast("error");
             setResult(RESULT_CANCELED);
@@ -198,7 +204,7 @@ public class UserProfileActivity extends BaseActivity {
                     // aspectX aspectY 是宽高的比例
                     intent.putExtra("aspectX", 1);
                     intent.putExtra("aspectY", 1);
-                    intent.putExtra("scale", false);
+                    intent.putExtra("scale", true);
 
                     // outputX outputY 是裁剪图片宽高
                     intent.putExtra("outputX", WIDTH);

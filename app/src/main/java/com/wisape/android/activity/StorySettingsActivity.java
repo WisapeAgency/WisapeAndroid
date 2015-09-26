@@ -9,6 +9,7 @@ import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatTextView;
 import android.widget.ImageView;
 
+import com.squareup.picasso.Picasso;
 import com.wisape.android.R;
 import com.wisape.android.common.StoryManager;
 import com.wisape.android.database.StoryEntity;
@@ -28,8 +29,8 @@ import butterknife.OnClick;
  */
 public class StorySettingsActivity extends BaseActivity {
 
-    private static final int WIDTH = 600;
-    private static final int HEIGHT = 800;
+    private static final int WIDTH = 800;
+    private static final int HEIGHT = 1200;
     public static final int REQEUST_CODE_CROP_IMG = 0x01;
 
     private Uri bgUri;
@@ -140,7 +141,7 @@ public class StorySettingsActivity extends BaseActivity {
                     // aspectX aspectY 是宽高的比例
                     intent.putExtra("aspectX", 1);
                     intent.putExtra("aspectY", 2);
-                    intent.putExtra("scale", false);
+                    intent.putExtra("scale", true);
 
                     // outputX outputY 是裁剪图片宽高
                     intent.putExtra("outputX", WIDTH);
@@ -156,7 +157,14 @@ public class StorySettingsActivity extends BaseActivity {
                 if (RESULT_OK == resultCode) {
                     if (null != bgUri) {
                         storyEntity.storyThumbUri = bgUri.getPath();
-                        Utils.loadImg(this,storyEntity.storyThumbUri,storyBgView);
+                        File file = new File(storyEntity.storyThumbUri);
+                        boolean is = file.exists();
+                        Picasso.with(this)
+                                .load(new File(storyEntity.storyThumbUri))
+                                .resize(150,150)
+                                .centerCrop()
+                                .into(storyBgView);
+//                        Utils.loadImg(this,storyEntity.storyThumbUri,storyBgView);
                     }
                 }
                 break;

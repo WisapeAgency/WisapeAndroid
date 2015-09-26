@@ -172,8 +172,22 @@ public class StoryReleaseActivity extends BaseActivity {
     protected void onLoadCompleted(Message data) {
         closeProgressDialog();
         if (HttpUrlConstancts.STATUS_SUCCESS == data.arg1) {
-            Utils.loadImg(this, storyEntity.storyThumbUri, storyCoverView);
-            Intent intent = new Intent();
+            String imgPath = storyEntity.storyThumbUri;
+            if (imgPath.contains("http")) {
+                Picasso.with(this).load(imgPath)
+                        .placeholder(R.mipmap.icon_camera)
+                        .error(R.mipmap.icon_login_email)
+                        .resize(600,800)
+                        .centerCrop()
+                        .into(storyCoverView);
+            } else {
+                Picasso.with(this).load(new File(imgPath))
+                        .resize(600,800)
+                        .centerCrop()
+                        .placeholder(R.mipmap.icon_camera)
+                        .error(R.mipmap.icon_login_email)
+                        .into(storyCoverView);
+            }            Intent intent = new Intent();
             intent.setAction(StoryBroadcastReciver.STORY_ACTION);
             intent.putExtra(StoryBroadcastReciver.EXTRAS_TYPE, StoryBroadcastReciverListener.UPDATE_STORY_SETTING);
             sendBroadcast(intent);

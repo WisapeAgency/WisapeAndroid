@@ -19,6 +19,7 @@ import com.wisape.android.activity.SignUpActivity;
 import com.wisape.android.activity.UserProfileActivity;
 import com.wisape.android.content.BroadCastReciverListener;
 import com.wisape.android.content.MessageCenterReceiver;
+import com.wisape.android.content.UpdateUserInfoBroadcastReciver;
 import com.wisape.android.logic.UserLogic;
 import com.wisape.android.util.EnvironmentUtils;
 import com.wisape.android.util.FileUtils;
@@ -34,7 +35,7 @@ import butterknife.OnClick;
 /**
  * @author Duke
  */
-public class MainMenuFragment extends AbsFragment implements BroadCastReciverListener{
+public class MainMenuFragment extends AbsFragment implements BroadCastReciverListener,UpdateUserInfoBroadcastReciver.UpdateUserInfoBoradcastReciverListener{
 
     @InjectView(R.id.sdv_user_head_image)
     ImageView userHeadImage;
@@ -46,6 +47,7 @@ public class MainMenuFragment extends AbsFragment implements BroadCastReciverLis
     TextView tvMsgAccount;
 
     private MessageCenterReceiver messageCenterReceiver;
+    private UpdateUserInfoBroadcastReciver userInfoBoradcastReciver;
 
 
     @Override
@@ -61,7 +63,12 @@ public class MainMenuFragment extends AbsFragment implements BroadCastReciverLis
         messageCenterReceiver = new MessageCenterReceiver(this);
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("com.wisape.android.content.MessageCenterReceiver");
-        getActivity().registerReceiver(messageCenterReceiver,intentFilter);
+        getActivity().registerReceiver(messageCenterReceiver, intentFilter);
+
+        userInfoBoradcastReciver = new UpdateUserInfoBroadcastReciver(this);
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(UpdateUserInfoBroadcastReciver.ACTION);
+        getActivity().registerReceiver(userInfoBoradcastReciver,filter);
     }
 
 
@@ -87,6 +94,9 @@ public class MainMenuFragment extends AbsFragment implements BroadCastReciverLis
         ButterKnife.reset(this);
         messageCenterReceiver.destroy();
         getActivity().unregisterReceiver(messageCenterReceiver);
+
+        userInfoBoradcastReciver.destory();
+        getActivity().unregisterReceiver(userInfoBoradcastReciver);
 
     }
 
@@ -167,10 +177,8 @@ public class MainMenuFragment extends AbsFragment implements BroadCastReciverLis
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (BaseActivity.RESULT_OK == resultCode) {
-            setUserInfodata();
-        }
+    public void updateUserInfo() {
+        setUserInfodata();
     }
 
     @Override

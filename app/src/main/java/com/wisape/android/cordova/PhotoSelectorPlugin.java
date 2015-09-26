@@ -62,14 +62,16 @@ public class PhotoSelectorPlugin extends AbsPlugin {
                 intent1.setDataAndType(imgUri, "image/*");
                 //下面这个crop=true是设置在开启的Intent中设置显示的VIEW可裁剪
                 intent1.putExtra("crop", "true");
+
+                float size =(float) width / height;
                 // aspectX aspectY 是宽高的比例
-                intent1.putExtra("aspectX", 1);
+                intent1.putExtra("aspectX", size);
                 intent1.putExtra("aspectY", 1);
-                intent1.putExtra("scale", false);
+                intent1.putExtra("scale", true);
 
                 // outputX outputY 是裁剪图片宽高
-                intent1.putExtra("outputX", width);
-                intent1.putExtra("outputY", height);
+//                intent1.putExtra("outputX", width);
+//                intent1.putExtra("outputY", height);
                 intent1.putExtra("return-data", false);
                 intent1.putExtra(MediaStore.EXTRA_OUTPUT, bgUri);
                 intent1.putExtra("noFaceDetection", true); // no face detection

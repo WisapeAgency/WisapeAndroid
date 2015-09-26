@@ -310,16 +310,19 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 if (!myStory.exists()) {
                     myStory.mkdirs();
                 }
-                if (!saveStory(myStory, html, paths)) {
-                    callbackContext.error(-1);
-                    return null;
-                }
+
+
                 StoryEntity storyEntity = StoryLogic.instance().updateStory(getCurrentActivity(), WisapeApplication.getInstance().getStoryEntity());
                 WisapeApplication.getInstance().setStoryEntity(storyEntity);
                 Intent intent = new Intent();
                 intent.setAction(StoryBroadcastReciver.STORY_ACTION);
                 intent.putExtra(StoryBroadcastReciver.EXTRAS_TYPE, StoryBroadcastReciverListener.TYPE_ADD_STORY);
                 getCurrentActivity().sendBroadcast(intent);
+
+                if (!saveStory(myStory, html, paths)) {
+                    callbackContext.error(-1);
+                    return null;
+                }
                 cordova.getActivity().finish();
                 break;
             }
@@ -335,6 +338,14 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 if (!myStory.exists()) {
                     myStory.mkdirs();
                 }
+
+
+                StoryEntity storyEntity = StoryLogic.instance().updateStory(getCurrentActivity(), WisapeApplication.getInstance().getStoryEntity());
+                WisapeApplication.getInstance().setStoryEntity(storyEntity);
+                Intent intent = new Intent();
+                intent.setAction(StoryBroadcastReciver.STORY_ACTION);
+                intent.putExtra(StoryBroadcastReciver.EXTRAS_TYPE, StoryBroadcastReciverListener.TYPE_ADD_STORY);
+                getCurrentActivity().sendBroadcast(intent);
                 if (!saveStory(myStory, html, paths)) {
                     callbackContext.error(-1);
                     return null;

@@ -265,11 +265,16 @@ public class Utils {
             Picasso.with(context).load(imgPath)
                     .placeholder(R.mipmap.icon_camera)
                     .error(R.mipmap.icon_login_email)
+                    .resize(600,800)
+                    .centerInside()
                     .into(imageView);
         } else {
             Picasso.with(context).load(new File(imgPath))
+                    .resize(600,800)
+                    .centerInside()
                     .placeholder(R.mipmap.icon_camera)
-                    .error(R.mipmap.icon_login_email).into(imageView);
+                    .error(R.mipmap.icon_login_email)
+                    .into(imageView);
         }
     }
 

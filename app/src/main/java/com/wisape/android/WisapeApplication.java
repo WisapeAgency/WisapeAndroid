@@ -3,6 +3,7 @@ package com.wisape.android;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 import android.support.multidex.MultiDex;
 
 import com.bugtags.library.Bugtags;
@@ -15,7 +16,9 @@ import com.wisape.android.database.StoryEntity;
 import com.wisape.android.model.StoryTemplateInfo;
 import com.wisape.android.model.StoryTemplateTypeInfo;
 import com.wisape.android.model.UserInfo;
+//import com.wisape.android.network.NanoServer;
 import com.wisape.android.network.WWWConfig;
+//import com.wisape.android.service.NanoService;
 //import com.wisape.android.service.NanoService;
 import com.wisape.android.util.Utils;
 
@@ -57,7 +60,7 @@ public class WisapeApplication extends Application {
         sharedPreferences = getSharedPreferences(PREFERENCES_NAME, MODE_PRIVATE);
         WWWConfig.initialize(context);
         FlurryAgent.init(this, "BKNHHSXHP986YBR666ZY");
-
+//        NanoService.startNanoServer(context);
         PlayerProxy.launch(context);
         Bugtags.start("f6843af99861f31d1af2ae6d74a8e9a9", this, Bugtags.BTGInvocationEventShake);
         Bugtags.setTrackingCrashes(true);
