@@ -3,6 +3,8 @@ WisapeEditer = {
 
     currentTplData: '',
 
+    fontPath : "",
+
     selectedStagetIndex: 1,
 
     stageData: [],
@@ -145,7 +147,8 @@ WisapeEditer = {
 
                 console.info(htmlFont);
                 console.info("font path:" + data.filePath);
-                loadjscssfile(data.filePath, "css");
+                WisapeEditer.fontPath = data.filePath;
+                //loadjscssfile(data.filePath + "?"  +Date.parse(new Date()), "css");
                 $(".pop-editer-font .opts").html(htmlFont);
                 $(".pop-editer-font .opts .item").each(function(){
                     console.info("curFamily" + curFamily);
@@ -163,6 +166,8 @@ WisapeEditer = {
             console.info("set-font");
             var me = $(this), fontname = me.attr("data-fontname"), target = $("#editorText .pages-txt.active"),isDownloading = (me.find(".download-progress-bar").css("display") == "block");
             if (!me.hasClass("download") && !isDownloading) {
+                console.info(WisapeEditer.fontPath);
+                loadjscssfile(WisapeEditer.fontPath + "?"  +Date.parse(new Date()), "css");
                 me.addClass("selected").siblings().removeClass("selected");
                 target.css({"font-family": fontname});
                 console.info("add font:" + target.css("font-family"));
