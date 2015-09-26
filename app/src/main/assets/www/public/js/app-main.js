@@ -89,6 +89,7 @@ WisapeEditer = {
             console.info($("#tpmHtml").find(".m-img").length);
             console.info(ret);
             WisapeEditer.storyData = ret;
+            WisapeEditer.currentTplData = ret;
             WisapeEditer.LoadStageList(ret, function () {
                 console.info("loadStageList succ");
                 set_wrap_width($("#pages-scroll"));
@@ -398,7 +399,7 @@ WisapeEditer = {
 
             var pagesScroll = $("#pages-scroll li").eq(WisapeEditer.selectedStagetIndex - 1);
             var editPage = $("#editorText .pages");
-            //editPage.find(".pages-txt").removeAttr("contenteditable").removeClass(preAnimation);
+            editPage.find(".pages-txt").removeAttr("contenteditable").removeClass(preAnimation);
             console.info(preAnimation);
             editPage.find(".pages-txt").removeClass(preAnimation);
             console.info(editPage.find(".pages-txt").parent().html());
