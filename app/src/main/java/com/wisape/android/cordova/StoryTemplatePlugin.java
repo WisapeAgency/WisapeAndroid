@@ -287,6 +287,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 List<StoryFontInfo> fontList = Arrays.asList(fonts);
                 System.out.println(fontList);
                 getFonts(fontList);
+                break;
             }
             case WHAT_DOWNLOAD_FONT: {
                 String fontName = args.getString(EXTRA_FONT_NAME);
