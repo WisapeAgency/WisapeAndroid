@@ -3,11 +3,14 @@ package com.wisape.android.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
+import android.widget.TextView;
 
 import com.wisape.android.R;
 import com.wisape.android.widget.ComfirmDialog;
 
 import butterknife.ButterKnife;
+import butterknife.InjectView;
 import butterknife.OnClick;
 
 /**
@@ -25,11 +28,15 @@ public class ChangeEamilActivity extends BaseActivity{
         activity.startActivityForResult(intent, requestCode);
     }
 
+    @InjectView(R.id.password_reset_email_account_text)
+    TextView textView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_email);
         ButterKnife.inject(this);
+//        textView.setMovementMethod(ScrollingMovementMethod.getInstance());
     }
 
     @OnClick(R.id.btn_change_email_address)

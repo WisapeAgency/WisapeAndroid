@@ -1,58 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="1">
+
+    <ImageView
+        android:layout_marginTop="24dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@mipmap/icon_modify_email"/>
 
     <TextView
         android:id="@+id/password_reset_notice_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:drawablePadding="20dp"
-        android:drawableTop="@mipmap/icon_modify_email"
         android:gravity="start"
-        android:lineSpacingMultiplier="1.4"
-        android:textStyle="bold"
-        android:padding="32dp"
+        android:padding="16dp"
         android:text="@string/password_reset_email_account_text"
+        android:textColor="@color/app_fourth"
         android:textSize="@dimen/app_text_size_large"
-        android:textColor="@color/app_fourth" />
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/password_reset_email_account_text"
         style="@style/App.TextStyle.Secondary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="32dp"
-        android:layout_marginTop="-50dp"
-        android:layout_below="@+id/password_reset_notice_text"
-        android:gravity="center"
+        android:gravity="center|top"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
         android:singleLine="false"
-        android:text="@string/change_main_text" />
+        android:text="@string/change_main_text"
+        android:layout_weight="0.05" />
 
-    <LinearLayout
-        android:id="@+id/linear"
+    <Button
+        android:id="@+id/btn_change_email_address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:orientation="vertical">
+        android:background="@drawable/password_reset_btn_bg"
+        android:text="@string/btn_change_email_address"
+        android:layout_marginTop="12dp"
+        android:textAllCaps="false" />
 
-        <Button
-            android:id="@+id/btn_change_email_address"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/password_reset_btn_bg"
-            android:text="@string/btn_change_email_address"
-            android:textAllCaps="false" />
+    <Button
+        android:id="@+id/btn_logout_email_account"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/btn_logout_email_account_selector"
+        android:text="@string/btn_logout_email_account"
+        android:textAllCaps="false"
+        android:textColor="@color/app_fourth"
+        android:layout_marginBottom="12dp"
+        android:layout_marginTop="12dp"/>
 
-        <Button
-            android:id="@+id/btn_logout_email_account"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/btn_logout_email_account"
-            android:textColor="@color/app_fourth"
-            android:background="@drawable/btn_logout_email_account_selector"
-            android:textAllCaps="false" />
-    </LinearLayout>
-
-
-</RelativeLayout>
+</LinearLayout>

@@ -69,10 +69,11 @@ public class UserProfileActivity extends BaseActivity {
 
         setContentView(R.layout.activity_user_profile);
         ButterKnife.inject(this);
-        if(null != wisapeApplication.getUserInfo()){
-            nameEdit.setText(wisapeApplication.getUserInfo().nick_name);
-            emailEdit.setText(wisapeApplication.getUserInfo().user_email);
-            String iconUrl = wisapeApplication.getUserInfo().user_ico_n;
+        UserInfo userInfo = UserLogic.instance().loaderUserFromLocal();
+        if(null != userInfo){
+            nameEdit.setText(userInfo.nick_name);
+            emailEdit.setText(userInfo.user_email);
+            String iconUrl = userInfo.user_ico_n;
             if (null != iconUrl && 0 < iconUrl.length()) {
                 Utils.loadImg(this,iconUrl,iconView);
             }
@@ -114,8 +115,8 @@ public class UserProfileActivity extends BaseActivity {
         String newName = nameEdit.getText().toString();
         String newEmail = emailEdit.getText().toString();
 
-        String oldName = wisapeApplication.getUserInfo().nick_name;
-        String oldEmail = wisapeApplication.getUserInfo().user_email;
+        String oldName = UserLogic.instance().loaderUserFromLocal().nick_name;
+        String oldEmail = UserLogic.instance().loaderUserFromLocal().user_email;
 
         if (newName.equals(oldName) && newEmail.equals(oldEmail) && null == userIconUri) {
             setResult(RESULT_CANCELED);
@@ -144,7 +145,7 @@ public class UserProfileActivity extends BaseActivity {
     protected Message onLoadBackgroundRunning(int what, Bundle args) throws AsyncLoaderError {
         Message msg = UserLogic.instance().updateProfile(args.getString(EXTRAS_NAME),
                 args.getString(EXTRAS_ICON_URI),
-                args.getString(EXTRAS_EMAIL), wisapeApplication.getUserInfo().access_token);
+                args.getString(EXTRAS_EMAIL), UserLogic.instance().loaderUserFromLocal().access_token);
         msg.what = what;
         return msg;
     }
@@ -153,13 +154,14 @@ public class UserProfileActivity extends BaseActivity {
     protected void onLoadCompleted(Message data) {
         super.onLoadCompleted(data);
         if (STATUS_SUCCESS == data.arg1) {
-            wisapeApplication.setUserInfo((UserInfo) data.obj);
+            UserInfo userInfo = (UserInfo) data.obj;
+            UserLogic.instance().saveUserToSharePrefrence(userInfo);
             setResult(RESULT_OK);
             Intent intent = new Intent();
             intent.setAction(UpdateUserInfoBroadcastReciver.ACTION);
             sendBroadcast(intent);
         } else {
-            showToast("error");
+            showToast("修改信息失败");
             setResult(RESULT_CANCELED);
         }
         finish();

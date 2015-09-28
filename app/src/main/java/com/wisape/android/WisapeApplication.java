@@ -46,7 +46,7 @@ public class WisapeApplication extends Application {
 
     private List<StoryTemplateTypeInfo> templateTypeList = new ArrayList<>();
     private Map<Integer, List<StoryTemplateInfo>> templateMap = new HashMap<>();
-    private UserInfo userInfo;
+//    private UserInfo userInfo;
     private SharedPreferences sharedPreferences;
     private String installId;
     private StoryEntity storyEntity;
@@ -89,13 +89,13 @@ public class WisapeApplication extends Application {
         return sharedPreferences;
     }
 
-    public void setUserInfo(UserInfo userInfo) {
-        this.userInfo = userInfo;
-    }
-
-    public UserInfo getUserInfo() {
-        return userInfo;
-    }
+//    public void setUserInfo(UserInfo userInfo) {
+//        this.userInfo = userInfo;
+//    }
+//
+//    public UserInfo getUserInfo() {
+//        return userInfo;
+//    }
 
     public List<StoryTemplateTypeInfo> getTemplateTypeList() {
         return templateTypeList;

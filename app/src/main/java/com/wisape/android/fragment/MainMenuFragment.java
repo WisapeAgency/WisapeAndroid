@@ -76,9 +76,9 @@ public class MainMenuFragment extends AbsFragment implements BroadCastReciverLis
      * 设置用户信息
      */
     private void setUserInfodata() {
-        tvName.setText(wisapeApplication.getUserInfo().nick_name);
-        tvMail.setText(wisapeApplication.getUserInfo().user_email);
-        String iconUrl = wisapeApplication.getUserInfo().user_ico_n;
+        tvName.setText(UserLogic.instance().loaderUserFromLocal().nick_name);
+        tvMail.setText(UserLogic.instance().loaderUserFromLocal().user_email);
+        String iconUrl = UserLogic.instance().loaderUserFromLocal().user_ico_n;
         if (null != iconUrl && 0 < iconUrl.length()) {
             Picasso.with(getActivity()).load(iconUrl)
                     .resize(150, 150)

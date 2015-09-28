@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.wisape.android.R;
 import com.wisape.android.logic.MessageCenterLogic;
+import com.wisape.android.logic.UserLogic;
 import com.wisape.android.model.MessageInfo;
 
 import butterknife.ButterKnife;
@@ -48,7 +49,7 @@ public class MessageCenterDetailActivity extends BaseActivity {
 
         Bundle args = new Bundle();
         args.putInt(EXTRAS_MESAGE_ID,getIntent().getExtras().getInt(MESSAGE_ID));
-        args.putLong(EXTRAS_USER_ID,wisapeApplication.getUserInfo().user_id);
+        args.putLong(EXTRAS_USER_ID, UserLogic.instance().loaderUserFromLocal().user_id);
         startLoadWithProgress(LOADER_MESSAGE_READ, args);
     }
 

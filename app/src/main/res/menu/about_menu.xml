@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/share_about"
         android:title="@string/photo_menu_buckets"
         android:icon="@mipmap/icon_shareabout"
         app:showAsAction="always"/>

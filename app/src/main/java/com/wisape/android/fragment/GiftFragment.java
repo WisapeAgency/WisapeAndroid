@@ -128,7 +128,9 @@ public class GiftFragment extends AbsFragment {
             holder.imgContent.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    gotoActive(activeInfo.getUrl(),activeInfo.getTitle());
+                    if(null != activeInfo){
+                        gotoActive(activeInfo.getUrl(),activeInfo.getTitle());
+                    }
                 }
             });
         }

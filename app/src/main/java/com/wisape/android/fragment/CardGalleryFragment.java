@@ -34,6 +34,7 @@ import com.wisape.android.content.StoryBroadcastReciverListener;
 import com.wisape.android.database.StoryEntity;
 import com.wisape.android.http.HttpUrlConstancts;
 import com.wisape.android.logic.StoryLogic;
+import com.wisape.android.logic.UserLogic;
 import com.wisape.android.util.FileUtils;
 import com.wisape.android.util.Utils;
 import com.wisape.android.view.GalleryView;
@@ -110,7 +111,7 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
         popupWindow = new PopupWindowMenu((BaseActivity) getActivity(), this);
         mCardGallery.setSpace((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 30, mDisplayMetrics));
         Bundle bundle = new Bundle();
-        bundle.putString(EXTRAS_ACCESS_TOKEN, wisapeApplication.getUserInfo().access_token);
+        bundle.putString(EXTRAS_ACCESS_TOKEN, UserLogic.instance().loaderUserFromLocal().access_token);
         startLoadWithProgress(LOADER_STORY, bundle);
     }
 
@@ -143,28 +144,13 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
             case LOADER_EDIT_STORY:
 
                 File editFile = new File(StoryManager.getStoryDirectory(), wisapeApplication.getStoryEntity().storyLocal + "/story.html");
-                StringBuilder builder = new StringBuilder();
-                FileInputStream inputStream = null;
-                try {
-                    int ch = 0;
-                    inputStream = new FileInputStream(editFile);
-                    while ((ch = inputStream.read()) != -1) {
-                        builder.append((char) ch);
-                    }
-                    inputStream.close();
-                    message.arg1 = HttpUrlConstancts.STATUS_SUCCESS;
-                    message.obj = builder.toString();
-                } catch (IOException e) {
+                String data = FileUtils.readFileToString(editFile);
+                if(Utils.isEmpty(data)){
                     message.arg1 = HttpUrlConstancts.STATUS_EXCEPTION;
                     message.obj = "获取story数据出错";
-                } finally {
-                    if (null != inputStream) {
-                        try {
-                            inputStream.close();
-                        } catch (IOException e) {
-
-                        }
-                    }
+                }else{
+                    message.arg1 = HttpUrlConstancts.STATUS_SUCCESS;
+                    message.obj = data;
                 }
                 break;
             case LOADER_PUBLISH_STORY:
@@ -178,7 +164,7 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
                 storyAttr.bgMusic = story.storyMusicName;
                 storyAttr.storyDescription = story.storyDesc;
                 storyAttr.imgPrefix = StoryManager.getStoryDirectory().getAbsolutePath() + "/" + story.storyLocal;
-                storyAttr.userId = wisapeApplication.getUserInfo().user_id;
+                storyAttr.userId = UserLogic.instance().loaderUserFromLocal().user_id;
                 if ("-1".equals(story.status)) {
                     storyAttr.sid = -1;
                 }else{
@@ -388,7 +374,7 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
         }
         Bundle args = new Bundle();
         args.putParcelable(EXTRAS_STORY_ENTITY, wisapeApplication.getStoryEntity());
-        args.putString(EXTRAS_ACCESS_TOKEN, wisapeApplication.getUserInfo().access_token);
+        args.putString(EXTRAS_ACCESS_TOKEN, UserLogic.instance().loaderUserFromLocal().access_token);
         args.putBoolean(EXRAS_IS_SERVER, isSever);
         startLoad(LOADER_DELETE_STORY, args);
     }
@@ -497,18 +483,17 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
             if (ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE.equals(storyEntity.status)) {
                 holder.mTextStoryState.setText("已发布");
             }
-//            Utils.loadImg(getActivity(), storyEntity.storyThumbUri, holder.mStoryBg);
             String imgPath = storyEntity.storyThumbUri;
             if (imgPath.contains("http")) {
                 Picasso.with(getActivity()).load(imgPath)
                         .placeholder(R.mipmap.icon_camera)
                         .error(R.mipmap.icon_login_email)
-                        .resize(600,800)
+                        .fit()
                         .centerCrop()
                         .into(holder.mStoryBg);
             } else {
                 Picasso.with(getActivity()).load(new File(imgPath))
-                        .resize(600,800)
+                        .fit()
                         .centerCrop()
                         .placeholder(R.mipmap.icon_camera)
                         .error(R.mipmap.icon_login_email)

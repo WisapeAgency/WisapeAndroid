@@ -1,35 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_marginTop="24dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@mipmap/icon_modify_email"/>
 
     <TextView
         android:id="@+id/password_reset_notice_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/password_reset_email_account_text"
-        android:layout_marginBottom="120dp"
-        android:drawablePadding="20dp"
-        android:drawableTop="@mipmap/icon_modify_email"
-        android:gravity="center"
+        android:gravity="center|top"
         style="@style/App.TextStyle.Secondary"
         android:singleLine="false"
-        android:text="@string/change_email_title"
         android:lineSpacingMultiplier="1.4"
-        android:paddingLeft="32dp"
-        android:paddingRight="32dp"
+        android:layout_marginTop="12dp"
+        android:text="@string/change_email_title"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
         android:textColor="@android:color/darker_gray"/>
 
     <TextView
         android:id="@+id/password_reset_email_account_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/add_emai_edit"
         android:layout_marginEnd="10dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="10dp"
         android:layout_marginStart="5dp"
+        android:layout_marginTop="48dp"
         android:text="@string/password_reset_email_account_text"
         style="@style/App.TextStyle.Secondary"/>
 
@@ -37,9 +42,7 @@
         android:id="@+id/add_emai_edit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/add_emai_btn"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="44dp"
+        android:layout_marginBottom="24dp"
         android:layout_marginEnd="10dp"
         android:layout_marginRight="10dp"
         android:inputType="text"
@@ -57,10 +60,8 @@
         android:id="@+id/add_emai_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
         android:background="@drawable/password_reset_btn_bg"
         android:text="@string/confirm_dialog_confirm"
         android:textAllCaps="false"/>
 
-</RelativeLayout>
+</LinearLayout>

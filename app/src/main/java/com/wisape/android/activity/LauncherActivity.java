@@ -70,7 +70,6 @@ public class LauncherActivity extends BaseActivity {
             SignUpActivity.launch(LauncherActivity.this);
             finish();
         } else {
-            wisapeApplication.setUserInfo(userInfo);
             MainActivity.launch(LauncherActivity.this);
             finish();
         }

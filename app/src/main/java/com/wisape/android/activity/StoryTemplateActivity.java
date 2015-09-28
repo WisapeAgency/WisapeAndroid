@@ -319,7 +319,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
                     story = new StoryEntity();
                     story.storyName = Utils.acquireUTCTimestamp();
                     story.status = ApiStory.AttrStoryInfo.STORY_STATUS_TEMPORARY;
-                    story.userId = WisapeApplication.getInstance().getUserInfo().user_id;
+                    story.userId = UserLogic.instance().loaderUserFromLocal().user_id;
                     story.storyDesc = "Something wonderful is coming";
                     story.storyLocal = Utils.acquireUTCTimestamp();
                     try{

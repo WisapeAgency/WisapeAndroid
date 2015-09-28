@@ -25,6 +25,7 @@ import com.wisape.android.database.StoryEntity;
 import com.wisape.android.database.StoryMusicEntity;
 import com.wisape.android.logic.MessageCenterLogic;
 import com.wisape.android.logic.StoryLogic;
+import com.wisape.android.logic.UserLogic;
 import com.wisape.android.model.StoryFontInfo;
 import com.wisape.android.model.StoryTemplateInfo;
 import com.wisape.android.network.DataSynchronizer;
@@ -390,7 +391,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
                     storyAttr.bgMusic = story.storyMusicName;
                 }
                 storyAttr.storyDescription = story.storyDesc;
-                storyAttr.userId = WisapeApplication.getInstance().getUserInfo().user_id;
+                storyAttr.userId = UserLogic.instance().loaderUserFromLocal().user_id;
                 storyAttr.storyStatus = ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE;
                 storyAttr.imgPrefix = StoryManager.getStoryDirectory().getAbsolutePath() + "/" + story.storyLocal;
 

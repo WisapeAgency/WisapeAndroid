@@ -19,6 +19,7 @@ import com.wisape.android.content.StoryBroadcastReciverListener;
 import com.wisape.android.database.StoryEntity;
 import com.wisape.android.http.HttpUrlConstancts;
 import com.wisape.android.logic.StoryLogic;
+import com.wisape.android.logic.UserLogic;
 import com.wisape.android.util.Utils;
 import com.wisape.android.widget.QrDialogFragment;
 
@@ -191,8 +192,6 @@ public class StoryReleaseActivity extends BaseActivity {
             intent.setAction(StoryBroadcastReciver.STORY_ACTION);
             intent.putExtra(StoryBroadcastReciver.EXTRAS_TYPE, StoryBroadcastReciverListener.UPDATE_STORY_SETTING);
             sendBroadcast(intent);
-        } else {
-            showToast("更新封面失败");
         }
     }
 
@@ -258,7 +257,7 @@ public class StoryReleaseActivity extends BaseActivity {
     @SuppressWarnings("unused")
     protected void doShare2Messenger() {
         FacebookMessenger.ShareParams shareParams = new FacebookMessenger.ShareParams();
-        shareParams.setAddress(wisapeApplication.getUserInfo().user_email);
+        shareParams.setAddress(UserLogic.instance().loaderUserFromLocal().user_email);
         shareParams.setImageUrl(storyEntity.storyThumbUri);
 
         shareParams.setTitle(storyEntity.storyName);
@@ -290,7 +289,7 @@ public class StoryReleaseActivity extends BaseActivity {
     @SuppressWarnings("unused")
     protected void doShare2Email() {
         Email.ShareParams shareParams = new Email.ShareParams();
-        shareParams.setAddress(wisapeApplication.getUserInfo().user_email);
+        shareParams.setAddress(UserLogic.instance().loaderUserFromLocal().user_email);
         shareParams.setImageUrl(storyEntity.storyThumbUri);
         shareParams.setTitle(storyEntity.storyName);
         shareParams.setText(storyUrl);
