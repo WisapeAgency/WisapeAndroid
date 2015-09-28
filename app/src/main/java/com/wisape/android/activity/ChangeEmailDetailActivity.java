@@ -3,8 +3,11 @@ package com.wisape.android.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
+import android.widget.TextView;
 
 import com.wisape.android.R;
+import com.wisape.android.logic.UserLogic;
 import com.wisape.android.util.Utils;
 import com.wisape.android.widget.SignUpEditText;
 
@@ -29,13 +32,19 @@ public class ChangeEmailDetailActivity extends BaseActivity{
     @InjectView(R.id.add_emai_edit)
     SignUpEditText editEmail;
 
+    @InjectView(R.id.password_reset_notice_text)
+    TextView textView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_email_detail);
 
         ButterKnife.inject(this);
-        editEmail.setText(wisapeApplication.getUserInfo().user_email);
+
+        editEmail.setText(UserLogic.instance().loaderUserFromLocal().user_email);
+        textView.setMovementMethod(ScrollingMovementMethod.getInstance());
+
     }
 
     @OnClick(R.id.add_emai_btn)

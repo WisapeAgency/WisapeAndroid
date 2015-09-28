@@ -299,11 +299,10 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
         super.onLoadCompleted(data);
         if (STATUS_SUCCESS == data.arg1) {
             UserInfo user = (UserInfo) data.obj;
-            wisapeApplication.setUserInfo(user);
             MainActivity.launch(this);
 
         } else {
-            showToast("登录失败!");
+            showToast((String)data.obj);
         }
     }
 

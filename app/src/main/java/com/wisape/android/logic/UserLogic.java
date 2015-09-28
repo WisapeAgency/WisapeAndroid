@@ -92,7 +92,7 @@ public class UserLogic {
         Message message = Message.obtain();
         try {
             UserInfo userInfo = OkhttpUtil.execute(HttpUrlConstancts.USER_LOGIN, params, UserInfo.class);
-            saveUserToSharePrefrence(new Gson().toJson(userInfo));
+            saveUserToSharePrefrence(userInfo);
             message.arg1 = HttpUrlConstancts.STATUS_SUCCESS;
             message.obj = userInfo;
         } catch (IOException e) {
@@ -131,9 +131,7 @@ public class UserLogic {
         String decode = sharedPreferences.getString(EXTRA_USER_INFO, "");
         if (0 != decode.length()) {
             String gson = new String(Base64.decode(decode, Base64.DEFAULT));
-            Log.e(TAG, "loaderUserFromLocal:" + gson);
             userInfo = new Gson().fromJson(gson, UserInfo.class);
-
         }
         return userInfo;
     }
@@ -142,10 +140,11 @@ public class UserLogic {
     /**
      * 将用户信息保存到shareprefrence
      *
-     * @param userEncode 加密后的用户信息
+     * @param userInfo 加密后的用户信息
      */
-    private void saveUserToSharePrefrence(String userEncode) {
-        Log.w(TAG, "saveUserToSahrePrefrence:" + userEncode);
+    public void saveUserToSharePrefrence(UserInfo userInfo) {
+        Log.w(TAG, "saveUserToSahrePrefrence:" + new Gson().toJson(userInfo));
+        String userEncode = new Gson().toJson(userInfo);
         WisapeApplication.getInstance().getSharePrefrence().edit()
                 .putString(EXTRA_USER_INFO, Base64.encodeToString(userEncode.getBytes(), Base64.DEFAULT)).apply();
 
@@ -181,7 +180,7 @@ public class UserLogic {
         Message message = Message.obtain();
         try {
             UserInfo userInfo = OkhttpUtil.executePost(HttpUrlConstancts.UPDATE_PROFILE, formBody, UserInfo.class);
-            saveUserToSharePrefrence(new Gson().toJson(userInfo));
+            saveUserToSharePrefrence(userInfo);
             message.arg1 =  HttpUrlConstancts.STATUS_SUCCESS;
             message.obj = userInfo;
         } catch (Exception e) {

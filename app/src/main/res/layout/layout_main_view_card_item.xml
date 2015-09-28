@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
+    android:layout_width="234dp"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
@@ -10,95 +10,87 @@
         android:layout_height="16dp"
         android:background="@drawable/main_view_card_item_head" />
 
-    <FrameLayout
-        android:layout_width="@dimen/card_gallery_item_size_w"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="@drawable/gallery_item_shadow_bg">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="1">
 
         <ImageView
             android:id="@+id/main_story_bg"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/gallery_item_story_bg"/>
+            android:layout_height="match_parent" />
 
-        <RelativeLayout
+        <TextView
+            android:id="@+id/text_story_state"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:background="@mipmap/icon_label"
+            android:gravity="center" />
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:alpha="1">
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:alpha="0.5"
+            android:background="@drawable/gallery_item_shadow_bg"
+            android:orientation="horizontal"
+            android:padding="10dp">
 
             <TextView
-                android:id="@+id/text_story_state"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:background="@mipmap/icon_label"
-                android:gravity="center"/>
+                android:id="@+id/text_eye_count"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="20dp"
+                android:layout_weight="1"
+                android:drawableLeft="@mipmap/icon_eye"
+                android:drawablePadding="3dp"
+                android:gravity="center|left"
+                android:textColor="@color/app_primary"
+                android:textSize="12sp" />
 
+            <TextView
+                android:id="@+id/text_zan_count"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="1"
+                android:drawableLeft="@mipmap/icon_zan"
+                android:drawablePadding="3dp"
+                android:gravity="center|left"
+                android:textSize="12sp" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:alpha="0.5"
-                android:layout_alignParentBottom="true"
-                android:background="@drawable/gallery_item_shadow_bg"
-                android:orientation="horizontal">
+            <TextView
+                android:id="@+id/text_share_count"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="1"
+                android:drawableLeft="@mipmap/icon_share"
+                android:drawablePadding="3dp"
+                android:gravity="center|left"
+                android:textSize="12sp"
+                android:visibility="gone" />
 
-                <TextView
-                    android:id="@+id/text_eye_count"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="20dp"
-                    android:layout_weight="1"
-                    android:drawableLeft="@mipmap/icon_eye"
-                    android:drawablePadding="3dp"
-                    android:gravity="center|left"
-                    android:textColor="@color/app_primary"
-                    android:textSize="12sp" />
+            <ImageView
+                android:layout_width="1dp"
+                android:layout_height="15dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="20dp"
+                android:background="@color/app_primary" />
 
-                <TextView
-                    android:id="@+id/text_zan_count"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="5dp"
-                    android:layout_weight="1"
-                    android:drawableLeft="@mipmap/icon_zan"
-                    android:drawablePadding="3dp"
-                    android:gravity="center|left"
-                    android:textSize="12sp" />
+            <ImageView
+                android:id="@+id/main_story_more"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="1"
+                android:scaleType="center"
+                android:src="@mipmap/icon_more" />
 
-                <TextView
-                    android:id="@+id/text_share_count"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="5dp"
-                    android:layout_weight="1"
-                    android:drawableLeft="@mipmap/icon_share"
-                    android:drawablePadding="3dp"
-                    android:gravity="center|left"
-                    android:textSize="12sp"
-                    android:visibility="gone"/>
-
-                <ImageView
-                    android:layout_width="1dp"
-                    android:layout_height="15dp"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="20dp"
-                    android:background="@color/app_primary" />
-
-                <ImageView
-                    android:id="@+id/main_story_more"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="10dp"
-                    android:layout_weight="1"
-                    android:scaleType="center"
-                    android:src="@mipmap/icon_more" />
-
-            </LinearLayout>
-        </RelativeLayout>
-    </FrameLayout>
+        </LinearLayout>
+    </RelativeLayout>
 
     <!--</LinearLayout>-->
 
