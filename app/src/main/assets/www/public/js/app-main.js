@@ -38,7 +38,6 @@ WisapeEditer = {
                 scrollX: true,
                 scrollY: false,
                 mouseWheel: true,
-                checkDOMChanges: true,
                 preventDefault: false
             });
             $("#menu-scroll").find("li").eq(0).addClass("active");
@@ -109,7 +108,6 @@ WisapeEditer = {
                     scrollX: true,
                     scrollY: false,
                     mouseWheel: true,
-                    checkDOMChanges: true,
                     preventDefault: false
                 });
                 $(".loading").hide();
@@ -406,7 +404,6 @@ WisapeEditer = {
                 scrollX: true,
                 scrollY: false,
                 mouseWheel: true,
-                checkDOMChanges: true,
                 preventDefault: false
             });
             pageScroll.find("li").each(function (i) {
@@ -598,7 +595,6 @@ WisapeEditer = {
                 scrollX: true,
                 scrollY: false,
                 mouseWheel: true,
-                checkDOMChanges: true,
                 preventDefault: false
             });
             catScroll.find("li").eq(0).addClass("active");
@@ -624,7 +620,6 @@ WisapeEditer = {
             scrollX: true,
             scrollY: false,
             mouseWheel: true,
-            checkDOMChanges: true,
             preventDefault: false
         });
 

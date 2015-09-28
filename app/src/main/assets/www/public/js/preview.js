@@ -33,3 +33,23 @@ $(function(){
         }, "StoryTemplate", "publish", [retHtml,retImg]);
     })
 })
+
+//播放音乐
+var lanren = {
+    changeClass: function (target,id) {
+        console.log();
+        var className = $(target).attr('class');
+        var ids = document.getElementById(id);
+        console.info("classname:" + className);
+        (className == 'on')
+            ? $(target).removeClass('on').addClass('off')
+            : $(target).removeClass('off').addClass('on');
+        (className == 'on')
+            ? ids.pause()
+            : ids.play();
+    },
+    play:function(){
+        document.getElementById('media').play();
+    }
+};
+lanren.play();
