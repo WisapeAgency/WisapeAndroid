@@ -124,7 +124,7 @@ public class GiftFragment extends AbsFragment {
         @Override
         public void onBindViewHolder(final GHolder holder, int position) {
             final ActiveInfo activeInfo = activeInfoList.get(position);
-            Picasso.with(mContext).load(activeInfo.getBg_img()).centerCrop().resize(600,800).into(holder.imgContent);
+            Picasso.with(mContext).load(activeInfo.getBg_img()).centerCrop().fit().into(holder.imgContent);
             holder.imgContent.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
