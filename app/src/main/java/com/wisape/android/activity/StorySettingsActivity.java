@@ -14,6 +14,7 @@ import com.wisape.android.R;
 import com.wisape.android.common.StoryManager;
 import com.wisape.android.database.StoryEntity;
 import com.wisape.android.database.StoryMusicEntity;
+import com.wisape.android.logic.StoryLogic;
 import com.wisape.android.model.StoryGestureInfo;
 import com.wisape.android.util.Utils;
 
@@ -29,13 +30,9 @@ import butterknife.OnClick;
  */
 public class StorySettingsActivity extends BaseActivity {
 
-    private static final int WIDTH = 800;
-    private static final int HEIGHT = 1200;
     public static final int REQEUST_CODE_CROP_IMG = 0x01;
 
     private Uri bgUri;
-
-
 
     public static void launch(Activity activity, int requestCode) {
         Intent intent = new Intent(activity.getApplicationContext(), StorySettingsActivity.class);
@@ -60,7 +57,7 @@ public class StorySettingsActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_story_settings);
         ButterKnife.inject(this);
-        storyEntity = wisapeApplication.getStoryEntity();
+        storyEntity = StoryLogic.instance().getStoryEntityFromShare();
         setViewData();
     }
 
@@ -132,6 +129,9 @@ public class StorySettingsActivity extends BaseActivity {
                 if (RESULT_OK == resultCode) {
                     Uri imageUri = data.getParcelableExtra(PhotoSelectorActivity.EXTRA_IMAGE_URI);
                     File file = new File(StoryManager.getStoryDirectory(), storyEntity.storyName + "/thumb.jpg");
+                    if(file.exists()){
+                        file.delete();
+                    }
                     bgUri = Uri.fromFile(file);
 
                     Intent intent = new Intent("com.android.camera.action.CROP");
@@ -157,14 +157,11 @@ public class StorySettingsActivity extends BaseActivity {
                 if (RESULT_OK == resultCode) {
                     if (null != bgUri) {
                         storyEntity.storyThumbUri = bgUri.getPath();
-                        File file = new File(storyEntity.storyThumbUri);
-                        boolean is = file.exists();
                         Picasso.with(this)
                                 .load(new File(storyEntity.storyThumbUri))
-                                .resize(150,150)
+                                .fit()
                                 .centerCrop()
                                 .into(storyBgView);
-//                        Utils.loadImg(this,storyEntity.storyThumbUri,storyBgView);
                     }
                 }
                 break;
@@ -203,7 +200,7 @@ public class StorySettingsActivity extends BaseActivity {
     private void doSaveStorySettings() {
         storyEntity.storyName = storyNameEdit.getText().toString();
         storyEntity.storyDesc = storyDescEdit.getText().toString();
-        wisapeApplication.setStoryEntity(storyEntity);
+        StoryLogic.instance().saveStoryEntityToShare(storyEntity);
     }
 
     @Override

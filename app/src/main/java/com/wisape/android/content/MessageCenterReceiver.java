@@ -57,7 +57,7 @@ public class MessageCenterReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.e(TAG,"收到消息");
+        Log.e(TAG,"消息中心收到消息");
         if(destroyed){
             return;
         }
@@ -65,7 +65,8 @@ public class MessageCenterReceiver extends BroadcastReceiver {
         int typeKey = jsonObject.getInteger(MESSAGE_TYPE_KEY);
 
         if (LOGIN_OUT_BY_OHTER == typeKey) {
-            SignUpActivity.launch(context);
+            Log.e(TAG,"强制下线");
+            SignUpActivity.launch(context,"您在其他终端了!");
             return;
         }
 

@@ -68,7 +68,7 @@ public class MessageCenterActivity extends BaseActivity {
 
 
         Bundle args = new Bundle();
-        args.putLong(EXTRAS_USER_ID, UserLogic.instance().loaderUserFromLocal().user_id);
+        args.putLong(EXTRAS_USER_ID, UserLogic.instance().getUserInfoFromLocal().user_id);
         startLoadWithProgress(LOADER_MESSAGE_LIST, args);
 
     }

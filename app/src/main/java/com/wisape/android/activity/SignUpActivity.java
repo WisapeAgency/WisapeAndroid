@@ -40,6 +40,8 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
 
     private static final String EXTRA_PROFILE_PARAM = "profile_param";
 
+    private static final String EXTRA_LOG_OUT = "log_out";
+
     private static final String ARG_USER_EMIAL = "user_email";
     private static final String ARG_USER_PWD = "user_pwd";
     private static final String ARG_USER_NAME = "user_name";
@@ -66,15 +68,18 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
     @InjectView(R.id.sign_up_forget_password)
     protected TextView forgetPassword;
 
+    private String message;
+
     public static void launch(Activity activity) {
         Intent intent = new Intent(activity.getApplicationContext(), SignUpActivity.class);
         activity.startActivity(intent);
         activity.finish();
     }
 
-    public static void launch(Context context) {
+    public static void launch(Context context,String message) {
         Intent intent = new Intent(context, SignUpActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(EXTRA_LOG_OUT,message);
         context.startActivity(intent);
     }
 
@@ -89,6 +94,13 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
         SpannableString string = new SpannableString(forgetPassword.getText());
         string.setSpan(new UnderlineSpan(), 0, string.length(), 0);
         forgetPassword.setText(string);
+        Bundle bundle = getIntent().getExtras();
+        if(null != bundle){
+            message = getIntent().getExtras().getString(EXTRA_LOG_OUT);
+            if(!Utils.isEmpty(message)){
+                showToast(message);
+            }
+        }
     }
 
 
@@ -179,75 +191,6 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
         plat.showUser(null);
     }
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        switch (requestCode) {
-//            default:
-//                super.onActivityResult(requestCode, resultCode, data);
-//                return;
-//
-//            case REQUEST_CODE_FACEBOOK_LOGIN:
-//                if (RESULT_OK == resultCode) {
-//                    String facebookToken = data.getStringExtra(OAuthActivity.EXTEA_TOKEN);
-//                    Log.d(TAG, "#onActivityResult facebookToken:" + facebookToken);
-//                    ProfileRequester.Param param = new ProfileRequester.Param();
-//                    param.token = facebookToken;
-//                    param.screen = data.getStringExtra(OAuthActivity.EXTEA_SECRET);
-//
-//                   String response =  data.getStringExtra(OAuthActivity.EXTEA_RESPONSE);
-//
-//                    Bundle args = new Bundle();
-//                    args.putParcelable(EXTRA_PROFILE_PARAM, param);
-//                    startLoad(LOADER_SIGN_UP_WITH_FACEBOOK, args);
-//                } else {
-//                    showToast("登录失败");
-//                }
-//                break;
-//
-//            case REQUEST_CODE_TWITTER_LOGIN:
-//                if (RESULT_OK == resultCode) {
-//                    String twitterToken = data.getStringExtra(OAuthActivity.EXTEA_TOKEN);
-//                    String twitterSecret = data.getStringExtra(OAuthActivity.EXTEA_SECRET);
-//                    String twitterRefresh = data.getStringExtra(OAuthActivity.EXTEA_RESPONSE);
-//                    Log.d(TAG, "#onActivityResult twitterToken:" + twitterToken + ", twitterSecret:" + twitterSecret + ", twitterRefresh:" + twitterRefresh);
-//
-//                    Resources resources = getResources();
-//                    String apiKey = resources.getString(R.string.twitter_api_key);
-//                    String apiSecret = resources.getString(R.string.twitter_api_secret_key);
-//                    String apiCallback = resources.getString(R.string.twitter_api_callback_uri);
-//
-//                    ProfileForTwitterRequester.TwitterParams twParam = new ProfileForTwitterRequester.TwitterParams();
-//                    twParam.token = twitterToken;
-//                    twParam.refreshResponse = twitterRefresh;
-//                    twParam.screen = twitterSecret;
-//                    twParam.apiKey = apiKey;
-//                    twParam.apiSecret = apiSecret;
-//                    twParam.apiCallback = apiCallback;
-//                    Bundle args = new Bundle();
-//                    args.putParcelable(EXTRA_PROFILE_PARAM, twParam);
-//                    startLoad(LOADER_SIGN_UP_WITH_TWITTER, args);
-//                } else {
-//                    showToast("登录失败");
-//                }
-//                break;
-//
-//            case REQUEST_CODE_GOOGLE_PLUS_LOGIN:
-//                if (RESULT_OK == resultCode) {
-//                    String googlePlusToken = data.getStringExtra(OAuthActivity.EXTEA_TOKEN);
-//                    Log.d(TAG, "#onActivityResult googlePlusToken:" + googlePlusToken);
-//                    ProfileRequester.Param param = new ProfileRequester.Param();
-//                    param.token = googlePlusToken;
-//
-//                    Bundle args = new Bundle();
-//                    args.putParcelable(EXTRA_PROFILE_PARAM, param);
-//                    startLoad(LOADER_SIGN_UP_WITH_GOOGLE_PLUS, args);
-//                } else {
-//                    showToast("登录失败");
-//                }
-//                break;
-//        }
-//    }
-
 
     @Override
     protected Message onLoadBackgroundRunning(int what, Bundle args) throws AsyncLoaderError {
@@ -302,7 +245,11 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
             MainActivity.launch(this);
 
         } else {
-            showToast((String)data.obj);
+            if(data.obj instanceof  com.alibaba.fastjson.JSONException){
+                showToast("数据转换错误");
+            }else{
+                showToast((String)data.obj);
+            }
         }
     }
 
@@ -385,6 +332,11 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
     @Override
     public void onError(Platform platform, int i, Throwable throwable) {
         showToast(platform.getName() + "授权登录失败!");
+    }
+
+    @Override
+    public void onBackPressed() {
+        android.os.Process.killProcess(android.os.Process.myPid());
     }
 
     @Override

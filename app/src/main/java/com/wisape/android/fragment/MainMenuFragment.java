@@ -1,6 +1,5 @@
 package com.wisape.android.fragment;
 
-import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,7 +12,6 @@ import com.freshdesk.mobihelp.Mobihelp;
 import com.squareup.picasso.Picasso;
 import com.wisape.android.R;
 import com.wisape.android.activity.AboutActivity;
-import com.wisape.android.activity.BaseActivity;
 import com.wisape.android.activity.MessageCenterActivity;
 import com.wisape.android.activity.SignUpActivity;
 import com.wisape.android.activity.UserProfileActivity;
@@ -76,9 +74,9 @@ public class MainMenuFragment extends AbsFragment implements BroadCastReciverLis
      * 设置用户信息
      */
     private void setUserInfodata() {
-        tvName.setText(UserLogic.instance().loaderUserFromLocal().nick_name);
-        tvMail.setText(UserLogic.instance().loaderUserFromLocal().user_email);
-        String iconUrl = UserLogic.instance().loaderUserFromLocal().user_ico_n;
+        tvName.setText(UserLogic.instance().getUserInfoFromLocal().nick_name);
+        tvMail.setText(UserLogic.instance().getUserInfoFromLocal().user_email);
+        String iconUrl = UserLogic.instance().getUserInfoFromLocal().user_ico_n;
         if (null != iconUrl && 0 < iconUrl.length()) {
             Picasso.with(getActivity()).load(iconUrl)
                     .resize(150, 150)

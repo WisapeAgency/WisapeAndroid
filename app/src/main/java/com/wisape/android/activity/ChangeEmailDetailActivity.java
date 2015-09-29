@@ -42,7 +42,7 @@ public class ChangeEmailDetailActivity extends BaseActivity{
 
         ButterKnife.inject(this);
 
-        editEmail.setText(UserLogic.instance().loaderUserFromLocal().user_email);
+        editEmail.setText(UserLogic.instance().getUserInfoFromLocal().user_email);
         textView.setMovementMethod(ScrollingMovementMethod.getInstance());
 
     }

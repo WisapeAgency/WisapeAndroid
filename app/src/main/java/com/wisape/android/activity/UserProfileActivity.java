@@ -1,7 +1,6 @@
 package com.wisape.android.activity;
 
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Message;
@@ -69,13 +68,18 @@ public class UserProfileActivity extends BaseActivity {
 
         setContentView(R.layout.activity_user_profile);
         ButterKnife.inject(this);
-        UserInfo userInfo = UserLogic.instance().loaderUserFromLocal();
+        UserInfo userInfo = UserLogic.instance().getUserInfoFromLocal();
         if(null != userInfo){
             nameEdit.setText(userInfo.nick_name);
             emailEdit.setText(userInfo.user_email);
             String iconUrl = userInfo.user_ico_n;
             if (null != iconUrl && 0 < iconUrl.length()) {
-                Utils.loadImg(this,iconUrl,iconView);
+                Picasso.with(this)
+                        .load(iconUrl)
+                        .transform(new CircleTransform())
+                        .fit()
+                        .centerCrop()
+                        .into(iconView);
             }
         }
     }
@@ -115,8 +119,8 @@ public class UserProfileActivity extends BaseActivity {
         String newName = nameEdit.getText().toString();
         String newEmail = emailEdit.getText().toString();
 
-        String oldName = UserLogic.instance().loaderUserFromLocal().nick_name;
-        String oldEmail = UserLogic.instance().loaderUserFromLocal().user_email;
+        String oldName = UserLogic.instance().getUserInfoFromLocal().nick_name;
+        String oldEmail = UserLogic.instance().getUserInfoFromLocal().user_email;
 
         if (newName.equals(oldName) && newEmail.equals(oldEmail) && null == userIconUri) {
             setResult(RESULT_CANCELED);
@@ -145,7 +149,7 @@ public class UserProfileActivity extends BaseActivity {
     protected Message onLoadBackgroundRunning(int what, Bundle args) throws AsyncLoaderError {
         Message msg = UserLogic.instance().updateProfile(args.getString(EXTRAS_NAME),
                 args.getString(EXTRAS_ICON_URI),
-                args.getString(EXTRAS_EMAIL), UserLogic.instance().loaderUserFromLocal().access_token);
+                args.getString(EXTRAS_EMAIL), UserLogic.instance().getUserInfoFromLocal().access_token);
         msg.what = what;
         return msg;
     }
@@ -161,7 +165,7 @@ public class UserProfileActivity extends BaseActivity {
             intent.setAction(UpdateUserInfoBroadcastReciver.ACTION);
             sendBroadcast(intent);
         } else {
-            showToast("修改信息失败");
+            showToast((String)data.obj);
             setResult(RESULT_CANCELED);
         }
         finish();
@@ -197,6 +201,9 @@ public class UserProfileActivity extends BaseActivity {
                         file.mkdirs();
                     }
                     File head = new File(file, Utils.acquireUTCTimestamp()+".jpg");
+                    if(head.exists()){
+                        head.delete();
+                    }
                     userIconUri = Uri.fromFile(head);
 
                     Intent intent = new Intent("com.android.camera.action.CROP");
@@ -221,9 +228,8 @@ public class UserProfileActivity extends BaseActivity {
                     if(null != userIconUri){
                         Utils.loadImg(this,userIconUri.getPath(),iconView);
                         Picasso.with(this).load(new File(userIconUri.getPath()))
-                                .resize(150, 150)
                                 .transform(new CircleTransform())
-
+                                .fit()
                                 .centerCrop()
                                 .into(iconView);
                     }

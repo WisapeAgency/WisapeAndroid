@@ -1,8 +1,10 @@
 package com.wisape.android.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.widget.Toast;
 
@@ -19,15 +21,16 @@ import butterknife.ButterKnife;
  * 基本activity
  * Created by LeiGuoting on 3/7/15.
  */
-public abstract class BaseActivity extends VolleyActivity{
+public abstract class BaseActivity extends VolleyActivity {
 
     private CustomProgress customProgress;
     protected WisapeApplication wisapeApplication;
 
+
     @Override
     protected void onStart() {
         super.onStart();
-        FlurryAgent.onStartSession(this);
+//        FlurryAgent.onStartSession(this);
     }
 
     @Override
@@ -44,14 +47,14 @@ public abstract class BaseActivity extends VolleyActivity{
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        Bugtags.onDispatchTouchEvent(this,ev);
+        Bugtags.onDispatchTouchEvent(this, ev);
         return super.dispatchTouchEvent(ev);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        FlurryAgent.onEndSession(this);
+//        FlurryAgent.onEndSession(this);
     }
 
     @Override
@@ -63,14 +66,15 @@ public abstract class BaseActivity extends VolleyActivity{
 
     /**
      * 显示进度对话框
-     * @param resId  显示的字符串资源ID
+     *
+     * @param resId 显示的字符串资源ID
      */
-    public void showProgressDialog(@Nullable int resId){
+    public void showProgressDialog(@Nullable int resId) {
 
-        if(customProgress == null){
-            customProgress = CustomProgress.show(this,getResources().getString(resId),true);
+        if (customProgress == null) {
+            customProgress = CustomProgress.show(this, getResources().getString(resId), true);
         }
-        if(customProgress.isShowing()){
+        if (customProgress.isShowing()) {
             customProgress.setMessage(getResources().getString(resId));
             return;
         }
@@ -81,14 +85,14 @@ public abstract class BaseActivity extends VolleyActivity{
     /**
      * 关闭进度对话框
      */
-    public void closeProgressDialog(){
-        if(customProgress != null && customProgress.isShowing()){
+    public void closeProgressDialog() {
+        if (customProgress != null && customProgress.isShowing()) {
             customProgress.dismiss();
         }
     }
 
 
-    protected void startLoadWithProgress(int what,Bundle args){
+    protected void startLoadWithProgress(int what, Bundle args) {
         showProgressDialog(R.string.progress_loading_data);
         startLoad(what, args);
     }
@@ -97,7 +101,7 @@ public abstract class BaseActivity extends VolleyActivity{
     @Override
     protected void onLoadCompleted(Message data) {
         closeProgressDialog();
-        if(isDestroyed() || null == data){
+        if (isDestroyed() || null == data) {
             return;
         }
     }
@@ -107,8 +111,7 @@ public abstract class BaseActivity extends VolleyActivity{
         super.onDestroy();
     }
 
-    public void showToast(String msg){
-        Utils.showToast(this,msg);
+    public void showToast(String msg) {
+        Utils.showToast(this, msg);
     }
-
 }

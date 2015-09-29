@@ -29,7 +29,7 @@ public class StoryBroadcastReciver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.e(TAG,"收到新的story消息");
+        Log.e(TAG,"收到修改story消息:" + intent.getExtras().getInt(EXTRAS_TYPE));
         if(!isDestoyed){
             listener.storyStateChange(intent.getExtras().getInt(EXTRAS_TYPE));
         }

@@ -4,15 +4,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.google.gson.Gson;
 import com.wisape.android.R;
 import com.wisape.android.WisapeApplication;
+import com.wisape.android.activity.MainActivity;
 import com.wisape.android.activity.StoryPreviewActivity;
 import com.wisape.android.activity.StoryReleaseActivity;
 import com.wisape.android.activity.StorySettingsActivity;
@@ -23,7 +22,6 @@ import com.wisape.android.content.StoryBroadcastReciver;
 import com.wisape.android.content.StoryBroadcastReciverListener;
 import com.wisape.android.database.StoryEntity;
 import com.wisape.android.database.StoryMusicEntity;
-import com.wisape.android.logic.MessageCenterLogic;
 import com.wisape.android.logic.StoryLogic;
 import com.wisape.android.logic.UserLogic;
 import com.wisape.android.model.StoryFontInfo;
@@ -43,7 +41,6 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -51,7 +48,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -112,13 +108,13 @@ public class StoryTemplatePlugin extends AbsPlugin {
     /**
      * 显示进度对话框
      */
-    public void showProgressDialog(){
+    public void showProgressDialog() {
 
-        if(customProgress == null){
-            customProgress = CustomProgress.show(getCurrentActivity(),getCurrentActivity().getResources()
-                    .getString(R.string.progress_loading_data),true);
+        if (customProgress == null) {
+            customProgress = CustomProgress.show(getCurrentActivity(), getCurrentActivity().getResources()
+                    .getString(R.string.progress_loading_data), true);
         }
-        if(customProgress.isShowing()){
+        if (customProgress.isShowing()) {
             customProgress.setMessage(getCurrentActivity().getResources().getString(R.string.progress_loading_data));
             return;
         }
@@ -129,8 +125,8 @@ public class StoryTemplatePlugin extends AbsPlugin {
     /**
      * 关闭进度对话框
      */
-    public void closeProgressDialog(){
-        if(customProgress != null && customProgress.isShowing()){
+    public void closeProgressDialog() {
+        if (customProgress != null && customProgress.isShowing()) {
             customProgress.dismiss();
         }
     }
@@ -211,7 +207,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
         } else if (ACTION_BACK.equals(action)) {
             cordova.getActivity().finish();
         } else if (ACTION_EDIT.equals(action)) {
-            StoryEntity storyEntity = app.getStoryEntity();
+            StoryEntity storyEntity = StoryLogic.instance().getStoryEntityFromShare();
             if (storyEntity != null) {
                 doEditStory(storyEntity);
             }
@@ -222,7 +218,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 String html = activity.getContent();
                 callbackContext.success(html);
             }
-        } else if (ACTION_CHECK_DOWNLOAD.equals(action)){
+        } else if (ACTION_CHECK_DOWNLOAD.equals(action)) {
 //            if (!DataSynchronizer.getInstance().isDownloading()){
 //                ((StoryTemplateActivity)cordova.getActivity()).onInitCompleted();
 //            } else {
@@ -300,31 +296,28 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 break;
             }
             case WHAT_SAVE: {
-//                int storyId = args.getInt(EXTRA_STORY_ID, 0);
                 String html = args.getString(EXTRA_STORY_HTML);
                 String path = args.getString(EXTRA_FILE_PATH);
                 com.alibaba.fastjson.JSONArray paths = JSON.parseArray(path);
                 WisapeApplication app = WisapeApplication.getInstance();
-                StoryEntity story = app.getStoryEntity();
-//                logic.saveStoryLocal(context,story);
+                StoryEntity story = StoryLogic.instance().getStoryEntityFromShare();
+                story.status = ApiStory.AttrStoryInfo.STORY_STATUS_TEMPORARY;
                 File myStory = new File(StoryManager.getStoryDirectory(), story.storyLocal);
                 if (!myStory.exists()) {
                     myStory.mkdirs();
                 }
 
-
-                StoryEntity storyEntity = StoryLogic.instance().updateStory(getCurrentActivity(), WisapeApplication.getInstance().getStoryEntity());
-                WisapeApplication.getInstance().setStoryEntity(storyEntity);
-                Intent intent = new Intent();
-                intent.setAction(StoryBroadcastReciver.STORY_ACTION);
-                intent.putExtra(StoryBroadcastReciver.EXTRAS_TYPE, StoryBroadcastReciverListener.TYPE_ADD_STORY);
-                getCurrentActivity().sendBroadcast(intent);
+                StoryEntity storyEntity = StoryLogic.instance().updateStory(getCurrentActivity()
+                        ,story);
+                StoryLogic.instance().saveStoryEntityToShare(storyEntity);
+                sendBroadcastUpdateStory();
 
                 if (!saveStory(myStory, html, paths)) {
                     callbackContext.error(-1);
                     return null;
                 }
                 cordova.getActivity().finish();
+                MainActivity.launch(getCurrentActivity());
                 break;
             }
             case WHAT_PREVIEW: {
@@ -332,21 +325,19 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 String html = args.getString(EXTRA_STORY_HTML);
                 String path = args.getString(EXTRA_FILE_PATH);
                 com.alibaba.fastjson.JSONArray paths = JSON.parseArray(path);
-                WisapeApplication app = WisapeApplication.getInstance();
-                StoryEntity story = app.getStoryEntity();
-//                logic.saveStoryLocal(context,story);
+                StoryEntity story = StoryLogic.instance().getStoryEntityFromShare();
+                story.status = ApiStory.AttrStoryInfo.STORY_STATUS_TEMPORARY;
                 File myStory = new File(StoryManager.getStoryDirectory(), story.storyLocal);
                 if (!myStory.exists()) {
                     myStory.mkdirs();
                 }
 
+                StoryEntity storyEntity = StoryLogic.instance().updateStory(getCurrentActivity()
+                        , StoryLogic.instance().getStoryEntityFromShare());
+                StoryLogic.instance().saveStoryEntityToShare(storyEntity);
 
-                StoryEntity storyEntity = StoryLogic.instance().updateStory(getCurrentActivity(), WisapeApplication.getInstance().getStoryEntity());
-                WisapeApplication.getInstance().setStoryEntity(storyEntity);
-                Intent intent = new Intent();
-                intent.setAction(StoryBroadcastReciver.STORY_ACTION);
-                intent.putExtra(StoryBroadcastReciver.EXTRAS_TYPE, StoryBroadcastReciverListener.TYPE_ADD_STORY);
-                getCurrentActivity().sendBroadcast(intent);
+                sendBroadcastUpdateStory();
+
                 if (!saveStory(myStory, html, paths)) {
                     callbackContext.error(-1);
                     return null;
@@ -364,8 +355,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 String html = args.getString(EXTRA_STORY_HTML);
                 String path = args.getString(EXTRA_FILE_PATH);
                 com.alibaba.fastjson.JSONArray paths = JSON.parseArray(path);
-                WisapeApplication app = WisapeApplication.getInstance();
-                StoryEntity story = app.getStoryEntity();
+                StoryEntity story = StoryLogic.instance().getStoryEntityFromShare();
                 File myStory = new File(StoryManager.getStoryDirectory(), story.storyLocal);
                 if (!myStory.exists()) {
                     myStory.mkdirs();
@@ -391,37 +381,30 @@ public class StoryTemplatePlugin extends AbsPlugin {
                     storyAttr.bgMusic = story.storyMusicName;
                 }
                 storyAttr.storyDescription = story.storyDesc;
-                storyAttr.userId = UserLogic.instance().loaderUserFromLocal().user_id;
+                storyAttr.userId = UserLogic.instance().getUserInfoFromLocal().user_id;
                 storyAttr.storyStatus = ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE;
                 storyAttr.imgPrefix = StoryManager.getStoryDirectory().getAbsolutePath() + "/" + story.storyLocal;
 
                 if ("-1".equals(story.status)) {
                     storyAttr.sid = -1;
-                }else{
+                } else {
                     storyAttr.sid = story.storyServerId;
                 }
 
                 logic.update(cordova.getActivity().getApplicationContext(), storyAttr, "release");
-
-                Intent intent = new Intent();
-                intent.setAction(StoryBroadcastReciver.STORY_ACTION);
-                intent.putExtra(StoryBroadcastReciver.EXTRAS_TYPE, StoryBroadcastReciverListener.TYPE_ADD_STORY);
-                getCurrentActivity().sendBroadcast(intent);
-
+                sendBroadcastUpdateStory();
                 StoryReleaseActivity.launch(cordova.getActivity());
                 getCurrentActivity().finish();
                 break;
             }
-            case WHAT_EDIT_INIT:{
-//                ((StoryTemplateActivity)cordova.getActivity()).onInitCompleted2();
+            case WHAT_EDIT_INIT: {
                 StoryTemplateInfo templateInfo = DataSynchronizer.getInstance().getFirstTemplate();
                 String content = "";
-                if (templateInfo != null){
-                    File path = new File(StoryManager.getStoryTemplateDirectory(),templateInfo.temp_name + "/" + "stage.html");
+                if (templateInfo != null) {
+                    File path = new File(StoryManager.getStoryTemplateDirectory(), templateInfo.temp_name + "/" + "stage.html");
                     content = readHtml(path.getAbsolutePath());
                 }
                 callbackContext.success(content);
-//            loadUrl("javascript:onInitCompleted(" + content + ")");
                 break;
             }
         }
@@ -434,15 +417,15 @@ public class StoryTemplatePlugin extends AbsPlugin {
     }
 
     private boolean saveStory(File myStory, String html, com.alibaba.fastjson.JSONArray paths) {
-        for (int i = 0; i < paths.size(); i++){
+        for (int i = 0; i < paths.size(); i++) {
             String path = paths.getString(i);
             System.out.println("saveStory:" + path);
             File imagePath = new File(path).getParentFile().getParentFile();
-            if (imagePath.getParentFile().getName().equals(StoryManager.TEMPLATE_DIRECTORY)){
+            if (imagePath.getParentFile().getName().equals(StoryManager.TEMPLATE_DIRECTORY)) {
                 String templateName = imagePath.getName();
-                File newImagePath = new File(myStory.getAbsolutePath(),templateName);
+                File newImagePath = new File(myStory.getAbsolutePath(), templateName);
                 html = html.replace(imagePath.getAbsolutePath(), newImagePath.getAbsolutePath());
-            }else{
+            } else {
                 html = html.replace(imagePath.getAbsolutePath(), myStory.getAbsolutePath());
             }
         }
@@ -470,11 +453,11 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 String path = paths.getString(i);
                 File imagePath = new File(path).getParentFile().getParentFile();
                 String newPath;
-                if (imagePath.getParentFile().getName().equals(StoryManager.TEMPLATE_DIRECTORY)){
+                if (imagePath.getParentFile().getName().equals(StoryManager.TEMPLATE_DIRECTORY)) {
                     String templateName = imagePath.getName();
-                    File newImagePath = new File(myStory.getAbsolutePath(),templateName);
+                    File newImagePath = new File(myStory.getAbsolutePath(), templateName);
                     newPath = path.replace(imagePath.getAbsolutePath(), newImagePath.getAbsolutePath());
-                }else{
+                } else {
                     newPath = path.replace(imagePath.getAbsolutePath(), myStory.getAbsolutePath());
                 }
                 File file = new File(path);
@@ -485,7 +468,6 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 }
                 FileUtils.copyFile(file, new File(imgDirectory, file.getName()));
             } catch (IOException e) {
-                Log.e("saveStory", "", e);
             }
         }
         return true;
@@ -633,15 +615,15 @@ public class StoryTemplatePlugin extends AbsPlugin {
         try {
             File fontDirectory = StoryManager.getStoryFontDirectory();
             File fontFile = new File(fontDirectory, FILE_NAME_FONT);
-            if (!fontFile.exists()){
+            if (!fontFile.exists()) {
                 fontFile.createNewFile();
             }
             json.put("filePath", fontFile.getAbsolutePath());
 
-            for (StoryFontInfo font : fontList){
+            for (StoryFontInfo font : fontList) {
                 File fontNameDirectory = new File(StoryManager.getStoryFontDirectory(), font.name);
                 File previewFile = new File(fontNameDirectory, "preview.jpg");
-                if (previewFile.exists()){
+                if (previewFile.exists()) {
                     font.preview_img_local = previewFile.getAbsolutePath();
                 }
                 font.downloaded = fontNameDirectory.listFiles().length == 5 ? 1 : 0;
@@ -661,5 +643,15 @@ public class StoryTemplatePlugin extends AbsPlugin {
         } else {
             callbackContext.error(1);//not fond
         }
+    }
+
+    /**
+     * 发送消息通知首页更新数据
+     */
+    private void sendBroadcastUpdateStory() {
+        Intent intent = new Intent();
+        intent.setAction(StoryBroadcastReciver.STORY_ACTION);
+        intent.putExtra(StoryBroadcastReciver.EXTRAS_TYPE, StoryBroadcastReciverListener.TYPE_ADD_STORY);
+        getCurrentActivity().sendBroadcast(intent);
     }
 }

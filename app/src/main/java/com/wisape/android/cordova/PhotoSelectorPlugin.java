@@ -8,6 +8,7 @@ import android.provider.MediaStore;
 import com.wisape.android.WisapeApplication;
 import com.wisape.android.activity.PhotoSelectorActivity;
 import com.wisape.android.common.StoryManager;
+import com.wisape.android.logic.StoryLogic;
 import com.wisape.android.util.Utils;
 
 import org.apache.cordova.CallbackContext;
@@ -50,8 +51,8 @@ public class PhotoSelectorPlugin extends AbsPlugin {
             case PhotoSelectorActivity.REQUEST_CODE_PHOTO:
                 Uri imgUri = extras.getParcelable(PhotoSelectorActivity.EXTRA_IMAGE_URI);
 
-                File file = new File(StoryManager.getStoryDirectory(), WisapeApplication.getInstance()
-                        .getStoryEntity().storyLocal + "/img");
+                File file = new File(StoryManager.getStoryDirectory(),
+                        StoryLogic.instance().getStoryEntityFromShare().storyLocal + "/img");
                 if (!file.exists()) {
                     file.mkdirs();
                 }

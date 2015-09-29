@@ -52,7 +52,7 @@ public class AboutActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
         ButterKnife.inject(this);
-        mVersionText.setText(getResources().getString(R.string.about_version_text) + getPackageInfo(this).versionCode);
+        mVersionText.setText(getResources().getString(R.string.about_version_text) + getPackageInfo(this).versionName);
     }
 
     private PackageInfo getPackageInfo(Context context) {

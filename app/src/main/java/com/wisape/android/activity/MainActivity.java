@@ -123,7 +123,10 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         if (drawer.isDrawerOpen(Gravity.LEFT)) {
             openOrCloseMainMenu();
         } else {
-            super.onBackPressed();
+            Intent intent = new Intent();
+            intent.addCategory(Intent.CATEGORY_HOME);
+            intent.setAction(Intent.ACTION_MAIN);
+            startActivity(intent);
         }
     }
 

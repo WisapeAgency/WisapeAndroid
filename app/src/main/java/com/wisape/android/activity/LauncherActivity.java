@@ -3,7 +3,6 @@ package com.wisape.android.activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.SystemClock;
 import android.util.Log;
 
 import com.wisape.android.R;
@@ -18,60 +17,74 @@ import com.wisape.android.network.DataSynchronizer;
  */
 public class LauncherActivity extends BaseActivity {
 
-    private static final int LOADER_SIGN_IN = 1;
-    private static final long LAUNCH_TIME_MILLS = 1000;
+    private static final String TAG = LauncherActivity.class.getSimpleName();
 
-    private long startTimeInMills;
+    private static final int LOADER_SIGN_UP = 1;
+    private static final String ARG_USER_EMIAL = "user_email";
+    private static final String ARG_USER_PWD = "user_pwd";
+    public static final String SIGN_UP_WITH_EMAIL = "1";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launch);
-        startLoad(LOADER_SIGN_IN,null);
-        startTimeInMills = SystemClock.uptimeMillis();
-    }
-
-    @Override
-    protected Message onLoadBackgroundRunning(int what, Bundle args) throws AsyncLoaderError {
-        try{
-            DataSynchronizer.getInstance().synchronous(WisapeApplication.getInstance().getApplicationContext());//
-        }catch (Exception e){
-        }
-        UserInfo userInfo = UserLogic.instance().loaderUserFromLocal();
-        Message message = Message.obtain();
-        message.what = what;
-        message.obj = userInfo;
-        return message;
-    }
-
-    @Override
-    protected void onLoadCompleted(Message data) {
-        UserInfo userInfo = (UserInfo)data.obj;
-        redirect(userInfo);
-    }
-
-    private void redirect(final UserInfo user) {
-        long costMills = SystemClock.uptimeMillis() - startTimeInMills;
-        long diffMills = LAUNCH_TIME_MILLS - costMills;
-        if (0 < diffMills) {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    startActivity(user);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try{
+                    DataSynchronizer.getInstance().synchronous(WisapeApplication.getInstance().getApplicationContext());//
+                }catch (Exception e){
+                    Log.e(TAG,"同步数据失败:" + e.getMessage());
                 }
-            }, diffMills);
-        } else {
-            startActivity(user);
-        }
+            }
+        }).start();
+
+
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                startActivity(UserLogic.instance().getUserInfoFromLocal());
+            }
+        }, 2000);
+
     }
 
     private void startActivity(UserInfo userInfo) {
         if (null == userInfo) {
             SignUpActivity.launch(LauncherActivity.this);
-            finish();
         } else {
-            MainActivity.launch(LauncherActivity.this);
-            finish();
+            //参数传递
+            Bundle args = new Bundle();
+            args.putString(ARG_USER_EMIAL, userInfo.user_email);
+            args.putString(ARG_USER_PWD, userInfo.user_pwd);
+            startLoad(LOADER_SIGN_UP, args);
+        }
+    }
+
+    @Override
+    protected Message onLoadBackgroundRunning(int what, Bundle args) throws AsyncLoaderError {
+        Message msg = Message.obtain();
+        UserLogic logic = UserLogic.instance();
+        switch (what) {
+            case LOADER_SIGN_UP:
+                String installId = wisapeApplication.getInstallId();
+                msg = logic.signUp(SIGN_UP_WITH_EMAIL,
+                        args.getString(ARG_USER_EMIAL), args.getString(ARG_USER_PWD), installId);
+                break;
+        }
+        msg.what = what;
+        return msg;
+    }
+
+    @Override
+    protected void onLoadCompleted(Message data) {
+        super.onLoadCompleted(data);
+        if (STATUS_SUCCESS == data.arg1) {
+            MainActivity.launch(this);
+        } else {
+            showToast((String) data.obj);
         }
     }
 }

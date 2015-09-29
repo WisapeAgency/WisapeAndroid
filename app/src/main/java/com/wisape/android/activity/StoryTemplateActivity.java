@@ -9,15 +9,11 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.webkit.WebSettings;
-import android.widget.Toast;
 
 import com.wisape.android.R;
 import com.wisape.android.WisapeApplication;
 import com.wisape.android.api.ApiStory;
 import com.wisape.android.common.StoryManager;
-import com.wisape.android.content.StoryBroadcastReciver;
-import com.wisape.android.content.StoryBroadcastReciverListener;
 import com.wisape.android.database.StoryEntity;
 import com.wisape.android.logic.StoryLogic;
 import com.wisape.android.logic.UserLogic;
@@ -30,7 +26,6 @@ import com.wisape.android.util.Utils;
 import com.wisape.android.util.ZipUtils;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.cordova.CordovaPreferences;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -38,18 +33,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Queue;
 import java.util.Set;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -298,28 +285,12 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
         msg.what = what;
         switch (what) {
             case WHAT_INIT:
-                WisapeApplication app = WisapeApplication.getInstance();
-                StoryEntity story = app.getStoryEntity();
+                StoryEntity story = StoryLogic.instance().getStoryEntityFromShare();
                 if (story == null) {
-//                    File storyDirectory = StoryManager.getStoryDirectory();
-//                    String[] storyFiles = storyDirectory.list(new FilenameFilter() {
-//                        @Override
-//                        public boolean accept(File file, String name) {
-//                            return file.isDirectory() && name.startsWith("My story");
-//                        }
-//                    });
-//                    String storyName = "My story1";
-//                    if (storyFiles != null && storyFiles.length != 0) {
-//                        Arrays.sort(storyFiles);
-//                        String fileName = storyFiles[storyFiles.length - 1];
-//                        int count = Integer.parseInt(fileName.replace("My story", ""));
-//                        storyName = "My story" + (count + 1);
-//                    }
-
                     story = new StoryEntity();
                     story.storyName = Utils.acquireUTCTimestamp();
                     story.status = ApiStory.AttrStoryInfo.STORY_STATUS_TEMPORARY;
-                    story.userId = UserLogic.instance().loaderUserFromLocal().user_id;
+                    story.userId = UserLogic.instance().getUserInfoFromLocal().user_id;
                     story.storyDesc = "Something wonderful is coming";
                     story.storyLocal = Utils.acquireUTCTimestamp();
                     try{
@@ -342,7 +313,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
                     com.wisape.android.util.FileUtils.copyAssetsFile(this,"www/public/img/photo_cover.png",
                             new File(StoryManager.getStoryDirectory(), story.storyLocal + "/thumb.jpg").getAbsolutePath());
                     story.storyThumbUri = new File(StoryManager.getStoryDirectory(), story.storyLocal + "/thumb.jpg").getAbsolutePath();
-                    app.setStoryEntity(story);
+                    StoryLogic.instance().saveStoryEntityToShare(story);
                 }
                 break;
             case WHAT_DOWNLOAD_TEMPLATE: {

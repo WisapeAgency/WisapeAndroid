@@ -508,6 +508,7 @@ public class ApiStory extends ApiBase{
         public static final String STORY_STATUS_RELEASE = "A";       //发布
         public static final String STORY_STATUS_DELETE = "D";        //删除
         public static final String STORY_STATUS_TEMPORARY = "T";     //草稿
+        public static final String STORY_DEFAULT = "B";  //默认story
 
         public static final String ATTR_UID = "uid";
         public static final String ATTR_DESCRIPTION = "description";

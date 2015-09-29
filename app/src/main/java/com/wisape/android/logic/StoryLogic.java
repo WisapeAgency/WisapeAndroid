@@ -5,8 +5,10 @@ import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Message;
+import android.util.Base64;
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.DeleteBuilder;
@@ -23,7 +25,6 @@ import com.wisape.android.database.StoryEntity;
 import com.wisape.android.database.StoryMusicEntity;
 import com.wisape.android.database.StoryMusicTypeEntity;
 import com.wisape.android.database.StoryTemplateEntity;
-import com.wisape.android.http.FileDownloadListener;
 import com.wisape.android.http.HttpUrlConstancts;
 import com.wisape.android.http.OkhttpUtil;
 import com.wisape.android.model.StoryFontInfo;
@@ -31,6 +32,7 @@ import com.wisape.android.model.StoryInfo;
 import com.wisape.android.model.StoryMusicInfo;
 import com.wisape.android.model.StoryMusicTypeInfo;
 import com.wisape.android.model.StoryTemplateInfo;
+import com.wisape.android.model.UserInfo;
 import com.wisape.android.network.Downloader;
 import com.wisape.android.network.Requester;
 import com.wisape.android.util.EnvironmentUtils;
@@ -42,18 +44,8 @@ import com.wisape.android.widget.StoryMusicAdapter;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.nio.Buffer;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -62,8 +54,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 import static com.wisape.android.api.ApiStory.AttrStoryInfo.STORY_STATUS_DELETE;
 import static com.wisape.android.api.ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE;
@@ -83,6 +73,8 @@ public class StoryLogic {
     private static final String ATTR_STORY_NAME = "story_name";
     private static final String ATTR_STORY_DESC = "description";
     private static final String ATTR_STORY_IMG = "small_img";
+
+    private static final String EXTARAS_STORY_ENTITY = "story_entity";
 
     public static StoryLogic instance() {
         return new StoryLogic();
@@ -136,7 +128,7 @@ public class StoryLogic {
         DatabaseHelper helper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
         SQLiteDatabase db = helper.getWritableDatabase();
         db.beginTransaction();
-        StoryEntity storyEntity = WisapeApplication.getInstance().getStoryEntity();
+        StoryEntity storyEntity = StoryLogic.instance().getStoryEntityFromShare();
         storyEntity.storyThumbUri = story.small_img;
         storyEntity.storyServerId = story.id;
         storyEntity.storyUri = story.story_url;
@@ -155,6 +147,7 @@ public class StoryLogic {
                     StoryEntity result = storyDao.createIfNotExists(storyEntity);
                     storyEntity.id = result.id;
                 }
+                StoryLogic.instance().saveStoryEntityToShare(storyEntity);
             }
             db.setTransactionSuccessful();
         } catch (SQLException e) {
@@ -678,25 +671,48 @@ public class StoryLogic {
         /*返回的所有的story集合*/
         List<StoryEntity> storyEntitYList = new ArrayList<>();
 
-        StoryInfo defaultStoryInfo = getDefaultStoryInfo();
-        if (null != defaultStoryInfo) {
-            StoryEntity defaultEntity = StoryEntity.transform(defaultStoryInfo);
-            defaultEntity.storyLocal = defaultStoryInfo.story_name;
-            defaultEntity.status = -1 + "";
-            storyEntitYList.add(0, defaultEntity);
+        StoryEntity defaultStoryEntity = getDefaultStoryEntity();
 
+        if (null != defaultStoryEntity) {
 
+            /**
+             * 如果有默认story则拷贝到本地
+             */
+            if(!ApiStory.AttrStoryInfo.STORY_STATUS_DELETE.equals(defaultStoryEntity.status)){
+                defaultStoryEntity.status = ApiStory.AttrStoryInfo.STORY_DEFAULT;
+                storyEntitYList.add(0, defaultStoryEntity);
+                try {
+                    FileUtils.unZip(WisapeApplication.getInstance().getApplicationContext(), "default.zip"
+                            , StoryManager.getStoryDirectory().getAbsolutePath() +"/"+ defaultStoryEntity.storyLocal,
+                            true);
+                    File storyFile = new File(StoryManager.getStoryDirectory(), defaultStoryEntity.storyLocal + "/story.html");
+                    FileUtils.replacePath("CLIENT_DEFAULT_STORY_PATH",
+                            StoryManager.getStoryDirectory().getAbsolutePath() + "/" + defaultStoryEntity.storyLocal, storyFile);
+                } catch (IOException e) {
+                    Log.e(TAG, e.getMessage());
+                }
+            }
+        }else{
+            defaultStoryEntity  = new StoryEntity();
+            defaultStoryEntity.status = ApiStory.AttrStoryInfo.STORY_DEFAULT;
+            defaultStoryEntity.storyLocal = Utils.acquireUTCTimestamp();
+            defaultStoryEntity.userId = UserLogic.instance().getUserInfoFromLocal().user_id;
+            defaultStoryEntity.storyName = "default";
+            defaultStoryEntity.storyThumbUri = new File(StoryManager.getStoryDirectory(),defaultStoryEntity.storyLocal + "/thumb.jpg").getAbsolutePath();
+            defaultStoryEntity = addDefaultStory(defaultStoryEntity);
+
+            storyEntitYList.add(0, defaultStoryEntity);
             try {
-
                 FileUtils.unZip(WisapeApplication.getInstance().getApplicationContext(), "default.zip"
-                        , StoryManager.getStoryDirectory().getAbsolutePath() +"/"+ defaultEntity.storyLocal,
+                        , StoryManager.getStoryDirectory().getAbsolutePath() +"/"+ defaultStoryEntity.storyLocal,
                         true);
-                File storyFile = new File(StoryManager.getStoryDirectory(), defaultEntity.storyLocal + "/story.html");
+                File storyFile = new File(StoryManager.getStoryDirectory(), defaultStoryEntity.storyLocal + "/story.html");
                 FileUtils.replacePath("CLIENT_DEFAULT_STORY_PATH",
-                        StoryManager.getStoryDirectory().getAbsolutePath() + "/" + defaultEntity.storyLocal, storyFile);
+                        StoryManager.getStoryDirectory().getAbsolutePath() + "/" + defaultStoryEntity.storyLocal, storyFile);
             } catch (IOException e) {
                 Log.e(TAG, e.getMessage());
             }
+
         }
 
         /*服务器端story*/
@@ -759,12 +775,21 @@ public class StoryLogic {
     /**
      * 获取默认story信息
      */
-    private StoryInfo getDefaultStoryInfo() {
+    private StoryEntity getDefaultStoryEntity() {
+        long userId = UserLogic.instance().getUserInfoFromLocal().user_id;
+        DatabaseHelper databaseHelper = OpenHelperManager.getHelper(WisapeApplication.getInstance(), DatabaseHelper.class);
+        Dao<StoryEntity, Log> dao;
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+        db.beginTransaction();
         try {
-            return OkhttpUtil.execute(HttpUrlConstancts.GET_DEFAULT_STORY_INTO, null, StoryInfo.class);
-        } catch (Exception e) {
-            Log.e(TAG, "获取默认story失败:" + e.getMessage());
+            dao = databaseHelper.getDao(StoryEntity.class);
+            return dao.queryBuilder().where().eq("id", 1).queryForFirst();
+        } catch (SQLException e) {
+            Log.e(TAG, "", e);
             return null;
+        } finally {
+            db.endTransaction();
+            OpenHelperManager.releaseHelper();
         }
     }
 
@@ -772,7 +797,7 @@ public class StoryLogic {
      * 从数据库查询查询用户所有的story
      */
     private List<StoryEntity> getUserStoryFromLocal(Context context) {
-        long userId = UserLogic.instance().loaderUserFromLocal().user_id;
+        long userId = UserLogic.instance().getUserInfoFromLocal().user_id;
         DatabaseHelper databaseHelper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
         Dao<StoryEntity, Log> dao;
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
@@ -804,38 +829,27 @@ public class StoryLogic {
         }
     }
 
-    /**
-     * 下载story压缩包并且解压
-     **/
-    public void downLoadStory(final StoryEntity storyInfo) {
-//        final File file = new File(StoryManager.getStoryDirectory(), storyInfo.storyLocal + ".zip");
-//        if (!file.exists()) {
-//            Log.e(TAG, "开始下载story:" + storyInfo.storyLocal);
-//            OkhttpUtil.downLoadFile(storyInfo.storyUri, new FileDownloadListener() {
-//                @Override
-//                public void onSuccess(byte[] bytes) {
-//                    if (file.exists()) {
-//                        file.delete();
-//                    }
-//                    FileUtils.saveByteToFile(bytes, file.getAbsolutePath());
-//                    try {
-//                        File unZipeFile = new File(StoryManager.getStoryDirectory(), storyInfo.storyLocal);
-//                        ZipUtils.unzip(Uri.fromFile(file), unZipeFile);
-//                        File storyFile = new File(StoryManager.getStoryDirectory(),storyInfo.storyLocal + "/story.html");
-//                        FileUtils.replacePath("CLIENT_DEFAULT_STORY_PATH",unZipeFile.getAbsolutePath(),storyFile);
-//                    } catch (IOException e) {
-//                        Log.e(TAG, "解压story文件失败:" + storyInfo.storyName + ":" +
-//                                file.getAbsolutePath());
-//                    }
-//                }
-//
-//                @Override
-//                public void onError(String msg) {
-//                    Log.e(TAG, "下载story文件失败:" + storyInfo.storyName + ":" + msg);
-//                }
-//            });
-//        }
+    private StoryEntity addDefaultStory(StoryEntity storyEntity){
+        DatabaseHelper databaseHelper = OpenHelperManager.getHelper(WisapeApplication.getInstance(), DatabaseHelper.class);
+        Dao<StoryEntity, Integer> dao;
+        SQLiteDatabase database = databaseHelper.getWritableDatabase();
+        database.beginTransaction();
+        StoryEntity resultEntity = null;
+        try {
+            dao = databaseHelper.getDao(StoryEntity.class);
+
+            resultEntity =   dao.createIfNotExists(storyEntity);
+            database.setTransactionSuccessful();
+            return resultEntity;
+        } catch (SQLException e) {
+            Log.e(TAG, e.getMessage());
+            return null;
+        } finally {
+            database.endTransaction();
+            OpenHelperManager.releaseHelper();
+        }
     }
+
 
     public Message deleteStory(Context context, StoryEntity storyEntity, String access_token, boolean isServer) {
         Message message = Message.obtain();
@@ -886,7 +900,6 @@ public class StoryLogic {
      * @return 出入数据库后返回的实体
      */
     public StoryEntity updateStory(Context context, StoryEntity storyEntity) {
-        storyEntity.status = ApiStory.AttrStoryInfo.STORY_STATUS_TEMPORARY;
         DatabaseHelper databaseHelper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
         Dao<StoryEntity, Integer> dao;
         SQLiteDatabase database = databaseHelper.getWritableDatabase();
@@ -937,6 +950,7 @@ public class StoryLogic {
             storyEntity.storyName = storyInfo.story_name;
             storyEntity.storyDesc = storyInfo.description;
             storyEntity = updateStory(WisapeApplication.getInstance(), storyEntity);
+            StoryLogic.instance().saveStoryEntityToShare(storyEntity);
             message.obj = storyEntity;
 
         } catch (Exception e) {
@@ -945,4 +959,26 @@ public class StoryLogic {
         }
         return message;
     }
+
+    public void saveStoryEntityToShare(StoryEntity storyEntity){
+        String userEncode = new Gson().toJson(storyEntity);
+        WisapeApplication.getInstance().getSharePrefrence().edit()
+                .putString(EXTARAS_STORY_ENTITY, Base64.encodeToString(userEncode.getBytes(), Base64.DEFAULT)).apply();
+    }
+
+    public StoryEntity getStoryEntityFromShare(){
+        StoryEntity storyEntity = null;
+        SharedPreferences sharedPreferences = WisapeApplication.getInstance().getSharePrefrence();
+        String decode = sharedPreferences.getString(EXTARAS_STORY_ENTITY, "");
+        if (0 != decode.length()) {
+            String gson = new String(Base64.decode(decode, Base64.DEFAULT));
+            storyEntity = new Gson().fromJson(gson, StoryEntity.class);
+        }
+        return storyEntity;
+    }
+
+    public void clear(){
+        WisapeApplication.getInstance().getSharePrefrence().edit().remove(EXTARAS_STORY_ENTITY).apply();
+    }
+
 }

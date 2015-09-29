@@ -49,7 +49,7 @@ public class WisapeApplication extends Application {
 //    private UserInfo userInfo;
     private SharedPreferences sharedPreferences;
     private String installId;
-    private StoryEntity storyEntity;
+//    private StoryEntity storyEntity;
 
 
     @Override
@@ -59,12 +59,10 @@ public class WisapeApplication extends Application {
         final Context context = getApplicationContext();
         sharedPreferences = getSharedPreferences(PREFERENCES_NAME, MODE_PRIVATE);
         WWWConfig.initialize(context);
-        FlurryAgent.init(this, "BKNHHSXHP986YBR666ZY");
-//        NanoService.startNanoServer(context);
+//        FlurryAgent.init(this, "BKNHHSXHP986YBR666ZY");
         PlayerProxy.launch(context);
-        Bugtags.start("f6843af99861f31d1af2ae6d74a8e9a9", this, Bugtags.BTGInvocationEventShake);
+        Bugtags.start("f6843af99861f31d1af2ae6d74a8e9a9", this, Bugtags.BTGInvocationEventNone);
         Bugtags.setTrackingCrashes(true);
-        Bugtags.setTrackingUserSteps(true);
         //初始化parse通讯
         Parse.initialize(this, "L3WrrhBJmbPhRoJ4GYIUDMIErlR8IlvkJuQQJ0Px", "yfC5kFI4jLLeeDaKlepK1hgAGiYJJEHjXfnpaCks");
         PushService.subscribe(this, "abcde", MainActivity.class);
@@ -75,12 +73,6 @@ public class WisapeApplication extends Application {
 
     }
 
-    @Override
-    protected void attachBaseContext(Context base) {
-        super.attachBaseContext(base);
-        MultiDex.install(this);
-    }
-
     public String getInstallId() {
         return installId;
     }
@@ -88,14 +80,6 @@ public class WisapeApplication extends Application {
     public SharedPreferences getSharePrefrence() {
         return sharedPreferences;
     }
-
-//    public void setUserInfo(UserInfo userInfo) {
-//        this.userInfo = userInfo;
-//    }
-//
-//    public UserInfo getUserInfo() {
-//        return userInfo;
-//    }
 
     public List<StoryTemplateTypeInfo> getTemplateTypeList() {
         return templateTypeList;
@@ -105,11 +89,11 @@ public class WisapeApplication extends Application {
         return templateMap;
     }
 
-    public StoryEntity getStoryEntity() {
-        return storyEntity;
-    }
-
-    public void setStoryEntity(StoryEntity storyEntity) {
-        this.storyEntity = storyEntity;
-    }
+//    public StoryEntity getStoryEntity() {
+//        return storyEntity;
+//    }
+//
+//    public void setStoryEntity(StoryEntity storyEntity) {
+//        this.storyEntity = storyEntity;
+//    }
 }

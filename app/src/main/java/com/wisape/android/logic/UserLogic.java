@@ -92,6 +92,7 @@ public class UserLogic {
         Message message = Message.obtain();
         try {
             UserInfo userInfo = OkhttpUtil.execute(HttpUrlConstancts.USER_LOGIN, params, UserInfo.class);
+            userInfo.user_pwd = params.get(ATTR_PASSWORD);
             saveUserToSharePrefrence(userInfo);
             message.arg1 = HttpUrlConstancts.STATUS_SUCCESS;
             message.obj = userInfo;
@@ -123,9 +124,9 @@ public class UserLogic {
     }
 
     /**
-     * 从本地读取用户信息
+     * 从本地读取当前用户信息
      */
-    public UserInfo loaderUserFromLocal() {
+    public UserInfo getUserInfoFromLocal() {
         UserInfo userInfo = null;
         SharedPreferences sharedPreferences = WisapeApplication.getInstance().getSharePrefrence();
         String decode = sharedPreferences.getString(EXTRA_USER_INFO, "");

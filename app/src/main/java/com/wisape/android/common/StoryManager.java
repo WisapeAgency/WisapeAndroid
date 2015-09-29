@@ -224,7 +224,7 @@ public class StoryManager{
     }
 
     private static String makeStoryDirectoryName(Context context){
-        UserInfo user = UserLogic.instance().loaderUserFromLocal();
+        UserInfo user = UserLogic.instance().getUserInfoFromLocal();
         String primary = new StringBuffer(64).append(user.user_id).append(System.currentTimeMillis()).toString();
         String md5 = SecurityUtils.md5(primary);
         return md5;

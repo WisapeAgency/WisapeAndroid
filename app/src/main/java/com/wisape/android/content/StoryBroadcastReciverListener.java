@@ -16,8 +16,6 @@ public interface StoryBroadcastReciverListener {
 
     public static final int UPDATE_STORY_SETTING = 2;
 
-    public static final int ADD_JUKE_STORY = 6;
-
     /*修改story 包含修改*/
     public static final int TYPE_UPDATE_STORY = 3;
 

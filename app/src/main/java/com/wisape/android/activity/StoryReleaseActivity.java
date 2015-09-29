@@ -84,7 +84,7 @@ public class StoryReleaseActivity extends BaseActivity {
     }
 
     private void setStoryInfo() {
-        storyEntity = wisapeApplication.getStoryEntity();
+        storyEntity = StoryLogic.instance().getStoryEntityFromShare();
         storyNameEdit.setText(storyEntity.storyName);
         storyDescEdit.setText(storyEntity.storyDesc);
         String uri = storyEntity.storyThumbUri;
@@ -109,6 +109,9 @@ public class StoryReleaseActivity extends BaseActivity {
                 case PhotoSelectorActivity.REQUEST_CODE_PHOTO:
                     Uri imgUri = extras.getParcelable(PhotoSelectorActivity.EXTRA_IMAGE_URI);
                     File file = new File(StoryManager.getStoryDirectory(), storyEntity.storyName + "/thumb.jpg");
+                    if(file.exists()){
+                        file.delete();
+                    }
                     bgUri = Uri.fromFile(file);
                     Intent intent = new Intent("com.android.camera.action.CROP");
                     intent.setDataAndType(imgUri, "image/*");
@@ -128,7 +131,6 @@ public class StoryReleaseActivity extends BaseActivity {
                     startActivityForResult(intent, REQEUST_CODE_CROP_IMG);
                     break;
                 case REQEUST_CODE_CROP_IMG:
-
                     Bundle args = new Bundle();
                     args.putString(EXTRAS_STORY_NAME, storyNameEdit.getText().toString());
                     args.putString(EXTRAS_STORY_DESC, storyDescEdit.getText().toString());
@@ -178,12 +180,12 @@ public class StoryReleaseActivity extends BaseActivity {
                 Picasso.with(this).load(imgPath)
                         .placeholder(R.mipmap.icon_camera)
                         .error(R.mipmap.icon_login_email)
-                        .resize(200,400)
+                        .fit()
                         .centerCrop()
                         .into(storyCoverView);
             } else {
                 Picasso.with(this).load(new File(imgPath))
-                        .resize(200,400)
+                        .fit()
                         .centerCrop()
                         .placeholder(R.mipmap.icon_camera)
                         .error(R.mipmap.icon_login_email)
@@ -257,7 +259,7 @@ public class StoryReleaseActivity extends BaseActivity {
     @SuppressWarnings("unused")
     protected void doShare2Messenger() {
         FacebookMessenger.ShareParams shareParams = new FacebookMessenger.ShareParams();
-        shareParams.setAddress(UserLogic.instance().loaderUserFromLocal().user_email);
+        shareParams.setAddress(UserLogic.instance().getUserInfoFromLocal().user_email);
         shareParams.setImageUrl(storyEntity.storyThumbUri);
 
         shareParams.setTitle(storyEntity.storyName);
@@ -289,7 +291,7 @@ public class StoryReleaseActivity extends BaseActivity {
     @SuppressWarnings("unused")
     protected void doShare2Email() {
         Email.ShareParams shareParams = new Email.ShareParams();
-        shareParams.setAddress(UserLogic.instance().loaderUserFromLocal().user_email);
+        shareParams.setAddress(UserLogic.instance().getUserInfoFromLocal().user_email);
         shareParams.setImageUrl(storyEntity.storyThumbUri);
         shareParams.setTitle(storyEntity.storyName);
         shareParams.setText(storyUrl);
