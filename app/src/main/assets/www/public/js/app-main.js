@@ -397,6 +397,11 @@ WisapeEditer = {
             //    target.find("ul").html('<li class="active">' + WisapeEditer.currentTplData + '</li>');
             //}
 
+            if(WisapeEditer.storyData.length == 1) {
+                pageScroll.find("ul").html('<li class="active"><span class="count">1/1</span>' + WisapeEditer.currentTplData + '</li>');
+                return ;
+            }
+
             pageScroll.find("li").removeClass("active").find(".pages-img,.pages-txt").removeClass("active");
             target.after('<li class="active"><span class="count">' + WisapeEditer.selectedStagetIndex++ + '/' + WisapeEditer.storyData.length + '</span>' + WisapeEditer.currentTplData + '</li>');
             set_wrap_width(pageScroll);
@@ -482,14 +487,13 @@ WisapeEditer = {
         $("#setFontLink").click(function () {
             var me = $(this);
             var target = $("#editorText .pages-txt.active");
-            var tmpText = target.text();
             var mask = $(".ui-mask");
             var link = "";
             var hrefDialog = $(".href-dialog");
             if (me.hasClass("active")) {
                 me.removeClass("active");
                 hrefDialog.find(".input-href input").val("http://");
-                target.html(tmpText);
+                target.removeAttr("data-href");
 
             } else {
                 mask.show();
@@ -500,13 +504,15 @@ WisapeEditer = {
                 });
                 hrefDialog.find(".btn-submit").click(function () {
                     link = hrefDialog.find(".input-href input").val();
+                    console.info(link);
                     mask.hide();
                     hrefDialog.hide();
                     if (link == "http://" || link == "") return false;
                     me.addClass("active");
-                    target.html("<a href='" + link + "'>" + tmpText + "</a>");
+                    target.attr({"data-href" : link });
                 });
             }
+            console.info(target.attr("data-href"));
         });
         $("#setFontAlign").click(function ($event) {
             var me = $(this);
@@ -663,8 +669,8 @@ WisapeEditer = {
             $("#TextEditerOpt").click();
         }
 
-        if(curTxt.find("a").length != 0 ) {//链接
-            $(".input-href").val(curTxt.find("a").attr("href"));
+        if(curTxt.attr("data-href") != undefined && curTxt.attr("data-href") != "") {//链接
+            $(".input-href").val(curTxt.attr("data-href"));
             $("#setFontLink").addClass("active")
         } else {
             $("#setFontLink").removeClass("active")

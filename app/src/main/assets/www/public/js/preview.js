@@ -32,6 +32,13 @@ $(function(){
         }, function(e) {
         }, "StoryTemplate", "publish", [retHtml,retImg]);
     })
+
+    $(".pages-txt[data-href]").click(function(){
+
+        console.info("href click:");
+        console.info($(this).attr("data-href"));
+        window.location.href = $(this).attr("data-href");
+    })
 })
 
 //播放音乐
