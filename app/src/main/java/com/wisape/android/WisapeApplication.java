@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.multidex.MultiDex;
 
 import com.bugtags.library.Bugtags;
+import com.bugtags.library.BugtagsOptions;
 import com.flurry.android.FlurryAgent;
 import com.parse.Parse;
 import com.parse.ParseInstallation;
@@ -61,8 +62,13 @@ public class WisapeApplication extends Application {
         WWWConfig.initialize(context);
 //        FlurryAgent.init(this, "BKNHHSXHP986YBR666ZY");
         PlayerProxy.launch(context);
-        Bugtags.start("f6843af99861f31d1af2ae6d74a8e9a9", this, Bugtags.BTGInvocationEventNone);
-        Bugtags.setTrackingCrashes(true);
+        BugtagsOptions options = new BugtagsOptions.Builder().
+                trackingLocation(false).//是否获取位置
+                trackingCrashLog(true).//是否收集crash
+                trackingConsoleLog(true).//是否收集console log
+                trackingUserSteps(true).//是否收集用户操作步骤
+                build();
+        Bugtags.start("f6843af99861f31d1af2ae6d74a8e9a9", this, Bugtags.BTGInvocationEventNone, options);
         //初始化parse通讯
         Parse.initialize(this, "L3WrrhBJmbPhRoJ4GYIUDMIErlR8IlvkJuQQJ0Px", "yfC5kFI4jLLeeDaKlepK1hgAGiYJJEHjXfnpaCks");
         PushService.subscribe(this, "abcde", MainActivity.class);
@@ -89,11 +95,4 @@ public class WisapeApplication extends Application {
         return templateMap;
     }
 
-//    public StoryEntity getStoryEntity() {
-//        return storyEntity;
-//    }
-//
-//    public void setStoryEntity(StoryEntity storyEntity) {
-//        this.storyEntity = storyEntity;
-//    }
 }
