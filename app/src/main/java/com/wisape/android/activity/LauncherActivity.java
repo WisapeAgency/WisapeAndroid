@@ -85,6 +85,7 @@ public class LauncherActivity extends BaseActivity {
             MainActivity.launch(this);
         } else {
             showToast((String) data.obj);
+            SignUpActivity.launch(LauncherActivity.this);
         }
     }
 }
