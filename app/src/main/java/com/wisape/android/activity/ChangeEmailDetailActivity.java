@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
+import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
 import com.wisape.android.R;
@@ -19,7 +21,7 @@ import butterknife.OnClick;
  * 修改邮箱
  * Created by huangmeng on 15/8/20.
  */
-public class ChangeEmailDetailActivity extends BaseActivity{
+public class ChangeEmailDetailActivity extends BaseActivity implements SignUpEditText.OnActionListener{
 
     public static final int REQEUST_CODE_CHANGE_EMAIL_DETAIL = 0x05;
     public static final String EXTRA_EMAIL_ACCOUNT = "email_account";
@@ -41,10 +43,9 @@ public class ChangeEmailDetailActivity extends BaseActivity{
         setContentView(R.layout.activity_change_email_detail);
 
         ButterKnife.inject(this);
-
+        editEmail.setOnActionListener(this);
         editEmail.setText(UserLogic.instance().getUserInfoFromLocal().user_email);
         textView.setMovementMethod(ScrollingMovementMethod.getInstance());
-
     }
 
     @OnClick(R.id.add_emai_btn)
@@ -56,6 +57,17 @@ public class ChangeEmailDetailActivity extends BaseActivity{
             intent.putExtra(EXTRA_EMAIL_ACCOUNT, email);
             setResult(RESULT_OK, intent);
             finish();
+        }
+    }
+
+    @Override
+    public void onActionClicked(View view) {
+        switch (view.getId()) {
+            default:
+                return;
+            case R.id.add_emai_edit:
+                editEmail.setText("");
+                break;
         }
     }
 
