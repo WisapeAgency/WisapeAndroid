@@ -149,6 +149,7 @@
 		// Bind events
 		_on(el, 'mousedown', this._onTapStart);
 		_on(el, 'touchstart', this._onTapStart);
+
 		supportIEdnd && _on(el, 'selectstart', this._onTapStart);
 
 		_on(el, 'dragover', this._onDragOver);

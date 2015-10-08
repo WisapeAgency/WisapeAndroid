@@ -11,6 +11,8 @@ WisapeEditer = {
 
     storyData: [],
 
+    config : {},
+
     Init: function () {
         var menuScroll = $("#menu-scroll"),
             catScroll = $("#cat-scroll"),
@@ -34,7 +36,7 @@ WisapeEditer = {
 
             $("#menu-scroll").html(htmlStr);
             set_wrap_width($("#menu-scroll"));
-            ($("#menu-scroll").width() > $(window).width()) && $("#menu-scroll").iScroll({
+            $("#menu-scroll").iScroll({
                 scrollX: true,
                 scrollY: false,
                 mouseWheel: true,
@@ -383,8 +385,20 @@ WisapeEditer = {
 
         //新建stage事件
         AddNewStage.click(function () {
-            var target = pageScroll.find("li.active");
 
+            var target = pageScroll.find("li.active"),
+                tipDialog = $(".tip-dialog"),
+                mask = $(".mask");
+
+            if(WisapeEditer.storyData.length == 15 ) {
+                tipDialog.show();
+                mask.show();
+                tipDialog.find(".btn-submit").click(function(){
+                    tipDialog.hide();
+                    mask.hide();
+                })
+                return ;
+            }
             WisapeEditer.storyData.push(WisapeEditer.currentTplData);
 
             console.info("WisapeEditer.storyData:");
@@ -396,6 +410,7 @@ WisapeEditer = {
             //} else {
             //    target.find("ul").html('<li class="active">' + WisapeEditer.currentTplData + '</li>');
             //}
+
 
             if(WisapeEditer.storyData.length == 1) {
                 pageScroll.find("ul").html('<li class="active"><span class="count">1/1</span>' + WisapeEditer.currentTplData + '</li>');
@@ -435,9 +450,6 @@ WisapeEditer = {
 
             console.info("WisapeEditer.storyData:");
             console.info(WisapeEditer.storyData);
-
-
-
 
             WisapeEditer.ShowView('editorText', 'main');
 
@@ -483,6 +495,33 @@ WisapeEditer = {
                 target.css({"font-style": "italic"})
             }
         });
+
+
+
+        $(".J-font-resize .opt-right").delegate("span","click",function(){
+            var target = $("#editorText .pages-txt.active");
+            var fontSizeLim = [14,30];
+            var me = $(this);
+            var curFontSize = parseInt(target.css("fontSize"));
+            console.info(curFontSize);
+            if(me.hasClass("J-font-reduce")) {
+                curFontSize--;
+                if(curFontSize < fontSizeLim[0]) {
+                    me.addClass("disable") ;
+                    return;
+                }
+            } else {
+                curFontSize++;
+                if(curFontSize > fontSizeLim[1]) {
+                    me.addClass("disable") ;
+                    return ;
+                }
+            }
+            if(curFontSize != fontSizeLim[0] && curFontSize != fontSizeLim[1]){
+                $(".J-font-resize .opt-right span").removeClass("disable");
+            }
+            target.css({"font-size": curFontSize + "px"});
+        })
 
         $("#setFontLink").click(function () {
             var me = $(this);
@@ -532,6 +571,7 @@ WisapeEditer = {
         $(".pop-editer-opt .item").click(function () {
             var popLayers = $("#editorText .pop-layer");
             var me = $(this);
+            if(me.hasClass("J-font-resize")) return;
             popLayers.hide().parent().find("." + me.data("name")).show();
         });
 
@@ -581,7 +621,7 @@ WisapeEditer = {
             var source = '<ul class="tpl-page-item">'
                 + '{{each list as value i}}'
                 + '<li class="tpl-page-item {{if value.rec_status == 1}}tpl-exist{{/if}}"  data-id="{{value.id}}" data-exists="{{value.rec_status}}" data-type="{{value.type}}"  data-name="{{value.temp_name}}">'
-                + '<i style="display: none" class="icon-tags-hot"></i>'
+                + '<i {{if value.order_type == "N" }} style="display: block" class="icon-tags-new" {{/if}} {{if value.order_type == "H" }} style="display: block" class="icon-tags-hot" {{/if}} ></i>'
                 + '{{if value.rec_status == 0}} <span class="icon-download"></span> {{/if}}<div style="display:none;" class="download-progress-bar"><div class="download-progress-percent"></div></div>'
                 + '<img class="stage-thumb" src="{{value.temp_img_local}}"  alt="{{value.temp_name}}"/>'
                 + '<div class="tpl-page-item-name">{{value.temp_name}}</div>'
@@ -639,6 +679,7 @@ WisapeEditer = {
 
         //替换html
         editPage.html(curPage.html()).find(".edit-area.active").attr({"contenteditable": "true"});
+        console.info("contenteditable:" + editPage.html());
         var curTxt = editPage.find(".edit-area.active"),
             curAnimation = "",
             curColor = rgb2hex(curTxt.css("color")),
