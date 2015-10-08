@@ -45,6 +45,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -387,6 +388,9 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
     /*新增story包含更新*/
     private void addStoryData() {
         StoryEntity storyEntity = StoryLogic.instance().getStoryEntityFromShare();
+        if(null == storyEntityList){
+            storyEntityList = new ArrayList<>();
+        }
         boolean haveStory = false;
         int postion = 0;
         int size = storyEntityList.size();

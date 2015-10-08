@@ -79,7 +79,13 @@ public class PhotoSelectorPlugin extends AbsPlugin {
                 startActivityForResult(intent1, REQEUST_CODE_CROP_IMG);
                 break;
             case REQEUST_CODE_CROP_IMG:
-                callbackContext.success(bgUri.getPath());
+                if(null != callbackContext){
+                    if(null != bgUri){
+                        callbackContext.success(bgUri.getPath());
+                    }else {
+                        callbackContext.error("裁剪失败");
+                    }
+                }
                 bgUri = null;
                 break;
         }

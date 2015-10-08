@@ -2,6 +2,7 @@ package com.wisape.android.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
@@ -21,6 +22,7 @@ import com.wisape.android.logic.ActiveLogic;
 import com.wisape.android.model.ActiveInfo;
 import com.wisape.android.util.Utils;
 import com.wisape.android.view.GalleryView;
+import com.wisape.android.widget.NoticeDialog;
 
 import java.util.List;
 
@@ -75,12 +77,21 @@ public class GiftFragment extends AbsFragment {
             if(null != activeInfoList && activeInfoList.size() > 0){
                 giftGallery.setAdapter(new GalleryAdapter(getActivity(),activeInfoList));
             }else{
-                showToast("No Active");
+               handler.sendEmptyMessage(1);
             }
         }else{
             showToast((String)data.obj);
         }
     }
+
+    Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            closeFragment();
+            NoticeDialog.getInstance("No Active","There is current no active").show(getFragmentManager(), "close");
+
+        }
+    };
 
 
     @OnClick(R.id.btn_close)

@@ -154,10 +154,12 @@ public class GalleryView extends RecyclerView{
                         }
                     }
 
-                    int lx = pCenterPoint.x-minDistanceView.getWidth()/2;
-                    int dx = minDistanceView.getLeft()-lx;
-                    recyclerView.scrollBy(dx,0);
-                    primaryView = minDistanceView;
+                    if(null != minDistanceView){
+                        int lx = pCenterPoint.x-minDistanceView.getWidth()/2;
+                        int dx = minDistanceView.getLeft()-lx;
+                        recyclerView.scrollBy(dx,0);
+                        primaryView = minDistanceView;
+                    }
                 }
 
                 for(CardGalleryEvent event:mCardGalleryEventList)if(null != event)event.onScrollStopped(primaryView);
