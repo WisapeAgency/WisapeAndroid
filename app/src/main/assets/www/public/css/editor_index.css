@@ -275,7 +275,7 @@ a {text-decoration: none;color:inherit;}
 .pages {width:100%;padding:15px 0;height:310px;position:relative;overflow: hidden;}
 .pages li {width:200px;height:280px;float:left;position: relative;margin-left:15px;opacity: 0.5;}
 .pages li.active  {opacity: 1}
-.pages li .count {position: absolute;left:0;bottom:0;background:rgba(82,181,2,0.5);color:#fff;font-size:14px;padding:2px 6px;}
+.pages li .count {z-index:999;position: absolute;left:0;bottom:0;background:rgba(82,181,2,0.5);color:#fff;font-size:14px;padding:2px 6px;}
 .pages-item .pages-item-thumb {width:100%;}
 
 .story-page-list {width:100%;overflow: hidden}
