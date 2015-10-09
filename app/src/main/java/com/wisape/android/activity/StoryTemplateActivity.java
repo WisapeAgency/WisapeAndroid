@@ -119,7 +119,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
                     } catch (JSONException e) {
 
                     }
-                    unzipTemplate(Uri.fromFile(new File(path)), template);
+                    unzipTemplate(Uri.fromFile(new File(path)), template,msg.getData());
 //                    downloadFont(template);
                     break;
                 }
@@ -342,6 +342,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
                         bundle.putInt(EXTRA_CATEGORY_ID, categoryId);
                         bundle.putString(EXTRA_TEMPLATE_NAME, name);
                         bundle.putString(EXTRA_TEMPLATE_PATH, downUri.getPath());
+                        bundle.putString(EXTRA_TEMPLATE_URL,url);
                         msg.setData(bundle);
                         downloadTemplateHandler.sendMessage(msg);
                     }
@@ -499,7 +500,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
         return new File(StoryManager.getStoryFontDirectory(), templateDir);
     }
 
-    private void unzipTemplate(Uri downUri, File template) {
+    private void unzipTemplate(Uri downUri, File template, Bundle args) {
         try {
             if (template.isFile()) {
                 FileUtils.forceDelete(template);
@@ -509,7 +510,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
             ZipUtils.unzip(downUri, template);
         } catch (IOException e) {
             Log.e(TAG, "", e);
-            loadUrl("javascript:onError('unzip error!')");
+            startLoad(WHAT_DOWNLOAD_TEMPLATE, args);
         }
     }
 

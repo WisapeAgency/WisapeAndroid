@@ -109,7 +109,7 @@ public class TemplateDownloader implements Runnable {
         String name = templateInfo.temp_name;
         String path = destFile.getAbsolutePath();
         File template = getTemplateUnzipDirectory(name);
-        unzipTemplate(Uri.fromFile(new File(path)), template);
+        unzipTemplate(Uri.fromFile(new File(path)), template,templateInfo);
     }
 
     private File getTemplateUnzipDirectory(String name) {
@@ -121,7 +121,7 @@ public class TemplateDownloader implements Runnable {
         return new File(StoryManager.getStoryTemplateDirectory(), templateDir);
     }
 
-    private void unzipTemplate(Uri downUri, File template) {
+    private void unzipTemplate(Uri downUri, File template,StoryTemplateInfo templateInfo) {
         try {
             if (template.isFile()) {
                 FileUtils.forceDelete(template);
@@ -130,7 +130,21 @@ public class TemplateDownloader implements Runnable {
             }
             ZipUtils.unzip(downUri, template);
         } catch (IOException e) {
-//            loadUrl("javascript:onError('unzip error!')");
+            restartDownload(downUri, template, templateInfo);
         }
+    }
+
+    private void restartDownload(Uri downUri, File template,StoryTemplateInfo templateInfo){
+        try {
+            if (template.isFile()) {
+                FileUtils.forceDelete(template);
+            } else {
+                FileUtils.deleteDirectory(template);
+            }
+            FileUtils.forceDelete(new File(downUri.getPath()));
+        }catch (Exception e1){
+
+        }
+        download(templateInfo);
     }
 }
