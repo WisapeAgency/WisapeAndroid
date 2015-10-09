@@ -400,6 +400,13 @@
         })
     }
 
+    myScroll.on("scrollStart",function(){console.info("scrollStart");});
+    myScroll.on("scrollStart",function(){console.info("scrollStart");});
+    myScroll.on("scrollMove",function(){console.info("scrollMove");});
+    myScroll.on("beforeScrollMove",function(){console.info("onBeforeScrollMove");});
+    myScroll.on("beforeScrollEnd",function(){console.info("beforeScrollEnd");});
+    myScroll.on("scrollEnd",function(){console.info("scrollEnd");});
+
 
 
 

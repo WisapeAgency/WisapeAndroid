@@ -106,7 +106,7 @@ WisapeEditer = {
             console.info($("#tpmHtml").find(".m-img").length);
             console.info(ret);
             WisapeEditer.storyData = ret;
-            WisapeEditer.currentTplData = ret;
+            WisapeEditer.currentTplData = ret[0];
             WisapeEditer.LoadStageList(ret, function () {
                 console.info("loadStageList succ");
                 set_wrap_width($("#pages-scroll"));
