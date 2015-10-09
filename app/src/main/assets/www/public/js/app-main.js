@@ -97,7 +97,11 @@ WisapeEditer = {
             $('<div id="tpmHtml" style="display: none">' + data + '</div>').insertBefore("body");
             $("#tpmHtml").find(".m-img").each(function () {
                 ret.push($(this).html());
-            })
+            });
+
+            console.info("ret arr");
+            console.info(ret.length);
+
             console.info($("#tpmHtml").length);
             console.info($("#tpmHtml").find(".m-img").length);
             console.info(ret);
