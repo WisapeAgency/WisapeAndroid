@@ -25,13 +25,13 @@
         AppId="wx3f155f07c7cb9a75"
         AppSecret="eac4623977201ad33c833b09d1ea9b1d"
         BypassApproval="true"
-        Enable="false" />
+        Enable="true" />
     
     <WechatMoments
         AppId="wx3f155f07c7cb9a75"
         AppSecret="eac4623977201ad33c833b09d1ea9b1d"
         BypassApproval="true"
-        Enable="false" />
+        Enable="true" />
     
     <Email
         Enable="true" />

@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.Menu;
@@ -11,6 +13,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.wisape.android.R;
+import com.wisape.android.network.VolleyHelper;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -22,6 +25,10 @@ import butterknife.OnClick;
  */
 public class AboutActivity extends BaseActivity {
 
+    private static final String ABOUT_PRIVACY_POLICY = "custom/about/wap/privacy_policy.html";
+    private static final String ABOUT_TEAM_SERVICE = "custom/about/wap/term_service.html";
+    private static final String ABOUT_CONTENT_SPECIFICATION = "custom/about/wap/content_specification.html";
+    private static final String SHARE_URL = "uploads/app/app-release.apk";
     @InjectView(R.id.about_version_text)
     @SuppressWarnings("unused")
     protected TextView mVersionText;
@@ -33,17 +40,39 @@ public class AboutActivity extends BaseActivity {
 
     @OnClick(R.id.text_privacy)
     public void onivacyClick(){
-        AboutWebViewActivity.launch(this, "http://106.75.196.252/custom/privacy_policy.html", getResources().getString(R.string.about_privacy_policy));
+        String url = acquireUri(ABOUT_PRIVACY_POLICY);
+        AboutWebViewActivity.launch(this, url, getResources().getString(R.string.about_privacy_policy));
     }
 
     @OnClick(R.id.text_terms)
     public void onTermsClick(){
-        AboutWebViewActivity.launch(this,"http://106.75.196.252/custom/term_service.html",getResources().getString(R.string.about_terms_of_service));
+        String url = acquireUri(ABOUT_TEAM_SERVICE);
+        AboutWebViewActivity.launch(this, url, getResources().getString(R.string.about_terms_of_service));
+    }
+
+    @OnClick(R.id.text_content)
+    public void onContentClick(){
+        String url = acquireUri(ABOUT_CONTENT_SPECIFICATION);
+        AboutWebViewActivity.launch(this,url,getResources().getString(R.string.about_content));
     }
 
     @OnClick(R.id.text_rate)
     public void onRateClick(){
-        AboutWebViewActivity.launch(this,"http://106.75.196.252/custom/term_service.html",getResources().getString(R.string.about_rate));
+    }
+
+    public String acquireUri(String path) {
+        Resources res = getResources();
+        String schema = res.getString(R.string.www_schema);
+        String host = res.getString(R.string.www_host);
+        String port = res.getString(R.string.www_port);
+        String authority = String.format("%1$s:%2$s", host, port);
+
+//        String authority = host;
+        Uri.Builder builder = new Uri.Builder();
+        builder.scheme(schema);
+        builder.encodedAuthority(authority);
+        builder.encodedPath(path);
+        return builder.build().toString();
     }
 
 
@@ -75,10 +104,11 @@ public class AboutActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        String url = acquireUri(SHARE_URL);
         if(item.getItemId() == R.id.share_about){
             Intent intent = new Intent(Intent.ACTION_SEND); // 启动分享发送的属性
             intent.setType("text/plain"); // 分享发送的数据类型
-            intent.putExtra(Intent.EXTRA_TEXT, "http://106.75.196.252/uploads/app/app-release.apk"); // 分享的内容
+            intent.putExtra(Intent.EXTRA_TEXT, url); // 分享的内容
             startActivity(Intent.createChooser(intent, "选择分享"));// 目标应用选择对话框的标题
             return true;
         }
