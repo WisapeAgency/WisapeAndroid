@@ -1,12 +1,14 @@
 package com.wisape.android.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
+import android.view.inputmethod.InputMethodManager;
 
 import com.google.gson.Gson;
 import com.wisape.android.R;
@@ -71,7 +73,7 @@ public class TestActivity extends BaseActivity{
 
     @OnClick(R.id.create_story)
     protected void doCreateStory(){
-        StoryTemplateActivity.launch(this,0);
+        StoryTemplateActivity.launch(this, 0);
     }
 
     @OnClick(R.id.share)
@@ -88,6 +90,20 @@ public class TestActivity extends BaseActivity{
 //        shareMessage("标题", "消息标题", msg, thumb.getAbsolutePath());
 
         initShareIntent("com.sina.weibo");
+    }
+
+    @OnClick(R.id.softkeyboard)
+    protected  void doKeyBoard(){
+        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        //得到InputMethodManager的实例
+        if (imm.isActive()) {
+            //如果开启
+            imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_NOT_ALWAYS);
+            //关闭软键盘，开启方法相同，这个方法是切换开启与关闭状态的
+        } else {
+            ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
+                    .hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
     }
 
     /**

@@ -32,6 +32,10 @@
         <param name="android-package" value="com.wisape.android.cordova.LoggerPlugin" />
     </feature>
 
+    <feature name="Keyboard">
+        <param name="android-package" value="com.wisape.android.cordova.KeyboardPlugin" />
+    </feature>
+
     <feature name="Test">
         <param name="android-package" value="com.wisape.android.cordova.TestPlugin" /><!-- value:包名.类名 -->
     </feature>
