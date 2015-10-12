@@ -82,6 +82,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
     public static final String ACTION_EDIT = "edit";
     public static final String ACTION_GET_CONTENT = "getContent";
     public static final String ACTION_CHECK_DOWNLOAD = "checkInitState";//onInitCompleted
+    public static final String ACTION_OPEN_LINK = "openLink";
 
     private static final int WHAT_GET_STAGE_CATEGORY = 0x01;
     private static final int WHAT_GET_STAGE_LIST = 0x02;
@@ -225,6 +226,16 @@ public class StoryTemplatePlugin extends AbsPlugin {
 //                startLoad(WHAT_EDIT_INIT, null);
 //            }
             startLoad(WHAT_EDIT_INIT, null);
+        } else if (ACTION_OPEN_LINK.equals(action)){
+            if (null != args && args.length() == 1) {
+                String url = args.getString(0);
+                Intent intent = new Intent();
+                intent.setAction("android.intent.action.VIEW");
+                Uri content_url = Uri.parse(url);
+                intent.setData(content_url);
+                cordova.getActivity().startActivity(intent);
+            }
+            callbackContext.success();
         }
         return true;
     }

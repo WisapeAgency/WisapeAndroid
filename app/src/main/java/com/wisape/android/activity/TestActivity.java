@@ -104,6 +104,11 @@ public class TestActivity extends BaseActivity{
             ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
                     .hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         }
+//        Intent intent = new Intent();
+//        intent.setAction("android.intent.action.VIEW");
+//        Uri content_url = Uri.parse("http://www.baidu.com");
+//        intent.setData(content_url);
+//        startActivity(intent);
     }
 
     /**
