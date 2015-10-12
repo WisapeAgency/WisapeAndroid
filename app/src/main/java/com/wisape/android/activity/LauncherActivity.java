@@ -10,6 +10,7 @@ import com.wisape.android.WisapeApplication;
 import com.wisape.android.logic.UserLogic;
 import com.wisape.android.model.UserInfo;
 import com.wisape.android.network.DataSynchronizer;
+import com.wisape.android.util.LogUtil;
 
 /**
  * 启动界面
@@ -29,6 +30,7 @@ public class LauncherActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launch);
+        LogUtil.d("测试记录日志");
         new Thread(new Runnable() {
             @Override
             public void run() {

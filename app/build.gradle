@@ -97,6 +97,7 @@ dependencies {
     compile files('libs/ShareSDK-Twitter-2.6.3.jar')
     compile files('libs/ShareSDK-Core-2.6.3.jar')
     compile files('libs/MobLogCollector.jar')
+    compile files('libs/microlog4android-1.1.jar')
 //    compile "com.android.support:appcompat-v7:${ANDROID_SUPPORT_VERSION}"
     compile "com.android.support:recyclerview-v7:${ANDROID_SUPPORT_VERSION}"
 //    compile "com.android.support:support-v4:${ANDROID_SUPPORT_VERSION}"

@@ -20,6 +20,7 @@ public class StoryInfo extends ServerInfo{
      "small_img": "http://loc.wisuploads/20150708/1436343993_13689.jpg",
      "story_name": "shit",
      "story_url": "http://loc.wis/html/2/201507080826",
+     "story_path":"http://loc.wisuploads/20150708/1436343993_13689.zip"
      "id": "1"
      */
 
@@ -43,6 +44,7 @@ public class StoryInfo extends ServerInfo{
      */
     public String small_img;
     public String story_url;
+    public String story_path;
 
 
     public static StoryInfo fromJsonObject(JSONObject json){
@@ -62,6 +64,7 @@ public class StoryInfo extends ServerInfo{
         story.share_num = json.optInt("share_num");
         story.small_img = json.optString("small_img");
         story.story_url = json.optString("story_url");
+        story.story_path = json.optString("story_path");
         return story;
     }
 
@@ -83,6 +86,7 @@ public class StoryInfo extends ServerInfo{
         dest.writeInt(this.share_num);
         dest.writeString(this.small_img);
         dest.writeString(this.story_url);
+        dest.writeString(this.story_path);
     }
 
     public StoryInfo() {
@@ -100,6 +104,7 @@ public class StoryInfo extends ServerInfo{
         this.share_num = in.readInt();
         this.small_img = in.readString();
         this.story_url = in.readString();
+        this.story_path = in.readString();
     }
 
     public static final Creator<StoryInfo> CREATOR = new Creator<StoryInfo>() {

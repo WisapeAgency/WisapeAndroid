@@ -422,7 +422,7 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
             writer.println(header);
             writer.println(html);
             if (!Utils.isEmpty(story.storyMusicLocal)) {
-                writer.println("<div id=\"audio-btn\" class=\"on\">");
+                writer.println("<div id=\"audio-btn\" class=\"on\" onclick=\"lanren.changeClass(this,'media')\">");
                 writer.println(String.format("    <audio loop=\"loop\" src=\"%s\" id=\"media\" preload=\"preload\"></audio>",
                         story.storyMusicLocal));
                 writer.println("</div>");

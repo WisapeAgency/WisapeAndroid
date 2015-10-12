@@ -3,24 +3,17 @@ package com.wisape.android;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
-import android.support.multidex.MultiDex;
 
 import com.bugtags.library.Bugtags;
 import com.bugtags.library.BugtagsOptions;
-import com.flurry.android.FlurryAgent;
+import com.google.code.microlog4android.config.PropertyConfigurator;
 import com.parse.Parse;
 import com.parse.ParseInstallation;
 import com.parse.PushService;
 import com.wisape.android.activity.MainActivity;
-import com.wisape.android.database.StoryEntity;
 import com.wisape.android.model.StoryTemplateInfo;
 import com.wisape.android.model.StoryTemplateTypeInfo;
-import com.wisape.android.model.UserInfo;
-//import com.wisape.android.network.NanoServer;
 import com.wisape.android.network.WWWConfig;
-//import com.wisape.android.service.NanoService;
-//import com.wisape.android.service.NanoService;
 import com.wisape.android.util.Utils;
 
 import org.cubieline.lplayer.PlayerProxy;
@@ -29,6 +22,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+//import com.wisape.android.network.NanoServer;
+//import com.wisape.android.service.NanoService;
+//import com.wisape.android.service.NanoService;
 
 /**
  * @author Duke
@@ -57,6 +54,7 @@ public class WisapeApplication extends Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
+        PropertyConfigurator.getConfigurator(this).configure();
         final Context context = getApplicationContext();
         sharedPreferences = getSharedPreferences(PREFERENCES_NAME, MODE_PRIVATE);
         WWWConfig.initialize(context);

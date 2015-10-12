@@ -35,6 +35,7 @@ import com.wisape.android.model.StoryTemplateInfo;
 import com.wisape.android.model.UserInfo;
 import com.wisape.android.network.Downloader;
 import com.wisape.android.network.Requester;
+import com.wisape.android.network.StoryDownloader;
 import com.wisape.android.util.EnvironmentUtils;
 import com.wisape.android.util.FileUtils;
 import com.wisape.android.util.Utils;
@@ -54,6 +55,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static com.wisape.android.api.ApiStory.AttrStoryInfo.STORY_STATUS_DELETE;
 import static com.wisape.android.api.ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE;
@@ -667,32 +670,24 @@ public class StoryLogic {
      * @return 返回信息
      */
     public Message getUserStory(String access_token) {
-
         /*返回的所有的story集合*/
         List<StoryEntity> storyEntitYList = new ArrayList<>();
+        /*服务器端story*/
+        List<StoryInfo> serverStoryList = getUserStoryFromServer(access_token);
+        ExecutorService service = Executors.newCachedThreadPool();
+        service.execute(new StoryDownloader(serverStoryList));
+        service.shutdown();
+        if (null != serverStoryList && serverStoryList.size() > 0) {
+            storyEntitYList.addAll(serverStoryToLocalStory(serverStoryList));
+        }
+
+        /*获取本地草稿story并且进行实体转换*/
+        List<StoryEntity> storyLocalEntityList = getUserStoryFromLocal(WisapeApplication.getInstance().getApplicationContext());
+        storyEntitYList.addAll(storyLocalEntityList);
 
         StoryEntity defaultStoryEntity = getDefaultStoryEntity();
 
-        if (null != defaultStoryEntity) {
-
-            /**
-             * 如果有默认story则拷贝到本地
-             */
-            if(!ApiStory.AttrStoryInfo.STORY_STATUS_DELETE.equals(defaultStoryEntity.status)){
-                defaultStoryEntity.status = ApiStory.AttrStoryInfo.STORY_DEFAULT;
-                storyEntitYList.add(0, defaultStoryEntity);
-                try {
-                    FileUtils.unZip(WisapeApplication.getInstance().getApplicationContext(), "default.zip"
-                            , StoryManager.getStoryDirectory().getAbsolutePath() +"/"+ defaultStoryEntity.storyLocal,
-                            true);
-                    File storyFile = new File(StoryManager.getStoryDirectory(), defaultStoryEntity.storyLocal + "/story.html");
-                    FileUtils.replacePath("CLIENT_DEFAULT_STORY_PATH",
-                            StoryManager.getStoryDirectory().getAbsolutePath() + "/" + defaultStoryEntity.storyLocal, storyFile);
-                } catch (IOException e) {
-                    Log.e(TAG, e.getMessage());
-                }
-            }
-        }else{
+        if (null == defaultStoryEntity && storyLocalEntityList.size() == 0) {
             defaultStoryEntity  = new StoryEntity();
             defaultStoryEntity.status = ApiStory.AttrStoryInfo.STORY_DEFAULT;
             defaultStoryEntity.storyLocal = Utils.acquireUTCTimestamp();
@@ -712,19 +707,7 @@ public class StoryLogic {
             } catch (IOException e) {
                 Log.e(TAG, e.getMessage());
             }
-
         }
-
-        /*服务器端story*/
-        List<StoryInfo> serverStoryList = getUserStoryFromServer(access_token);
-        if (null != serverStoryList && serverStoryList.size() > 0) {
-            storyEntitYList.addAll(serverStoryToLocalStory(serverStoryList));
-        }
-
-        /*获取本地草稿story并且进行实体转换*/
-        List<StoryEntity> storyLocalEntityList = getUserStoryFromLocal(WisapeApplication.getInstance()
-                .getApplicationContext());
-        storyEntitYList.addAll(storyLocalEntityList);
 
         Message message = Message.obtain();
         message.arg1 = HttpUrlConstancts.STATUS_SUCCESS;
@@ -783,7 +766,7 @@ public class StoryLogic {
         db.beginTransaction();
         try {
             dao = databaseHelper.getDao(StoryEntity.class);
-            return dao.queryBuilder().where().eq("id", 1).queryForFirst();
+            return dao.queryBuilder().where().eq("status", ApiStory.AttrStoryInfo.STORY_DEFAULT).queryForFirst();
         } catch (SQLException e) {
             Log.e(TAG, "", e);
             return null;
