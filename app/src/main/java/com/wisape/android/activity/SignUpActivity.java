@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.wisape.android.R;
 import com.wisape.android.logic.UserLogic;
 import com.wisape.android.model.UserInfo;
+import com.wisape.android.util.LogUtil;
 import com.wisape.android.util.Utils;
 import com.wisape.android.widget.SignUpEditText;
 
@@ -89,6 +90,7 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
         setContentView(R.layout.activity_sign_up);
         ShareSDK.initSDK(this);
         ButterKnife.inject(this);
+        LogUtil.d("测试记录日志22222222");
         emailEdit.setOnActionListener(this);
         passwordEdit.setOnActionListener(this);
         SpannableString string = new SpannableString(forgetPassword.getText());

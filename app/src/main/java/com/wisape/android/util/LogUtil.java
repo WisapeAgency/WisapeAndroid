@@ -2,6 +2,8 @@ package com.wisape.android.util;
 
 import com.google.code.microlog4android.Logger;
 import com.google.code.microlog4android.LoggerFactory;
+import com.google.code.microlog4android.appender.FileAppender;
+import com.google.code.microlog4android.format.PatternFormatter;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -41,6 +43,7 @@ public final class LogUtil {
      * @param info  日志消息
      */
     public static void d(String info){
+        setFileAppender();
         logger.debug(genaratorTag(getCaller()) + info);
     }
 
@@ -49,7 +52,21 @@ public final class LogUtil {
      * @param cause
      */
     public static void e(String info,Throwable cause){
+        setFileAppender();
         logger.error(genaratorTag(getCaller()) + info + ":" + getErrorInfo(cause));
+    }
+
+    private static void setFileAppender(){
+        //选择记录类型
+        final FileAppender mfa = (FileAppender) logger.getAppender(1);
+        mfa.setAppend(true);//是否追加
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd",Locale.CHINA);
+        String date = sdf.format(new Date());
+        String fileName = String.format("Wisape-%s.log", date);
+        mfa.setFileName(fileName);//生成的日志名称
+        PatternFormatter formatter = new PatternFormatter();
+        formatter.setPattern("%r %c{1} [%P] %m %T");//%d{3}
+        mfa.setFormatter(formatter);
     }
 	    
     private static String getErrorInfo(Throwable arg1) {
