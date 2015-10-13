@@ -44,6 +44,7 @@ xx
         <button onclick="start(59);">Start</button>
         <button onclick="read('dddddddddddd');">read</button>
         <button onclick="getFont();">getFonts</button>
+        <button onclick="openURL();">Open URL</button>
         <div id="message"></div>
         <img src="http://www.baidu.com/img/baidu_jgylogo3.gif"/>
     </story>
@@ -147,6 +148,13 @@ xx
             }, function(e) {
                 alert("Error: "+e);
             }, "StoryTemplate", "getFonts", []);
+        }
+        function openURL(){
+            cordova.exec(function() {
+
+            }, function(e) {
+
+            }, "StoryTemplate", "openLink", ["http://www.baidu.com"]);
         }
     </script>
 </body>
