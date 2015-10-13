@@ -140,7 +140,7 @@ public class UserProfileActivity extends BaseActivity {
         if(null == userIconUri){
             args.putString(EXTRAS_ICON_URI,"");
         }else{
-            args.putString(EXTRAS_ICON_URI,userIconUri.getPath());
+            args.putString(EXTRAS_ICON_URI, userIconUri.getPath());
         }
         startLoadWithProgress(LOADER_WHAT_PROFILE_UPDATE, args);
     }
@@ -165,7 +165,9 @@ public class UserProfileActivity extends BaseActivity {
             intent.setAction(UpdateUserInfoBroadcastReciver.ACTION);
             sendBroadcast(intent);
         } else {
-            showToast((String)data.obj);
+            if (data.obj instanceof String){
+                showToast((String)data.obj);
+            }
             setResult(RESULT_CANCELED);
         }
         finish();
