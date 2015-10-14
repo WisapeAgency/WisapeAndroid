@@ -2,6 +2,7 @@ package com.wisape.android;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 
 import com.bugtags.library.Bugtags;
@@ -11,6 +12,8 @@ import com.parse.Parse;
 import com.parse.ParseInstallation;
 import com.parse.PushService;
 import com.wisape.android.activity.MainActivity;
+import com.wisape.android.content.DataSynchronizerReceiver;
+import com.wisape.android.content.MessageCenterReceiver;
 import com.wisape.android.model.StoryTemplateInfo;
 import com.wisape.android.model.StoryTemplateTypeInfo;
 import com.wisape.android.network.WWWConfig;
@@ -47,6 +50,7 @@ public class WisapeApplication extends Application {
 //    private UserInfo userInfo;
     private SharedPreferences sharedPreferences;
     private String installId;
+    private DataSynchronizerReceiver dataSynchronizerReceiver;
 //    private StoryEntity storyEntity;
 
 
@@ -75,6 +79,10 @@ public class WisapeApplication extends Application {
         ParseInstallation.getCurrentInstallation().saveInBackground();
         installId = ParseInstallation.getCurrentInstallation().getInstallationId();
 
+        dataSynchronizerReceiver = new DataSynchronizerReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("com.wisape.android.content.DataSynchronizerReceiver");
+        registerReceiver(dataSynchronizerReceiver, intentFilter);
     }
 
     public String getInstallId() {
@@ -93,4 +101,9 @@ public class WisapeApplication extends Application {
         return templateMap;
     }
 
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+        unregisterReceiver(dataSynchronizerReceiver);
+    }
 }
