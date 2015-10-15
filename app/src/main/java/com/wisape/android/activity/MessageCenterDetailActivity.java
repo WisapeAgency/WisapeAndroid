@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
+import android.text.Html;
+import android.text.TextUtils;
 import android.widget.TextView;
 
 import com.wisape.android.R;
@@ -69,7 +71,7 @@ public class MessageCenterDetailActivity extends BaseActivity {
             if (null != messageInfo){
                 messageTietle.setText(messageInfo.getTitle());
                 messageTime.setText(messageInfo.getParsetime());
-                messageContent.setText(messageInfo.getUser_message());
+                messageContent.setText(Html.fromHtml(messageInfo.getUser_message()));
             }else{
                 messageTietle.setText("获取消息失败!");
             }

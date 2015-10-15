@@ -62,6 +62,13 @@
 
         </activity>
 
+        <!-- 微信分享回调 -->
+        <activity
+            android:name=".activity.WXEntryActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="true"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activity.GestorChoiceActivity"
             android:screenOrientation="portrait"
@@ -168,9 +175,9 @@
             android:label="@string/name_change_email_detail_label"
             android:screenOrientation="portrait"/>
 
-        <service
-            android:name=".service.NanoService"
-            android:exported="false" />
+        <!--<service-->
+            <!--android:name=".service.NanoService"-->
+            <!--android:exported="false" />-->
 
         <service android:name="org.cubieline.lplayer.app.LPlayerService">
             <meta-data

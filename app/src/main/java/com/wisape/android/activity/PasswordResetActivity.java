@@ -65,7 +65,11 @@ public class PasswordResetActivity extends BaseActivity implements SignUpEditTex
             PasswordResetSuccessActivity.launch(this,mPasswordRestEmailEdit.getText().toString());
             finish();
         }else{
-            showToast((String)data.obj);
+            if(data.obj instanceof String){
+                showToast((String)data.obj);
+            }else{
+                showToast("Network Error");
+            }
         }
     }
 

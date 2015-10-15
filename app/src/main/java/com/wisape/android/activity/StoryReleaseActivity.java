@@ -204,7 +204,7 @@ public class StoryReleaseActivity extends BaseActivity {
         shareParams.setImageUrl(storyEntity.storyThumbUri);
         shareParams.setUrl(storyUrl);
         shareParams.setTitle(storyNameEdit.getText().toString());
-        shareParams.setText(storyNameEdit.getText().toString() + ":" + storyUrl);
+        shareParams.setText(storyDescEdit.getText().toString());
         shareParams.setShareType(Platform.SHARE_WEBPAGE);
         startShare(WechatMoments.NAME, shareParams);
 
@@ -217,7 +217,7 @@ public class StoryReleaseActivity extends BaseActivity {
         shareParams.setImageUrl(storyEntity.storyThumbUri);
         shareParams.setUrl(storyUrl);
         shareParams.setTitle(storyNameEdit.getText().toString());
-        shareParams.setText(storyUrl);
+        shareParams.setText(storyDescEdit.getText().toString());
         shareParams.setShareType(Platform.SHARE_WEBPAGE);
         startShare(Wechat.NAME, shareParams);
     }
@@ -233,15 +233,11 @@ public class StoryReleaseActivity extends BaseActivity {
     @OnClick(R.id.story_release_linkedin)
     @SuppressWarnings("unused")
     protected void doShare2LinkedIn() {
-
         LinkedIn.ShareParams shareParams = new LinkedIn.ShareParams();
         shareParams.setTitle(storyNameEdit.getText().toString());
         shareParams.setTitleUrl(storyUrl);
-
         shareParams.setImageUrl(storyEntity.storyThumbUri);
-
         shareParams.setText(storyUrl);
-
         startShare(LinkedIn.NAME, shareParams);
     }
 
@@ -250,7 +246,6 @@ public class StoryReleaseActivity extends BaseActivity {
     protected void doShare2Facebook() {
         Facebook.ShareParams shareParams = new Facebook.ShareParams();
         shareParams.setImageUrl(storyEntity.storyThumbUri);
-
         shareParams.setText(storyUrl);
         startShare(Facebook.NAME, shareParams);
     }
@@ -261,7 +256,6 @@ public class StoryReleaseActivity extends BaseActivity {
         FacebookMessenger.ShareParams shareParams = new FacebookMessenger.ShareParams();
         shareParams.setAddress(UserLogic.instance().getUserInfoFromLocal().user_email);
         shareParams.setImageUrl(storyEntity.storyThumbUri);
-
         shareParams.setTitle(storyEntity.storyName);
         shareParams.setText(storyUrl);
         startShare(FacebookMessenger.NAME, shareParams);
@@ -273,7 +267,6 @@ public class StoryReleaseActivity extends BaseActivity {
         GooglePlus.ShareParams shareParams = new GooglePlus.ShareParams();
         shareParams.setText(storyUrl);
         shareParams.setImageUrl(storyEntity.storyThumbUri);
-
         startShare(GooglePlus.NAME, shareParams);
     }
 
@@ -301,7 +294,6 @@ public class StoryReleaseActivity extends BaseActivity {
     @OnClick(R.id.story_release_sms)
     @SuppressWarnings("unused")
     protected void doShare2SMS() {
-
         ShortMessage.ShareParams shareParams = new ShortMessage.ShareParams();
         shareParams.setTitle(storyNameEdit.getText().toString());
         shareParams.setText(storyUrl);
@@ -334,18 +326,19 @@ public class StoryReleaseActivity extends BaseActivity {
             @Override
             public void onComplete(Platform platform, int i, HashMap<String, Object> hashMap) {
                 Log.e(TAG, "平台名称:" + platName + "分享成功");
+                showToast(platName + "分享成功");
             }
 
             @Override
             public void onError(Platform platform, int i, Throwable throwable) {
                 Log.e(TAG, "平台名称:" + platName + "分享失败:" + throwable.getMessage());
-
+                showToast(platName + "分享失败");
             }
 
             @Override
             public void onCancel(Platform platform, int i) {
                 Log.e(TAG, "平台名称:" + platName + "分享取消");
-
+                showToast(platName + "分享取消");
             }
         });
         platform.share(shareParams);
