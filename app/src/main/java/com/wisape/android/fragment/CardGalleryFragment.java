@@ -475,23 +475,33 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
             if (ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE.equals(storyEntity.status)) {
                 holder.mTextStoryState.setText("已发布");
             }
-            String imgPath = storyEntity.storyThumbUri;
-            if (imgPath.contains("http")) {
-                Picasso.with(getActivity()).load(imgPath)
-                        .placeholder(R.mipmap.icon_camera)
-                        .error(R.mipmap.icon_login_email)
-                        .fit()
-                        .centerCrop()
-                        .into(holder.mStoryBg);
-            } else {
-                Picasso.with(getActivity()).load(new File(imgPath))
+            File storyDirectory = new File(StoryManager.getStoryDirectory(), storyEntity.storyLocal);
+            File coverFile = new File (storyDirectory, "cover.jpg");
+            if (coverFile.exists()){
+                Picasso.with(getActivity()).load(coverFile)
                         .fit()
                         .centerCrop()
                         .placeholder(R.mipmap.icon_camera)
                         .error(R.mipmap.icon_login_email)
                         .into(holder.mStoryBg);
+            }else{
+                String imgPath = storyEntity.storyThumbUri;
+                if (imgPath.contains("http")) {
+                    Picasso.with(getActivity()).load(imgPath)
+                            .placeholder(R.mipmap.icon_camera)
+                            .error(R.mipmap.icon_login_email)
+                            .fit()
+                            .centerCrop()
+                            .into(holder.mStoryBg);
+                } else {
+                    Picasso.with(getActivity()).load(new File(imgPath))
+                            .fit()
+                            .centerCrop()
+                            .placeholder(R.mipmap.icon_camera)
+                            .error(R.mipmap.icon_login_email)
+                            .into(holder.mStoryBg);
+                }
             }
-
             holder.imageShare.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

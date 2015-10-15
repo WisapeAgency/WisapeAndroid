@@ -97,7 +97,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
     private static final String EXTRA_CATEGORY_ID = "extra_category_id";
     private static final String EXTRA_TEMPLATE_ID = "extra_template_id";
     private static final String EXTRA_FONT_NAME = "extra_font_name";
-    private static final String EXTRA_STORY_ID = "extra_story_id";
+    private static final String EXTRA_STORY_THUMB = "extra_story_thumb";
     private static final String EXTRA_STORY_HTML = "extra_story_html";
     private static final String EXTRA_FILE_PATH = "extra_file_path";
 
@@ -180,26 +180,26 @@ public class StoryTemplatePlugin extends AbsPlugin {
             startLoad(WHAT_DOWNLOAD_FONT, bundle);
         } else if (ACTION_SAVE.equals(action)) {//save
             Bundle bundle = new Bundle();
-            if (null != args && args.length() == 2) {
-//                bundle.putInt(EXTRA_STORY_ID, args.optInt(0));//story_id
-                bundle.putString(EXTRA_STORY_HTML, args.getString(0));
-                bundle.putString(EXTRA_FILE_PATH, args.getString(1));
+            if (null != args && args.length() == 3) {
+                bundle.putString(EXTRA_STORY_THUMB, args.getString(0));
+                bundle.putString(EXTRA_STORY_HTML, args.getString(1));
+                bundle.putString(EXTRA_FILE_PATH, args.getString(2));
             }
             startLoad(WHAT_SAVE, bundle);
         } else if (ACTION_PREVIEW.equals(action)) {//preview
             Bundle bundle = new Bundle();
-            if (null != args && args.length() == 2) {
-//                bundle.putInt(EXTRA_STORY_ID, args.optInt(0));//story_id
-                bundle.putString(EXTRA_STORY_HTML, args.getString(0));
-                bundle.putString(EXTRA_FILE_PATH, args.getString(1));
+            if (null != args && args.length() == 3) {
+                bundle.putString(EXTRA_STORY_THUMB, args.getString(0));
+                bundle.putString(EXTRA_STORY_HTML, args.getString(1));
+                bundle.putString(EXTRA_FILE_PATH, args.getString(2));
             }
             startLoad(WHAT_PREVIEW, bundle);
         } else if (ACTION_PUBLISH.equals(action)) {//publish
             Bundle bundle = new Bundle();
-            if (null != args && args.length() == 2) {
-//                bundle.putInt(EXTRA_STORY_ID, args.optInt(0));//story_id
-                bundle.putString(EXTRA_STORY_HTML, args.getString(0));
-                bundle.putString(EXTRA_FILE_PATH, args.getString(1));
+            if (null != args && args.length() == 3) {
+                bundle.putString(EXTRA_STORY_THUMB, args.getString(0));
+                bundle.putString(EXTRA_STORY_HTML, args.getString(1));
+                bundle.putString(EXTRA_FILE_PATH, args.getString(2));
             }
             showProgressDialog();
             startLoad(WHAT_PUBLISH, bundle);
@@ -307,6 +307,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 break;
             }
             case WHAT_SAVE: {
+                String storyThumb = args.getString(EXTRA_STORY_THUMB);
                 String html = args.getString(EXTRA_STORY_HTML);
                 String path = args.getString(EXTRA_FILE_PATH);
                 com.alibaba.fastjson.JSONArray paths = JSON.parseArray(path);
@@ -323,7 +324,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 StoryLogic.instance().saveStoryEntityToShare(storyEntity);
                 sendBroadcastUpdateStory();
 
-                if (!saveStory(myStory, html, paths)) {
+                if (!saveStory(myStory,story,storyThumb, html, paths)) {
                     callbackContext.error(-1);
                     return null;
                 }
@@ -332,7 +333,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 break;
             }
             case WHAT_PREVIEW: {
-//                int storyId = args.getInt(EXTRA_STORY_ID, 0);
+                String storyThumb = args.getString(EXTRA_STORY_THUMB);
                 String html = args.getString(EXTRA_STORY_HTML);
                 String path = args.getString(EXTRA_FILE_PATH);
                 com.alibaba.fastjson.JSONArray paths = JSON.parseArray(path);
@@ -349,7 +350,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
 
                 sendBroadcastUpdateStory();
 
-                if (!saveStory(myStory, html, paths)) {
+                if (!saveStory(myStory,story,storyThumb, html, paths)) {
                     callbackContext.error(-1);
                     return null;
                 }
@@ -363,6 +364,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 break;
             }
             case WHAT_PUBLISH: {
+                String storyThumb = args.getString(EXTRA_STORY_THUMB);
                 String html = args.getString(EXTRA_STORY_HTML);
                 String path = args.getString(EXTRA_FILE_PATH);
                 com.alibaba.fastjson.JSONArray paths = JSON.parseArray(path);
@@ -371,7 +373,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 if (!myStory.exists()) {
                     myStory.mkdirs();
                 }
-                if (!saveStory(myStory, html, paths)) {
+                if (!saveStory(myStory,story,storyThumb, html, paths)) {
                     callbackContext.error(-1);
                     return null;
                 }
@@ -427,7 +429,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
         closeProgressDialog();
     }
 
-    private boolean saveStory(File myStory, String html, com.alibaba.fastjson.JSONArray paths) {
+    private boolean saveStory(File myStory, StoryEntity story, String storyThumb, String html, com.alibaba.fastjson.JSONArray paths) {
         for (int i = 0; i < paths.size(); i++) {
             String path = paths.getString(i);
             System.out.println("saveStory:" + path);
@@ -454,7 +456,12 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 writer.close();
             }
         }
+        try{
+            FileUtils.copyFile(new File(storyThumb),
+                    new File(StoryManager.getStoryDirectory(), story.storyLocal + "/cover.jpg"));
+        }catch (IOException e){
 
+        }
         File storyImg = new File(myStory, DIR_NAME_IMAGE);
         if (!storyImg.exists()) {
             storyImg.mkdirs();
