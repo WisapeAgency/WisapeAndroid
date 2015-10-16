@@ -36,10 +36,49 @@
             });
         });
     };
+
+
+
+
     //document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
     document.addEventListener("deviceready", function(){
         console.log('Device is Ready!');
 
+
+        //设置日志定时器
+        var loggerTimer = setInterval(function(){
+            //调用接口
+            //if(WisapeEditer.loggerStr.length == 0) {
+            //    console.info("日志未变化");
+            //    return
+            //}
+            //console.info("调用接口:");
+            //console.info("调用接口:" + WisapeEditer.loggerStr);
+            //cordova.exec(function(retval) {
+            //}, function(e) {
+            //}, "Logger", "log", [WisapeEditer.loggerStr]);
+
+            WisapeEditer.loggerStr == "";
+        },1000*10);
+
+        (function (doc, win) {
+
+            var docEl = doc.documentElement,
+                resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+                recalc = function () {
+                    var clientWidth = docEl.clientWidth;
+                    if (!clientWidth) return;
+                    docEl.style.fontSize = 20 * (clientWidth / 320) + 'px';
+
+                    console.info("html font-size:" + clientWidth);
+                    console.info("html font-size:" + $('body').width());
+                    console.info("html font-size:" + (20 * (clientWidth / 320) + 'px'));
+                };
+            recalc();
+            //if (!doc.addEventListener) return;
+            //win.addEventListener(resizeEvt, recalc, false);
+            //doc.addEventListener('DOMContentLoaded', recalc, false);
+        })(document, window);
 
         WisapeEditer.GetNativeData("checkInitState",[],function(data){
             console.info(data);
@@ -48,3 +87,23 @@
     }, false);
 
 })();
+
+
+function CurentTime()
+{
+    var date = new Date();
+    var seperator1 = "-";
+    var seperator2 = ":";
+    var month = date.getMonth() + 1;
+    var strDate = date.getDate();
+    if (month >= 1 && month <= 9) {
+        month = "0" + month;
+    }
+    if (strDate >= 0 && strDate <= 9) {
+        strDate = "0" + strDate;
+    }
+    var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate
+        + " " + date.getHours() + seperator2 + date.getMinutes()
+        + seperator2 + date.getSeconds();
+    return currentdate;
+}

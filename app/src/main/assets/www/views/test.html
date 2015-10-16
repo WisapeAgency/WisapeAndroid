@@ -6,12 +6,11 @@
     <meta name="format-detection" content="telephone=no"/>
     <link href="../public/css/reset.css" rel="stylesheet"/>
     <link href="../public/css/layout.css" rel="stylesheet"/>
-    <link href="../public/css/font.css" rel="stylesheet"/>
     <link href="../public/css/animation.css" rel="stylesheet"/>
     <link href="../public/css/editor_index.css" rel="stylesheet"/>
 </head>
 <body>
-<div class="loading" style="display:none;position: fixed;left:0;top:0;bottom:0;right:0;background-image:url(../public/img/loading.gif);background-position:50% 50%;background-size:cover;z-index: 10000">
+<div class="loading" style="display:block;position: fixed;left:0;top:0;bottom:0;right:0;background-image:url(../public/img/loading.gif);background-position:50% 50%;background-size:cover;z-index: 10000">
 </div>
 <div id="main" class="page" style="display: block">
     <div class="header">
@@ -38,20 +37,29 @@
     </div>
     <div class="pages" id="pages-scroll" >
         <ul>
-            <li class="active">
-                <div class="count">1/2</div>
-                <div class="stage-content edit-area pages-img pages-img-bg" style=" display: box;display: -webkit-box;display: -moz-box;-webkit-box-pack:center;-moz-box-pack:center;-webkit-box-align:center;-moz-box-align:center;background: url(img/bg.jpg);background-size: cover;background-position:50% 50%;width:100%;height:100%;position: relative;">
-                    <div class="symbol" style="display:inline-block;position:absolute;left:10px;top:10px;">
-                        <div class="pages-img edit-area"><img data-name="img1" style="" width="50" height="50"
-                                                              src="img/icon-earth.png"/></div>
-                    </div>
-                    <div class="symbol" style="z-index: 3;vertical-align:middle;">
-                        <div class="pages-txt edit-area" data-animation="animated slideInUp"
-                             style="width:80%;color:#fff;font-size:22px;text-align:center;color:red;">asdfasdasfadsfasdf As c update of the classictranslation corpus, the combination of
-                        </div>
-                    </div>
-                </div>
-            </li>
+            <!--<li class="active">-->
+            <!--<div class="stage-content edit-area pages-img pages-img-bg"-->
+            <!--style="background-image: url(/mnt/sdcard/wisape/com.wisape.android/data/template/dddddddddddd/img/bg.jpg);background-size: cover;background-position:50% 50%;width:100%;height:100%;">-->
+            <!--<div class="symbol" style="background:red;">-->
+            <!--<div class="pages-img edit-area"><img data-name="img1" style=""-->
+            <!--src="/mnt/sdcard/wisape/com.wisape.android/data/template/dddddddddddd/img/icon-earth.png"/-->
+            <!--width="50" height="50">-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--<div class="symbol" style="background: green;">-->
+            <!--<div class="pages-img edit-area"><img data-name="img1" style=""-->
+            <!--src="/mnt/sdcard/wisape/com.wisape.android/data/template/dddddddddddd/img/icon-earth.png"/-->
+            <!--width="50" height="50">-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--<div class="symbol" style="z-index: 3;">-->
+            <!--<div class="pages-txt edit-area"-->
+            <!--style="margin:70px auto;width:150px;color:#fff;text-align: center;">As c update of the-->
+            <!--classictranslation corpus, the combination of network technology and language essence-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--</li>-->
         </ul>
     </div>
     <span class="icon-add-stage" id="AddNewStage"></span>
@@ -70,17 +78,18 @@
         </div>
     </div>
     <div class="pages editable">
-        <div class="stage-content edit-area pages-img pages-img-bg" style="background: url(img/bg.jpg);background-size: cover;background-position:50% 50%;width:100%;height:100%;">
-            <div class="symbol"  style="display:inline-block;">
-                <div class="pages-img edit-area"><img data-name="img1" style="" width="50" height="50" src="img/icon-earth.png"/></div>
-            </div>
-            <div class="symbol" style="z-index: 3;">
-                <div class="pages-txt edit-area" data-animation="animated slideInUp" style="word-break: break-word;margin:20% 10% 0 10%;width:80%;color:#fff;text-align: center;font-size:20px;">asdfasion of network technology and language essenceasdfaAs c update of the classictranslation corpus, the combination of network technology and language essencAs c update of the classictranslation corpus, the combination of network technology and language essence
-                </div>
-            </div>
-        </div>
+        <!--<div class="tpl-item" style="background: url(../public/img/temp/stage_example.jpg);background-size: 100% 100%;">-->
+        <!--<div id="test" class="pages-txt selected" contenteditable="true" style="margin:70px auto;width:150px;color:#fff;text-align: left;background:rgba(0,0,0,0.5);">As c update of the classic translation corpus, the combination of network technology and language essence</div>-->
+        <!--</div>-->
     </div>
-    <div class="pop-layer pop-editer-opt" style="display: block">
+
+
+    <div class="pop-layer pop-editer-text" style="display: none">
+        <textarea class="textarea-word J-textarea-word" name="" id="textarea" rows="1" ></textarea>
+        <span class="btn-text-done J-btn-text-done">Done</span>
+    </div>
+
+    <div class="pop-layer pop-editer-opt" style="display: none">
         <div class="hd">
             <i class="icon-bold" id="setFontWeight" ></i>
             <i class="icon-italic" id="setFontStyle"></i>
@@ -131,6 +140,7 @@
             <span class="anim-item"><i data-animation="bounce"  class="icon-bounce"></i></span>
             <span class="anim-item"><i data-animation="bounceInDown"  class="icon-tanru-from-top"></i></span>
             <span class="anim-item"><i data-animation="rotateIn"  class="icon-rotation"></i></span>
+            <span class="anim-item"><i data-animation="rotateIn"  class="icon-rtol"></i></span>
         </div>
     </div>
 
@@ -248,19 +258,20 @@
     </div>
 </div>
 
-<!--<script src="../public/js/cordova.js"></script>-->
-<!--<script type="text/javascript" charset="utf-8" src="cordova.file.js"></script>-->
+<script src="../public/js/cordova.js"></script>
+<script type="text/javascript" charset="utf-8" src="cordova.file.js"></script>
 <script src="../public/js/jquery2.1.4.min.js"></script>
-<!--<script src="../public/js/fastclick.js"></script>-->
+<script src="../public/js/fastclick.js"></script>
 
 <script src="../public/js/template.js"></script>
 <script src="../public/js/hammer.min.js"></script>
-<script src="../public/js/iscroll-lite.js"></script>
+<script src="../public/js/iScroll-5.1.2-wids.js"></script>
 <script src="../public/js/animation.js"></script>
 
-<!--<script src="../public/js/app-main.js"></script>-->
+<script src="../public/js/app-main.js"></script>
 <script src="../public/js/common.js"></script>
 <script src="../public/js/Sortable.js"></script>
+<!--<script src="../public/js/html2canvas.min.js"></script>-->
 <script type="text/javascript">
     function test(args){
         /**
@@ -347,7 +358,6 @@
         console.dir(JSON.stringify(path));
         target.find(".download-progress-bar").hide();
         target.attr({"data-path":path.path});
-        console.info("firstTplDown: " + firstTplDown);
         firstTplDown = true;
     }
     function onError(){
@@ -395,18 +405,18 @@
         });
 
         console.info("phy save!!!")
-        WisapeEditer.GetNativeData("save", [retHtml, retImg], function () {
+        WisapeEditer.GetNativeData("save", [retImg[0],retHtml, retImg], function () {
             console.info(type + " done!!!");
         })
     }
 
-    myScroll.on("scrollStart",function(){console.info("scrollStart");});
-    myScroll.on("scrollStart",function(){console.info("scrollStart");});
-    myScroll.on("scrollMove",function(){console.info("scrollMove");});
-    myScroll.on("beforeScrollMove",function(){console.info("onBeforeScrollMove");});
-    myScroll.on("beforeScrollEnd",function(){console.info("beforeScrollEnd");});
-    myScroll.on("scrollEnd",function(){console.info("scrollEnd");});
 
+    function openURL(){
+        console.info("href");
+        cordova.exec(function() {
+        }, function(e) {
+        }, "StoryTemplate", "openLink", ["http://www.baidu.com"]);
+    }
 
 
 
@@ -414,34 +424,7 @@
 <script>
     $(function(){
 
-        //FastClick.attach(document.body);
-
-
-        var target = $("#editorText .pages-txt.active");
-        var fontSizeLim = [14,30];
-
-        $(".J-font-resize .opt-right").delegate("span","click",function(){
-            var me = $(this);
-            var curFontSize = parseInt(target.css("fontSize"));
-            console.info(curFontSize);
-            if(me.hasClass("J-font-reduce")) {
-                curFontSize--;
-                if(curFontSize < fontSizeLim[0]) {
-                    me.addClass("disable") ;
-                    return;
-                }
-            } else {
-                curFontSize++;
-                if(curFontSize > fontSizeLim[1]) {
-                    me.addClass("disable") ;
-                    return ;
-                }
-            }
-            if(curFontSize != fontSizeLim[0] && curFontSize != fontSizeLim[1]){
-                $(".J-font-resize .opt-right span").removeClass("disable");
-            }
-            target.css({"font-size": curFontSize + "px"});
-        })
+        FastClick.attach(document.body);
 
 
         var ColorArr = [
@@ -502,8 +485,6 @@
         })
 
     })
-
-
 </script>
 </body>
 </html>

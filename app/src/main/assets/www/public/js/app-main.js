@@ -13,6 +13,13 @@ WisapeEditer = {
 
     config : {},
 
+    loggerStr : "",
+
+    logger : function(type,line,str){
+        console.info(str);
+        this.loggerStr += CurentTime() + "WisapeEditer.logger " + line + "line " + ":" +str;
+    },
+
     Init: function () {
         var menuScroll = $("#menu-scroll"),
             catScroll = $("#cat-scroll"),
@@ -40,7 +47,8 @@ WisapeEditer = {
                 scrollX: true,
                 scrollY: false,
                 mouseWheel: true,
-                preventDefault: false
+                preventDefault: false,
+                click : true
             });
             $("#menu-scroll").find("li").eq(0).addClass("active");
 
@@ -59,6 +67,8 @@ WisapeEditer = {
     },
 
     LoadDefaultData : function(data){
+
+
 
         var firstPageData = data;
         console.info("firstPageData:" + firstPageData);
@@ -109,13 +119,7 @@ WisapeEditer = {
             WisapeEditer.currentTplData = ret[0];
             WisapeEditer.LoadStageList(ret, function () {
                 console.info("loadStageList succ");
-                set_wrap_width($("#pages-scroll"));
-                $("#pages-scroll").iScroll({
-                    scrollX: true,
-                    scrollY: false,
-                    mouseWheel: true,
-                    preventDefault: false
-                });
+                setPagesScroll();
                 $(".loading").hide();
             });
             setTimeout(function () {
@@ -215,7 +219,7 @@ WisapeEditer = {
                 type = "preview";
             }
 
-            WisapeEditer.GetNativeData(type, [retHtml, retImg], function () {
+            WisapeEditer.GetNativeData(type, [retImg[0],retHtml, retImg], function () {
                 console.info(type + " done!!!");
             })
 
@@ -245,11 +249,9 @@ WisapeEditer = {
             $("#pageScroll li").find(".ico-acitve").remove();
             $("#pageScroll li").find(".count").remove();
             var retHtml = "";
-            var computedHeight = parseInt($(document).width() / 3 * 1.67);
             console.info($(document).width());
-            console.info(computedHeight);
             for (var i in WisapeEditer.storyData) {
-                retHtml += '<li class="tpl-page-item" draggable="false" style="height:' + computedHeight + 'px"><span class="drag-handle">☰</span><i class="icon-correct"></i>' + WisapeEditer.storyData[i] + '</li>';
+                retHtml += '<li class="tpl-page-item" draggable="false"><span class="drag-handle">☰</span><i class="icon-correct"></i>' + WisapeEditer.storyData[i] + '</li>';
             };
             $("#storyDragBox").html(retHtml);
 
@@ -307,8 +309,10 @@ WisapeEditer = {
             console.info(!_me.hasClass("tpl-exist"));
             if (!_me.hasClass("tpl-exist")) {
                 console.info("down");
-                _me.addClass("tpl-exist");
+                catScroll.find("li").addClass("tpl-exist");
                 WisapeEditer.GetNativeData("start", [parseInt(_me.data("id")), parseInt(_me.data("type"))], function (data) {
+                    //console.info("addclass tpl-exist")
+                    //catScroll.find("li").addClass("tpl-exist");
                 });
             } else {
                 console.info("read:");
@@ -384,6 +388,7 @@ WisapeEditer = {
             console.info("index:" + _me.parents(".stage-content").find(".edit-area.active"));
             WisapeEditer.UpdateSelectedStage(WisapeEditer.selectedStagetIndex);
             WisapeEditer.ShowView('main', 'editorText');
+            $("#editorText .pages-txt.active").click();
             event.stopPropagation();
         });
 
@@ -423,13 +428,7 @@ WisapeEditer = {
 
             pageScroll.find("li").removeClass("active").find(".pages-img,.pages-txt").removeClass("active");
             target.after('<li class="active"><span class="count">' + WisapeEditer.selectedStagetIndex++ + '/' + WisapeEditer.storyData.length + '</span>' + WisapeEditer.currentTplData + '</li>');
-            set_wrap_width(pageScroll);
-            pageScroll.iScroll({
-                scrollX: true,
-                scrollY: false,
-                mouseWheel: true,
-                preventDefault: false
-            });
+            setPagesScroll();
             pageScroll.find("li").each(function (i) {
                 var me = $(this);
                 me.find(".count").html((i + 1) + "/" + WisapeEditer.storyData.length);
@@ -439,9 +438,11 @@ WisapeEditer = {
         //文本编辑事件
         $("#editorText .backToMain").click(function () {//返回主界面，并保存
 
+            preAnimation = "";
+
             var pagesScroll = $("#pages-scroll li").eq(WisapeEditer.selectedStagetIndex - 1);
             var editPage = $("#editorText .pages");
-            editPage.find(".pages-txt").removeAttr("contenteditable").removeClass(preAnimation);
+            editPage.find(".pages-txt").removeClass(preAnimation);
             console.info(preAnimation);
             editPage.find(".pages-txt").removeClass(preAnimation);
             console.info(editPage.find(".pages-txt").parent().html());
@@ -455,7 +456,12 @@ WisapeEditer = {
             console.info("WisapeEditer.storyData:");
             console.info(WisapeEditer.storyData);
 
+
+
             WisapeEditer.ShowView('editorText', 'main');
+
+
+            setPagesScroll();
 
         })
 
@@ -469,6 +475,7 @@ WisapeEditer = {
                 parent.find(".pop-layer").hide();
             } else {
                 me.addClass("active");
+                $(".pop-editer-text").hide();
                 parent.addClass("pop-active");
                 target.show();
             }
@@ -501,6 +508,56 @@ WisapeEditer = {
         });
 
 
+        //文字编辑
+        $("#editorText").delegate(".pages-txt.active","click",function(){
+            console.info("#editorText .pages-txt.active click");
+            if($("#TextEditerOpt").hasClass("active"))  $("#TextEditerOpt").click();
+            $(".pop-editer-text").show();
+            $(".J-textarea-word").val($(this).text()).focus();
+            wordEditResize();
+
+        })
+        $(".J-btn-text-done").click(function(){
+            $("#editorText .pages-txt.active").html($(".textarea-word").val());
+            console.info(".J-textarea-word:" + $(".textarea-word").val());
+        });
+
+        var observe;
+        if (window.attachEvent) {
+            observe = function (element, event, handler) {
+                element.attachEvent('on'+event, handler);
+            };
+        }
+        else {
+            observe = function (element, event, handler) {
+                element.addEventListener(event, handler, false);
+            };
+        };
+        wordEditInit();
+        function wordEditInit () {
+            console.info("wordEditInit");
+            var text = $('.J-textarea-word')[0];
+            /* 0-timeout to get the already changed text */
+            function delayedResize () {
+                window.setTimeout(wordEditResize, 0);
+            }
+
+
+            observe(text, 'change',  wordEditResize);
+            observe(text, 'cut',     delayedResize);
+            observe(text, 'paste',   delayedResize);
+            observe(text, 'drop',    delayedResize);
+            observe(text, 'keydown', delayedResize);
+            text.focus();
+            text.select();
+            wordEditResize();
+        };
+        function wordEditResize(){
+            var text = $('.J-textarea-word')[0];
+            console.info("wordEditResize()");
+            text.style.height = 'auto';
+            text.style.height = text.scrollHeight+'px';
+        }
 
         $(".J-font-resize .opt-right").delegate("span","click",function(){
             var target = $("#editorText .pages-txt.active");
@@ -525,7 +582,7 @@ WisapeEditer = {
                 $(".J-font-resize .opt-right span").removeClass("disable");
             }
             target.css({"font-size": curFontSize + "px"});
-        })
+        });
 
         $("#setFontLink").click(function () {
             var me = $(this);
@@ -536,7 +593,7 @@ WisapeEditer = {
             if (me.hasClass("active")) {
                 me.removeClass("active");
                 hrefDialog.find(".input-href input").val("http://");
-                target.removeAttr("data-href");
+                target.removeAttr("data-href").removeClass("font-link");
 
             } else {
                 mask.show();
@@ -552,7 +609,7 @@ WisapeEditer = {
                     hrefDialog.hide();
                     if (link == "http://" || link == "") return false;
                     me.addClass("active");
-                    target.attr({"data-href" : link });
+                    target.attr({"data-href" : link }).addClass("font-link");
                 });
             }
             console.info(target.attr("data-href"));
@@ -645,7 +702,8 @@ WisapeEditer = {
                 scrollX: true,
                 scrollY: false,
                 mouseWheel: true,
-                preventDefault: false
+                preventDefault: false,
+                click : true
             });
             catScroll.find("li").eq(0).addClass("active");
             if (cb !== null)cb();
@@ -665,14 +723,15 @@ WisapeEditer = {
         console.info($("#pages-scroll ul").html());
         if (cb !== null)cb();
 
-        set_wrap_width($("#pages-scroll"));
-        $("#pages-scroll").iScroll({
-            scrollX: true,
-            scrollY: false,
-            mouseWheel: true,
-            preventDefault: false
-        });
+        //set_wrap_width($("#pages-scroll"));
+        //$("#pages-scroll").iScroll({
+        //    scrollX: true,
+        //    scrollY: false,
+        //    mouseWheel: true,
+        //    preventDefault: false
+        //});
 
+        setPagesScroll();
     },
 
     //更新选中的主界面的stage
@@ -682,7 +741,7 @@ WisapeEditer = {
             editPage = $("#editorText .pages");
 
         //替换html
-        editPage.html(curPage.html()).find(".edit-area.active").attr({"contenteditable": "true"});
+        editPage.html(curPage.html());
         console.info("contenteditable:" + editPage.html());
         var curTxt = editPage.find(".edit-area.active"),
             curAnimation = "",
@@ -835,4 +894,34 @@ function rgb2hex(rgb) {
     var decimal = Number(ds[1]) * 65536 + Number(ds[2]) * 256 + Number(ds[3]);
     return "#" + zero_fill_hex(decimal, 6);
 }
+
+
+function setPagesScroll() {
+    set_wrap_width($("#pages-scroll"));
+    $("#pages-scroll").iScroll({
+        scrollX: true,
+        scrollY: false,
+        mouseWheel: true,
+        preventDefault: false
+    });
+
+    //set_wrap_width($("#pages-scroll"));
+    //var  myScroll = new IScroll('#pages-scroll', { scrollX: true, scrollY: false,click : true});
+    //var scrollLimt = parseInt($("body").width())*0.7
+    ////myScroll.on("scrollMove",setScrollActive);
+    //myScroll.on("scrollEnd",setScrollActive);
+    //function setScrollActive(){
+    //    console.info(myScroll.x);
+    //    console.info($("#pages-scroll").width());
+    //    if(myScroll.x == 0 ){
+    //        $("#pages-scroll li").removeClass("active").eq(0).addClass("active");
+    //    } else {
+    //        $("#pages-scroll li").removeClass("active").eq(parseInt(Math.abs(myScroll.x/scrollLimt)) + 1).addClass("active");
+    //    }
+    //}
+}
+
+
+
+
 

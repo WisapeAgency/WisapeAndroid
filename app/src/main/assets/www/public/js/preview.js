@@ -37,7 +37,11 @@ $(function(){
 
         console.info("href click:");
         console.info($(this).attr("data-href"));
-        window.location.href = $(this).attr("data-href");
+        var url = $(this).attr("data-href");
+
+        cordova.exec(function() {
+        }, function(e) {
+        }, "StoryTemplate", "openLink", [url]);
     })
 })
 
@@ -56,7 +60,22 @@ var lanren = {
             : ids.play();
     },
     play:function(){
-        document.getElementById('media').play();
+        $("#media").length && document.getElementById('media').play();
     }
 };
 lanren.play();
+
+(function (doc, win) {
+
+    var docEl = doc.documentElement,
+        recalc = function () {
+            var clientWidth = docEl.clientWidth;
+            if (!clientWidth) return;
+            docEl.style.fontSize = 20 * (clientWidth / 320) + 'px';
+
+            console.info("html font-size:" + clientWidth);
+            console.info("html font-size:" + $('body').width());
+            console.info("html font-size:" + (20 * (clientWidth / 320) + 'px'));
+        };
+    recalc();
+})(document, window);

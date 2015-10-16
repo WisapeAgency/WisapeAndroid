@@ -6,14 +6,13 @@
     <meta name="format-detection" content="telephone=no"/>
     <link href="../public/css/reset.css" rel="stylesheet"/>
     <link href="../public/css/layout.css" rel="stylesheet"/>
-    <link href="../public/css/font.css" rel="stylesheet"/>
     <link href="../public/css/animation.css" rel="stylesheet"/>
     <link href="../public/css/editor_index.css" rel="stylesheet"/>
 </head>
 <body>
 <div class="loading" style="position: fixed;left:0;top:0;bottom:0;right:0;background-image:url(../public/img/loading.gif);background-position:50% 50%;background-size:cover;z-index: 10000">
 </div>
-<div id="main" class="page">
+<div id="main" class="page" style="display: block">
     <div class="header">
         <div class="pull-left">
             <a class="icon-arrow-left" id="storySave"></a>
@@ -83,6 +82,14 @@
         <!--<div id="test" class="pages-txt selected" contenteditable="true" style="margin:70px auto;width:150px;color:#fff;text-align: left;background:rgba(0,0,0,0.5);">As c update of the classic translation corpus, the combination of network technology and language essence</div>-->
         <!--</div>-->
     </div>
+
+
+    <div class="pop-layer pop-editer-text" style="display: none">
+        <textarea class="textarea-word J-textarea-word" name="" id="textarea" rows="1" ></textarea>
+        <!--<span class="btn-text-del J-btn-text-del">del</span>-->
+        <span class="btn-text-done J-btn-text-done">Done</span>
+    </div>
+
     <div class="pop-layer pop-editer-opt" style="display: none">
         <div class="hd">
             <i class="icon-bold" id="setFontWeight" ></i>
@@ -134,6 +141,7 @@
             <span class="anim-item"><i data-animation="bounce"  class="icon-bounce"></i></span>
             <span class="anim-item"><i data-animation="bounceInDown"  class="icon-tanru-from-top"></i></span>
             <span class="anim-item"><i data-animation="rotateIn"  class="icon-rotation"></i></span>
+            <span class="anim-item"><i data-animation="rotateIn"  class="icon-rtol"></i></span>
         </div>
     </div>
 
@@ -258,7 +266,7 @@
 
 <script src="../public/js/template.js"></script>
 <script src="../public/js/hammer.min.js"></script>
-<script src="../public/js/iscroll-lite.js"></script>
+<script src="../public/js/iScroll-5.1.2-wids.js"></script>
 <script src="../public/js/animation.js"></script>
 
 <script src="../public/js/app-main.js"></script>
@@ -411,7 +419,7 @@
 <script>
     $(function(){
 
-        //FastClick.attach(document.body);
+        FastClick.attach(document.body);
 
 
         var ColorArr = [

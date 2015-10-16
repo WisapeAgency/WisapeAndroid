@@ -210,7 +210,10 @@ function page_touchend(e){
 				}
 
 				console.info("success");
-				me.find(".pages-txt").addClass($(".pages-txt").data("animation"));
+				me.find(".pages-txt").each(function(){
+					var _this = $(this);
+					_this.addClass(_this.data("animation"));
+				})
 			})
 			//返回页面(移动失败)
 		}else if (Math.abs(moveP) >=5){	//页面退回去
