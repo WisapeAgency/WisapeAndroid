@@ -687,7 +687,7 @@ public class StoryLogic {
 
         StoryEntity defaultStoryEntity = getDefaultStoryEntity();
 
-        if (null == defaultStoryEntity && storyLocalEntityList.size() == 0) {
+        if (null == defaultStoryEntity) {
             defaultStoryEntity  = new StoryEntity();
             defaultStoryEntity.status = ApiStory.AttrStoryInfo.STORY_DEFAULT;
             defaultStoryEntity.storyLocal = Utils.acquireUTCTimestamp();
@@ -695,18 +695,18 @@ public class StoryLogic {
             defaultStoryEntity.storyName = "default";
             defaultStoryEntity.storyThumbUri = new File(StoryManager.getStoryDirectory(),defaultStoryEntity.storyLocal + "/thumb.jpg").getAbsolutePath();
             defaultStoryEntity = addDefaultStory(defaultStoryEntity);
+        }
 
-            storyEntitYList.add(0, defaultStoryEntity);
-            try {
-                FileUtils.unZip(WisapeApplication.getInstance().getApplicationContext(), "default.zip"
-                        , StoryManager.getStoryDirectory().getAbsolutePath() +"/"+ defaultStoryEntity.storyLocal,
-                        true);
-                File storyFile = new File(StoryManager.getStoryDirectory(), defaultStoryEntity.storyLocal + "/story.html");
-                FileUtils.replacePath("CLIENT_DEFAULT_STORY_PATH",
-                        StoryManager.getStoryDirectory().getAbsolutePath() + "/" + defaultStoryEntity.storyLocal, storyFile);
-            } catch (IOException e) {
-                Log.e(TAG, e.getMessage());
-            }
+        storyEntitYList.add(0, defaultStoryEntity);
+        try {
+            FileUtils.unZip(WisapeApplication.getInstance().getApplicationContext(), "default.zip"
+                    , StoryManager.getStoryDirectory().getAbsolutePath() +"/"+ defaultStoryEntity.storyLocal,
+                    true);
+            File storyFile = new File(StoryManager.getStoryDirectory(), defaultStoryEntity.storyLocal + "/story.html");
+            FileUtils.replacePath("CLIENT_DEFAULT_STORY_PATH",
+                    StoryManager.getStoryDirectory().getAbsolutePath() + "/" + defaultStoryEntity.storyLocal, storyFile);
+        } catch (IOException e) {
+            Log.e(TAG, e.getMessage());
         }
 
         Message message = Message.obtain();

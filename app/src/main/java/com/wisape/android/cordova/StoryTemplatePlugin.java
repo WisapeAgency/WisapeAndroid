@@ -430,6 +430,9 @@ public class StoryTemplatePlugin extends AbsPlugin {
     }
 
     private boolean saveStory(File myStory, StoryEntity story, String storyThumb, String html, com.alibaba.fastjson.JSONArray paths) {
+       if(paths == null){
+           return true;
+       }
         for (int i = 0; i < paths.size(); i++) {
             String path = paths.getString(i);
             System.out.println("saveStory:" + path);

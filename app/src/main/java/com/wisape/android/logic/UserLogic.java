@@ -13,6 +13,7 @@ import com.wisape.android.http.HttpUrlConstancts;
 import com.wisape.android.http.OkhttpUtil;
 import com.wisape.android.model.UserInfo;
 import com.wisape.android.util.FileUtils;
+import com.wisape.android.util.LogUtil;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -97,6 +98,7 @@ public class UserLogic {
             message.arg1 = HttpUrlConstancts.STATUS_SUCCESS;
             message.obj = userInfo;
         } catch (IOException e) {
+            LogUtil.e("登录错误：",e);
             message.arg1 =  HttpUrlConstancts.STATUS_EXCEPTION;
             message.obj = e.getMessage();
         }
