@@ -73,6 +73,7 @@ public class StoryReleaseActivity extends BaseActivity {
     @InjectView(R.id.story_settings_cover_sdv)
     protected ImageView storyCoverView;
     private StoryEntity storyEntity;
+    private String thumbImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +90,13 @@ public class StoryReleaseActivity extends BaseActivity {
         storyDescEdit.setText(storyEntity.storyDesc);
         String uri = storyEntity.storyThumbUri;
         Utils.loadImg(this,uri,storyCoverView);
+        File storyDirectory = new File(StoryManager.getStoryDirectory(), storyEntity.storyLocal);
+        File coverFile = new File (storyDirectory, "cover.jpg");
+        if (coverFile.exists()){
+            thumbImage = coverFile.getAbsolutePath();
+        }else{
+            thumbImage = storyEntity.storyThumbUri;
+        }
         storyUrl = HttpUrlConstancts.SHARE_URL + storyEntity.storyServerId;
     }
 
@@ -201,7 +209,7 @@ public class StoryReleaseActivity extends BaseActivity {
     @SuppressWarnings("unused")
     protected void doShare2Moments() {
         WechatMoments.ShareParams shareParams = new WechatMoments.ShareParams();
-        shareParams.setImageUrl(storyEntity.storyThumbUri);
+        shareParams.setImageUrl(thumbImage);
         shareParams.setUrl(storyUrl);
         shareParams.setTitle(storyNameEdit.getText().toString());
         shareParams.setText(storyDescEdit.getText().toString());
@@ -214,7 +222,7 @@ public class StoryReleaseActivity extends BaseActivity {
     @SuppressWarnings("unused")
     protected void doShare2WeChat() {
         Wechat.ShareParams shareParams = new Wechat.ShareParams();
-        shareParams.setImageUrl(storyEntity.storyThumbUri);
+        shareParams.setImageUrl(thumbImage);
         shareParams.setUrl(storyUrl);
         shareParams.setTitle(storyNameEdit.getText().toString());
         shareParams.setText(storyDescEdit.getText().toString());
@@ -236,7 +244,7 @@ public class StoryReleaseActivity extends BaseActivity {
         LinkedIn.ShareParams shareParams = new LinkedIn.ShareParams();
         shareParams.setTitle(storyNameEdit.getText().toString());
         shareParams.setTitleUrl(storyUrl);
-        shareParams.setImageUrl(storyEntity.storyThumbUri);
+        shareParams.setImageUrl(thumbImage);
         shareParams.setText(storyUrl);
         startShare(LinkedIn.NAME, shareParams);
     }
@@ -245,7 +253,7 @@ public class StoryReleaseActivity extends BaseActivity {
     @SuppressWarnings("unused")
     protected void doShare2Facebook() {
         Facebook.ShareParams shareParams = new Facebook.ShareParams();
-        shareParams.setImageUrl(storyEntity.storyThumbUri);
+        shareParams.setImageUrl(thumbImage);
         shareParams.setText(storyUrl);
         startShare(Facebook.NAME, shareParams);
     }
@@ -255,7 +263,7 @@ public class StoryReleaseActivity extends BaseActivity {
     protected void doShare2Messenger() {
         FacebookMessenger.ShareParams shareParams = new FacebookMessenger.ShareParams();
         shareParams.setAddress(UserLogic.instance().getUserInfoFromLocal().user_email);
-        shareParams.setImageUrl(storyEntity.storyThumbUri);
+        shareParams.setImageUrl(thumbImage);
         shareParams.setTitle(storyEntity.storyName);
         shareParams.setText(storyUrl);
         startShare(FacebookMessenger.NAME, shareParams);
@@ -266,7 +274,7 @@ public class StoryReleaseActivity extends BaseActivity {
     protected void doShare2GooglePlus() {
         GooglePlus.ShareParams shareParams = new GooglePlus.ShareParams();
         shareParams.setText(storyUrl);
-        shareParams.setImageUrl(storyEntity.storyThumbUri);
+        shareParams.setImageUrl(thumbImage);
         startShare(GooglePlus.NAME, shareParams);
     }
 
@@ -274,7 +282,7 @@ public class StoryReleaseActivity extends BaseActivity {
     @SuppressWarnings("unused")
     protected void doShare2Twitter() {
         Twitter.ShareParams shareParams = new Twitter.ShareParams();
-        shareParams.setImageUrl(storyEntity.storyThumbUri);
+        shareParams.setImageUrl(thumbImage);
         shareParams.setText(storyUrl);
         startShare(Twitter.NAME, shareParams);
     }
@@ -285,7 +293,7 @@ public class StoryReleaseActivity extends BaseActivity {
     protected void doShare2Email() {
         Email.ShareParams shareParams = new Email.ShareParams();
         shareParams.setAddress(UserLogic.instance().getUserInfoFromLocal().user_email);
-        shareParams.setImageUrl(storyEntity.storyThumbUri);
+        shareParams.setImageUrl(thumbImage);
         shareParams.setTitle(storyEntity.storyName);
         shareParams.setText(storyUrl);
         startShare(Email.NAME, shareParams);
@@ -297,7 +305,7 @@ public class StoryReleaseActivity extends BaseActivity {
         ShortMessage.ShareParams shareParams = new ShortMessage.ShareParams();
         shareParams.setTitle(storyNameEdit.getText().toString());
         shareParams.setText(storyUrl);
-        shareParams.setImageUrl(storyEntity.storyThumbUri);
+        shareParams.setImageUrl(thumbImage);
         startShare(ShortMessage.NAME, shareParams);
     }
 

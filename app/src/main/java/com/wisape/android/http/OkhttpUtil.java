@@ -9,6 +9,7 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
+import com.wisape.android.util.LogUtil;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -67,7 +68,7 @@ public class OkhttpUtil {
 
         if (response.isSuccessful()) {
             String body = response.body().string();
-            Log.e(TAG, body);
+            LogUtil.d("登录返回:"+body);
             JSONObject jsonObject = JSON.parseObject(body);
             if (SERVER_RESPONSE_SUCCESS == jsonObject.getIntValue(KEY_RESPONSE_SUCCESS)) {
                 return JSONObject.parseObject(jsonObject.getJSONObject(KEY_RESPONSE_DATA).toJSONString(), clazz);

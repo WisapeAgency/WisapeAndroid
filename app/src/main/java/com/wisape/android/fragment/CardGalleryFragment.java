@@ -478,6 +478,7 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
             File storyDirectory = new File(StoryManager.getStoryDirectory(), storyEntity.storyLocal);
             File coverFile = new File (storyDirectory, "cover.jpg");
             if (coverFile.exists()){
+                Picasso.with(getActivity()).invalidate(coverFile);
                 Picasso.with(getActivity()).load(coverFile)
                         .fit()
                         .centerCrop()
@@ -509,6 +510,13 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
                     if (!popupWindow.isShowing()) {
                         popupWindow.showAtLocation(getView(), Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
                     }
+                }
+            });
+            holder.mStoryBg.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View view) {
+                    StoryLogic.instance().saveStoryEntityToShare(storyEntity);
+                    startLoadWithProgress(LOADER_PREVIEW_STORY, null);
                 }
             });
         }

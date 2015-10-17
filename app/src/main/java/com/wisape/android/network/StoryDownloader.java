@@ -30,9 +30,9 @@ import java.util.concurrent.TimeUnit;
  * Created by William on 2015/10/10.
  */
 public class StoryDownloader implements Runnable {
-    private BlockingQueue<StoryInfo> downloadQueue = new LinkedBlockingQueue<>();
+    private BlockingQueue<StoryEntity> downloadQueue = new LinkedBlockingQueue<>();
 
-    public StoryDownloader(List<StoryInfo> downloadQueue) {
+    public StoryDownloader(List<StoryEntity> downloadQueue) {
         this.downloadQueue.addAll(downloadQueue);
     }
 
@@ -41,7 +41,7 @@ public class StoryDownloader implements Runnable {
         boolean isRunning = true;
         try {
             while (isRunning) {
-                StoryInfo story = downloadQueue.poll(30, TimeUnit.SECONDS);
+                StoryEntity story = downloadQueue.poll(30, TimeUnit.SECONDS);
                 if (null != story) {
                     download(story);
                 } else {
@@ -54,11 +54,11 @@ public class StoryDownloader implements Runnable {
         }
     }
 
-    private void download(StoryInfo story) {
+    private void download(StoryEntity story) {
         if (!EnvironmentUtils.isMounted()) {
             return;
         }
-        File destFile = new File(StoryManager.getStoryDirectory(), story.story_name + ".zip");
+        File destFile = new File(StoryManager.getStoryDirectory(), story.storyLocal + ".zip");
         if (destFile.exists()){
             return;
         }
@@ -70,7 +70,7 @@ public class StoryDownloader implements Runnable {
             destFile.delete();
         }
         OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder().url(story.story_path)
+        Request request = new Request.Builder().url(story.storyPath)
                 .addHeader("Content-Type", "application/octet-stream")
                 .addHeader("Accept-Encoding", "identity").build();
         InputStream input = null;
@@ -105,11 +105,11 @@ public class StoryDownloader implements Runnable {
             }
         }
         String path = destFile.getAbsolutePath();
-        File storyDirectory = new File(destFile.getParent(),story.story_name);
+        File storyDirectory = new File(destFile.getParent(),story.storyLocal);
         unzipTemplate(Uri.fromFile(new File(path)), storyDirectory, story);
     }
 
-    private void unzipTemplate(Uri downUri, File storyDirectory,StoryInfo story) {
+    private void unzipTemplate(Uri downUri, File storyDirectory,StoryEntity story) {
         try {
             if (storyDirectory.isFile()) {
                 FileUtils.forceDelete(storyDirectory);
@@ -122,7 +122,7 @@ public class StoryDownloader implements Runnable {
         }
     }
 
-    private void restartDownload(Uri downUri, File template,StoryInfo story){
+    private void restartDownload(Uri downUri, File template,StoryEntity story){
         try {
             if (template.isFile()) {
                 FileUtils.forceDelete(template);

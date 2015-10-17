@@ -160,8 +160,10 @@ public class PhotoSelectorActivity extends AppCompatActivity implements LoaderMa
                     AppPhotoInfo[] photos = (AppPhotoInfo[]) data.obj;
                     Fragment fragment = getSupportFragmentManager().findFragmentById(/*R.id.photo_walls*/CONTENT_ID);
                     if (null != fragment) {
-                        PhotoWallsFragment photoWallsFragment = (PhotoWallsFragment) fragment;
-                        photoWallsFragment.updateData(photos);
+                        if(fragment instanceof  PhotoWallsFragment){
+                            PhotoWallsFragment photoWallsFragment = (PhotoWallsFragment) fragment;
+                            photoWallsFragment.updateData(photos);
+                        }
                     }
                     break;
 

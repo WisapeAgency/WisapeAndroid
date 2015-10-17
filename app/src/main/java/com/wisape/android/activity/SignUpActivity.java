@@ -20,6 +20,8 @@ import com.wisape.android.util.LogUtil;
 import com.wisape.android.util.Utils;
 import com.wisape.android.widget.SignUpEditText;
 
+import org.json.JSONException;
+
 import java.util.HashMap;
 
 import butterknife.ButterKnife;
@@ -90,7 +92,6 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
         setContentView(R.layout.activity_sign_up);
         ShareSDK.initSDK(this);
         ButterKnife.inject(this);
-        LogUtil.d("测试记录日志22222222");
         emailEdit.setOnActionListener(this);
         passwordEdit.setOnActionListener(this);
         SpannableString string = new SpannableString(forgetPassword.getText());
@@ -248,7 +249,9 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
 
         } else {
             if(data.obj instanceof  com.alibaba.fastjson.JSONException){
-                showToast("数据转换错误");
+                com.alibaba.fastjson.JSONException exception =(com.alibaba.fastjson.JSONException) data.obj;
+                LogUtil.e("登录数据转换:",exception);
+                showToast(exception.getMessage());
             }else{
                 showToast((String)data.obj);
             }

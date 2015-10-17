@@ -28,6 +28,7 @@ import com.wisape.android.model.StoryFontInfo;
 import com.wisape.android.model.StoryTemplateInfo;
 import com.wisape.android.network.DataSynchronizer;
 import com.wisape.android.network.Requester;
+import com.wisape.android.util.LogUtil;
 import com.wisape.android.util.Utils;
 import com.wisape.android.widget.CustomProgress;
 
@@ -357,7 +358,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 File previewFile = new File(myStory, FILE_NAME_PREVIEW);
                 if (saveStoryPreview(previewFile, html, story)) {
                     StoryPreviewActivity.launch(cordova.getActivity(), previewFile.getAbsolutePath());
-                    cordova.getActivity().finish();
+//                    cordova.getActivity().finish();
                 } else {
                     callbackContext.error(-1);
                 }
@@ -430,6 +431,9 @@ public class StoryTemplatePlugin extends AbsPlugin {
     }
 
     private boolean saveStory(File myStory, StoryEntity story, String storyThumb, String html, com.alibaba.fastjson.JSONArray paths) {
+       if(paths == null){
+           return true;
+       }
         for (int i = 0; i < paths.size(); i++) {
             String path = paths.getString(i);
             System.out.println("saveStory:" + path);
@@ -460,7 +464,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
             FileUtils.copyFile(new File(storyThumb),
                     new File(StoryManager.getStoryDirectory(), story.storyLocal + "/cover.jpg"));
         }catch (IOException e){
-
+            LogUtil.e("生成封面出错", e);
         }
         File storyImg = new File(myStory, DIR_NAME_IMAGE);
         if (!storyImg.exists()) {
