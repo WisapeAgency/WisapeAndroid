@@ -32,7 +32,6 @@ $(function(){
         }, function(e) {
         }, "StoryTemplate", "publish", [retImg[0],retHtml,retImg]);
     })
-
     $(".pages-txt[data-href]").click(function(){
 
         console.info("href click:");

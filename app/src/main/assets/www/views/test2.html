@@ -59,7 +59,7 @@
         </div>
 
     </div>
-    <div class="pages" id="pages-scroll" >
+    <div class="pages pages-big " id="pages-scroll" style="" >
         <ul>
             <li class="active">
                 <div class="count">1/2</div>
@@ -221,7 +221,7 @@
     <span class="icon-add-stage" id="AddNewStage"></span>
 </div>
 
-<div id="editorText" class="pop-active" style="display: block">
+<div id="editorText" class="pop-active" style="display: none">
     <div class="header">
         <div class="pull-left">
             <a class="icon-arrow-left backToMain" ></a>
@@ -404,7 +404,7 @@
     </div>
 </div>
 
-<div id="storyStageList" style="display: block">
+<div id="storyStageList" style="display: none">
     <div class="header">
         <div class="pull-left">
             <a class="icon-arrow-left"></a>
@@ -603,7 +603,7 @@
 </div>
 
 <div class="ui-mask" style="display: none; width: 100%; height: 671px;"></div>
-<div class="ui-dialog href-dialog" style="width: 300px; height: 200px; display: none; left: 50%; margin-left: -150px; top: 50%; margin-top: -100px;">
+<div class="ui-dialog href-dialog" style="width: 300px; height: 220px; display: none; left: 50%; margin-left: -150px; top: 50%; margin-top: -110px;">
     <div class="ui-dialog-title">Set Destination</div>
     <div class="ui-dialog-content">
         <div class="input-href">
@@ -614,6 +614,7 @@
         <a class="ui-btn btn-cancle">Cancle</a>
         <a class="ui-btn btn-submit">Confirm</a>
     </div>
+    <div class="clearfix"></div>
 </div>
 <div class="ui-dialog tip-dialog" style="width: 300px; height: 200px; display: none; left: 50%; margin-left: -150px; top: 50%; margin-top: -100px;">
     <div class="ui-dialog-title"></div>
@@ -621,7 +622,7 @@
         This story should not exceed 15 pages.
     </div>
     <div class="ui-dialog-btns">
-        <a class="ui-btn btn-submit">Close</a>
+        <a class="ui-btn btn-cancle">Close</a>
     </div>
 </div>
 
@@ -632,7 +633,7 @@
 
 <script src="../public/js/template.js"></script>
 <script src="../public/js/hammer.min.js"></script>
-<script src="../public/js/iScroll-5.1.2-wids.js"></script>
+<script src="../public/js/iscroll.js"></script>
 <script src="../public/js/animation.js"></script>
 
 <!--<script src="../public/js/app-main.js"></script>-->
@@ -882,7 +883,7 @@
 //    });
 
     set_wrap_width($("#pages-scroll"));
-    var  myScroll = new IScroll('#pages-scroll', { scrollX: true, scrollY: false,preventDefault: false});
+    var  myScroll = new iScroll('#pages-scroll', { scrollX: true, scrollY: false,preventDefault: false});
     var scrollLimt = parseInt($("body").width())*0.6;
     var scrollLen = $("#pages-scroll li").length;
     myScroll.on("scrollMove",setScrollActive);
@@ -900,6 +901,34 @@
 
         $("#pages-scroll li").removeClass("active").eq(parseInt(Math.abs(myScroll.x/scrollLimt)) + 1).addClass("active");
 
+    }
+    setPagesScroll()
+
+    function setPagesScroll() {
+        //set_wrap_width($("#pages-scroll"));
+        $("#pages-scroll").iScroll({
+            scrollX: true,
+            scrollY: false,
+            mouseWheel: true,
+            preventDefault: false,
+            hScrollbar :false,
+            click :true
+        });
+
+        //set_wrap_width($("#pages-scroll"));
+        //var  myScroll = new IScroll('#pages-scroll', { scrollX: true, scrollY: false,click : true});
+        //var scrollLimt = parseInt($("body").width())*0.7
+        ////myScroll.on("scrollMove",setScrollActive);
+        //myScroll.on("scrollEnd",setScrollActive);
+        //function setScrollActive(){
+        //    console.info(myScroll.x);
+        //    console.info($("#pages-scroll").width());
+        //    if(myScroll.x == 0 ){
+        //        $("#pages-scroll li").removeClass("active").eq(0).addClass("active");
+        //    } else {
+        //        $("#pages-scroll li").removeClass("active").eq(parseInt(Math.abs(myScroll.x/scrollLimt)) + 1).addClass("active");
+        //    }
+        //}
     }
 
     function set_wrap_width(dom){
@@ -929,6 +958,28 @@
         doc.addEventListener('DOMContentLoaded', recalc, false);
     })(document, window);
 
+    var Dialog = {
+
+        mask : $(".ui-mask"),
+
+        init : function(){
+            this.mask.css({"width": $(window).width(),"height": $(window).height()})
+        },
+        show : function(target){
+            this.init();
+            this.mask.show();
+            target.show();
+            target.find(".btn-submit").click(function(){
+                Dialog.hide(target);
+            })
+        },
+        hide : function(target){
+            this.mask.hide();
+            target.hide();
+        }
+    }
+
+//    Dialog.show($(".href-dialog"));
 </script>
 </body>
 </html>
