@@ -9,6 +9,7 @@ import android.os.Message;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -16,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -463,6 +465,23 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
         @Override
         public void onBindViewHolder(GHolder holder, final int position) {
             final StoryEntity storyEntity = storyEntityList.get(position);
+            LinearLayout.LayoutParams params;
+            int denstiry = mDisplayMetrics.densityDpi;
+            if (denstiry >= DisplayMetrics.DENSITY_XXHIGH) {
+                int width = mDisplayMetrics.widthPixels - 320;
+                params = new LinearLayout.LayoutParams(width, (int) (width * 1.8));
+            } else if (denstiry <= DisplayMetrics.DENSITY_HIGH) {
+                int width = mDisplayMetrics.widthPixels - 150;
+                params = new LinearLayout.LayoutParams(width, (int) (width * 1.8));
+            } else if(denstiry > DisplayMetrics.DENSITY_XHIGH){
+                int width = mDisplayMetrics.widthPixels - 320;
+                params = new LinearLayout.LayoutParams(width, (int) (width * 1.8));
+            }else{
+                int width = mDisplayMetrics.widthPixels - 200;
+                params = new LinearLayout.LayoutParams(width, (int) (width * 1.8));
+            }
+
+            holder.linearLayout.setLayoutParams(params);
             holder.mTextEyecount.setText(storyEntity.viewNum + "");
             holder.mTextZanCount.setText(storyEntity.likeNum + "");
             holder.mTextStoryName.setText(storyEntity.storyName);
@@ -540,6 +559,8 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
         TextView mTextStoryName;
         @InjectView(R.id.main_story_more)
         ImageView imageShare;
+        @InjectView(R.id.liner_item)
+        LinearLayout linearLayout;
 
         public GHolder(View itemView) {
             super(itemView);

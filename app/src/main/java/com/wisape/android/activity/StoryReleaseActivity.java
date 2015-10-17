@@ -333,19 +333,16 @@ public class StoryReleaseActivity extends BaseActivity {
         platform.setPlatformActionListener(new PlatformActionListener() {
             @Override
             public void onComplete(Platform platform, int i, HashMap<String, Object> hashMap) {
-                Log.e(TAG, "平台名称:" + platName + "分享成功");
                 showToast(platName + "分享成功");
             }
 
             @Override
             public void onError(Platform platform, int i, Throwable throwable) {
-                Log.e(TAG, "平台名称:" + platName + "分享失败:" + throwable.getMessage());
                 showToast(platName + "分享失败");
             }
 
             @Override
             public void onCancel(Platform platform, int i) {
-                Log.e(TAG, "平台名称:" + platName + "分享取消");
                 showToast(platName + "分享取消");
             }
         });

@@ -41,8 +41,8 @@ public class GalleryView extends RecyclerView{
 
         setHasFixedSize(true);
         setOverScrollMode(View.OVER_SCROLL_NEVER);
-        final int cardWidth = getResources().getDimensionPixelSize(R.dimen.card_gallery_item_size_w);
         mDisplayMetrics = getResources().getDisplayMetrics();
+        final int cardWidth = mDisplayMetrics.widthPixels - 150;
         this.addItemDecoration(new ItemDecoration() {
             @Override
             public void getItemOffsets(Rect outRect, View view, RecyclerView parent, State state) {

@@ -683,6 +683,7 @@ public class StoryLogic {
 
         /*获取本地草稿story并且进行实体转换*/
         List<StoryEntity> storyLocalEntityList = getUserStoryFromLocal(WisapeApplication.getInstance().getApplicationContext());
+
         storyEntitYList.addAll(storyLocalEntityList);
 
         StoryEntity defaultStoryEntity = getDefaultStoryEntity();
