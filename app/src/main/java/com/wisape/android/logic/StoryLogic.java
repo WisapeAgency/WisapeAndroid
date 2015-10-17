@@ -674,12 +674,12 @@ public class StoryLogic {
         List<StoryEntity> storyEntitYList = new ArrayList<>();
         /*服务器端story*/
         List<StoryInfo> serverStoryList = getUserStoryFromServer(access_token);
-        ExecutorService service = Executors.newCachedThreadPool();
-        service.execute(new StoryDownloader(serverStoryList));
-        service.shutdown();
         if (null != serverStoryList && serverStoryList.size() > 0) {
             storyEntitYList.addAll(serverStoryToLocalStory(serverStoryList));
         }
+        ExecutorService service = Executors.newCachedThreadPool();
+        service.execute(new StoryDownloader(storyEntitYList));
+        service.shutdown();
 
         /*获取本地草稿story并且进行实体转换*/
         List<StoryEntity> storyLocalEntityList = getUserStoryFromLocal(WisapeApplication.getInstance().getApplicationContext());

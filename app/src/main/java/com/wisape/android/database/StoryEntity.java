@@ -68,6 +68,9 @@ public class StoryEntity extends BaseEntity implements Parcelable{
     @DatabaseField(dataType= DataType.STRING)
     public String storyLocal;
 
+    @DatabaseField(dataType= DataType.STRING)
+    public String storyPath;
+
     public static StoryEntity transform(StoryInfo info){
         StoryEntity entity = new StoryEntity();
         entity.storyServerId = info.id;
@@ -83,6 +86,7 @@ public class StoryEntity extends BaseEntity implements Parcelable{
 //        entity.createAt = info.createtime;
 //        entity.storyServerId =
         entity.updateAt = SystemClock.uptimeMillis();
+        entity.storyPath = info.story_path;
         return entity;
     }
 
@@ -99,6 +103,7 @@ public class StoryEntity extends BaseEntity implements Parcelable{
         info.view_num = entity.viewNum;
         info.share_num = entity.shareNum;
         info.createtime = entity.createAt+"";
+        info.story_path = entity.storyPath;
         return info;
     }
 
@@ -120,6 +125,7 @@ public class StoryEntity extends BaseEntity implements Parcelable{
         dest.writeInt(this.viewNum);
         dest.writeInt(this.shareNum);
         dest.writeString(this.storyLocal);
+        dest.writeString(this.storyPath);
     }
 
     public StoryEntity() {
@@ -137,6 +143,7 @@ public class StoryEntity extends BaseEntity implements Parcelable{
         this.viewNum = in.readInt();
         this.shareNum = in.readInt();
         this.storyLocal = in.readString();
+        this.storyPath = in.readString();
     }
 
     public static final Creator<StoryEntity> CREATOR = new Creator<StoryEntity>() {
