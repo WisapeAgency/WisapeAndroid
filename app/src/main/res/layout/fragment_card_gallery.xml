@@ -1,36 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:fab="http://schemas.android.com/apk/res-auto"
+<android.support.percent.PercentRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="#ffffff">
-
 
     <LinearLayout
         android:id="@+id/head_bar_layout"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:orientation="horizontal">
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_heightPercent="10%"
+        app:layout_widthPercent="100%">
 
-        <RelativeLayout
+
+        <ImageView
             android:id="@+id/menu_switch"
-            android:layout_width="50dp"
-            android:layout_height="50dp">
-
-            <ImageView
-                android:layout_width="18dp"
-                android:layout_height="12dp"
-                android:layout_centerInParent="true"
-                android:background="@mipmap/icon_nav" />
-        </RelativeLayout>
+            android:layout_marginLeft="24dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center_vertical"
+            android:background="@mipmap/icon_nav" />
 
         <TextView
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="match_parent"
+            android:layout_weight="1"
             android:gravity="center_vertical"
             android:text="@string/my_stores"
+            android:layout_marginLeft="12dp"
             android:textColor="@color/app_sixth"
             android:textSize="@dimen/app_text_size_xlarge" />
 
@@ -38,13 +37,13 @@
             android:id="@+id/info_board"
             android:layout_width="60dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="40dp"
-            android:layout_gravity="center">
+            android:layout_gravity="center"
+            android:layout_marginLeft="40dp">
 
             <ImageView
                 android:id="@+id/gift"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_gravity="left"
                 android:layout_marginRight="30dp"
@@ -54,35 +53,36 @@
                 android:id="@+id/gift_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="-34dp"
+                android:layout_toRightOf="@+id/gift"
                 android:background="@drawable/active_message_count_bg"
-                android:text="0"
-                android:textSize="12sp"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
-                android:layout_toRightOf="@+id/gift"
-                android:layout_marginLeft="-34dp"
-                android:visibility="gone"/>
+                android:text="0"
+                android:textSize="12sp"
+                android:visibility="gone" />
         </RelativeLayout>
-
-
     </LinearLayout>
 
     <com.wisape.android.view.GalleryView
         android:id="@+id/card_gallery"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_marginBottom="12dp"
         android:layout_below="@id/head_bar_layout"
-        android:layout_marginTop="@dimen/span_space" />
+        android:layout_marginBottom="12dp"
+        android:layout_marginTop="@dimen/span_space"
+        android:layout_weight="1"
+        app:layout_heightPercent="70%"
+        app:layout_widthPercent="100%" />
 
 
     <Button
         android:id="@+id/add_story"
         android:layout_width="56dp"
         android:layout_height="56dp"
-        android:layout_gravity="right"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/card_gallery"
         android:layout_marginBottom="@dimen/span_space"
         android:layout_marginRight="@dimen/span_space"
         android:background="@drawable/btn_add_story_selector" />
-</LinearLayout>
+</android.support.percent.PercentRelativeLayout>
