@@ -512,6 +512,13 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
                     }
                 }
             });
+            holder.mStoryBg.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View view) {
+                    StoryLogic.instance().saveStoryEntityToShare(storyEntity);
+                    startLoadWithProgress(LOADER_PREVIEW_STORY, null);
+                }
+            });
         }
 
         @Override
