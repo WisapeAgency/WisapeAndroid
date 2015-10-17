@@ -478,6 +478,7 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
             File storyDirectory = new File(StoryManager.getStoryDirectory(), storyEntity.storyLocal);
             File coverFile = new File (storyDirectory, "cover.jpg");
             if (coverFile.exists()){
+                Picasso.with(getActivity()).invalidate(coverFile);
                 Picasso.with(getActivity()).load(coverFile)
                         .fit()
                         .centerCrop()

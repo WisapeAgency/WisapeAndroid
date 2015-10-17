@@ -28,6 +28,7 @@ import com.wisape.android.model.StoryFontInfo;
 import com.wisape.android.model.StoryTemplateInfo;
 import com.wisape.android.network.DataSynchronizer;
 import com.wisape.android.network.Requester;
+import com.wisape.android.util.LogUtil;
 import com.wisape.android.util.Utils;
 import com.wisape.android.widget.CustomProgress;
 
@@ -463,7 +464,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
             FileUtils.copyFile(new File(storyThumb),
                     new File(StoryManager.getStoryDirectory(), story.storyLocal + "/cover.jpg"));
         }catch (IOException e){
-
+            LogUtil.e("生成封面出错", e);
         }
         File storyImg = new File(myStory, DIR_NAME_IMAGE);
         if (!storyImg.exists()) {
