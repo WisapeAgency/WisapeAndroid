@@ -15,9 +15,10 @@ WisapeEditer = {
 
     loggerStr : "",
 
-    logger : function(type,line,str){
-        console.info(str);
-        this.loggerStr += CurentTime() + "WisapeEditer.logger " + line + "line " + ":" +str;
+    logger : function(name,str){
+        //var ret = CurentTime() + "WisapeEditer.logger name" + name+ " :" +str;
+        //console.info(ret);
+        //this.loggerStr += ret;
     },
 
     Init: function () {
@@ -25,11 +26,10 @@ WisapeEditer = {
             catScroll = $("#cat-scroll"),
             pageScroll = $("#pages-scroll");
 
-        //获取模板分类
+        //通过getStageCategory接口获取模板分类
         WisapeEditer.GetNativeData("getStageCategory", [], function (data) {
             console.info("getStageCategory");
             console.info(JSON.stringify(data));
-
             var source = '<ul class="tabcon-item">'
                 + '{{each list as value i}}'
                 + '<li class="tabnav-item"  data-id="{{value.id}}"> {{value.name}} </li>'
@@ -48,13 +48,15 @@ WisapeEditer = {
                 scrollY: false,
                 mouseWheel: true,
                 preventDefault: false,
-                click : true
+                click : true,
+                hScrollbar :false
             });
             $("#menu-scroll").find("li").eq(0).addClass("active");
 
 
             //获取默认模板模板列表
             console.info("获取默认模板模板列表:" + parseInt(menuScroll.find("li").data("id")));
+            WisapeEditer.logger("获取默认模板模板列表 分类id",parseInt(menuScroll.find("li").data("id")));
             WisapeEditer.LoadTplList(parseInt(menuScroll.find("li").data("id")), function () {
                 console.info(catScroll.find("li").eq(0).html());
                 var _me = catScroll.find("li").eq(0), localTplPath = _me.find(".stage-thumb").attr("src").split("/thumb.jpg")[0] + "/stage.html";
@@ -72,6 +74,7 @@ WisapeEditer = {
 
         var firstPageData = data;
         console.info("firstPageData:" + firstPageData);
+        WisapeEditer.logger("firstPageData:",firstPageData);
         //获取pages数据
         WisapeEditer.GetNativeData("getContent", [], function (data) {
 
@@ -80,29 +83,19 @@ WisapeEditer = {
 
             console.info("getContent");
             console.info(JSON.stringify(data));
+            WisapeEditer.logger("getContent:",JSON.stringify(data));
             console.info(data == null);
             if (data == null) {//新建stroy 直接返回
-
+                WisapeEditer.logger("新建stroy:","");
                 WisapeEditer.currentTplData = firstPageData;
                 WisapeEditer.storyData.push(firstPageData);
                 $("#pages-scroll").find("ul").html('<li class="active"><span class="count">1/1</span>' + firstPageData + "</li>");
-                //console.info("read:");
-                //WisapeEditer.GetNativeData("read", [localTplPath], function (data) {
-                //    console.info("read data:");
-                //    console.info(data);
-                //
-                //    pageScroll.find("ul").html('<li class="active"><span class="count">1/1</span>' + data + "</li>");
-                //    console.info("pageScroll html:" + pageScroll.html());
-                //    console.info("WisapeEditer.storyData:");
-                //    console.info(WisapeEditer.storyData);
-                //    $(".loading").hide();
-                //});
                 $(".loading").hide();
-
                 return false;
             };
             //编辑story逻辑
             console.info("编辑story逻辑");
+            WisapeEditer.logger("编辑story逻辑:","");
             var ret = [];
             $('<div id="tpmHtml" style="display: none">' + data + '</div>').insertBefore("body");
             $("#tpmHtml").find(".m-img").each(function () {
@@ -144,9 +137,7 @@ WisapeEditer = {
                 console.info("fonts:");
                 console.info(JSON.stringify(data.filePath));
                 console.info(data.fonts);
-                for (var i = 0; i < JSON.parse(data.fonts).length; i++) {
-                    console.info(JSON.parse(data.fonts)[i])
-                }
+                WisapeEditer.logger("getFonts:",JSON.stringify(data.filePath));
                 var sourceFont = ''
                     + '{{each listFont as value i}}'
                     + '<div class="item {{if !value.downloaded}}download{{/if}}" data-fontname="{{value.name}}" ><span class="opt-img"><img src="{{value.preview_img_local}}" alt=""/></span> <span class="opt-right"><i class="icon-correct" ></i><i class="icon-download" ></i><div class="download-progress-bar"><div class="download-progress-percent" style="width:0%;"></div></div></span> </div>'
@@ -160,7 +151,6 @@ WisapeEditer = {
                 console.info(htmlFont);
                 console.info("font path:" + data.filePath);
                 WisapeEditer.fontPath = data.filePath;
-                //loadjscssfile(data.filePath + "?"  +Date.parse(new Date()), "css");
                 $(".pop-editer-font .opts").html(htmlFont);
                 $(".pop-editer-font .opts .item").each(function(){
                     console.info("curFamily" + curFamily);
@@ -169,11 +159,9 @@ WisapeEditer = {
                         $(this).addClass("selected");
                     }
                 })
-                console.info("head :" + $("head").html());
             })
         });
 
-        console.info(".pop-editer-opt:" + $(".pop-editer-font").html());
         $(".pop-editer-font").delegate(".item", "click", function () {
             console.info("set-font");
             var me = $(this), fontname = me.attr("data-fontname"), target = $("#editorText .pages-txt.active"),isDownloading = (me.find(".download-progress-bar").css("display") == "block");
@@ -238,8 +226,17 @@ WisapeEditer = {
 
         //显示隐藏分类
         $("#toggleCat").click(function () {
+            var tplPageCat = $(".tpl-page-cat");
             $(".tpl-page-cat").toggle();
             $(this).toggleClass("active");
+            console.info(tplPageCat.hasClass("pages-big"));
+            if(pageScroll.hasClass("pages-big")) {
+                pageScroll.removeClass("pages-big");
+            } else {
+                pageScroll.addClass("pages-big");
+            }
+            setPagesScroll();
+
         });
 
         //管理stage列表
@@ -285,7 +282,7 @@ WisapeEditer = {
         //从管理stage列表页面返回，并保存
         $("#storyStageList .icon-arrow-left").click(function () {
             var retHtml = [];
-            $("#storyDragBox").find(".drag-handle,.icon-correct").remove();
+            $("#storyDragBox").find(".drag-handle,.icon-correct,.count").remove();
             $("#storyDragBox li").each(function () {
                 retHtml.push($(this).removeAttr("style").html());
             });
@@ -297,6 +294,7 @@ WisapeEditer = {
             })
 
         })
+
 
         //模板列表事件
         catScroll.delegate("li", "click", function () {
@@ -330,13 +328,28 @@ WisapeEditer = {
         });
 
         //stage列表事件
+
+        var pageClickTimmer = true;
         pageScroll.delegate("li", "click", function () {
+            pageClickTimmer = false;
+            setTimeout(function(){
+                pageClickTimmer = true;
+            },500);
+
             var _me = $(this);
             WisapeEditer.selectedStagetIndex = _me.index() + 1;
             _me.addClass("active").siblings().removeClass("active").find(".pages-img,.pages-txt").removeClass("active");
         });
 
         pageScroll.delegate("li.active .pages-img", "click", function (event) {
+            if(!pageClickTimmer) return;
+
+
+            pageClickTimmer = false;
+            setTimeout(function(){
+                pageClickTimmer = true;
+            },500);
+
             var _me = $(this),wh = [];
             console.info(_me.parent().html());
 
@@ -377,6 +390,12 @@ WisapeEditer = {
         });
 
         pageScroll.delegate("li.active .pages-txt", "click", function (event) {
+            if(!pageClickTimmer) return;
+
+            pageClickTimmer = false;
+            setTimeout(function(){
+                pageClickTimmer = true;
+            },500);
             var _me = $(this);
             if (!_me.hasClass("active")) {
                 console.info(pageScroll.find(".edit-area").length);
@@ -395,17 +414,14 @@ WisapeEditer = {
         //新建stage事件
         AddNewStage.click(function () {
 
-            var target = pageScroll.find("li.active"),
-                tipDialog = $(".tip-dialog"),
-                mask = $(".mask");
+            var target = pageScroll.find("li.active");
+            var tipDialog = $(".tip-dialog");
 
             if(WisapeEditer.storyData.length == 15 ) {
-                tipDialog.show();
-                mask.show();
-                tipDialog.find(".btn-submit").click(function(){
-                    tipDialog.hide();
-                    mask.hide();
-                })
+                Dialog.show(tipDialog);
+                tipDialog.find(".btn-cancle").click(function () {
+                    Dialog.hide(tipDialog);
+                });
                 return ;
             }
             WisapeEditer.storyData.push(WisapeEditer.currentTplData);
@@ -442,9 +458,10 @@ WisapeEditer = {
 
             var pagesScroll = $("#pages-scroll li").eq(WisapeEditer.selectedStagetIndex - 1);
             var editPage = $("#editorText .pages");
-            editPage.find(".pages-txt").removeClass(preAnimation);
-            console.info(preAnimation);
-            editPage.find(".pages-txt").removeClass(preAnimation);
+            editPage.find(".pages-txt").each(function(){
+                var _this = $(this);
+                _this.removeClass(_this.data("animation"));
+            })
             console.info(editPage.find(".pages-txt").parent().html());
             console.info(editPage.html());
             var ret = editPage.html();
@@ -452,15 +469,7 @@ WisapeEditer = {
             pagesScroll.html(ret);
 
             WisapeEditer.storyData[WisapeEditer.selectedStagetIndex - 1] = ret;
-
-            console.info("WisapeEditer.storyData:");
-            console.info(WisapeEditer.storyData);
-
-
-
             WisapeEditer.ShowView('editorText', 'main');
-
-
             setPagesScroll();
 
         })
@@ -513,7 +522,7 @@ WisapeEditer = {
             console.info("#editorText .pages-txt.active click");
             if($("#TextEditerOpt").hasClass("active"))  $("#TextEditerOpt").click();
             $(".pop-editer-text").show();
-            $(".J-textarea-word").val($(this).text()).focus();
+            $(".J-textarea-word").val($.trim($(this).text())).focus();
             wordEditResize();
 
         })
@@ -596,17 +605,15 @@ WisapeEditer = {
                 target.removeAttr("data-href").removeClass("font-link");
 
             } else {
-                mask.show();
-                hrefDialog.show();
+                Dialog.show(hrefDialog);
                 hrefDialog.find(".btn-cancle").click(function () {
-                    mask.hide();
-                    hrefDialog.hide();
+                    Dialog.hide(hrefDialog);
                 });
                 hrefDialog.find(".btn-submit").click(function () {
                     link = hrefDialog.find(".input-href input").val();
                     console.info(link);
                     mask.hide();
-                    hrefDialog.hide();
+                    Dialog.hide(hrefDialog);
                     if (link == "http://" || link == "") return false;
                     me.addClass("active");
                     target.attr({"data-href" : link }).addClass("font-link");
@@ -614,7 +621,7 @@ WisapeEditer = {
             }
             console.info(target.attr("data-href"));
         });
-        $("#setFontAlign").click(function ($event) {
+        $("#setFontAlign").click(function () {
             var me = $(this);
             var target = $("#editorText .pages-txt.active");
             if (me.hasClass("icon-align-left")) {
@@ -678,9 +685,71 @@ WisapeEditer = {
             console.info("getStageList");
             console.info(JSON.stringify(data));
 
+            WisapeEditer.logger("通过接口加载模板列表",JSON.stringify(data));
+
             var catScroll = $("#cat-scroll");
             var source = '<ul class="tpl-page-item">'
                 + '{{each list as value i}}'
+                + '<li class="tpl-page-item {{if value.rec_status == 1}}tpl-exist{{/if}}"  data-id="{{value.id}}" data-exists="{{value.rec_status}}" data-type="{{value.type}}"  data-name="{{value.temp_name}}">'
+                + '<i {{if value.order_type == "N" }} style="display: block" class="icon-tags-new" {{/if}} {{if value.order_type == "H" }} style="display: block" class="icon-tags-hot" {{/if}} ></i>'
+                + '{{if value.rec_status == 0}} <span class="icon-download"></span> {{/if}}<div style="display:none;" class="download-progress-bar"><div class="download-progress-percent"></div></div>'
+                + '<img class="stage-thumb" src="{{value.temp_img_local}}"  alt="{{value.temp_name}}"/>'
+                + '<div class="tpl-page-item-name">{{value.temp_name}}</div>'
+                + ' </li>'
+                + '<li class="tpl-page-item {{if value.rec_status == 1}}tpl-exist{{/if}}"  data-id="{{value.id}}" data-exists="{{value.rec_status}}" data-type="{{value.type}}"  data-name="{{value.temp_name}}">'
+                + '<i {{if value.order_type == "N" }} style="display: block" class="icon-tags-new" {{/if}} {{if value.order_type == "H" }} style="display: block" class="icon-tags-hot" {{/if}} ></i>'
+                + '{{if value.rec_status == 0}} <span class="icon-download"></span> {{/if}}<div style="display:none;" class="download-progress-bar"><div class="download-progress-percent"></div></div>'
+                + '<img class="stage-thumb" src="{{value.temp_img_local}}"  alt="{{value.temp_name}}"/>'
+                + '<div class="tpl-page-item-name">{{value.temp_name}}</div>'
+                + ' </li>'
+                + '<li class="tpl-page-item {{if value.rec_status == 1}}tpl-exist{{/if}}"  data-id="{{value.id}}" data-exists="{{value.rec_status}}" data-type="{{value.type}}"  data-name="{{value.temp_name}}">'
+                + '<i {{if value.order_type == "N" }} style="display: block" class="icon-tags-new" {{/if}} {{if value.order_type == "H" }} style="display: block" class="icon-tags-hot" {{/if}} ></i>'
+                + '{{if value.rec_status == 0}} <span class="icon-download"></span> {{/if}}<div style="display:none;" class="download-progress-bar"><div class="download-progress-percent"></div></div>'
+                + '<img class="stage-thumb" src="{{value.temp_img_local}}"  alt="{{value.temp_name}}"/>'
+                + '<div class="tpl-page-item-name">{{value.temp_name}}</div>'
+                + ' </li>'
+                + '<li class="tpl-page-item {{if value.rec_status == 1}}tpl-exist{{/if}}"  data-id="{{value.id}}" data-exists="{{value.rec_status}}" data-type="{{value.type}}"  data-name="{{value.temp_name}}">'
+                + '<i {{if value.order_type == "N" }} style="display: block" class="icon-tags-new" {{/if}} {{if value.order_type == "H" }} style="display: block" class="icon-tags-hot" {{/if}} ></i>'
+                + '{{if value.rec_status == 0}} <span class="icon-download"></span> {{/if}}<div style="display:none;" class="download-progress-bar"><div class="download-progress-percent"></div></div>'
+                + '<img class="stage-thumb" src="{{value.temp_img_local}}"  alt="{{value.temp_name}}"/>'
+                + '<div class="tpl-page-item-name">{{value.temp_name}}</div>'
+                + ' </li>'
+                + '<li class="tpl-page-item {{if value.rec_status == 1}}tpl-exist{{/if}}"  data-id="{{value.id}}" data-exists="{{value.rec_status}}" data-type="{{value.type}}"  data-name="{{value.temp_name}}">'
+                + '<i {{if value.order_type == "N" }} style="display: block" class="icon-tags-new" {{/if}} {{if value.order_type == "H" }} style="display: block" class="icon-tags-hot" {{/if}} ></i>'
+                + '{{if value.rec_status == 0}} <span class="icon-download"></span> {{/if}}<div style="display:none;" class="download-progress-bar"><div class="download-progress-percent"></div></div>'
+                + '<img class="stage-thumb" src="{{value.temp_img_local}}"  alt="{{value.temp_name}}"/>'
+                + '<div class="tpl-page-item-name">{{value.temp_name}}</div>'
+                + ' </li>'
+                + '<li class="tpl-page-item {{if value.rec_status == 1}}tpl-exist{{/if}}"  data-id="{{value.id}}" data-exists="{{value.rec_status}}" data-type="{{value.type}}"  data-name="{{value.temp_name}}">'
+                + '<i {{if value.order_type == "N" }} style="display: block" class="icon-tags-new" {{/if}} {{if value.order_type == "H" }} style="display: block" class="icon-tags-hot" {{/if}} ></i>'
+                + '{{if value.rec_status == 0}} <span class="icon-download"></span> {{/if}}<div style="display:none;" class="download-progress-bar"><div class="download-progress-percent"></div></div>'
+                + '<img class="stage-thumb" src="{{value.temp_img_local}}"  alt="{{value.temp_name}}"/>'
+                + '<div class="tpl-page-item-name">{{value.temp_name}}</div>'
+                + ' </li>'
+                + '<li class="tpl-page-item {{if value.rec_status == 1}}tpl-exist{{/if}}"  data-id="{{value.id}}" data-exists="{{value.rec_status}}" data-type="{{value.type}}"  data-name="{{value.temp_name}}">'
+                + '<i {{if value.order_type == "N" }} style="display: block" class="icon-tags-new" {{/if}} {{if value.order_type == "H" }} style="display: block" class="icon-tags-hot" {{/if}} ></i>'
+                + '{{if value.rec_status == 0}} <span class="icon-download"></span> {{/if}}<div style="display:none;" class="download-progress-bar"><div class="download-progress-percent"></div></div>'
+                + '<img class="stage-thumb" src="{{value.temp_img_local}}"  alt="{{value.temp_name}}"/>'
+                + '<div class="tpl-page-item-name">{{value.temp_name}}</div>'
+                + ' </li>'
+                + '<li class="tpl-page-item {{if value.rec_status == 1}}tpl-exist{{/if}}"  data-id="{{value.id}}" data-exists="{{value.rec_status}}" data-type="{{value.type}}"  data-name="{{value.temp_name}}">'
+                + '<i {{if value.order_type == "N" }} style="display: block" class="icon-tags-new" {{/if}} {{if value.order_type == "H" }} style="display: block" class="icon-tags-hot" {{/if}} ></i>'
+                + '{{if value.rec_status == 0}} <span class="icon-download"></span> {{/if}}<div style="display:none;" class="download-progress-bar"><div class="download-progress-percent"></div></div>'
+                + '<img class="stage-thumb" src="{{value.temp_img_local}}"  alt="{{value.temp_name}}"/>'
+                + '<div class="tpl-page-item-name">{{value.temp_name}}</div>'
+                + ' </li>'
+                + '<li class="tpl-page-item {{if value.rec_status == 1}}tpl-exist{{/if}}"  data-id="{{value.id}}" data-exists="{{value.rec_status}}" data-type="{{value.type}}"  data-name="{{value.temp_name}}">'
+                + '<i {{if value.order_type == "N" }} style="display: block" class="icon-tags-new" {{/if}} {{if value.order_type == "H" }} style="display: block" class="icon-tags-hot" {{/if}} ></i>'
+                + '{{if value.rec_status == 0}} <span class="icon-download"></span> {{/if}}<div style="display:none;" class="download-progress-bar"><div class="download-progress-percent"></div></div>'
+                + '<img class="stage-thumb" src="{{value.temp_img_local}}"  alt="{{value.temp_name}}"/>'
+                + '<div class="tpl-page-item-name">{{value.temp_name}}</div>'
+                + ' </li>'
+                + '<li class="tpl-page-item {{if value.rec_status == 1}}tpl-exist{{/if}}"  data-id="{{value.id}}" data-exists="{{value.rec_status}}" data-type="{{value.type}}"  data-name="{{value.temp_name}}">'
+                + '<i {{if value.order_type == "N" }} style="display: block" class="icon-tags-new" {{/if}} {{if value.order_type == "H" }} style="display: block" class="icon-tags-hot" {{/if}} ></i>'
+                + '{{if value.rec_status == 0}} <span class="icon-download"></span> {{/if}}<div style="display:none;" class="download-progress-bar"><div class="download-progress-percent"></div></div>'
+                + '<img class="stage-thumb" src="{{value.temp_img_local}}"  alt="{{value.temp_name}}"/>'
+                + '<div class="tpl-page-item-name">{{value.temp_name}}</div>'
+                + ' </li>'
                 + '<li class="tpl-page-item {{if value.rec_status == 1}}tpl-exist{{/if}}"  data-id="{{value.id}}" data-exists="{{value.rec_status}}" data-type="{{value.type}}"  data-name="{{value.temp_name}}">'
                 + '<i {{if value.order_type == "N" }} style="display: block" class="icon-tags-new" {{/if}} {{if value.order_type == "H" }} style="display: block" class="icon-tags-hot" {{/if}} ></i>'
                 + '{{if value.rec_status == 0}} <span class="icon-download"></span> {{/if}}<div style="display:none;" class="download-progress-bar"><div class="download-progress-percent"></div></div>'
@@ -703,7 +772,8 @@ WisapeEditer = {
                 scrollY: false,
                 mouseWheel: true,
                 preventDefault: false,
-                click : true
+                click : true,
+                hScrollbar :false
             });
             catScroll.find("li").eq(0).addClass("active");
             if (cb !== null)cb();
@@ -902,7 +972,9 @@ function setPagesScroll() {
         scrollX: true,
         scrollY: false,
         mouseWheel: true,
-        preventDefault: false
+        preventDefault: false,
+        hScrollbar :false,
+        click :true
     });
 
     //set_wrap_width($("#pages-scroll"));
@@ -921,6 +993,23 @@ function setPagesScroll() {
     //}
 }
 
+var Dialog = {
+
+    mask : $(".ui-mask"),
+
+    init : function(){
+        this.mask.css({"width": $(window).width(),"height": $(window).height()})
+    },
+    show : function(target){
+        this.init();
+        this.mask.show();
+        target.show();
+    },
+    hide : function(target){
+        this.mask.hide();
+        target.hide();
+    }
+};
 
 
 

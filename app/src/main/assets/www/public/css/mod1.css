@@ -291,11 +291,11 @@ left:50%;margin-left:-15px;-webkit-animation: move2 2s infinite;}
 	right: 10px;
 	top: 10px;
 	z-index: 200;
-	width: 30px;
-	height: 30px;
+	width: 1.9rem;
+	height: 1.9rem;
 	background-image: url(../img/audio.png);
 	background-repeat: no-repeat;
-	background-size: 30px 30px;
+	background-size: 1.9rem 1.9rem;
 }
  .on{
 	 -webkit-animation: rotating 1.2s linear infinite;

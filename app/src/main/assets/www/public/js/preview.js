@@ -30,9 +30,8 @@ $(function(){
         console.info(retImg);
         cordova.exec(function(retval) {
         }, function(e) {
-        }, "StoryTemplate", "publish", [retHtml,retImg]);
+        }, "StoryTemplate", "publish", [retImg[0],retHtml,retImg]);
     })
-
     $(".pages-txt[data-href]").click(function(){
 
         console.info("href click:");
