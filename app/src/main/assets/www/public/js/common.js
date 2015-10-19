@@ -14,7 +14,7 @@
         }
         return this.each(function(){
             set_wrap_width($(this));
-            this.iScroll = new IScroll(this,options);
+            this.iScroll = new iScroll(this,options);
         });
     };
 

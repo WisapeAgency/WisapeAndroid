@@ -15,6 +15,9 @@ WisapeEditer = {
 
     loggerStr : "",
 
+    pagesIScroll : null,
+    catIScroll : null,
+
     logger : function(name,str){
         //var ret = CurentTime() + "WisapeEditer.logger name" + name+ " :" +str;
         //console.info(ret);
@@ -91,6 +94,9 @@ WisapeEditer = {
                 WisapeEditer.storyData.push(firstPageData);
                 $("#pages-scroll").find("ul").html('<li class="active"><span class="count">1/1</span>' + firstPageData + "</li>");
                 $(".loading").hide();
+                setPagesScroll();
+
+
                 return false;
             };
             //编辑story逻辑
@@ -696,66 +702,7 @@ WisapeEditer = {
                 + '<img class="stage-thumb" src="{{value.temp_img_local}}"  alt="{{value.temp_name}}"/>'
                 + '<div class="tpl-page-item-name">{{value.temp_name}}</div>'
                 + ' </li>'
-                + '<li class="tpl-page-item {{if value.rec_status == 1}}tpl-exist{{/if}}"  data-id="{{value.id}}" data-exists="{{value.rec_status}}" data-type="{{value.type}}"  data-name="{{value.temp_name}}">'
-                + '<i {{if value.order_type == "N" }} style="display: block" class="icon-tags-new" {{/if}} {{if value.order_type == "H" }} style="display: block" class="icon-tags-hot" {{/if}} ></i>'
-                + '{{if value.rec_status == 0}} <span class="icon-download"></span> {{/if}}<div style="display:none;" class="download-progress-bar"><div class="download-progress-percent"></div></div>'
-                + '<img class="stage-thumb" src="{{value.temp_img_local}}"  alt="{{value.temp_name}}"/>'
-                + '<div class="tpl-page-item-name">{{value.temp_name}}</div>'
-                + ' </li>'
-                + '<li class="tpl-page-item {{if value.rec_status == 1}}tpl-exist{{/if}}"  data-id="{{value.id}}" data-exists="{{value.rec_status}}" data-type="{{value.type}}"  data-name="{{value.temp_name}}">'
-                + '<i {{if value.order_type == "N" }} style="display: block" class="icon-tags-new" {{/if}} {{if value.order_type == "H" }} style="display: block" class="icon-tags-hot" {{/if}} ></i>'
-                + '{{if value.rec_status == 0}} <span class="icon-download"></span> {{/if}}<div style="display:none;" class="download-progress-bar"><div class="download-progress-percent"></div></div>'
-                + '<img class="stage-thumb" src="{{value.temp_img_local}}"  alt="{{value.temp_name}}"/>'
-                + '<div class="tpl-page-item-name">{{value.temp_name}}</div>'
-                + ' </li>'
-                + '<li class="tpl-page-item {{if value.rec_status == 1}}tpl-exist{{/if}}"  data-id="{{value.id}}" data-exists="{{value.rec_status}}" data-type="{{value.type}}"  data-name="{{value.temp_name}}">'
-                + '<i {{if value.order_type == "N" }} style="display: block" class="icon-tags-new" {{/if}} {{if value.order_type == "H" }} style="display: block" class="icon-tags-hot" {{/if}} ></i>'
-                + '{{if value.rec_status == 0}} <span class="icon-download"></span> {{/if}}<div style="display:none;" class="download-progress-bar"><div class="download-progress-percent"></div></div>'
-                + '<img class="stage-thumb" src="{{value.temp_img_local}}"  alt="{{value.temp_name}}"/>'
-                + '<div class="tpl-page-item-name">{{value.temp_name}}</div>'
-                + ' </li>'
-                + '<li class="tpl-page-item {{if value.rec_status == 1}}tpl-exist{{/if}}"  data-id="{{value.id}}" data-exists="{{value.rec_status}}" data-type="{{value.type}}"  data-name="{{value.temp_name}}">'
-                + '<i {{if value.order_type == "N" }} style="display: block" class="icon-tags-new" {{/if}} {{if value.order_type == "H" }} style="display: block" class="icon-tags-hot" {{/if}} ></i>'
-                + '{{if value.rec_status == 0}} <span class="icon-download"></span> {{/if}}<div style="display:none;" class="download-progress-bar"><div class="download-progress-percent"></div></div>'
-                + '<img class="stage-thumb" src="{{value.temp_img_local}}"  alt="{{value.temp_name}}"/>'
-                + '<div class="tpl-page-item-name">{{value.temp_name}}</div>'
-                + ' </li>'
-                + '<li class="tpl-page-item {{if value.rec_status == 1}}tpl-exist{{/if}}"  data-id="{{value.id}}" data-exists="{{value.rec_status}}" data-type="{{value.type}}"  data-name="{{value.temp_name}}">'
-                + '<i {{if value.order_type == "N" }} style="display: block" class="icon-tags-new" {{/if}} {{if value.order_type == "H" }} style="display: block" class="icon-tags-hot" {{/if}} ></i>'
-                + '{{if value.rec_status == 0}} <span class="icon-download"></span> {{/if}}<div style="display:none;" class="download-progress-bar"><div class="download-progress-percent"></div></div>'
-                + '<img class="stage-thumb" src="{{value.temp_img_local}}"  alt="{{value.temp_name}}"/>'
-                + '<div class="tpl-page-item-name">{{value.temp_name}}</div>'
-                + ' </li>'
-                + '<li class="tpl-page-item {{if value.rec_status == 1}}tpl-exist{{/if}}"  data-id="{{value.id}}" data-exists="{{value.rec_status}}" data-type="{{value.type}}"  data-name="{{value.temp_name}}">'
-                + '<i {{if value.order_type == "N" }} style="display: block" class="icon-tags-new" {{/if}} {{if value.order_type == "H" }} style="display: block" class="icon-tags-hot" {{/if}} ></i>'
-                + '{{if value.rec_status == 0}} <span class="icon-download"></span> {{/if}}<div style="display:none;" class="download-progress-bar"><div class="download-progress-percent"></div></div>'
-                + '<img class="stage-thumb" src="{{value.temp_img_local}}"  alt="{{value.temp_name}}"/>'
-                + '<div class="tpl-page-item-name">{{value.temp_name}}</div>'
-                + ' </li>'
-                + '<li class="tpl-page-item {{if value.rec_status == 1}}tpl-exist{{/if}}"  data-id="{{value.id}}" data-exists="{{value.rec_status}}" data-type="{{value.type}}"  data-name="{{value.temp_name}}">'
-                + '<i {{if value.order_type == "N" }} style="display: block" class="icon-tags-new" {{/if}} {{if value.order_type == "H" }} style="display: block" class="icon-tags-hot" {{/if}} ></i>'
-                + '{{if value.rec_status == 0}} <span class="icon-download"></span> {{/if}}<div style="display:none;" class="download-progress-bar"><div class="download-progress-percent"></div></div>'
-                + '<img class="stage-thumb" src="{{value.temp_img_local}}"  alt="{{value.temp_name}}"/>'
-                + '<div class="tpl-page-item-name">{{value.temp_name}}</div>'
-                + ' </li>'
-                + '<li class="tpl-page-item {{if value.rec_status == 1}}tpl-exist{{/if}}"  data-id="{{value.id}}" data-exists="{{value.rec_status}}" data-type="{{value.type}}"  data-name="{{value.temp_name}}">'
-                + '<i {{if value.order_type == "N" }} style="display: block" class="icon-tags-new" {{/if}} {{if value.order_type == "H" }} style="display: block" class="icon-tags-hot" {{/if}} ></i>'
-                + '{{if value.rec_status == 0}} <span class="icon-download"></span> {{/if}}<div style="display:none;" class="download-progress-bar"><div class="download-progress-percent"></div></div>'
-                + '<img class="stage-thumb" src="{{value.temp_img_local}}"  alt="{{value.temp_name}}"/>'
-                + '<div class="tpl-page-item-name">{{value.temp_name}}</div>'
-                + ' </li>'
-                + '<li class="tpl-page-item {{if value.rec_status == 1}}tpl-exist{{/if}}"  data-id="{{value.id}}" data-exists="{{value.rec_status}}" data-type="{{value.type}}"  data-name="{{value.temp_name}}">'
-                + '<i {{if value.order_type == "N" }} style="display: block" class="icon-tags-new" {{/if}} {{if value.order_type == "H" }} style="display: block" class="icon-tags-hot" {{/if}} ></i>'
-                + '{{if value.rec_status == 0}} <span class="icon-download"></span> {{/if}}<div style="display:none;" class="download-progress-bar"><div class="download-progress-percent"></div></div>'
-                + '<img class="stage-thumb" src="{{value.temp_img_local}}"  alt="{{value.temp_name}}"/>'
-                + '<div class="tpl-page-item-name">{{value.temp_name}}</div>'
-                + ' </li>'
-                + '<li class="tpl-page-item {{if value.rec_status == 1}}tpl-exist{{/if}}"  data-id="{{value.id}}" data-exists="{{value.rec_status}}" data-type="{{value.type}}"  data-name="{{value.temp_name}}">'
-                + '<i {{if value.order_type == "N" }} style="display: block" class="icon-tags-new" {{/if}} {{if value.order_type == "H" }} style="display: block" class="icon-tags-hot" {{/if}} ></i>'
-                + '{{if value.rec_status == 0}} <span class="icon-download"></span> {{/if}}<div style="display:none;" class="download-progress-bar"><div class="download-progress-percent"></div></div>'
-                + '<img class="stage-thumb" src="{{value.temp_img_local}}"  alt="{{value.temp_name}}"/>'
-                + '<div class="tpl-page-item-name">{{value.temp_name}}</div>'
-                + ' </li>'
+
                 + '{{/each}}'
                 + '</ul>';
 
@@ -766,15 +713,21 @@ WisapeEditer = {
             });
 
             document.getElementById('cat-scroll').innerHTML = html;
+
             set_wrap_width(catScroll);
-            catScroll.iScroll({
+            WisapeEditer.catIScroll = new iScroll('cat-scroll',{
                 scrollX: true,
                 scrollY: false,
-                mouseWheel: true,
-                preventDefault: false,
                 click : true,
-                hScrollbar :false
+                hScrollbar :false,
             });
+            //if(!WisapeEditer.catIScroll) {
+            //    console.info("new");
+            //
+            //} else {
+            //    console.info("old");
+            //    //WisapeEditer.catIScroll.refresh();
+            //};
             catScroll.find("li").eq(0).addClass("active");
             if (cb !== null)cb();
         });
@@ -968,14 +921,38 @@ function rgb2hex(rgb) {
 
 function setPagesScroll() {
     set_wrap_width($("#pages-scroll"));
-    $("#pages-scroll").iScroll({
-        scrollX: true,
-        scrollY: false,
-        mouseWheel: true,
-        preventDefault: false,
-        hScrollbar :false,
-        click :true
-    });
+    if(!WisapeEditer.pagesIScroll) {
+        console.info("new");
+        var liWidth = parseInt($("#pages-scroll li ").eq(0).width());
+        WisapeEditer.pagesIScroll = new iScroll('pages-scroll',{
+            scrollX: true,
+            scrollY: false,
+            click : true,
+            hScrollbar :false,
+            //onScrollMove : function(){
+            //    console.info("scrollMove");
+            //    console.info(WisapeEditer.pagesIScroll.x);
+            //    console.info(parseInt(Math.abs(WisapeEditer.pagesIScroll.x/200)) + 1);
+            //    //if(len / myScroll.x * 200 )
+            //    $("#pages-scroll li ").removeClass("active").eq(parseInt(Math.abs(WisapeEditer.pagesIScroll.x/liWidth)) + 1).addClass("active");
+            //},
+            //onScrollEnd : function(){
+            //    console.info("scrollEnd");
+            //    $("#pages-scroll li ").removeClass("active").eq(parseInt(Math.abs(WisapeEditer.pagesIScroll.x/liWidth)) + 1).addClass("active");
+            //}
+        });
+    } else {
+        WisapeEditer.pagesIScroll.refresh();
+    }
+
+    //$("#pages-scroll").iScroll({
+    //    scrollX: true,
+    //    scrollY: false,
+    //    mouseWheel: true,
+    //    preventDefault: false,
+    //    hScrollbar :false,
+    //    click :true
+    //});
 
     //set_wrap_width($("#pages-scroll"));
     //var  myScroll = new IScroll('#pages-scroll', { scrollX: true, scrollY: false,click : true});
