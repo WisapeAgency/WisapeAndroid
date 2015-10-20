@@ -88,15 +88,14 @@ public class StoryReleaseActivity extends BaseActivity {
         storyEntity = StoryLogic.instance().getStoryEntityFromShare();
         storyNameEdit.setText(storyEntity.storyName);
         storyDescEdit.setText(storyEntity.storyDesc);
-        String uri = storyEntity.storyThumbUri;
-        Utils.loadImg(this,uri,storyCoverView);
         File storyDirectory = new File(StoryManager.getStoryDirectory(), storyEntity.storyLocal);
-        File coverFile = new File (storyDirectory, "cover.jpg");
+        File coverFile = new File (storyDirectory, "thumb.jpg");
         if (coverFile.exists()){
             thumbImage = coverFile.getAbsolutePath();
         }else{
             thumbImage = storyEntity.storyThumbUri;
         }
+        Utils.loadImg(this,thumbImage, storyCoverView);
         storyUrl = HttpUrlConstancts.SHARE_URL + storyEntity.storyServerId;
     }
 

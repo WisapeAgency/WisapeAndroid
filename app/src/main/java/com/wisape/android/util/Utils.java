@@ -269,6 +269,7 @@ public class Utils {
                     .centerInside()
                     .into(imageView);
         } else {
+            Picasso.with(context).invalidate(imgPath);
             Picasso.with(context).load(new File(imgPath))
                     .resize(600,800)
                     .centerInside()

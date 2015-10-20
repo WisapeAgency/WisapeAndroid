@@ -476,7 +476,7 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
                 holder.mTextStoryState.setText("已发布");
             }
             File storyDirectory = new File(StoryManager.getStoryDirectory(), storyEntity.storyLocal);
-            File coverFile = new File (storyDirectory, "cover.jpg");
+            File coverFile = new File (storyDirectory, "thumb.jpg");
             if (coverFile.exists()){
                 Picasso.with(getActivity()).invalidate(coverFile);
                 Picasso.with(getActivity()).load(coverFile)

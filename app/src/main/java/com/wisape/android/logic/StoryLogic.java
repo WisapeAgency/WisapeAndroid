@@ -677,6 +677,19 @@ public class StoryLogic {
         if (null != serverStoryList && serverStoryList.size() > 0) {
             storyEntitYList.addAll(serverStoryToLocalStory(serverStoryList));
         }
+        StoryEntity defaultStoryEntity = getDefaultStoryEntity(storyEntitYList);
+        if (null != defaultStoryEntity){
+            try {
+                FileUtils.unZip(WisapeApplication.getInstance().getApplicationContext(), "default.zip"
+                        , StoryManager.getStoryDirectory().getAbsolutePath() +"/"+ defaultStoryEntity.storyLocal,
+                        true);
+                File storyFile = new File(StoryManager.getStoryDirectory(), defaultStoryEntity.storyLocal + "/story.html");
+                FileUtils.replacePath("CLIENT_DEFAULT_STORY_PATH",
+                        StoryManager.getStoryDirectory().getAbsolutePath() + "/" + defaultStoryEntity.storyLocal, storyFile);
+            } catch (IOException e) {
+                Log.e(TAG, e.getMessage());
+            }
+        }
         ExecutorService service = Executors.newCachedThreadPool();
         service.execute(new StoryDownloader(storyEntitYList));
         service.shutdown();
@@ -684,30 +697,6 @@ public class StoryLogic {
         /*获取本地草稿story并且进行实体转换*/
         List<StoryEntity> storyLocalEntityList = getUserStoryFromLocal(WisapeApplication.getInstance().getApplicationContext());
         storyEntitYList.addAll(storyLocalEntityList);
-
-        StoryEntity defaultStoryEntity = getDefaultStoryEntity();
-
-        if (null == defaultStoryEntity) {
-            defaultStoryEntity  = new StoryEntity();
-            defaultStoryEntity.status = ApiStory.AttrStoryInfo.STORY_DEFAULT;
-            defaultStoryEntity.storyLocal = Utils.acquireUTCTimestamp();
-            defaultStoryEntity.userId = UserLogic.instance().getUserInfoFromLocal().user_id;
-            defaultStoryEntity.storyName = "default";
-            defaultStoryEntity.storyThumbUri = new File(StoryManager.getStoryDirectory(),defaultStoryEntity.storyLocal + "/thumb.jpg").getAbsolutePath();
-            defaultStoryEntity = addDefaultStory(defaultStoryEntity);
-        }
-
-        storyEntitYList.add(0, defaultStoryEntity);
-        try {
-            FileUtils.unZip(WisapeApplication.getInstance().getApplicationContext(), "default.zip"
-                    , StoryManager.getStoryDirectory().getAbsolutePath() +"/"+ defaultStoryEntity.storyLocal,
-                    true);
-            File storyFile = new File(StoryManager.getStoryDirectory(), defaultStoryEntity.storyLocal + "/story.html");
-            FileUtils.replacePath("CLIENT_DEFAULT_STORY_PATH",
-                    StoryManager.getStoryDirectory().getAbsolutePath() + "/" + defaultStoryEntity.storyLocal, storyFile);
-        } catch (IOException e) {
-            Log.e(TAG, e.getMessage());
-        }
 
         Message message = Message.obtain();
         message.arg1 = HttpUrlConstancts.STATUS_SUCCESS;
@@ -758,22 +747,16 @@ public class StoryLogic {
     /**
      * 获取默认story信息
      */
-    private StoryEntity getDefaultStoryEntity() {
-        long userId = UserLogic.instance().getUserInfoFromLocal().user_id;
-        DatabaseHelper databaseHelper = OpenHelperManager.getHelper(WisapeApplication.getInstance(), DatabaseHelper.class);
-        Dao<StoryEntity, Log> dao;
-        SQLiteDatabase db = databaseHelper.getWritableDatabase();
-        db.beginTransaction();
-        try {
-            dao = databaseHelper.getDao(StoryEntity.class);
-            return dao.queryBuilder().where().eq("status", ApiStory.AttrStoryInfo.STORY_DEFAULT).queryForFirst();
-        } catch (SQLException e) {
-            Log.e(TAG, "", e);
+    private StoryEntity getDefaultStoryEntity(List<StoryEntity> storyLocalEntityList) {
+        if (storyLocalEntityList == null || storyLocalEntityList.size() == 0){
             return null;
-        } finally {
-            db.endTransaction();
-            OpenHelperManager.releaseHelper();
         }
+        for (StoryEntity story : storyLocalEntityList){
+            if (story.status.equals(ApiStory.AttrStoryInfo.STORY_DEFAULT)){
+                return story;
+            }
+        }
+        return null;
     }
 
     /**
