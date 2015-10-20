@@ -6,6 +6,7 @@ import android.util.Log;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
+import com.wisape.android.api.ApiStory;
 import com.wisape.android.common.StoryManager;
 import com.wisape.android.database.StoryEntity;
 import com.wisape.android.model.StoryInfo;
@@ -42,7 +43,7 @@ public class StoryDownloader implements Runnable {
         try {
             while (isRunning) {
                 StoryEntity story = downloadQueue.poll(30, TimeUnit.SECONDS);
-                if (null != story) {
+                if (null != story && !story.status.equals(ApiStory.AttrStoryInfo.STORY_DEFAULT)) {
                     download(story);
                 } else {
                     isRunning = false;

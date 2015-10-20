@@ -50,6 +50,7 @@ public class StorySettingsActivity extends BaseActivity {
     @InjectView(R.id.story_settings_gesture)
     protected AppCompatTextView storyGestureTxtv;
 
+    private String thumbImage;
     private StoryEntity storyEntity;
 
     @Override
@@ -70,7 +71,15 @@ public class StorySettingsActivity extends BaseActivity {
         if (!Utils.isEmpty(storyDesc)) {
             storyDescEdit.setText(storyDesc);
         }
-        Utils.loadImg(this,storyEntity.storyThumbUri,storyBgView);
+
+        File storyDirectory = new File(StoryManager.getStoryDirectory(), storyEntity.storyLocal);
+        File coverFile = new File (storyDirectory, "thumb.jpg");
+        if (coverFile.exists()){
+            thumbImage = coverFile.getAbsolutePath();
+        }else{
+            thumbImage = storyEntity.storyThumbUri;
+        }
+        Utils.loadImg(this,thumbImage,storyBgView);
 
         String storyMusicName = storyEntity.storyMusicName;
         if (!Utils.isEmpty(storyMusicName)) {

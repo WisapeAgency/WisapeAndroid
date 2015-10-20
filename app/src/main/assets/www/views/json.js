@@ -1,2 +1,41 @@
-<div class="stage-content edit-area pages-img pages-img-bg" style=" text-align:center;word-break:break-all;display: box;display: -webkit-box;display: -moz-box;-webkit-box-pack:center;-moz-box-pack:center;-webkit-box-align:center;-moz-box-align:center;background: url(/mnt/sdcard/wisape/com.wisape.android/data/template/ume/img/bg.jpg?type=stage&id=98);background-size: cover;background-position:50% 50%;width:100%;height:100%;position: relative;">                    <div class="stage-content-box" style="-webkit-transform-origin:0 0;">                                                <div style="float:left;width:12.14rem;margin:3.5rem 1.929rem;padding:5.18rem 0 1.18rem 0;background-color: rgba(255,255,255,0.5);border-radius: 0.5rem;position:relative;">                        	<div class="symbol" style="z-index: 999; display: inline-block;top: -2rem; position: absolute; left:50%;margin-left: -3rem;">	                            <div class="pages-img edit-area">	                                <img data-name="img1" style="width:5.4rem;height:5.4rem;border-radius: 2.7rem;border:0.3rem solid #fff;" src="/mnt/sdcard/wisape/com.wisape.android/data/template/ume/img/t.jpg?type=stage&id=98"></div>	                        </div>                            <div class="symbol" style="z-index: 3;">                                <div class="pages-txt edit-area" style="font-size:0.78rem;color:#000;font-weight: bold">                                    JackeyWisape                                </div>                            </div>                            <div class="symbol" style="z-index: 3;">                                <div class="pages-txt edit-area" style="font-size:0.533rem;color:#000;">                                    Co-founder                                </div>                            </div>                            <div class="symbol" style="z-index: 3;">                                <div class="pages-txt edit-area" style="margin-top:1rem;font-size:0.444rem;line-height:0.888rem;color:#448aff;text-decoration:underline;">                                    Email: support@wisape.com<br>                                    Tel:(702) 825-1558<br>                                    Tel:(702) 825-1558<br>                                    Site:www.wisape.com<br>                                    Adress:Room 8001 California, Mountain View,<br>                                    Amphitheatre Pkwy                                </div>                            </div>                        </div>                    </div>                </div>            ,<div class="stage-content edit-area pages-img pages-img-bg" style="background: url(/mnt/sdcard/wisape/com.wisape.android/data/template/tpl4/img/bg.jpg);background-size: cover;background-position:50% 50%;width:100%;height:100%;">            <div class="symbol"  style="display:inline-block;">                <div class="pages-img edit-area"><img data-name="img1" style="" width="50" height="50" src="/mnt/sdcard/wisape/com.wisape.android/data/template/tpl4/img/icon-earth.png"/></div>            </div>            <div class="symbol" style="z-index: 3;">                <div class="pages-txt edit-area" data-animation="animated slideInUp" style="margin:20% 10% 0 10%;width:80%;color:#fff;text-align: center;font-size:20px;">asdfasdasfadsfasdf As c update of the classictranslation corpus, the combination of network                 </div>            </div>        </div>,<div class="stage-content edit-area pages-img pages-img-bg" style="background: url(/mnt/sdcard/wisape/com.wisape.android/data/template/tpl4/img/bg.jpg);background-size: cover;background-position:50% 50%;width:100%;height:100%;">            <div class="symbol"  style="display:inline-block;">                <div class="pages-img edit-area"><img data-name="img1" style="" width="50" height="50" src="/mnt/sdcard/wisape/com.wisape.android/data/template/tpl4/img/icon-earth.png"/></div>            </div>            <div class="symbol" style="z-index: 3;">                <div class="page
-10-17 20:53:39.041  17579-17579/? I/Web Console﹕
+server {
+    listen 80;
+    server_name hw.techyoo.cn;
+    access_log /alidata/log/nginx/hw.log;
+    location / {
+        root html;
+    index 		   index.html index.php index.htm
+    proxy_set_header   X-Real-IP            $remote_addr;
+    proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;
+    proxy_set_header   Host                   $http_host;
+    proxy_set_header   X-NginX-Proxy    true;
+    proxy_set_header   Connection "";
+    proxy_http_version 1.1;
+}
+
+location ~\.php$
+{
+    root /alidata/server/nginx/html;
+    fastcgi_pass 127.0.0.1:9000;
+    fastcgi_index index.php;
+    fastcgi_param SCRIPT_FILENAME  $document_root/$fastcgi_script_name;
+    include fastcgi_params;
+}
+}
+
+
+
+server {
+    listen 80;
+    server_name st.sd188.cn;
+    access_log /alidata/log/nginx/bs.log;
+    location / {
+        proxy_set_header   X-Real-IP            $remote_addr;
+    proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;
+    proxy_set_header   Host                   $http_host;
+    proxy_set_header   X-NginX-Proxy    true;
+    proxy_set_header   Connection "";
+    proxy_http_version 1.1;
+    proxy_pass         http://st_upstream/;
+        }
+}

@@ -4,11 +4,10 @@
     background-position: center center;
     width: 2.4rem;
     height: 2.4rem;
-    background-size: auto 70%;
+    background-size: auto 80%;
 }
 .icon-publish-circle{
     background-image: url(../img/icon-publish-circle.png);
-    background-size: auto 90%;
 }
 .icon-pencil-circle{
     background-image: url(../img/icon-pencil-circle.png);
@@ -17,5 +16,5 @@
     background-image: url(../img/icon-arrow-left-cirle.png);
 }
 .count {display: none;}
-#audio-btn {top:2.8rem;right:28px;}
+#audio-btn {width: 2.4rem;height: 2.4rem;background-size: auto 90%;background-position: 50% 50%;}
 

@@ -462,7 +462,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
         }
         try{
             FileUtils.copyFile(new File(storyThumb),
-                    new File(StoryManager.getStoryDirectory(), story.storyLocal + "/cover.jpg"));
+                    new File(StoryManager.getStoryDirectory(), story.storyLocal + "/thumb.jpg"));
         }catch (IOException e){
             LogUtil.e("生成封面出错", e);
         }
