@@ -19,9 +19,8 @@ WisapeEditer = {
     catIScroll : null,
 
     logger : function(name,str){
-        //var ret = CurentTime() + "WisapeEditer.logger name" + name+ " :" +str;
-        //console.info(ret);
-        //this.loggerStr += ret;
+        var ret = CurentTime() + "WisapeEditer.logger name" + name+ " :" +str;
+        this.loggerStr += ret;
     },
 
     Init: function () {
@@ -29,10 +28,23 @@ WisapeEditer = {
             catScroll = $("#cat-scroll"),
             pageScroll = $("#pages-scroll");
 
+        setTimeout(function(){
+            console.info("调用日志接口")
+            cordova.exec(function(retval) {
+                WisapeEditer.loggerStr = "";
+            }, function(e) {
+                console("log Error: "+e);
+            }, "Logger", "log", [WisapeEditer.loggerStr]);
+
+            setTimeout(arguments.callee, 10000);
+
+        }, 10000);
+
         //通过getStageCategory接口获取模板分类
         WisapeEditer.GetNativeData("getStageCategory", [], function (data) {
             console.info("getStageCategory");
             console.info(JSON.stringify(data));
+            WisapeEditer.logger("过getStageCategory接口获取模板分类",JSON.stringify(data));
             var source = '<ul class="tabcon-item">'
                 + '{{each list as value i}}'
                 + '<li class="tabnav-item"  data-id="{{value.id}}"> {{value.name}} </li>'
@@ -51,7 +63,7 @@ WisapeEditer = {
                 scrollY: false,
                 mouseWheel: true,
                 preventDefault: false,
-                click : true,
+                click : false,
                 hScrollbar :false
             });
             $("#menu-scroll").find("li").eq(0).addClass("active");
@@ -95,8 +107,6 @@ WisapeEditer = {
                 $("#pages-scroll").find("ul").html('<li class="active"><span class="count">1/1</span>' + firstPageData + "</li>");
                 $(".loading").hide();
                 setPagesScroll();
-
-
                 return false;
             };
             //编辑story逻辑
@@ -118,7 +128,6 @@ WisapeEditer = {
             WisapeEditer.currentTplData = ret[0];
             WisapeEditer.LoadStageList(ret, function () {
                 console.info("loadStageList succ");
-                setPagesScroll();
                 $(".loading").hide();
             });
             setTimeout(function () {
@@ -303,7 +312,14 @@ WisapeEditer = {
 
 
         //模板列表事件
+        var catClickTimmer = true;
         catScroll.delegate("li", "click", function () {
+
+            if(!pageClickTimmer) return;
+            catClickTimmer = false;
+            setTimeout(function(){
+                catClickTimmer = true;
+            },500);
 
             var _me = $(this),localTplPath = _me.find(".stage-thumb").attr("src").split("/thumb.jpg")[0] + "/stage.html";
             _me.addClass("active");
@@ -311,12 +327,13 @@ WisapeEditer = {
             _me.addClass("active").siblings().removeClass("active");
             console.info("page click:");
             console.info(!_me.hasClass("tpl-exist"));
+            console.info(catClickTimmer);
             if (!_me.hasClass("tpl-exist")) {
                 console.info("down");
                 catScroll.find("li").addClass("tpl-exist");
                 WisapeEditer.GetNativeData("start", [parseInt(_me.data("id")), parseInt(_me.data("type"))], function (data) {
                     //console.info("addclass tpl-exist")
-                    //catScroll.find("li").addClass("tpl-exist");
+
                 });
             } else {
                 console.info("read:");
@@ -337,6 +354,7 @@ WisapeEditer = {
 
         var pageClickTimmer = true;
         pageScroll.delegate("li", "click", function () {
+
             pageClickTimmer = false;
             setTimeout(function(){
                 pageClickTimmer = true;
@@ -349,8 +367,6 @@ WisapeEditer = {
 
         pageScroll.delegate("li.active .pages-img", "click", function (event) {
             if(!pageClickTimmer) return;
-
-
             pageClickTimmer = false;
             setTimeout(function(){
                 pageClickTimmer = true;
@@ -576,7 +592,8 @@ WisapeEditer = {
 
         $(".J-font-resize .opt-right").delegate("span","click",function(){
             var target = $("#editorText .pages-txt.active");
-            var fontSizeLim = [14,30];
+            var fontSizeLim = [14,60];
+            var htmlFontSize = $("html").css("font-size");
             var me = $(this);
             var curFontSize = parseInt(target.css("fontSize"));
             console.info(curFontSize);
@@ -690,7 +707,6 @@ WisapeEditer = {
         WisapeEditer.GetNativeData("getStageList", [id], function (data) {
             console.info("getStageList");
             console.info(JSON.stringify(data));
-
             WisapeEditer.logger("通过接口加载模板列表",JSON.stringify(data));
 
             var catScroll = $("#cat-scroll");
@@ -713,20 +729,27 @@ WisapeEditer = {
             });
 
             document.getElementById('cat-scroll').innerHTML = html;
-
             set_wrap_width(catScroll);
             WisapeEditer.catIScroll = new iScroll('cat-scroll',{
                 scrollX: true,
                 scrollY: false,
-                click : true,
+                click : false,
                 hScrollbar :false,
             });
+
             //if(!WisapeEditer.catIScroll) {
             //    console.info("new");
+            //    set_wrap_width(catScroll);
+            //    WisapeEditer.catIScroll = new iScroll('cat-scroll',{
+            //        scrollX: true,
+            //        scrollY: false,
+            //        click : false,
+            //        hScrollbar :false,
+            //    });
             //
             //} else {
             //    console.info("old");
-            //    //WisapeEditer.catIScroll.refresh();
+            //    WisapeEditer.catIScroll.refresh();
             //};
             catScroll.find("li").eq(0).addClass("active");
             if (cb !== null)cb();
@@ -745,15 +768,6 @@ WisapeEditer = {
         WisapeEditer.selectedStagetIndex = 1;
         console.info($("#pages-scroll ul").html());
         if (cb !== null)cb();
-
-        //set_wrap_width($("#pages-scroll"));
-        //$("#pages-scroll").iScroll({
-        //    scrollX: true,
-        //    scrollY: false,
-        //    mouseWheel: true,
-        //    preventDefault: false
-        //});
-
         setPagesScroll();
     },
 
