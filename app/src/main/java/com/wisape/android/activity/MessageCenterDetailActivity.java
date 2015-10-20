@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
 import android.text.Html;
-import android.text.TextUtils;
 import android.widget.TextView;
 
 import com.wisape.android.R;

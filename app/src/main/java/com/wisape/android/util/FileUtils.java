@@ -115,7 +115,7 @@ public class FileUtils {
             String base64 = Base64.encodeToString(data, Base64.DEFAULT);
             return base64;
         } catch (IOException e) {
-            return null;
+            return "";
         } finally {
             try {
                 if (null != inputStream) {

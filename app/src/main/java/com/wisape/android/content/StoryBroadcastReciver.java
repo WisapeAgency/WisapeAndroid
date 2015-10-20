@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.wisape.android.model.StoryInfo;
+import com.wisape.android.util.LogUtil;
 
 /**
  * story设置广播接收器
@@ -29,14 +30,14 @@ public class StoryBroadcastReciver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.e(TAG,"收到修改story消息:" + intent.getExtras().getInt(EXTRAS_TYPE));
+        LogUtil.d("收到推送消息更新首页story信息" );
         if(!isDestoyed){
             listener.storyStateChange(intent.getExtras().getInt(EXTRAS_TYPE));
         }
     }
 
     public void destory(){
-        Log.e(TAG,"销毁活动广播接收器");
+        LogUtil.d("销毁更新首页story广播接收器");
         isDestoyed = true;
         listener = null;
     }

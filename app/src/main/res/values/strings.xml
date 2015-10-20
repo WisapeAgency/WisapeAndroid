@@ -16,7 +16,7 @@
     <string name="exit_login">Logout</string>
     <string name="exit_login_notice_text">Do you exit the current account?\n
        Logout will not delete any data.You\ncan still login with this account.</string>
-    <string name="my_stores">My Stories</string>
+    <string name="my_stores">My Story</string>
 
 
     <!-- Photo Selector -->
@@ -78,7 +78,7 @@
     <string name="story_settings_music_title">故事背景音乐</string>
     <string name="story_settings_gesture_title">翻页手势</string>
     <string name="story_music_label">背景音乐</string>
-    <string name="story_music_download_toast">正在下载音乐...</string>
+    <string name="story_music_download_toast">downloading music</string>
     <string name="story_music_download_error">音乐下载失败</string>
     <string name="story_release_label">故事发布</string>
     <string name="story_release_share_title">分享到</string>

@@ -20,6 +20,7 @@ import com.wisape.android.database.StoryEntity;
 import com.wisape.android.http.HttpUrlConstancts;
 import com.wisape.android.logic.StoryLogic;
 import com.wisape.android.logic.UserLogic;
+import com.wisape.android.util.LogUtil;
 import com.wisape.android.util.Utils;
 import com.wisape.android.widget.QrDialogFragment;
 
@@ -96,7 +97,8 @@ public class StoryReleaseActivity extends BaseActivity {
             thumbImage = storyEntity.storyThumbUri;
         }
         Utils.loadImg(this,thumbImage, storyCoverView);
-        storyUrl = HttpUrlConstancts.SHARE_URL + storyEntity.storyServerId;
+        storyUrl = storyEntity.storyUri;
+        LogUtil.d("封面地址:" + thumbImage + "story地址:" + storyUrl);
     }
 
     @OnClick(R.id.linear_picture)
@@ -208,7 +210,7 @@ public class StoryReleaseActivity extends BaseActivity {
     @SuppressWarnings("unused")
     protected void doShare2Moments() {
         WechatMoments.ShareParams shareParams = new WechatMoments.ShareParams();
-        shareParams.setImageUrl(thumbImage);
+        shareParams.setImageUrl(storyEntity.storyThumbUri);
         shareParams.setUrl(storyUrl);
         shareParams.setTitle(storyNameEdit.getText().toString());
         shareParams.setText(storyDescEdit.getText().toString());
@@ -221,7 +223,7 @@ public class StoryReleaseActivity extends BaseActivity {
     @SuppressWarnings("unused")
     protected void doShare2WeChat() {
         Wechat.ShareParams shareParams = new Wechat.ShareParams();
-        shareParams.setImageUrl(thumbImage);
+        shareParams.setImageUrl(storyEntity.storyThumbUri);
         shareParams.setUrl(storyUrl);
         shareParams.setTitle(storyNameEdit.getText().toString());
         shareParams.setText(storyDescEdit.getText().toString());
@@ -234,7 +236,7 @@ public class StoryReleaseActivity extends BaseActivity {
     @SuppressWarnings("unused")
     protected void doShare2CopyUrl() {
         Utils.clipText(this, storyUrl);
-        Toast.makeText(this, "链接已经复制到剪贴板", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "copy url", Toast.LENGTH_SHORT).show();
     }
 
     @OnClick(R.id.story_release_linkedin)
@@ -243,7 +245,7 @@ public class StoryReleaseActivity extends BaseActivity {
         LinkedIn.ShareParams shareParams = new LinkedIn.ShareParams();
         shareParams.setTitle(storyNameEdit.getText().toString());
         shareParams.setTitleUrl(storyUrl);
-        shareParams.setImageUrl(thumbImage);
+        shareParams.setImageUrl(storyEntity.storyThumbUri);
         shareParams.setText(storyUrl);
         startShare(LinkedIn.NAME, shareParams);
     }
@@ -252,7 +254,7 @@ public class StoryReleaseActivity extends BaseActivity {
     @SuppressWarnings("unused")
     protected void doShare2Facebook() {
         Facebook.ShareParams shareParams = new Facebook.ShareParams();
-        shareParams.setImageUrl(thumbImage);
+        shareParams.setImageUrl(storyEntity.storyThumbUri);
         shareParams.setText(storyUrl);
         startShare(Facebook.NAME, shareParams);
     }
@@ -262,7 +264,7 @@ public class StoryReleaseActivity extends BaseActivity {
     protected void doShare2Messenger() {
         FacebookMessenger.ShareParams shareParams = new FacebookMessenger.ShareParams();
         shareParams.setAddress(UserLogic.instance().getUserInfoFromLocal().user_email);
-        shareParams.setImageUrl(thumbImage);
+        shareParams.setImageUrl(storyEntity.storyThumbUri);
         shareParams.setTitle(storyEntity.storyName);
         shareParams.setText(storyUrl);
         startShare(FacebookMessenger.NAME, shareParams);
@@ -273,7 +275,7 @@ public class StoryReleaseActivity extends BaseActivity {
     protected void doShare2GooglePlus() {
         GooglePlus.ShareParams shareParams = new GooglePlus.ShareParams();
         shareParams.setText(storyUrl);
-        shareParams.setImageUrl(thumbImage);
+        shareParams.setImageUrl(storyEntity.storyThumbUri);
         startShare(GooglePlus.NAME, shareParams);
     }
 
@@ -281,7 +283,7 @@ public class StoryReleaseActivity extends BaseActivity {
     @SuppressWarnings("unused")
     protected void doShare2Twitter() {
         Twitter.ShareParams shareParams = new Twitter.ShareParams();
-        shareParams.setImageUrl(thumbImage);
+        shareParams.setImageUrl(storyEntity.storyThumbUri);
         shareParams.setText(storyUrl);
         startShare(Twitter.NAME, shareParams);
     }
@@ -292,7 +294,7 @@ public class StoryReleaseActivity extends BaseActivity {
     protected void doShare2Email() {
         Email.ShareParams shareParams = new Email.ShareParams();
         shareParams.setAddress(UserLogic.instance().getUserInfoFromLocal().user_email);
-        shareParams.setImageUrl(thumbImage);
+        shareParams.setImageUrl(storyEntity.storyThumbUri);
         shareParams.setTitle(storyEntity.storyName);
         shareParams.setText(storyUrl);
         startShare(Email.NAME, shareParams);
@@ -304,7 +306,7 @@ public class StoryReleaseActivity extends BaseActivity {
         ShortMessage.ShareParams shareParams = new ShortMessage.ShareParams();
         shareParams.setTitle(storyNameEdit.getText().toString());
         shareParams.setText(storyUrl);
-        shareParams.setImageUrl(thumbImage);
+        shareParams.setImageUrl(storyEntity.storyThumbUri);
         startShare(ShortMessage.NAME, shareParams);
     }
 
@@ -332,17 +334,20 @@ public class StoryReleaseActivity extends BaseActivity {
         platform.setPlatformActionListener(new PlatformActionListener() {
             @Override
             public void onComplete(Platform platform, int i, HashMap<String, Object> hashMap) {
-                showToast(platName + "分享成功");
+                LogUtil.d(platName + "分享成功");
+                showToast(platName + " publish success");
             }
 
             @Override
             public void onError(Platform platform, int i, Throwable throwable) {
-                showToast(platName + "分享失败");
+                LogUtil.e(platName + "分享成功失败",throwable);
+                showToast(platName + " publish failure");
             }
 
             @Override
             public void onCancel(Platform platform, int i) {
-                showToast(platName + "分享取消");
+                LogUtil.d(platName + "分享成功");
+                showToast(platName + " public cancle");
             }
         });
         platform.share(shareParams);

@@ -69,6 +69,7 @@ public class OkhttpUtil {
             if (response.isSuccessful()) {
                 String body = response.body().string();
                 JSONObject jsonObject = JSON.parseObject(body);
+                LogUtil.d("网络"+ url + "返回数据:" + body);
                 if (SERVER_RESPONSE_SUCCESS == jsonObject.getIntValue(KEY_RESPONSE_SUCCESS)) {
                     return JSONObject.parseObject(jsonObject.getJSONObject(KEY_RESPONSE_DATA).toJSONString(), clazz);
                 } else {
@@ -93,6 +94,7 @@ public class OkhttpUtil {
                 String body = response.body().string();
                 Log.e(TAG, body);
                 JSONObject jsonObject = JSON.parseObject(body);
+                LogUtil.d("网络"+ url + "返回数据:" + body);
                 if (SERVER_RESPONSE_SUCCESS == jsonObject.getIntValue(KEY_RESPONSE_SUCCESS)) {
                     return JSONObject.parseArray(jsonObject.getJSONArray(KEY_RESPONSE_DATA).toJSONString(), clazz);
                 } else {
@@ -117,6 +119,7 @@ public class OkhttpUtil {
             String body = response.body().string();
             Log.e(TAG, body);
             JSONObject jsonObject = JSON.parseObject(body);
+            LogUtil.d("网络"+ url + "返回数据:"+ body);
             if (SERVER_RESPONSE_SUCCESS != jsonObject.getIntValue(KEY_RESPONSE_SUCCESS)) {
                 throw new IOException(jsonObject.getString(KEY_RESPONSE_MESSAGE));
             }

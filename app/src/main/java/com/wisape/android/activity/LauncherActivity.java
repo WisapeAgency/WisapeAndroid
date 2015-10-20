@@ -3,7 +3,6 @@ package com.wisape.android.activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 
 import com.wisape.android.R;
 import com.wisape.android.WisapeApplication;
@@ -18,8 +17,6 @@ import com.wisape.android.util.LogUtil;
  */
 public class LauncherActivity extends BaseActivity {
 
-    private static final String TAG = LauncherActivity.class.getSimpleName();
-
     private static final int LOADER_SIGN_UP = 1;
     private static final String ARG_USER_EMIAL = "user_email";
     private static final String ARG_USER_PWD = "user_pwd";
@@ -30,14 +27,13 @@ public class LauncherActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launch);
-        LogUtil.d("测试记录日志");
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try{
                     DataSynchronizer.getInstance().synchronous(WisapeApplication.getInstance().getApplicationContext());//
                 }catch (Exception e){
-                    Log.e(TAG,"同步数据失败:" + e.getMessage());
+                    LogUtil.e("数据同步失败:",e);
                 }
             }
         }).start();

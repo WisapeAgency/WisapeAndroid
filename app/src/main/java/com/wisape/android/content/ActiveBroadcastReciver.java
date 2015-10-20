@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.alibaba.fastjson.JSONObject;
 import com.wisape.android.activity.MainActivity;
+import com.wisape.android.util.LogUtil;
 import com.wisape.android.util.Utils;
 
 /**
@@ -48,9 +49,9 @@ public class ActiveBroadcastReciver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.e(TAG,"收到新的活动消息");
         if(!destroyed){
             JSONObject jsonObject = JSONObject.parseObject(intent.getExtras().getString(DATA_KEY));
+            LogUtil.d("收到活动中心推送消息:" + jsonObject.toJSONString());
             Utils.sendNotificatio(context, MainActivity.class, jsonObject.getInteger(MESSAGE_ID),
                     jsonObject.getString(MESSAGE_TITILE),
                     jsonObject.getString(MESSAGE_SUBJECT));
@@ -59,7 +60,7 @@ public class ActiveBroadcastReciver extends BroadcastReceiver {
     }
     
     public void destroy(){
-        Log.e(TAG,"销毁活动广播接收器");
+        LogUtil.d("销毁活动中心广播接收器");
         destroyed = true;
         broadcastReciverListener = null;
     }

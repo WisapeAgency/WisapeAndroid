@@ -255,21 +255,16 @@ public class StoryTemplatePlugin extends AbsPlugin {
             default:
                 return null;
             case WHAT_GET_STAGE_CATEGORY: {
-//                JSONArray jsonStr = logic.listStoryTemplateType(context, null);
                 JSONArray jsonStr = logic.listStoryTemplateTypeLocal(context);
+                LogUtil.d("模版分类信息:" + jsonStr);
                 callbackContext.success(jsonStr);
                 System.out.println(jsonStr.toString());
                 break;
             }
             case WHAT_GET_STAGE_LIST: {
-//                ApiStory.AttrTemplateInfo attr = new ApiStory.AttrTemplateInfo();
-//                attr.type = args.getInt(EXTRA_CATEGORY_ID, 0);
-//                StoryTemplateEntity[] entities = logic.listStoryTemplate(context, attr, null);
                 int type = args.getInt(EXTRA_CATEGORY_ID, 0);
-//                List<StoryTemplateInfo> entities = app.getTemplateMap().get(type);
                 List<StoryTemplateInfo> entities = logic.listStoryTemplateLocalByType(context, type);
-                System.out.println(entities.toString());
-//                System.out.println(entities.toString());
+                LogUtil.d("story模版信息:" + entities.toString());
                 callbackContext.success(new Gson().toJson(entities));
                 break;
             }
@@ -324,7 +319,6 @@ public class StoryTemplatePlugin extends AbsPlugin {
                         ,story);
                 StoryLogic.instance().saveStoryEntityToShare(storyEntity);
                 sendBroadcastUpdateStory();
-
                 if (!saveStory(myStory,story,storyThumb, html, paths)) {
                     callbackContext.error(-1);
                     return null;
@@ -338,6 +332,11 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 String html = args.getString(EXTRA_STORY_HTML);
                 String path = args.getString(EXTRA_FILE_PATH);
                 com.alibaba.fastjson.JSONArray paths = JSON.parseArray(path);
+
+                LogUtil.d("发布story前端返回的封面路径:"+storyThumb);
+                LogUtil.d("发布story前端返回的文件信息:"+html);
+                LogUtil.d("发布story前端返回的路径:"+paths.toJSONString());
+
                 StoryEntity story = StoryLogic.instance().getStoryEntityFromShare();
                 story.status = ApiStory.AttrStoryInfo.STORY_STATUS_TEMPORARY;
                 File myStory = new File(StoryManager.getStoryDirectory(), story.storyLocal);
@@ -369,6 +368,11 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 String html = args.getString(EXTRA_STORY_HTML);
                 String path = args.getString(EXTRA_FILE_PATH);
                 com.alibaba.fastjson.JSONArray paths = JSON.parseArray(path);
+
+                LogUtil.d("发布story前端返回的封面路径:"+storyThumb);
+                LogUtil.d("发布story前端返回的文件信息:"+html);
+                LogUtil.d("发布story前端返回的路径:"+paths.toJSONString());
+
                 StoryEntity story = StoryLogic.instance().getStoryEntityFromShare();
                 File myStory = new File(StoryManager.getStoryDirectory(), story.storyLocal);
                 if (!myStory.exists()) {
@@ -512,7 +516,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
             writer.println(footer);
             writer.close();
         } catch (IOException e) {
-            Log.e("saveStoryPreview", "", e);
+            LogUtil.e("保存预览story失败:", e);
             return false;
         } finally {
             if (writer != null) {
@@ -617,6 +621,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 content.append(line);
             }
             reader.close();
+            LogUtil.d("读取html文件内容:"+ content.toString());
             return content.toString();
         } catch (IOException e) {
             return "";

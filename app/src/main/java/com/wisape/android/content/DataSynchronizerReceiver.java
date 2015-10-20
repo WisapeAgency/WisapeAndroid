@@ -10,6 +10,7 @@ import com.wisape.android.WisapeApplication;
 import com.wisape.android.activity.MessageCenterDetailActivity;
 import com.wisape.android.activity.SignUpActivity;
 import com.wisape.android.network.DataSynchronizer;
+import com.wisape.android.util.LogUtil;
 import com.wisape.android.util.Utils;
 
 /**
@@ -38,7 +39,7 @@ public class DataSynchronizerReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.e(TAG,"收到数据同步消息");
+        LogUtil.d("收到数据同步消息");
         if(destroyed){
             return;
         }
@@ -50,14 +51,14 @@ public class DataSynchronizerReceiver extends BroadcastReceiver {
                 try{
                     DataSynchronizer.getInstance().synchronous(WisapeApplication.getInstance().getApplicationContext());//
                 }catch (Exception e){
-                    Log.e(TAG,"同步数据失败:" + e.getMessage());
+                    LogUtil.e("同步数据失败",e);
                 }
             }
         }).start();
     }
 
     public void destroy(){
-        Log.e(TAG,"销毁广播接收器");
+        LogUtil.d("销毁同步数据广播接收器");
         destroyed = true;
     }
 
