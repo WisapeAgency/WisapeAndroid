@@ -38,6 +38,7 @@ import com.wisape.android.network.Requester;
 import com.wisape.android.network.StoryDownloader;
 import com.wisape.android.util.EnvironmentUtils;
 import com.wisape.android.util.FileUtils;
+import com.wisape.android.util.LogUtil;
 import com.wisape.android.util.Utils;
 import com.wisape.android.util.ZipUtils;
 import com.wisape.android.widget.StoryMusicAdapter;
@@ -696,6 +697,7 @@ public class StoryLogic {
 
         /*获取本地草稿story并且进行实体转换*/
         List<StoryEntity> storyLocalEntityList = getUserStoryFromLocal(WisapeApplication.getInstance().getApplicationContext());
+
         storyEntitYList.addAll(storyLocalEntityList);
 
         Message message = Message.obtain();
@@ -883,7 +885,7 @@ public class StoryLogic {
             database.setTransactionSuccessful();
             return resultEntity;
         } catch (SQLException e) {
-            Log.e(TAG, e.getMessage());
+            LogUtil.e("更新本地story数据库错误:", e);
             return null;
         } finally {
             database.endTransaction();
@@ -918,7 +920,6 @@ public class StoryLogic {
             storyEntity = updateStory(WisapeApplication.getInstance(), storyEntity);
             StoryLogic.instance().saveStoryEntityToShare(storyEntity);
             message.obj = storyEntity;
-
         } catch (Exception e) {
             message.arg1 = HttpUrlConstancts.STATUS_EXCEPTION;
             message.obj = e.getMessage();

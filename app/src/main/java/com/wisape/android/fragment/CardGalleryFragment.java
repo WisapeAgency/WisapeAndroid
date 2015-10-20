@@ -9,6 +9,7 @@ import android.os.Message;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -16,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -36,6 +38,7 @@ import com.wisape.android.http.HttpUrlConstancts;
 import com.wisape.android.logic.StoryLogic;
 import com.wisape.android.logic.UserLogic;
 import com.wisape.android.util.FileUtils;
+import com.wisape.android.util.LogUtil;
 import com.wisape.android.util.Utils;
 import com.wisape.android.view.GalleryView;
 import com.wisape.android.widget.PopupWindowMenu;
@@ -109,7 +112,7 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
 
     private void initView() {
         popupWindow = new PopupWindowMenu((BaseActivity) getActivity(), this);
-        mCardGallery.setSpace((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 30, mDisplayMetrics));
+        mCardGallery.setSpace((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 26, mDisplayMetrics));
         Bundle bundle = new Bundle();
         bundle.putString(EXTRAS_ACCESS_TOKEN, UserLogic.instance().getUserInfoFromLocal().access_token);
         startLoadWithProgress(LOADER_STORY, bundle);
@@ -142,12 +145,12 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
                 }
                 break;
             case LOADER_EDIT_STORY:
-
                 File editFile = new File(StoryManager.getStoryDirectory(), StoryLogic.instance().getStoryEntityFromShare().storyLocal + "/story.html");
                 String data = FileUtils.readFileToString(editFile);
+                LogUtil.d("首页编辑story:" + data);
                 if (Utils.isEmpty(data)) {
                     message.arg1 = HttpUrlConstancts.STATUS_EXCEPTION;
-                    message.obj = "获取story数据出错";
+                    message.obj = "Get StoryInfo Failure";
                 } else {
                     message.arg1 = HttpUrlConstancts.STATUS_SUCCESS;
                     message.obj = data;
@@ -189,7 +192,7 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
                 if (HttpUrlConstancts.STATUS_SUCCESS == data.arg1) {
                     storyEntityList = (List<StoryEntity>) data.obj;
                     if (0 == storyEntityList.size()) {
-                        showToast("no story");
+                        showToast("No Story");
                     } else {
                         mGalleryAdapter = new GalleryAdapter();
                         mCardGallery.setAdapter(mGalleryAdapter);
@@ -202,7 +205,7 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
                 if (data.arg1 == HttpUrlConstancts.STATUS_SUCCESS) {
                     deleteData();
                 } else {
-                    showToast("删除story失败");
+                    showToast("Delete Story Failure");
                 }
                 break;
             case LOADER_PREVIEW_STORY:
@@ -210,7 +213,7 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
                     StoryPreviewActivity.launch(getActivity(), (String) data.obj);
 
                 } else {
-                    showToast("本地没有该story信息");
+                    showToast("No StoryInfo");
                 }
                 break;
             case LOADER_PUBLISH_STORY:
@@ -225,7 +228,7 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
                 if (HttpUrlConstancts.STATUS_SUCCESS == data.arg1) {
                     StoryTemplateActivity.launch(getActivity(), (String) data.obj, 0);
                 } else {
-                    showToast("本地没有该story信息");
+                    showToast("No StoryInfo");
                 }
                 break;
         }
@@ -413,9 +416,17 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
         mGalleryAdapter.notifyDataSetChanged();
     }
 
+    /**
+     * 保存预览文件
+     * @param previewFile
+     * @param html
+     * @param story
+     * @return
+     */
     private boolean saveStoryPreview(File previewFile, String html, StoryEntity story) {
         String header = getFromAssets(PREVIEW_HEADER);
         String footer = getFromAssets(PREVIEW_FOOTER);
+        LogUtil.d("首页点击预览story:" + html);
         PrintWriter writer = null;
         try {
             writer = new PrintWriter(previewFile, "utf-8");
@@ -463,6 +474,24 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
         @Override
         public void onBindViewHolder(GHolder holder, final int position) {
             final StoryEntity storyEntity = storyEntityList.get(position);
+            LinearLayout.LayoutParams params;
+            int denstiry = mDisplayMetrics.densityDpi;
+
+            float screenWidth = mDisplayMetrics.widthPixels;
+            float screenHeight = mDisplayMetrics.heightPixels;
+
+            float bili = screenWidth / screenHeight;
+            if(bili * 10 <= 6){
+                int width = (int)(mDisplayMetrics.widthPixels * 0.65);
+                int height = (int)(mDisplayMetrics.heightPixels * 0.67);
+                params = new LinearLayout.LayoutParams(width,height);
+            }else{
+                int width = (int)(mDisplayMetrics.widthPixels * 0.7);
+                int height = (int)(mDisplayMetrics.heightPixels * 0.73);
+                params = new LinearLayout.LayoutParams(width,height);
+            }
+
+            holder.linearLayout.setLayoutParams(params);
             holder.mTextEyecount.setText(storyEntity.viewNum + "");
             holder.mTextZanCount.setText(storyEntity.likeNum + "");
             holder.mTextStoryName.setText(storyEntity.storyName);
@@ -540,6 +569,8 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
         TextView mTextStoryName;
         @InjectView(R.id.main_story_more)
         ImageView imageShare;
+        @InjectView(R.id.liner_item)
+        LinearLayout linearLayout;
 
         public GHolder(View itemView) {
             super(itemView);

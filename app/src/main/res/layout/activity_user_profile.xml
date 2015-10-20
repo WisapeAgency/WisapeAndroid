@@ -32,10 +32,10 @@
     </LinearLayout>
 
 
-    <View
-        style="@style/Divider.ForList"
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp" />
+    <!--<View-->
+        <!--style="@style/Divider.ForList"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="0.5dp" />-->
 
     <LinearLayout
         android:id="@+id/linear_name"
@@ -63,10 +63,10 @@
             android:textSize="12sp" />
     </LinearLayout>
 
-    <View
-        style="@style/Divider.ForList"
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp" />
+    <!--<View-->
+        <!--style="@style/Divider.ForList"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="0.5dp" />-->
 
     <LinearLayout
         android:id="@+id/linear_email"

@@ -8,6 +8,7 @@ import android.util.Log;
 import com.alibaba.fastjson.JSONObject;
 import com.wisape.android.activity.MessageCenterDetailActivity;
 import com.wisape.android.activity.SignUpActivity;
+import com.wisape.android.util.LogUtil;
 import com.wisape.android.util.Utils;
 
 /**
@@ -57,19 +58,17 @@ public class MessageCenterReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.e(TAG,"消息中心收到消息");
+        JSONObject jsonObject = JSONObject.parseObject(intent.getExtras().getString(DATA_KEY));
+        LogUtil.d("收到推送消息:" + jsonObject.toJSONString());
         if(destroyed){
             return;
         }
-        JSONObject jsonObject = JSONObject.parseObject(intent.getExtras().getString(DATA_KEY));
         int typeKey = jsonObject.getInteger(MESSAGE_TYPE_KEY);
 
         if (LOGIN_OUT_BY_OHTER == typeKey) {
-            Log.e(TAG,"强制下线");
-            SignUpActivity.launch(context,"您在其他终端了!");
+            SignUpActivity.launch(context,"Login In Other");
             return;
         }
-
         Utils.sendNotificatio(context, MessageCenterDetailActivity.class,jsonObject.getInteger(MESSAGE_ID),
                 jsonObject.getString(MESSAGE_TITILE),
                 jsonObject.getString(MESSAGE_SUBJECT));
@@ -77,7 +76,7 @@ public class MessageCenterReceiver extends BroadcastReceiver {
     }
 
     public void destroy(){
-        Log.e(TAG,"销毁系统消息广播接收器");
+        LogUtil.d("销毁消息中心广播接收器");
         destroyed = true;
         broadcastReciverListener = null;
     }

@@ -11,7 +11,6 @@ import android.view.View;
 import com.freshdesk.mobihelp.Mobihelp;
 import com.freshdesk.mobihelp.MobihelpConfig;
 import com.wisape.android.R;
-import com.wisape.android.WisapeApplication;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -20,9 +19,6 @@ import butterknife.InjectView;
  * @author Duke
  */
 public class MainActivity extends BaseActivity implements DrawerLayout.DrawerListener {
-
-    private static final String TAG = MainActivity.class.getSimpleName();
-    public static final String EXTRA_USER_INFO = "_user_info";
 
     @InjectView(R.id.drawer)
     DrawerLayout drawer;
@@ -43,12 +39,6 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         drawer.setDrawerListener(this);
     }
 
-
-//    @Override
-//    protected void onSaveInstanceState(Bundle outState) {
-//        super.onSaveInstanceState(outState);
-//        outState.putParcelable(EXTRA_USER_INFO, WisapeApplication.getInstance().getUserInfo());
-//    }
 
     private void initStyle() {
         drawer.setScrimColor(Color.TRANSPARENT);

@@ -29,6 +29,7 @@ public class AboutActivity extends BaseActivity {
     private static final String ABOUT_TEAM_SERVICE = "custom/about/wap/term_service.html";
     private static final String ABOUT_CONTENT_SPECIFICATION = "custom/about/wap/content_specification.html";
     private static final String SHARE_URL = "uploads/app/app-release.apk";
+
     @InjectView(R.id.about_version_text)
     @SuppressWarnings("unused")
     protected TextView mVersionText;

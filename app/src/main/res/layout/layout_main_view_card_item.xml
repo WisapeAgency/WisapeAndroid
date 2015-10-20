@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto"
-    android:layout_width="234dp"
+    android:id="@+id/liner_item"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="16dp"
+        android:layout_height="14dp"
         android:background="@drawable/main_view_card_item_head" />
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -28,80 +27,76 @@
             android:layout_marginTop="15dp"
             android:background="@mipmap/icon_label"
             android:gravity="center" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:alpha="0.5"
-            android:background="@drawable/gallery_item_shadow_bg"
-            android:orientation="horizontal"
-            android:padding="10dp">
-
-            <TextView
-                android:id="@+id/text_eye_count"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="20dp"
-                android:layout_weight="1"
-                android:drawableLeft="@mipmap/icon_eye"
-                android:drawablePadding="3dp"
-                android:gravity="center|left"
-                android:textColor="@color/app_primary"
-                android:textSize="12sp" />
-
-            <TextView
-                android:id="@+id/text_zan_count"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="5dp"
-                android:layout_weight="1"
-                android:drawableLeft="@mipmap/icon_zan"
-                android:drawablePadding="3dp"
-                android:gravity="center|left"
-                android:textSize="12sp" />
-
-            <TextView
-                android:id="@+id/text_share_count"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="5dp"
-                android:layout_weight="1"
-                android:drawableLeft="@mipmap/icon_share"
-                android:drawablePadding="3dp"
-                android:gravity="center|left"
-                android:textSize="12sp"
-                android:visibility="gone" />
-
-            <ImageView
-                android:layout_width="1dp"
-                android:layout_height="15dp"
-                android:layout_gravity="center"
-                android:layout_marginLeft="20dp"
-                android:background="@color/app_primary" />
-
-            <ImageView
-                android:id="@+id/main_story_more"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:layout_marginLeft="10dp"
-                android:layout_weight="1"
-                android:scaleType="center"
-                android:src="@mipmap/icon_more" />
-
-        </LinearLayout>
     </RelativeLayout>
 
-    <!--</LinearLayout>-->
+    <LinearLayout
+        android:id="@+id/linear_share"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/gallery_item_shadow_bg"
+        android:orientation="horizontal"
+        android:padding="14dp">
 
+        <TextView
+            android:id="@+id/text_eye_count"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="20dp"
+            android:layout_weight="1"
+            android:drawableLeft="@mipmap/icon_eye"
+            android:drawablePadding="3dp"
+            android:gravity="center|left"
+            android:textColor="@color/app_primary"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/text_zan_count"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="1"
+            android:drawableLeft="@mipmap/icon_zan"
+            android:drawablePadding="3dp"
+            android:gravity="center|left"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/text_share_count"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="1"
+            android:drawableLeft="@mipmap/icon_share"
+            android:drawablePadding="3dp"
+            android:gravity="center|left"
+            android:textSize="12sp"
+            android:visibility="gone" />
+
+        <ImageView
+            android:layout_width="1dp"
+            android:layout_height="15dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="20dp"
+            android:background="@color/app_primary" />
+
+        <ImageView
+            android:id="@+id/main_story_more"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="1"
+            android:scaleType="center"
+            android:src="@mipmap/icon_more" />
+
+    </LinearLayout>
     <TextView
         android:id="@+id/story_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:gravity="center"
-        android:textColor="#2d3437"
-        android:textSize="24sp" />
-
+        android:textColor="@color/app_sixth_transparent_50p"
+        android:textSize="16sp" />
+[
 </LinearLayout>
