@@ -264,6 +264,7 @@ public class FileUtils {
                 }
             }
         }
+        LogUtil.d("读取文件为字符串:" + local.toString());
         return local.toString();
     }
 
