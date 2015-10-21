@@ -85,8 +85,6 @@ WisapeEditer = {
 
     LoadDefaultData : function(data){
 
-
-
         var firstPageData = data;
         console.info("firstPageData:" + firstPageData);
         WisapeEditer.logger("firstPageData:",firstPageData);
@@ -593,27 +591,30 @@ WisapeEditer = {
         $(".J-font-resize .opt-right").delegate("span","click",function(){
             var target = $("#editorText .pages-txt.active");
             var fontSizeLim = [14,60];
-            var htmlFontSize = $("html").css("font-size");
+            var htmlFontSize = parseInt($("html").css("font-size"));
             var me = $(this);
-            var curFontSize = parseInt(target.css("fontSize"));
+            var curFontSize = parseFloat(target.css("fontSize"))/htmlFontSize;
             console.info(curFontSize);
             if(me.hasClass("J-font-reduce")) {
-                curFontSize--;
-                if(curFontSize < fontSizeLim[0]) {
-                    me.addClass("disable") ;
-                    return;
-                }
-            } else {
-                curFontSize++;
-                if(curFontSize > fontSizeLim[1]) {
-                    me.addClass("disable") ;
-                    return ;
-                }
+                curFontSize -= 0.1;
+                //if(curFontSize < fontSizeLim[0]) {
+                //    me.addClass("disable") ;
+                //    return;
+                //}
+            }
+            if(me.hasClass("J-font-add")){
+                curFontSize += 0.1;
+                //if(curFontSize > fontSizeLim[1]) {
+                //    me.addClass("disable") ;
+                //    return ;
+                //}
+                console.info("add");
             }
             if(curFontSize != fontSizeLim[0] && curFontSize != fontSizeLim[1]){
                 $(".J-font-resize .opt-right span").removeClass("disable");
             }
-            target.css({"font-size": curFontSize + "px"});
+            console.info(curFontSize/htmlFontSize);
+            target.css({"font-size": curFontSize + "rem"});
         });
 
         $("#setFontLink").click(function () {
@@ -692,10 +693,8 @@ WisapeEditer = {
                 preAnimation = animtionClassName;
                 $(".opt-animation-val i").attr({"class":$('i[data-animation=' + me.data("animation") + ']').attr("class")}).show();
                 console.info(selected.parent().html());
-            }
-            ;
+            };
             console.info(selected.length);
-
             console.info(selected.hasClass(animtionClassName));
         })
 
@@ -707,6 +706,7 @@ WisapeEditer = {
         WisapeEditer.GetNativeData("getStageList", [id], function (data) {
             console.info("getStageList");
             console.info(JSON.stringify(data));
+
             WisapeEditer.logger("通过接口加载模板列表",JSON.stringify(data));
 
             var catScroll = $("#cat-scroll");
@@ -852,6 +852,7 @@ WisapeEditer = {
     GetNativeData: function (fn, params, cb) {
         cordova.exec(function (retval) {
             console.info(fn + "exec: " + retval);
+            WisapeEditer.logger(fn + "exec: ",retval);
             cb(retval);
         }, function (e) {
             console.info(fn + " Error: " + e);
@@ -958,30 +959,6 @@ function setPagesScroll() {
     } else {
         WisapeEditer.pagesIScroll.refresh();
     }
-
-    //$("#pages-scroll").iScroll({
-    //    scrollX: true,
-    //    scrollY: false,
-    //    mouseWheel: true,
-    //    preventDefault: false,
-    //    hScrollbar :false,
-    //    click :true
-    //});
-
-    //set_wrap_width($("#pages-scroll"));
-    //var  myScroll = new IScroll('#pages-scroll', { scrollX: true, scrollY: false,click : true});
-    //var scrollLimt = parseInt($("body").width())*0.7
-    ////myScroll.on("scrollMove",setScrollActive);
-    //myScroll.on("scrollEnd",setScrollActive);
-    //function setScrollActive(){
-    //    console.info(myScroll.x);
-    //    console.info($("#pages-scroll").width());
-    //    if(myScroll.x == 0 ){
-    //        $("#pages-scroll li").removeClass("active").eq(0).addClass("active");
-    //    } else {
-    //        $("#pages-scroll li").removeClass("active").eq(parseInt(Math.abs(myScroll.x/scrollLimt)) + 1).addClass("active");
-    //    }
-    //}
 }
 
 var Dialog = {
