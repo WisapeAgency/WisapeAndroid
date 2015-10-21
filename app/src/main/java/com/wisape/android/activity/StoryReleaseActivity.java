@@ -26,6 +26,7 @@ import com.wisape.android.widget.QrDialogFragment;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.logging.Handler;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -335,23 +336,34 @@ public class StoryReleaseActivity extends BaseActivity {
             @Override
             public void onComplete(Platform platform, int i, HashMap<String, Object> hashMap) {
                 LogUtil.d(platName + "分享成功");
-                showToast(platName + " publish success");
+                Message message = Message.obtain();
+                message.obj = platName + " publish success";
+                handler.sendMessage(message);
             }
 
             @Override
             public void onError(Platform platform, int i, Throwable throwable) {
                 LogUtil.e(platName + "分享成功失败",throwable);
-                showToast(platName + " publish failure");
-            }
+                Message message = Message.obtain();
+                message.obj = platName + " publish failure,not client";
+                handler.sendMessage(message);            }
 
             @Override
             public void onCancel(Platform platform, int i) {
-                LogUtil.d(platName + "分享成功");
-                showToast(platName + " public cancle");
-            }
+                Message message = Message.obtain();
+                message.obj = platName + " publish cancle";
+                handler.sendMessage(message);            }
         });
         platform.share(shareParams);
     }
+
+    android.os.Handler handler = new android.os.Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            showToast((String)msg.obj);
+        }
+    };
+
 
     @Override
     protected void onDestroy() {

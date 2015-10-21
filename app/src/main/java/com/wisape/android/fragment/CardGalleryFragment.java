@@ -475,39 +475,39 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
         public void onBindViewHolder(GHolder holder, final int position) {
             final StoryEntity storyEntity = storyEntityList.get(position);
             LinearLayout.LayoutParams params;
-            int denstiry = mDisplayMetrics.densityDpi;
-
             float screenWidth = mDisplayMetrics.widthPixels;
             float screenHeight = mDisplayMetrics.heightPixels;
 
             float bili = screenWidth / screenHeight;
             if(bili * 10 <= 6){
-                int width = (int)(mDisplayMetrics.widthPixels * 0.65);
-                int height = (int)(mDisplayMetrics.heightPixels * 0.67);
-                params = new LinearLayout.LayoutParams(width,height);
-            }else{
                 int width = (int)(mDisplayMetrics.widthPixels * 0.7);
-                int height = (int)(mDisplayMetrics.heightPixels * 0.73);
+                int height = (int)((mDisplayMetrics.heightPixels - 54) * 0.74);
                 params = new LinearLayout.LayoutParams(width,height);
+
+            }else{
+                int width = (int)(mDisplayMetrics.widthPixels * 0.78);
+                int height = (int)((mDisplayMetrics.heightPixels - 54) * 0.85);
+                params = new LinearLayout.LayoutParams(width,height);
+
             }
 
             holder.linearLayout.setLayoutParams(params);
             holder.mTextEyecount.setText(storyEntity.viewNum + "");
             holder.mTextZanCount.setText(storyEntity.likeNum + "");
             holder.mTextStoryName.setText(storyEntity.storyName);
+
             if (ApiStory.AttrStoryInfo.STORY_DEFAULT.equals(storyEntity.status)) {
-                holder.mTextStoryState.setText("默认");
+                holder.mTextStoryState.setText("default");
             }
             if (ApiStory.AttrStoryInfo.STORY_STATUS_TEMPORARY.equals(storyEntity.status)) {
-                holder.mTextStoryState.setText("草稿");
+                holder.mTextStoryState.setText("draft");
             }
             if (ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE.equals(storyEntity.status)) {
-                holder.mTextStoryState.setText("已发布");
+                holder.mTextStoryState.setText("published");
             }
             File storyDirectory = new File(StoryManager.getStoryDirectory(), storyEntity.storyLocal);
             File coverFile = new File (storyDirectory, "thumb.jpg");
             if (coverFile.exists()){
-                Picasso.with(getActivity()).invalidate(coverFile);
                 Picasso.with(getActivity()).load(coverFile)
                         .fit()
                         .centerCrop()

@@ -17,10 +17,11 @@
 
         <ImageView
             android:id="@+id/menu_switch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="46dp"
+            android:layout_height="46dp"
             android:layout_gravity="center_vertical"
-            android:background="@mipmap/icon_nav"
+            android:src="@mipmap/icon_nav"
+            android:scaleType="center"
             android:layout_marginLeft="24dp"/>
 
         <TextView
@@ -35,10 +36,12 @@
 
             <ImageView
                 android:id="@+id/gift"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:background="@mipmap/activity" />
+                android:layout_width="46dp"
+                android:layout_height="46dp"
+                android:layout_gravity="left|center"
+                android:layout_marginRight="12dp"
+                android:scaleType="center"
+                android:src="@mipmap/activity" />
 
             <TextView
                 android:id="@+id/gift_count"
@@ -49,7 +52,7 @@
                 android:paddingRight="5dp"
                 android:text="0"
                 android:layout_marginTop="-5dp"
-                android:layout_marginLeft="-4dp"
+                android:layout_marginLeft="-32dp"
                 android:textSize="12sp"
                 android:visibility="gone"/>
     </LinearLayout>

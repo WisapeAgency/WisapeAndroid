@@ -53,7 +53,7 @@
             android:id="@+id/text_zan_count"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_marginLeft="5dp"
+            android:layout_marginLeft="23dp"
             android:layout_weight="1"
             android:drawableLeft="@mipmap/icon_zan"
             android:drawablePadding="3dp"
@@ -73,16 +73,18 @@
             android:visibility="gone" />
 
         <ImageView
-            android:layout_width="1dp"
-            android:layout_height="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
             android:layout_gravity="center"
             android:layout_marginLeft="20dp"
-            android:background="@color/app_primary" />
+            android:background="@mipmap/icon_separator" />
 
         <ImageView
             android:id="@+id/main_story_more"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_marginTop="-12dp"
+            android:layout_marginBottom="-14dp"
             android:layout_gravity="center"
             android:layout_marginLeft="10dp"
             android:layout_weight="1"

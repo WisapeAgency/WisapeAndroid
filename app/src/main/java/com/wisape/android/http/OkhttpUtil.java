@@ -42,8 +42,12 @@ public class OkhttpUtil {
                 .url(url)
                 .post(requestBody)
                 .build();
-        Response response = mOkHttpClient.newCall(request).execute();
-
+        Response response = null;
+        try {
+            response = mOkHttpClient.newCall(request).execute();
+        } catch (IOException e) {
+            throw new IOException("No Internet Connection");
+        }
         if (response.isSuccessful()) {
             String body = response.body().string();
             Log.e(TAG, body);
@@ -64,50 +68,55 @@ public class OkhttpUtil {
         url = HttpUtils.getUrlWithParas(url, params);
         Log.e(TAG, url);
         Request request = new Request.Builder().url(url).build();
+        Response response = null;
         try {
-            Response response = mOkHttpClient.newCall(request).execute();
-            if (response.isSuccessful()) {
-                String body = response.body().string();
-                JSONObject jsonObject = JSON.parseObject(body);
-                LogUtil.d("网络"+ url + "返回数据:" + body);
-                if (SERVER_RESPONSE_SUCCESS == jsonObject.getIntValue(KEY_RESPONSE_SUCCESS)) {
-                    return JSONObject.parseObject(jsonObject.getJSONObject(KEY_RESPONSE_DATA).toJSONString(), clazz);
-                } else {
-                    throw new IOException(jsonObject.getString(KEY_RESPONSE_MESSAGE));
-                }
-
-            } else {
-                throw new IOException("No Internet Connection");
-            }
+            response = mOkHttpClient.newCall(request).execute();
         } catch (IOException e) {
             throw new IOException("No Internet Connection");
         }
+        if (response.isSuccessful()) {
+            String body = response.body().string();
+            LogUtil.d("网络" + url + "返回数据:" + body);
+
+            JSONObject jsonObject = JSON.parseObject(body);
+            if (SERVER_RESPONSE_SUCCESS == jsonObject.getIntValue(KEY_RESPONSE_SUCCESS)) {
+                return JSONObject.parseObject(jsonObject.getJSONObject(KEY_RESPONSE_DATA).toJSONString(), clazz);
+            } else {
+                throw new IOException(jsonObject.getString(KEY_RESPONSE_MESSAGE));
+            }
+
+        } else {
+            throw new IOException("No Internet Connection");
+        }
+
     }
 
     public static <T> List<T> execute(Map<String, String> params, String url, Class<T> clazz) throws IOException {
         url = HttpUtils.getUrlWithParas(url, params);
         Log.e(TAG, url);
         Request request = new Request.Builder().url(url).build();
-        try {
-            Response response = mOkHttpClient.newCall(request).execute();
-            if (response.isSuccessful()) {
-                String body = response.body().string();
-                Log.e(TAG, body);
-                JSONObject jsonObject = JSON.parseObject(body);
-                LogUtil.d("网络"+ url + "返回数据:" + body);
-                if (SERVER_RESPONSE_SUCCESS == jsonObject.getIntValue(KEY_RESPONSE_SUCCESS)) {
-                    return JSONObject.parseArray(jsonObject.getJSONArray(KEY_RESPONSE_DATA).toJSONString(), clazz);
-                } else {
-                    throw new IOException(jsonObject.getString(KEY_RESPONSE_MESSAGE));
-                }
 
-            } else {
-                throw new IOException("No Internet Connection");
-            }
+        Response response = null;
+        try {
+            response = mOkHttpClient.newCall(request).execute();
         } catch (IOException e) {
             throw new IOException("No Internet Connection");
         }
+        if (response.isSuccessful()) {
+            String body = response.body().string();
+            Log.e(TAG, body);
+            JSONObject jsonObject = JSON.parseObject(body);
+            LogUtil.d("网络" + url + "返回数据:" + body);
+            if (SERVER_RESPONSE_SUCCESS == jsonObject.getIntValue(KEY_RESPONSE_SUCCESS)) {
+                return JSONObject.parseArray(jsonObject.getJSONArray(KEY_RESPONSE_DATA).toJSONString(), clazz);
+            } else {
+                throw new IOException(jsonObject.getString(KEY_RESPONSE_MESSAGE));
+            }
+        } else {
+            throw new IOException("No Internet Connection");
+        }
     }
+
 
     public static void execute(String url, Map<String, String> params) throws IOException {
         url = HttpUtils.getUrlWithParas(url, params);
@@ -119,7 +128,7 @@ public class OkhttpUtil {
             String body = response.body().string();
             Log.e(TAG, body);
             JSONObject jsonObject = JSON.parseObject(body);
-            LogUtil.d("网络"+ url + "返回数据:"+ body);
+            LogUtil.d("网络" + url + "返回数据:" + body);
             if (SERVER_RESPONSE_SUCCESS != jsonObject.getIntValue(KEY_RESPONSE_SUCCESS)) {
                 throw new IOException(jsonObject.getString(KEY_RESPONSE_MESSAGE));
             }

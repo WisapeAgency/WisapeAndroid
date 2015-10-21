@@ -90,7 +90,7 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
-        ShareSDK.initSDK(this);
+//        ShareSDK.initSDK(this);
         ButterKnife.inject(this);
         emailEdit.setOnActionListener(this);
         passwordEdit.setOnActionListener(this);
@@ -348,7 +348,7 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
     protected void onDestroy() {
         super.onDestroy();
         ButterKnife.reset(this);
-        ShareSDK.stopSDK();
+//        ShareSDK.stopSDK();
     }
 
     @OnClick(R.id.sign_up_forget_password)

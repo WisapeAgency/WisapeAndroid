@@ -1,5 +1,6 @@
 package com.wisape.android.content;
 
+import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -8,8 +9,11 @@ import android.util.Log;
 import com.alibaba.fastjson.JSONObject;
 import com.wisape.android.activity.MessageCenterDetailActivity;
 import com.wisape.android.activity.SignUpActivity;
+import com.wisape.android.logic.UserLogic;
 import com.wisape.android.util.LogUtil;
 import com.wisape.android.util.Utils;
+
+import java.util.List;
 
 /**
  * 消息中心，消息接收处理
@@ -35,7 +39,7 @@ public class MessageCenterReceiver extends BroadcastReceiver {
     protected static final String MESSAGE_ID = "id";
 
     /**
-     *  消息标题
+     * 消息标题
      */
     protected static final String MESSAGE_TITILE = "message_title";
 
@@ -60,22 +64,27 @@ public class MessageCenterReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         JSONObject jsonObject = JSONObject.parseObject(intent.getExtras().getString(DATA_KEY));
         LogUtil.d("收到推送消息:" + jsonObject.toJSONString());
-        if(destroyed){
+        if (destroyed) {
             return;
         }
         int typeKey = jsonObject.getInteger(MESSAGE_TYPE_KEY);
 
         if (LOGIN_OUT_BY_OHTER == typeKey) {
-            SignUpActivity.launch(context,"Login In Other");
+            ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+            List<ActivityManager.RunningTaskInfo> runningTaskInfos = manager.getRunningTasks(1);
+            if (runningTaskInfos != null) {
+                runningTaskInfos.clear();
+            }
+//            SignUpActivity.launch(context, );
             return;
         }
-        Utils.sendNotificatio(context, MessageCenterDetailActivity.class,jsonObject.getInteger(MESSAGE_ID),
+        Utils.sendNotificatio(context, MessageCenterDetailActivity.class, jsonObject.getInteger(MESSAGE_ID),
                 jsonObject.getString(MESSAGE_TITILE),
                 jsonObject.getString(MESSAGE_SUBJECT));
         broadcastReciverListener.updateMsgCount();
     }
 
-    public void destroy(){
+    public void destroy() {
         LogUtil.d("销毁消息中心广播接收器");
         destroyed = true;
         broadcastReciverListener = null;

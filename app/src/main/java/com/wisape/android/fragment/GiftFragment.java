@@ -1,6 +1,8 @@
 package com.wisape.android.fragment;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -12,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.squareup.picasso.Picasso;
@@ -113,7 +116,9 @@ public class GiftFragment extends AbsFragment {
     }
 
     public void gotoActive(String url,String title){
-        AboutWebViewActivity.launch(getActivity(),url,title);
+        Intent it = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        it.setClassName("com.android.browser", "com.android.browser.BrowserActivity");
+        getActivity().startActivity(it);
     }
 
     public class GalleryAdapter extends RecyclerView.Adapter<GHolder> {
@@ -135,6 +140,25 @@ public class GiftFragment extends AbsFragment {
         @Override
         public void onBindViewHolder(final GHolder holder, int position) {
             final ActiveInfo activeInfo = activeInfoList.get(position);
+
+            LinearLayout.LayoutParams params;
+            float screenWidth = mDisplayMetrics.widthPixels;
+            float screenHeight = mDisplayMetrics.heightPixels;
+
+            float bili = screenWidth / screenHeight;
+            if(bili * 10 <= 6){
+                int width = (int)(mDisplayMetrics.widthPixels * 0.7);
+                int height = (int)(mDisplayMetrics.heightPixels * 0.58);
+                params = new LinearLayout.LayoutParams(width,height);
+
+            }else{
+                int width = (int)(mDisplayMetrics.widthPixels * 0.7);
+                int height = (int)(mDisplayMetrics.heightPixels * 0.6);
+                params = new LinearLayout.LayoutParams(width,height);
+
+            }
+
+            holder.linearGif.setLayoutParams(params);
             Picasso.with(mContext).load(activeInfo.getBg_img())
                     .placeholder(R.mipmap.icon_camera)
                     .error(R.mipmap.app_logo)
@@ -159,6 +183,8 @@ public class GiftFragment extends AbsFragment {
 
         @InjectView(R.id.img_content)
         protected ImageView imgContent;
+        @InjectView(R.id.linear_gif)
+        protected LinearLayout linearGif;
 
         public GHolder(View itemView) {
             super(itemView);

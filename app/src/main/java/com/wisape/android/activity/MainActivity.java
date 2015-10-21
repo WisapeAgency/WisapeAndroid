@@ -26,7 +26,9 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
     public static void launch(Activity activity) {
         Intent intent = new Intent(activity.getApplicationContext(), MainActivity.class);
         activity.startActivity(intent);
+
         activity.finish();
+
     }
 
     @Override
