@@ -361,7 +361,7 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
     public void onDeleteClick() {
         boolean isSever = false;
         /*如果是草稿story只进行本地删除*/
-        if (ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE.equals(StoryLogic.instance().getStoryEntityFromShare().status)) {
+        if (!ApiStory.AttrStoryInfo.STORY_STATUS_TEMPORARY.equals(StoryLogic.instance().getStoryEntityFromShare().status)) {
             isSever = true;
         }
         Bundle args = new Bundle();
