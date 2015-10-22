@@ -77,6 +77,7 @@ public class StoryLogic {
     private static final String ATTR_STORY_NAME = "story_name";
     private static final String ATTR_STORY_DESC = "description";
     private static final String ATTR_STORY_IMG = "small_img";
+    private static final String ATTR_LOCAL_COVER = "local_cover";
 
     private static final String EXTARAS_STORY_ENTITY = "story_entity";
 
@@ -906,6 +907,7 @@ public class StoryLogic {
                 .add(ATTR_STORY_NAME, storyName)
                 .add(ATTR_STORY_DESC, desc)
                 .add(ATTR_STORY_ID, storyEntity.storyServerId + "")
+                .add(ATTR_LOCAL_COVER, storyEntity.localCover + "")
                 .add(ATTR_STORY_IMG, iconBase64)
                 .build();
         Message message = Message.obtain();

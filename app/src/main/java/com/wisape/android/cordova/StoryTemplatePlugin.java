@@ -314,15 +314,15 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 if (!myStory.exists()) {
                     myStory.mkdirs();
                 }
-
-                StoryEntity storyEntity = StoryLogic.instance().updateStory(getCurrentActivity()
-                        ,story);
-                StoryLogic.instance().saveStoryEntityToShare(storyEntity);
-                sendBroadcastUpdateStory();
                 if (!saveStory(myStory,story,storyThumb, html, paths)) {
                     callbackContext.error(-1);
                     return null;
                 }
+                StoryEntity storyEntity = StoryLogic.instance().updateStory(getCurrentActivity()
+                        ,story);
+                StoryLogic.instance().saveStoryEntityToShare(storyEntity);
+                sendBroadcastUpdateStory();
+
                 cordova.getActivity().finish();
                 MainActivity.launch(getCurrentActivity());
                 break;
@@ -464,12 +464,15 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 writer.close();
             }
         }
-        try{
-            FileUtils.copyFile(new File(storyThumb),
-                    new File(StoryManager.getStoryDirectory(), story.storyLocal + "/thumb.jpg"));
-        }catch (IOException e){
-            LogUtil.e("生成封面出错", e);
+        if (story.localCover == 0){//没有设置过封面，由story的第一个模板背景做封面
+            try{
+                FileUtils.copyFile(new File(storyThumb),
+                        new File(StoryManager.getStoryDirectory(), story.storyLocal + "/thumb.jpg"));
+            }catch (IOException e){
+                LogUtil.e("生成封面出错", e);
+            }
         }
+
         File storyImg = new File(myStory, DIR_NAME_IMAGE);
         if (!storyImg.exists()) {
             storyImg.mkdirs();
@@ -621,7 +624,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 content.append(line);
             }
             reader.close();
-            LogUtil.d("读取html文件内容:"+ content.toString());
+            LogUtil.d("读取html文件内容:" + content.toString());
             return content.toString();
         } catch (IOException e) {
             return "";

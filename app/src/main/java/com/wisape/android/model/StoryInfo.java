@@ -43,7 +43,7 @@ public class StoryInfo extends ServerInfo{
      * See {@link com.wisape.android.api.ApiStory.AttrStoryInfo#storyThumb}
      */
     public String small_img;
-    public int thumb_status;
+    public int local_cover;
     public String story_url;
     public String story_path;
 
@@ -64,7 +64,7 @@ public class StoryInfo extends ServerInfo{
         story.view_num = json.optInt("view_num");
         story.share_num = json.optInt("share_num");
         story.small_img = json.optString("small_img");
-        story.thumb_status = json.optInt("thumb_status");
+        story.local_cover = json.optInt("local_cover");
         story.story_url = json.optString("story_url");
         story.story_path = json.optString("story_path");
         return story;
@@ -87,7 +87,7 @@ public class StoryInfo extends ServerInfo{
         dest.writeInt(this.view_num);
         dest.writeInt(this.share_num);
         dest.writeString(this.small_img);
-        dest.writeInt(this.thumb_status);
+        dest.writeInt(this.local_cover);
         dest.writeString(this.story_url);
         dest.writeString(this.story_path);
     }
@@ -106,7 +106,7 @@ public class StoryInfo extends ServerInfo{
         this.view_num = in.readInt();
         this.share_num = in.readInt();
         this.small_img = in.readString();
-        this.thumb_status = in.readInt();
+        this.local_cover = in.readInt();
         this.story_url = in.readString();
         this.story_path = in.readString();
     }

@@ -90,11 +90,15 @@ public class StoryReleaseActivity extends BaseActivity {
         storyEntity = StoryLogic.instance().getStoryEntityFromShare();
         storyNameEdit.setText(storyEntity.storyName);
         storyDescEdit.setText(storyEntity.storyDesc);
-        File storyDirectory = new File(StoryManager.getStoryDirectory(), storyEntity.storyLocal);
-        File coverFile = new File (storyDirectory, "thumb.jpg");
-        if (coverFile.exists()){
-            thumbImage = coverFile.getAbsolutePath();
-        }else{
+        if (storyEntity.localCover == 0){
+            File storyDirectory = new File(StoryManager.getStoryDirectory(), storyEntity.storyLocal);
+            File coverFile = new File (storyDirectory, "thumb.jpg");
+            if (coverFile.exists()){
+                thumbImage = coverFile.getAbsolutePath();
+            }else{
+                thumbImage = storyEntity.storyThumbUri;
+            }
+        } else {
             thumbImage = storyEntity.storyThumbUri;
         }
         Utils.loadImg(this,thumbImage, storyCoverView);
@@ -118,7 +122,7 @@ public class StoryReleaseActivity extends BaseActivity {
             switch (requestCode) {
                 case PhotoSelectorActivity.REQUEST_CODE_PHOTO:
                     Uri imgUri = extras.getParcelable(PhotoSelectorActivity.EXTRA_IMAGE_URI);
-                    File file = new File(StoryManager.getStoryDirectory(), storyEntity.storyName + "/thumb.jpg");
+                    File file = new File(StoryManager.getStoryDirectory(), storyEntity.storyLocal + "/thumb.jpg");
                     if(file.exists()){
                         file.delete();
                     }
@@ -144,6 +148,7 @@ public class StoryReleaseActivity extends BaseActivity {
                     Bundle args = new Bundle();
                     args.putString(EXTRAS_STORY_NAME, storyNameEdit.getText().toString());
                     args.putString(EXTRAS_STORY_DESC, storyDescEdit.getText().toString());
+                    storyEntity.localCover = 1;
                     startLoadWithProgress(LOADER_UPDATE_STORYSETTING, args);
                     break;
             }

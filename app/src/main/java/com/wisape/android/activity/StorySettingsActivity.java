@@ -72,11 +72,15 @@ public class StorySettingsActivity extends BaseActivity {
             storyDescEdit.setText(storyDesc);
         }
 
-        File storyDirectory = new File(StoryManager.getStoryDirectory(), storyEntity.storyLocal);
-        File coverFile = new File (storyDirectory, "thumb.jpg");
-        if (coverFile.exists()){
-            thumbImage = coverFile.getAbsolutePath();
-        }else{
+        if (storyEntity.localCover == 0){
+            File storyDirectory = new File(StoryManager.getStoryDirectory(), storyEntity.storyLocal);
+            File coverFile = new File (storyDirectory, "thumb.jpg");
+            if (coverFile.exists()){
+                thumbImage = coverFile.getAbsolutePath();
+            }else{
+                thumbImage = storyEntity.storyThumbUri;
+            }
+        } else {
             thumbImage = storyEntity.storyThumbUri;
         }
         Utils.loadImg(this,thumbImage,storyBgView);
@@ -137,7 +141,7 @@ public class StorySettingsActivity extends BaseActivity {
             case PhotoSelectorActivity.REQUEST_CODE_PHOTO:
                 if (RESULT_OK == resultCode) {
                     Uri imageUri = data.getParcelableExtra(PhotoSelectorActivity.EXTRA_IMAGE_URI);
-                    File file = new File(StoryManager.getStoryDirectory(), storyEntity.storyName + "/thumb.jpg");
+                    File file = new File(StoryManager.getStoryDirectory(), storyEntity.storyLocal + "/thumb.jpg");
                     if(file.exists()){
                         file.delete();
                     }
@@ -171,6 +175,7 @@ public class StorySettingsActivity extends BaseActivity {
                                 .fit()
                                 .centerCrop()
                                 .into(storyBgView);
+                        storyEntity.localCover = 1;
                     }
                 }
                 break;

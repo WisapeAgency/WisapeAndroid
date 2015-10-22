@@ -28,8 +28,8 @@ public class StoryEntity extends BaseEntity implements Parcelable{
     @DatabaseField(dataType= DataType.STRING)
     public String storyThumbUri;
 
-//    @DatabaseField
-//    public int storyThumbStatus;
+    @DatabaseField
+    public int localCover;
 
     @DatabaseField(dataType= DataType.STRING)
     public String storyUri;
@@ -80,7 +80,7 @@ public class StoryEntity extends BaseEntity implements Parcelable{
         entity.storyName = info.story_name;
         entity.storyDesc = info.description;
         entity.storyThumbUri = info.small_img;
-//        entity.storyThumbStatus = info.thumb_status;
+        entity.localCover = info.local_cover;
         entity.storyUri = info.story_url;
         entity.status = info.rec_status;
         entity.likeNum = info.like_num;
@@ -100,7 +100,7 @@ public class StoryEntity extends BaseEntity implements Parcelable{
         info.story_name = entity.storyName;
         info.description = entity.storyDesc;
         info.small_img = entity.storyThumbUri;
-//        info.thumb_status = entity.storyThumbStatus;
+        info.local_cover = entity.localCover;
         info.story_url = entity.storyUri;
         info.rec_status = entity.status;
         info.uid = entity.userId;
@@ -123,7 +123,7 @@ public class StoryEntity extends BaseEntity implements Parcelable{
         dest.writeString(this.storyName);
         dest.writeString(this.storyDesc);
         dest.writeString(this.storyThumbUri);
-//        dest.writeInt(this.storyThumbStatus);
+        dest.writeInt(this.localCover);
         dest.writeString(this.storyUri);
         dest.writeString(this.status);
         dest.writeLong(this.userId);
@@ -142,7 +142,7 @@ public class StoryEntity extends BaseEntity implements Parcelable{
         this.storyName = in.readString();
         this.storyDesc = in.readString();
         this.storyThumbUri = in.readString();
-//        this.storyThumbStatus = in.readInt();
+        this.localCover = in.readInt();
         this.storyUri = in.readString();
         this.status = in.readString();
         this.userId = in.readLong();
