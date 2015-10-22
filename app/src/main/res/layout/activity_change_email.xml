@@ -63,6 +63,7 @@
         android:background="@drawable/btn_logout_email_account_selector"
         android:text="@string/btn_logout_email_account"
         android:textAllCaps="false"
-        android:textColor="@color/app_fourth" />
+        android:textColor="@color/app_fourth"
+        android:visibility="gone"/>
 
 </LinearLayout>
