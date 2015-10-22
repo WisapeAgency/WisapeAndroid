@@ -406,6 +406,7 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
                 break;
             }
         }
+        LogUtil.d("更新story封面信息:" + haveStory + postion);
         if (haveStory) {
             storyEntityList.remove(postion);
             storyEntityList.add(postion, storyEntity);
@@ -505,13 +506,15 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
                 holder.mTextStoryState.setText("draft");
             }
             if (ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE.equals(storyEntity.status)) {
-                holder.mTextStoryState.setText("published");
+                holder.mTextStoryState.setText("publish");
             }
             File storyDirectory = new File(StoryManager.getStoryDirectory(), storyEntity.storyLocal);
             File coverFile = new File(storyDirectory, "thumb.jpg");
             if (coverFile.exists()) {
+                Picasso.with(getActivity()).invalidate(coverFile);
                 Picasso.with(getActivity()).load(coverFile)
                         .fit()
+                        .skipMemoryCache()
                         .centerCrop()
                         .placeholder(R.mipmap.icon_camera)
                         .error(R.mipmap.icon_login_email)

@@ -132,13 +132,13 @@ public class ZipUtils{
 
             File entryFile;
             OutputStream output;
-            if(!targetDir.isDirectory()){
+            if(!targetDir.exists() || !targetDir.isDirectory()){
                 targetDir.mkdirs();
             }
 
             for(;null != (entry = zipInput.getNextZipEntry());){
                 entryName = entry.getName();
-                Log.d("ZipUtils", "#unzip entryName:" + entryName);
+                LogUtil.d("ZipUtils" + "#unzip entryName:" + entryName);
                 if(entry.isDirectory()){
                     entryFile = new File(targetDir, entryName);
                     if(!entryFile.exists()){
@@ -164,8 +164,7 @@ public class ZipUtils{
                 }
             }
         }catch (IOException e) {
-            e.printStackTrace();
-            Log.e("zipUtils",e.getMessage());
+            LogUtil.e("zipUtils解压缩失败",e);
             throw e;
         }finally {
             if(null != zipInput){

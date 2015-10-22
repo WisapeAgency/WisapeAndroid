@@ -10,6 +10,7 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 import com.wisape.android.util.LogUtil;
+import com.wisape.android.util.Utils;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -144,21 +145,29 @@ public class OkhttpUtil {
      * @param url 文件在服务器端的地址
      */
     public static void downLoadFile(final String url, final FileDownloadListener listener) {
+        if(Utils.isEmpty(url)){
+            return;
+        }
         final Request request = new Request.Builder().url(url)
                 .addHeader("Content-Type", "application/octet-stream")
                 .addHeader("Accept-Encoding", "identity")
                 .build();
-        mOkHttpClient.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Request request, IOException e) {
-                listener.onError(url + e.getMessage());
-            }
+        try{
+            mOkHttpClient.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Request request, IOException e) {
+                    listener.onError(url + e.getMessage());
+                }
 
-            @Override
-            public void onResponse(Response response) throws IOException {
-                listener.onSuccess(response.body().bytes());
-            }
-        });
+                @Override
+                public void onResponse(Response response) throws IOException {
+                    listener.onSuccess(response.body().bytes());
+                }
+            });
+        }catch (Exception e){
+            LogUtil.e("下载文件失败:",e);
+        }
+
     }
 
 
