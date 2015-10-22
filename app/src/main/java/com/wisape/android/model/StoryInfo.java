@@ -46,6 +46,7 @@ public class StoryInfo extends ServerInfo{
     public int local_cover;
     public String story_url;
     public String story_path;
+    public String story_local;
 
 
     public static StoryInfo fromJsonObject(JSONObject json){
@@ -67,6 +68,7 @@ public class StoryInfo extends ServerInfo{
         story.local_cover = json.optInt("local_cover");
         story.story_url = json.optString("story_url");
         story.story_path = json.optString("story_path");
+        story.story_local = json.optString("story_local");
         return story;
     }
 
@@ -90,6 +92,7 @@ public class StoryInfo extends ServerInfo{
         dest.writeInt(this.local_cover);
         dest.writeString(this.story_url);
         dest.writeString(this.story_path);
+        dest.writeString(this.story_local);
     }
 
     public StoryInfo() {
@@ -109,6 +112,7 @@ public class StoryInfo extends ServerInfo{
         this.local_cover = in.readInt();
         this.story_url = in.readString();
         this.story_path = in.readString();
+        this.story_local = in.readString();
     }
 
     public static final Creator<StoryInfo> CREATOR = new Creator<StoryInfo>() {

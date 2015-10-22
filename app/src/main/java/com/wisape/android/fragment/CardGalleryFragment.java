@@ -169,6 +169,8 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
                 storyAttr.storyDescription = story.storyDesc;
                 storyAttr.imgPrefix = StoryManager.getStoryDirectory().getAbsolutePath() + "/" + story.storyLocal;
                 storyAttr.userId = UserLogic.instance().getUserInfoFromLocal().user_id;
+                storyAttr.story_local = story.storyLocal;
+
                 if ("-1".equals(story.status)) {
                     storyAttr.sid = -1;
                 } else {
@@ -205,6 +207,7 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
             case LOADER_DELETE_STORY:
                 if (data.arg1 == HttpUrlConstancts.STATUS_SUCCESS) {
                     deleteData();
+                    showToast("detele story success");
                 } else {
                     showToast("Delete Story Failure");
                 }
@@ -362,7 +365,7 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
     public void onDeleteClick() {
         boolean isSever = false;
         /*如果是草稿story只进行本地删除*/
-        if (!ApiStory.AttrStoryInfo.STORY_STATUS_TEMPORARY.equals(StoryLogic.instance().getStoryEntityFromShare().status)) {
+        if (ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE.equals(StoryLogic.instance().getStoryEntityFromShare().status)) {
             isSever = true;
         }
         Bundle args = new Bundle();
@@ -394,6 +397,10 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
         StoryEntity storyEntity = StoryLogic.instance().getStoryEntityFromShare();
         if (null == storyEntityList) {
             storyEntityList = new ArrayList<>();
+        }
+        if(mGalleryAdapter == null){
+            mGalleryAdapter = new GalleryAdapter();
+            mCardGallery.setAdapter(mGalleryAdapter);
         }
         boolean haveStory = false;
         int postion = 0;
@@ -484,14 +491,13 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
             float bili = screenWidth / screenHeight;
             if (bili * 10 <= 6) {
                 int width = (int) (mDisplayMetrics.widthPixels * 0.7);
-                int height = (int) ((mDisplayMetrics.heightPixels - 54) * 0.74);
+                int height = (int) ((mDisplayMetrics.heightPixels - 74) * 0.74);
                 params = new LinearLayout.LayoutParams(width, height);
 
             } else {
                 int width = (int) (mDisplayMetrics.widthPixels * 0.78);
                 int height = (int) ((mDisplayMetrics.heightPixels - 54) * 0.85);
                 params = new LinearLayout.LayoutParams(width, height);
-
             }
 
             holder.linearLayout.setLayoutParams(params);

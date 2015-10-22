@@ -402,6 +402,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 storyAttr.userId = UserLogic.instance().getUserInfoFromLocal().user_id;
                 storyAttr.storyStatus = ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE;
                 storyAttr.imgPrefix = StoryManager.getStoryDirectory().getAbsolutePath() + "/" + story.storyLocal;
+                storyAttr.story_local = story.storyLocal;
 
                 if ("-1".equals(story.status)) {
                     storyAttr.sid = -1;

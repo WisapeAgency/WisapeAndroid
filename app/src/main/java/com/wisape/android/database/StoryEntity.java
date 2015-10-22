@@ -91,6 +91,7 @@ public class StoryEntity extends BaseEntity implements Parcelable{
 //        entity.storyServerId =
         entity.updateAt = SystemClock.uptimeMillis();
         entity.storyPath = info.story_path;
+        entity.storyLocal = info.story_local;
         return entity;
     }
 
@@ -109,6 +110,7 @@ public class StoryEntity extends BaseEntity implements Parcelable{
         info.share_num = entity.shareNum;
         info.createtime = entity.createAt+"";
         info.story_path = entity.storyPath;
+        info.story_local = entity.storyLocal;
         return info;
     }
 

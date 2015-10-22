@@ -528,6 +528,7 @@ public class ApiStory extends ApiBase{
         public static final String ATTR_MUSIC = "bg_music";
         public static final String ATTR_PREFIX = "img_prefix";
         public static final String ATTR_STORY_ID = "sid";
+        public static final String ATTR_STORY_LOCAL = "story_local";
 
         public long userId;
         public String storyName;
@@ -536,6 +537,7 @@ public class ApiStory extends ApiBase{
         public String bgMusic;
         public String imgPrefix;
         public long sid;
+        public String story_local;
 
         /**
          * Base64
@@ -555,6 +557,7 @@ public class ApiStory extends ApiBase{
             params.put(ATTR_MUSIC,bgMusic);
             params.put(ATTR_PREFIX,imgPrefix);
             params.put(ATTR_STORY_ID,Long.toString(sid));
+            params.put(ATTR_STORY_LOCAL,story_local);
         }
 
         @Override
@@ -576,6 +579,7 @@ public class ApiStory extends ApiBase{
             dest.writeString(this.bgMusic);
             dest.writeString(this.imgPrefix);
             dest.writeParcelable(this.story, 0);
+            dest.writeString(this.story_local);
         }
 
         public AttrStoryInfo() {
@@ -589,6 +593,7 @@ public class ApiStory extends ApiBase{
             this.bgMusic = in.readString();
             this.imgPrefix = in.readString();
             this.story = in.readParcelable(Uri.class.getClassLoader());
+            this.story_local = in.readString();
         }
     }
 }

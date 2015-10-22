@@ -609,12 +609,14 @@ public class StoryLogic {
 
         /*获取本地草稿story并且进行实体转换*/
         List<StoryEntity> storyLocalEntityList = getUserStoryFromLocal(WisapeApplication.getInstance().getApplicationContext());
+        LogUtil.d("总共story的数量:"+ storyLocalEntityList.size());
         if (storyLocalEntityList != null) {
             getDefaultStoryEntity(storyLocalEntityList);
             int size = storyLocalEntityList.size();
             for (int i = 0; i < size; i++) {
                 final StoryEntity entity = storyLocalEntityList.get(i);
                 final File file = new File(StoryManager.getStoryDirectory().getAbsolutePath() + "/" + entity.storyLocal + ".zip");
+                LogUtil.d("当前story:" + entity.storyName +entity.storyLocal);
                 if (!file.exists() && "A".equals(entity.status)) {
                     OkhttpUtil.downLoadFile(entity.storyPath, new FileDownloadListener() {
                         @Override
@@ -673,12 +675,18 @@ public class StoryLogic {
             dao = databaseHelper.getDao(StoryEntity.class);
             StoryEntity result = dao.queryBuilder().where().eq("storyServerId", storyEntity.storyServerId).queryForFirst();
             if (result == null) {
-                storyEntity.storyLocal = Utils.acquireUTCTimestamp();
                 dao.createIfNotExists(storyEntity);
             } else {
-                storyEntity.storyLocal = result.storyLocal;
-                storyEntity.id = result.id;
-                storyEntity.storyMusicLocal = result.storyMusicLocal;
+//                storyEntity.storyLocal = result.storyLocal;
+//                storyEntity.id = result.id;
+//                storyEntity.storyMusicLocal = result.storyMusicLocal;
+
+                result.likeNum = storyEntity.likeNum;
+                result.shareNum = storyEntity.shareNum;
+                result.viewNum = storyEntity.viewNum;
+                result.status = storyEntity.status;
+
+                dao.update(result);
             }
             db.setTransactionSuccessful();
         } catch (SQLException e) {
@@ -724,7 +732,7 @@ public class StoryLogic {
         db.beginTransaction();
         try {
             dao = databaseHelper.getDao(StoryEntity.class);
-            return dao.queryBuilder().where().eq("userId", userId).query();
+            return dao.queryBuilder().where().eq("userId", userId).and().notIn("status", "D").query();
         } catch (SQLException e) {
             LogUtil.e("从本地数据库查询用户草稿出错:", e);
             return null;
@@ -773,6 +781,7 @@ public class StoryLogic {
 
     public Message deleteStory(Context context, StoryEntity storyEntity, String access_token, boolean isServer) {
         Message message = Message.obtain();
+        message.obj = "deleteStory success";
         if (isServer) {
             Map<String, String> params = new HashMap<>();
             params.put(ATTR_ACCESS_TOKEN, access_token);
@@ -783,18 +792,21 @@ public class StoryLogic {
             } catch (IOException e) {
                 LogUtil.e("删除服务器上用户story失败", e);
                 message.arg1 = HttpUrlConstancts.STATUS_EXCEPTION;
+                message.obj = "deleteStory failure";
                 return message;
             }
         }
-        deleteLocalStroy(context, storyEntity);
-        message.arg1 = HttpUrlConstancts.STATUS_SUCCESS;
+        if(deleteLocalStroy(context, storyEntity)){
+            message.arg1 = HttpUrlConstancts.STATUS_SUCCESS;
+            message.obj = "deleteStory failure";
+        }
         return message;
     }
 
     /**
      * 删除本地数据库story
      */
-    private void deleteLocalStroy(Context context, StoryEntity storyEntity) {
+    private boolean deleteLocalStroy(Context context, StoryEntity storyEntity) {
         storyEntity.status = ApiStory.AttrStoryInfo.STORY_STATUS_DELETE;
         DatabaseHelper databaseHelper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
         Dao<StoryEntity, Log> dao;
@@ -804,12 +816,20 @@ public class StoryLogic {
             dao = databaseHelper.getDao(StoryEntity.class);
             int result = dao.update(storyEntity);
             db.setTransactionSuccessful();
+            File file = new File(StoryManager.getStoryDirectory(),storyEntity.storyLocal);
+            FileUtils.deleteFileInDir(file);
+            File zipFile = new File(StoryManager.getStoryDirectory(),storyEntity.storyLocal + ".zip");
+            if(zipFile.exists()){
+                zipFile.delete();
+            }
         } catch (SQLException e) {
             LogUtil.e("删除本地数据库story失败", e);
+            return false;
         } finally {
             db.endTransaction();
             OpenHelperManager.releaseHelper();
         }
+        return true;
     }
 
     /**
