@@ -116,7 +116,9 @@ public class StoryLogic {
             } else {
                 attr.storyThumb = "";
             }
-
+            if (attr.bgMusic == null || attr.bgMusic.equals("null")){
+                attr.bgMusic = "";
+            }
             ApiStory api = ApiStory.instance();
             story = api.update(context, attr, tag);
         } else {
