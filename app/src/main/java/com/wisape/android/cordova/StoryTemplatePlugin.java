@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.google.gson.Gson;
@@ -466,6 +467,8 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 story.storyThumbUri = thumb.getAbsolutePath();
             }catch (IOException e){
                 LogUtil.e("生成封面出错", e);
+                Toast.makeText(WisapeApplication.getInstance(),"Cover file does not exist!",Toast.LENGTH_LONG).show();
+                return false;
             }
         }
 
