@@ -527,20 +527,22 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
                         .into(holder.mStoryBg);
             } else {
                 String imgPath = storyEntity.storyThumbUri;
-                if (imgPath.contains("http")) {
-                    Picasso.with(getActivity()).load(imgPath)
-                            .placeholder(R.mipmap.icon_camera)
-                            .error(R.mipmap.icon_login_email)
-                            .fit()
-                            .centerCrop()
-                            .into(holder.mStoryBg);
-                } else {
-                    Picasso.with(getActivity()).load(new File(imgPath))
-                            .fit()
-                            .centerCrop()
-                            .placeholder(R.mipmap.icon_camera)
-                            .error(R.mipmap.icon_login_email)
-                            .into(holder.mStoryBg);
+                if(imgPath != null){
+                    if (imgPath.contains("http")) {
+                        Picasso.with(getActivity()).load(imgPath)
+                                .placeholder(R.mipmap.icon_camera)
+                                .error(R.mipmap.icon_login_email)
+                                .fit()
+                                .centerCrop()
+                                .into(holder.mStoryBg);
+                    } else {
+                        Picasso.with(getActivity()).load(new File(imgPath))
+                                .fit()
+                                .centerCrop()
+                                .placeholder(R.mipmap.icon_camera)
+                                .error(R.mipmap.icon_login_email)
+                                .into(holder.mStoryBg);
+                    }
                 }
             }
             holder.imageShare.setOnClickListener(new View.OnClickListener() {
