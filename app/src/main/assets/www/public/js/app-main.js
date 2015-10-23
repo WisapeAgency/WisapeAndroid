@@ -19,7 +19,7 @@ WisapeEditer = {
     catIScroll : null,
 
     logger : function(name,str){
-        var ret = CurentTime() + "WisapeEditer.logger name" + name+ " :" +str;
+        var ret = "\n" + CurentTime() + "WisapeEditer.logger " + name+ " :" +str  ;
         this.loggerStr += ret;
     },
 
@@ -328,10 +328,7 @@ WisapeEditer = {
             console.info(catClickTimmer);
             if (!_me.hasClass("tpl-exist")) {
                 console.info("down");
-                catScroll.find("li").addClass("tpl-exist");
                 WisapeEditer.GetNativeData("start", [parseInt(_me.data("id")), parseInt(_me.data("type"))], function (data) {
-                    //console.info("addclass tpl-exist")
-
                 });
             } else {
                 console.info("read:");
@@ -730,27 +727,19 @@ WisapeEditer = {
 
             document.getElementById('cat-scroll').innerHTML = html;
             set_wrap_width(catScroll);
-            WisapeEditer.catIScroll = new iScroll('cat-scroll',{
-                scrollX: true,
-                scrollY: false,
-                click : false,
-                hScrollbar :false,
-            });
+            if(!WisapeEditer.catIScroll) {
+                console.info("new");
+                WisapeEditer.catIScroll = new iScroll('cat-scroll',{
+                    scrollX: true,
+                    scrollY: false,
+                    click : false,
+                    hScrollbar :false,
+                });
 
-            //if(!WisapeEditer.catIScroll) {
-            //    console.info("new");
-            //    set_wrap_width(catScroll);
-            //    WisapeEditer.catIScroll = new iScroll('cat-scroll',{
-            //        scrollX: true,
-            //        scrollY: false,
-            //        click : false,
-            //        hScrollbar :false,
-            //    });
-            //
-            //} else {
-            //    console.info("old");
-            //    WisapeEditer.catIScroll.refresh();
-            //};
+            } else {
+                console.info("old");
+                WisapeEditer.catIScroll.refresh();
+            };
             catScroll.find("li").eq(0).addClass("active");
             if (cb !== null)cb();
         });
@@ -852,7 +841,6 @@ WisapeEditer = {
     GetNativeData: function (fn, params, cb) {
         cordova.exec(function (retval) {
             console.info(fn + "exec: " + retval);
-            WisapeEditer.logger(fn + "exec: ",retval);
             cb(retval);
         }, function (e) {
             console.info(fn + " Error: " + e);
