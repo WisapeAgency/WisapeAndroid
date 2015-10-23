@@ -309,10 +309,6 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
                     }catch (Exception e){
                         Log.e(TAG,e.getMessage());
                     }
-                    //设置默认背景图片
-                    com.wisape.android.util.FileUtils.copyAssetsFile(this,"www/public/img/photo_cover.png",
-                            new File(StoryManager.getStoryDirectory(), story.storyLocal + "/thumb.jpg").getAbsolutePath());
-                    story.storyThumbUri = new File(StoryManager.getStoryDirectory(), story.storyLocal + "/thumb.jpg").getAbsolutePath();
                     StoryLogic.instance().saveStoryEntityToShare(story);
                 }
                 break;

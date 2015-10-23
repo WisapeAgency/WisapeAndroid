@@ -382,14 +382,8 @@ public class StoryTemplatePlugin extends AbsPlugin {
                     callbackContext.error(-1);
                     return null;
                 }
-                if (Utils.isEmpty(story.storyThumbUri) || !new File(story.storyThumbUri).exists()) {
-                    com.wisape.android.util.FileUtils.copyAssetsFile(getCurrentActivity(), "www/public/img/photo_cover.png",
-                            new File(StoryManager.getStoryDirectory(), story.storyLocal + "/thumb.jpg").getAbsolutePath());
-                }
                 ApiStory.AttrStoryInfo storyAttr = new ApiStory.AttrStoryInfo();
-
-                Uri thumb = Uri.parse((new File(StoryManager.getStoryDirectory(), story.storyLocal + "/thumb.jpg")).getAbsolutePath());
-                storyAttr.attrStoryThumb = thumb;
+                storyAttr.attrStoryThumb = Uri.parse(story.storyThumbUri);
                 storyAttr.storyStatus = ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE;
                 storyAttr.story = Uri.fromFile(new File(StoryManager.getStoryDirectory(), story.storyLocal));
                 storyAttr.storyName = story.storyName;
@@ -467,8 +461,9 @@ public class StoryTemplatePlugin extends AbsPlugin {
         }
         if (story.localCover == 0){//没有设置过封面，由story的第一个模板背景做封面
             try{
-                FileUtils.copyFile(new File(storyThumb),
-                        new File(StoryManager.getStoryDirectory(), story.storyLocal + "/thumb.jpg"));
+                File thumb = new File(StoryManager.getStoryDirectory(), story.storyLocal + "/thumb.jpg");
+                FileUtils.copyFile(new File(storyThumb), thumb);
+                story.storyThumbUri = thumb.getAbsolutePath();
             }catch (IOException e){
                 LogUtil.e("生成封面出错", e);
             }
