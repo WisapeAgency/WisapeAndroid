@@ -11,6 +11,7 @@ import android.os.Message;
 
 import com.wisape.android.activity.AsyncTaskLoaderCallback;
 import com.wisape.android.network.Requester;
+import com.wisape.android.util.LogUtil;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaInterface;
@@ -138,6 +139,7 @@ public abstract class AbsPlugin extends CordovaPlugin  implements LoaderManager.
                     msg.arg1 = STATUS_SUCCESS;
                 }
             }catch (AsyncLoaderError error){
+                LogUtil.e("laoder错误",error.getCause());
                 msg = Message.obtain();
                 msg.arg1 = STATUS_EXCEPTION;
                 msg.obj = error;

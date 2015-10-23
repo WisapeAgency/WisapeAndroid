@@ -51,7 +51,7 @@ public class OkhttpUtil {
         }
         if (response.isSuccessful()) {
             String body = response.body().string();
-            Log.e(TAG, body);
+            LogUtil.d("请求服务器返回数据:"+body);
             JSONObject jsonObject = JSON.parseObject(body);
             if (SERVER_RESPONSE_SUCCESS == jsonObject.getIntValue(KEY_RESPONSE_SUCCESS)) {
                 return JSONObject.parseObject(jsonObject.getJSONObject(KEY_RESPONSE_DATA).toJSONString(), clazz);
@@ -60,7 +60,8 @@ public class OkhttpUtil {
             }
 
         } else {
-            throw new IOException("No Internet Connection");
+            LogUtil.d("网络请求错误:"+url+response.code());
+            throw new IOException("server error");
         }
     }
 
@@ -87,7 +88,8 @@ public class OkhttpUtil {
             }
 
         } else {
-            throw new IOException("No Internet Connection");
+            LogUtil.d("网络请求错误:"+url+response.code());
+            throw new IOException("server error");
         }
 
     }
@@ -114,7 +116,8 @@ public class OkhttpUtil {
                 throw new IOException(jsonObject.getString(KEY_RESPONSE_MESSAGE));
             }
         } else {
-            throw new IOException("No Internet Connection");
+            LogUtil.d("网络请求错误:"+url+response.code());
+            throw new IOException("server error");
         }
     }
 
@@ -135,6 +138,7 @@ public class OkhttpUtil {
             }
 
         } else {
+            LogUtil.d("网络请求错误:"+url+response.code());
             throw new IOException("No Internet Connection");
         }
     }

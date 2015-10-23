@@ -148,13 +148,13 @@ public class GiftFragment extends AbsFragment {
             float bili = screenWidth / screenHeight;
             if(bili * 10 <= 6){
                 int width = (int)(mDisplayMetrics.widthPixels * 0.7);
-                int height = (int)(mDisplayMetrics.heightPixels * 0.58);
-                params = new LinearLayout.LayoutParams(width,height);
+//                int height = (int)(mDisplayMetrics.heightPixels * 0.58);
+                params = new LinearLayout.LayoutParams(width,width);
 
             }else{
                 int width = (int)(mDisplayMetrics.widthPixels * 0.7);
-                int height = (int)(mDisplayMetrics.heightPixels * 0.6);
-                params = new LinearLayout.LayoutParams(width,height);
+//                int height = (int)(mDisplayMetrics.heightPixels * 0.6);
+                params = new LinearLayout.LayoutParams(width,width);
 
             }
 

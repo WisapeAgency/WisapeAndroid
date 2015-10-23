@@ -103,7 +103,7 @@ public class StoryReleaseActivity extends BaseActivity {
         }
         Utils.loadImg(this,thumbImage, storyCoverView);
         storyUrl = storyEntity.storyUri;
-        LogUtil.d("封面地址:" + thumbImage + "story地址:" + storyUrl);
+        LogUtil.d("storylocalCover:"+ storyEntity.localCover +"封面地址:" + thumbImage + ":story地址:" + storyUrl);
     }
 
     @OnClick(R.id.linear_picture)
@@ -209,6 +209,8 @@ public class StoryReleaseActivity extends BaseActivity {
             intent.setAction(StoryBroadcastReciver.STORY_ACTION);
             intent.putExtra(StoryBroadcastReciver.EXTRAS_TYPE, StoryBroadcastReciverListener.UPDATE_STORY_SETTING);
             sendBroadcast(intent);
+        }else{
+            showToast((String)data.obj);
         }
     }
 

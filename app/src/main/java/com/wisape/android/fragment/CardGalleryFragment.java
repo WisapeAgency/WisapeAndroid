@@ -41,6 +41,7 @@ import com.wisape.android.util.FileUtils;
 import com.wisape.android.util.LogUtil;
 import com.wisape.android.util.Utils;
 import com.wisape.android.view.GalleryView;
+import com.wisape.android.widget.ComfirmDialog;
 import com.wisape.android.widget.PopupWindowMenu;
 
 import java.io.BufferedReader;
@@ -161,7 +162,7 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
                 StoryEntity story = StoryLogic.instance().getStoryEntityFromShare();
 
                 ApiStory.AttrStoryInfo storyAttr = new ApiStory.AttrStoryInfo();
-                storyAttr.attrStoryThumb = Uri.parse((new File(StoryManager.getStoryDirectory(), story.storyLocal + "/thumb.jpg")).getAbsolutePath());
+//                storyAttr.attrStoryThumb = Uri.parse((new File(StoryManager.getStoryDirectory(), story.storyLocal + "/thumb.jpg")).getAbsolutePath());
                 storyAttr.storyStatus = ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE;
                 storyAttr.story = Uri.fromFile(new File(StoryManager.getStoryDirectory(), story.storyLocal));
                 storyAttr.storyName = story.storyName;
@@ -217,7 +218,7 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
                     StoryPreviewActivity.launch(getActivity(), (String) data.obj);
 
                 } else {
-                    showToast("No StoryInfo");
+                    showToast("Get StoryInfo Failure");
                 }
                 break;
             case LOADER_PUBLISH_STORY:
@@ -292,6 +293,10 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
         if (StoryBroadcastReciverListener.UPDATE_STORY_SETTING == type) {
             updateStorySeeting();
         }
+
+        if(StoryBroadcastReciverListener.TYPE_UPDATE_STORY == type){
+            mGalleryAdapter.notifyDataSetChanged();
+        }
     }
 
     /**
@@ -363,16 +368,26 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
 
     @Override
     public void onDeleteClick() {
-        boolean isSever = false;
+
+        final ComfirmDialog comfirmDialog = ComfirmDialog.getInstance(getString(R.string.delete_story_title)
+                , getString(R.string.delete_story_content));
+        comfirmDialog.show(getFragmentManager(), "clear");
+        comfirmDialog.setOnConfirmClickListener(new ComfirmDialog.OnComfirmClickListener() {
+            @Override
+            public void onConfirmClicked() {
+                comfirmDialog.dismiss();
+                boolean isSever = false;
         /*如果是草稿story只进行本地删除*/
-        if (ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE.equals(StoryLogic.instance().getStoryEntityFromShare().status)) {
-            isSever = true;
-        }
-        Bundle args = new Bundle();
-        args.putParcelable(EXTRAS_STORY_ENTITY, StoryLogic.instance().getStoryEntityFromShare());
-        args.putString(EXTRAS_ACCESS_TOKEN, UserLogic.instance().getUserInfoFromLocal().access_token);
-        args.putBoolean(EXRAS_IS_SERVER, isSever);
-        startLoad(LOADER_DELETE_STORY, args);
+                if (ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE.equals(StoryLogic.instance().getStoryEntityFromShare().status)) {
+                    isSever = true;
+                }
+                Bundle args = new Bundle();
+                args.putParcelable(EXTRAS_STORY_ENTITY, StoryLogic.instance().getStoryEntityFromShare());
+                args.putString(EXTRAS_ACCESS_TOKEN, UserLogic.instance().getUserInfoFromLocal().access_token);
+                args.putBoolean(EXRAS_IS_SERVER, isSever);
+                startLoad(LOADER_DELETE_STORY, args);
+            }
+        });
     }
 
     /*删除列表中的story*/
@@ -398,7 +413,7 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
         if (null == storyEntityList) {
             storyEntityList = new ArrayList<>();
         }
-        if(mGalleryAdapter == null){
+        if (mGalleryAdapter == null) {
             mGalleryAdapter = new GalleryAdapter();
             mCardGallery.setAdapter(mGalleryAdapter);
         }
@@ -514,37 +529,43 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
             if (ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE.equals(storyEntity.status)) {
                 holder.mTextStoryState.setText("publish");
             }
-            File storyDirectory = new File(StoryManager.getStoryDirectory(), storyEntity.storyLocal);
-            File coverFile = new File(storyDirectory, "thumb.jpg");
-            if (coverFile.exists()) {
-                Picasso.with(getActivity()).invalidate(coverFile);
+
+            if(storyEntity.localCover == 0){
+                File storyDirectory = new File(StoryManager.getStoryDirectory(), storyEntity.storyLocal);
+                File coverFile = new File(storyDirectory, "thumb.jpg");
                 Picasso.with(getActivity()).load(coverFile)
                         .fit()
-                        .skipMemoryCache()
                         .centerCrop()
                         .placeholder(R.mipmap.icon_camera)
                         .error(R.mipmap.icon_login_email)
                         .into(holder.mStoryBg);
-            } else {
-                String imgPath = storyEntity.storyThumbUri;
-                if(imgPath != null){
-                    if (imgPath.contains("http")) {
-                        Picasso.with(getActivity()).load(imgPath)
-                                .placeholder(R.mipmap.icon_camera)
-                                .error(R.mipmap.icon_login_email)
-                                .fit()
-                                .centerCrop()
-                                .into(holder.mStoryBg);
-                    } else {
-                        Picasso.with(getActivity()).load(new File(imgPath))
-                                .fit()
-                                .centerCrop()
-                                .placeholder(R.mipmap.icon_camera)
-                                .error(R.mipmap.icon_login_email)
-                                .into(holder.mStoryBg);
-                    }
-                }
+
+            }else{
+                Picasso.with(getActivity()).load(Utils.isEmpty(storyEntity.storyThumbUri)? "":storyEntity.storyThumbUri)
+                        .placeholder(R.mipmap.icon_camera)
+                        .error(R.mipmap.icon_login_email)
+                        .fit()
+                        .centerCrop()
+                        .into(holder.mStoryBg);
             }
+
+
+//            if (coverFile != null && coverFile.exists()) {
+//                Picasso.with(getActivity()).invalidate(coverFile);
+//
+//            } else {
+//                String imgPath = storyEntity.storyThumbUri;
+//                if (imgPath.contains("http")) {
+//
+//                } else {
+//                    Picasso.with(getActivity()).load(new File(imgPath))
+//                            .fit()
+//                            .centerCrop()
+//                            .placeholder(R.mipmap.icon_camera)
+//                            .error(R.mipmap.icon_login_email)
+//                            .into(holder.mStoryBg);
+//                }
+//            }
             holder.imageShare.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

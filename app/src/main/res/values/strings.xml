@@ -119,5 +119,7 @@
     <string name="popup_window_publish">Publish</string>
     <string name="popup_window_edit">Edit</string>
     <string name="popup_window_delete">Delete</string>
+    <string name="delete_story_title">Delete Story</string>
+    <string name="delete_story_content">the story will be deleted from the device and can not be recovered</string>
 
 </resources>

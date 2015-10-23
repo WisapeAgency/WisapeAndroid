@@ -162,12 +162,16 @@ public class FileUtils {
     public static void saveByteToFile(byte[] bytes, String filePath) {
         FileOutputStream fileOuputStream = null;
         try {
+            File file = new File(filePath);
+            if(file.exists()){
+                file.delete();
+            }
             fileOuputStream = new FileOutputStream(filePath);
             fileOuputStream.write(bytes);
             fileOuputStream.flush();
             fileOuputStream.close();
         } catch (Exception e) {
-            System.out.print(e.getMessage());
+            LogUtil.e("保存字节到文件出错", e);
         } finally {
             try {
                 if (null != fileOuputStream) {

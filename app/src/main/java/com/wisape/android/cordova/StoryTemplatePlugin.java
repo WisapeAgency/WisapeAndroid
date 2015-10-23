@@ -5,8 +5,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Message;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.google.gson.Gson;
@@ -228,7 +228,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
 //                startLoad(WHAT_EDIT_INIT, null);
 //            }
             startLoad(WHAT_EDIT_INIT, null);
-        } else if (ACTION_OPEN_LINK.equals(action)){
+        } else if (ACTION_OPEN_LINK.equals(action)) {
             if (null != args && args.length() == 1) {
                 String url = args.getString(0);
                 Intent intent = new Intent();
@@ -308,35 +308,40 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 String html = args.getString(EXTRA_STORY_HTML);
                 String path = args.getString(EXTRA_FILE_PATH);
                 com.alibaba.fastjson.JSONArray paths = JSON.parseArray(path);
-                WisapeApplication app = WisapeApplication.getInstance();
+
+                LogUtil.d("保存story前端返回的封面路径:" + storyThumb);
+                LogUtil.d("保存story前端返回的文件信息:" + html);
+                LogUtil.d("保存story前端返回的需要替换路径:" + paths.toJSONString());
+
                 StoryEntity story = StoryLogic.instance().getStoryEntityFromShare();
                 story.status = ApiStory.AttrStoryInfo.STORY_STATUS_TEMPORARY;
                 File myStory = new File(StoryManager.getStoryDirectory(), story.storyLocal);
+
                 if (!myStory.exists()) {
                     myStory.mkdirs();
                 }
-                if (!saveStory(myStory,story,storyThumb, html, paths)) {
+
+                if (!saveStory(myStory, story, storyThumb, html, paths)) {
                     callbackContext.error(-1);
                     return null;
                 }
-                StoryEntity storyEntity = StoryLogic.instance().updateStory(getCurrentActivity()
-                        ,story);
+                StoryEntity storyEntity = StoryLogic.instance().updateStory(WisapeApplication.getInstance(), story);
                 StoryLogic.instance().saveStoryEntityToShare(storyEntity);
                 sendBroadcastUpdateStory();
-
-                cordova.getActivity().finish();
                 MainActivity.launch(getCurrentActivity());
+                cordova.getActivity().finish();
                 break;
             }
             case WHAT_PREVIEW: {
+
                 String storyThumb = args.getString(EXTRA_STORY_THUMB);
                 String html = args.getString(EXTRA_STORY_HTML);
                 String path = args.getString(EXTRA_FILE_PATH);
                 com.alibaba.fastjson.JSONArray paths = JSON.parseArray(path);
 
-                LogUtil.d("发布story前端返回的封面路径:"+storyThumb);
-                LogUtil.d("发布story前端返回的文件信息:"+html);
-                LogUtil.d("发布story前端返回的路径:"+paths.toJSONString());
+                LogUtil.d("预览story前端返回的封面路径:" + storyThumb);
+                LogUtil.d("预览story前端返回的文件信息:" + html);
+                LogUtil.d("预览story前端返回需要替换的路径:" + paths.toJSONString());
 
                 StoryEntity story = StoryLogic.instance().getStoryEntityFromShare();
                 story.status = ApiStory.AttrStoryInfo.STORY_STATUS_TEMPORARY;
@@ -344,48 +349,48 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 if (!myStory.exists()) {
                     myStory.mkdirs();
                 }
-
-                StoryEntity storyEntity = StoryLogic.instance().updateStory(getCurrentActivity()
-                        , StoryLogic.instance().getStoryEntityFromShare());
+                StoryEntity storyEntity = StoryLogic.instance().updateStory(getCurrentActivity(), StoryLogic.instance().getStoryEntityFromShare());
+                LogUtil.d("预览保存story信息:" + storyEntity.storyThumbUri);
                 StoryLogic.instance().saveStoryEntityToShare(storyEntity);
-
                 sendBroadcastUpdateStory();
-
-                if (!saveStory(myStory,story,storyThumb, html, paths)) {
+                if (!saveStory(myStory, story, storyThumb, html, paths)) {
                     callbackContext.error(-1);
                     return null;
                 }
                 File previewFile = new File(myStory, FILE_NAME_PREVIEW);
                 if (saveStoryPreview(previewFile, html, story)) {
                     StoryPreviewActivity.launch(cordova.getActivity(), previewFile.getAbsolutePath());
-//                    cordova.getActivity().finish();
                 } else {
                     callbackContext.error(-1);
                 }
                 break;
             }
             case WHAT_PUBLISH: {
+
                 String storyThumb = args.getString(EXTRA_STORY_THUMB);
                 String html = args.getString(EXTRA_STORY_HTML);
                 String path = args.getString(EXTRA_FILE_PATH);
                 com.alibaba.fastjson.JSONArray paths = JSON.parseArray(path);
 
-                LogUtil.d("发布story前端返回的封面路径:"+storyThumb);
-                LogUtil.d("发布story前端返回的文件信息:"+html);
-                LogUtil.d("发布story前端返回的路径:"+paths.toJSONString());
+                LogUtil.d("发布story前端返回的封面路径:" + storyThumb);
+                LogUtil.d("发布story前端返回的文件信息:" + html);
+                LogUtil.d("发布story前端返回需要替换的路径:" + paths.toJSONString());
 
                 StoryEntity story = StoryLogic.instance().getStoryEntityFromShare();
-                File myStory = new File(StoryManager.getStoryDirectory(), story.storyLocal);
-                if (!myStory.exists()) {
-                    myStory.mkdirs();
-                }
-                if (!saveStory(myStory,story,storyThumb, html, paths)) {
-                    callbackContext.error(-1);
-                    return null;
+//                File myStory = new File(StoryManager.getStoryDirectory(), story.storyLocal);
+//                if (!myStory.exists()) {
+//                    myStory.mkdirs();
+//                }
+//
+//                if (!saveStory(myStory, story, storyThumb, html, paths)) {
+//                    callbackContext.error(-1);
+//                    return null;
+//                }
+                if (Utils.isEmpty(story.storyThumbUri) || !new File(story.storyThumbUri).exists()) {
+                    com.wisape.android.util.FileUtils.copyAssetsFile(getCurrentActivity(), "www/public/img/photo_cover.png",
+                            new File(StoryManager.getStoryDirectory(), story.storyLocal + "/thumb.jpg").getAbsolutePath());
                 }
                 ApiStory.AttrStoryInfo storyAttr = new ApiStory.AttrStoryInfo();
-                storyAttr.attrStoryThumb = Uri.parse(story.storyThumbUri);
-                storyAttr.storyStatus = ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE;
                 storyAttr.story = Uri.fromFile(new File(StoryManager.getStoryDirectory(), story.storyLocal));
                 storyAttr.storyName = story.storyName;
                 if (Utils.isEmpty(story.storyMusicName)) {
@@ -405,7 +410,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
                     storyAttr.sid = story.storyServerId;
                 }
 
-                logic.update(cordova.getActivity().getApplicationContext(), storyAttr, "release");
+                logic.update(WisapeApplication.getInstance().getApplicationContext(), storyAttr, "release");
                 sendBroadcastUpdateStory();
                 StoryReleaseActivity.launch(cordova.getActivity());
                 getCurrentActivity().finish();
@@ -430,45 +435,59 @@ public class StoryTemplatePlugin extends AbsPlugin {
         closeProgressDialog();
     }
 
+    /**
+     * 保存story.html文件
+     *
+     * @param myStory    文件根目录
+     * @param story
+     * @param storyThumb 封面
+     * @param html       文件内容
+     * @param paths      需要替换的路径
+     * @return
+     */
     private boolean saveStory(File myStory, StoryEntity story, String storyThumb, String html, com.alibaba.fastjson.JSONArray paths) {
-       if(paths == null){
-           return true;
-       }
+        if (paths == null) {
+            return true;
+        }
+
+        //生成story字符串
         for (int i = 0; i < paths.size(); i++) {
             String path = paths.getString(i);
-            LogUtil.d("saveStory:" + path);
             File imagePath = new File(path).getParentFile().getParentFile();
             if (imagePath.getParentFile().getName().equals(StoryManager.TEMPLATE_DIRECTORY)) {
                 String templateName = imagePath.getName();
                 File newImagePath = new File(myStory.getAbsolutePath(), templateName);
                 html = html.replace(imagePath.getAbsolutePath(), newImagePath.getAbsolutePath());
-            } else {
-                html = html.replace(imagePath.getAbsolutePath(), myStory.getAbsolutePath());
             }
         }
+
+
         File storyHTML = new File(myStory, FILE_NAME_STORY);
+        if(storyHTML.exists()){
+            LogUtil.d("删除本地storyHtml:" + storyHTML.delete());
+        }
         PrintWriter writer = null;
         try {
             writer = new PrintWriter(storyHTML);
             writer.write(html);
             writer.close();
         } catch (IOException e) {
-            LogUtil.e("saveStory出错", e);
+            LogUtil.e("保存story文件出错", e);
             return false;
         } finally {
             if (writer != null) {
                 writer.close();
             }
         }
-        if (story.localCover == 0){//没有设置过封面，由story的第一个模板背景做封面
-            try{
-                File thumb = new File(StoryManager.getStoryDirectory(), story.storyLocal + "/thumb.jpg");
-                FileUtils.copyFile(new File(storyThumb), thumb);
-                story.storyThumbUri = thumb.getAbsolutePath();
-            }catch (IOException e){
+
+        //没有设置过封面，由story的第一个模板背景做封面
+        if (story.localCover == 0) {
+            try {
+                FileUtils.copyFile(new File(storyThumb),
+                        new File(StoryManager.getStoryDirectory(), story.storyLocal + "/thumb.jpg"));
+            } catch (IOException e) {
                 LogUtil.e("生成封面出错", e);
-                Toast.makeText(WisapeApplication.getInstance(),"Cover file does not exist!",Toast.LENGTH_LONG).show();
-                return false;
+                Utils.showToast(WisapeApplication.getInstance(),"generator thumb failure");
             }
         }
 
@@ -476,17 +495,17 @@ public class StoryTemplatePlugin extends AbsPlugin {
         if (!storyImg.exists()) {
             storyImg.mkdirs();
         }
+
         for (int i = 0; i < paths.size(); i++) {
             try {
                 String path = paths.getString(i);
                 File imagePath = new File(path).getParentFile().getParentFile();
-                String newPath;
+
+                String newPath = path;
                 if (imagePath.getParentFile().getName().equals(StoryManager.TEMPLATE_DIRECTORY)) {
                     String templateName = imagePath.getName();
                     File newImagePath = new File(myStory.getAbsolutePath(), templateName);
                     newPath = path.replace(imagePath.getAbsolutePath(), newImagePath.getAbsolutePath());
-                } else {
-                    newPath = path.replace(imagePath.getAbsolutePath(), myStory.getAbsolutePath());
                 }
                 File file = new File(path);
                 File newPathFile = new File(newPath);
@@ -494,15 +513,29 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 if (!imgDirectory.exists()) {
                     imgDirectory.mkdirs();
                 }
-                FileUtils.copyFile(file, new File(imgDirectory, file.getName()));
+                File targetFile = new File(imgDirectory, file.getName());
+                if(!targetFile.exists()){
+                    FileUtils.copyFile(file, targetFile);
+                }
             } catch (IOException e) {
-                LogUtil.e("保存story文件出错",e);
+                LogUtil.e("保存story需要资源文件出错", e);
             }
         }
         return true;
     }
 
+    /**
+     * 保存预览wenjian
+     *
+     * @param previewFile 预览文件
+     * @param html        预览文件内容
+     * @param story       story实体
+     * @return
+     */
     private boolean saveStoryPreview(File previewFile, String html, StoryEntity story) {
+        if(previewFile.exists()){
+            LogUtil.d("删除本地previewFile:" + previewFile.delete());
+        }
         String header = getFromAssets(PREVIEW_HEADER);
         String footer = getFromAssets(PREVIEW_FOOTER);
         PrintWriter writer = null;
@@ -545,7 +578,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
             in.close();
             out.close();
         } catch (IOException e) {
-            LogUtil.e("复制assets文件出错:" + src,e);
+            LogUtil.e("复制assets文件出错:" + src, e);
         } finally {
             if (in != null) {
                 try {
@@ -576,7 +609,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
             reader.close();
             return content.toString();
         } catch (IOException e) {
-            LogUtil.e("根据文件路径读取文件出错:"+path,e);
+            LogUtil.e("根据文件路径读取文件出错:" + path, e);
             return "";
         } finally {
             if (reader != null) {
@@ -603,7 +636,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
             String fontFile = new File(fontDirectory, FILE_NAME_FONT).getAbsolutePath();
             return result.toString().replace(PLACE_HODLER_FONT_CSS, fontFile);
         } catch (Exception e) {
-            LogUtil.e("从assetes文件读取出错:" + fileName,e);
+            LogUtil.e("从assetes文件读取出错:" + fileName, e);
             e.printStackTrace();
         }
         return "";
@@ -629,7 +662,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
             LogUtil.d("读取html文件内容:" + content.toString());
             return content.toString();
         } catch (IOException e) {
-            LogUtil.e("读取html文件内容出错:"+path,e);
+            LogUtil.e("读取html文件内容出错:" + path, e);
             return "";
         } finally {
             if (reader != null) {
@@ -685,6 +718,6 @@ public class StoryTemplatePlugin extends AbsPlugin {
         Intent intent = new Intent();
         intent.setAction(StoryBroadcastReciver.STORY_ACTION);
         intent.putExtra(StoryBroadcastReciver.EXTRAS_TYPE, StoryBroadcastReciverListener.TYPE_ADD_STORY);
-        getCurrentActivity().sendBroadcast(intent);
+        WisapeApplication.getInstance().getApplicationContext().sendBroadcast(intent);
     }
 }

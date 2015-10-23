@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#80000000">
+    android:background="@drawable/gallery_item_shadow_bg"
+    android:alpha="0.6">
 
     <ImageView
         android:id="@+id/btn_close"

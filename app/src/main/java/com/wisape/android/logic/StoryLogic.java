@@ -1,6 +1,7 @@
 package com.wisape.android.logic;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
@@ -21,6 +22,8 @@ import com.wisape.android.WisapeApplication;
 import com.wisape.android.activity.StoryMusicActivity;
 import com.wisape.android.api.ApiStory;
 import com.wisape.android.common.StoryManager;
+import com.wisape.android.content.StoryBroadcastReciver;
+import com.wisape.android.content.StoryBroadcastReciverListener;
 import com.wisape.android.database.DatabaseHelper;
 import com.wisape.android.database.StoryEntity;
 import com.wisape.android.database.StoryMusicEntity;
@@ -109,13 +112,13 @@ public class StoryLogic {
                 throw new IllegalStateException(e);
             }
 
-            File thumbFile = new File(attr.attrStoryThumb.toString());
-            if (thumbFile.exists()) {
-                String thumb = Utils.base64ForImage(attr.attrStoryThumb);
-                attr.storyThumb = thumb;
-            } else {
-                attr.storyThumb = "";
-            }
+//            File thumbFile = new File(attr.attrStoryThumb.toString());
+//            if (thumbFile.exists()) {
+//                String thumb = Utils.base64ForImage(attr.attrStoryThumb);
+//                attr.storyThumb = thumb;
+//            } else {
+//                attr.storyThumb = "";
+//            }
             if (attr.bgMusic == null || attr.bgMusic.equals("null")) {
                 attr.bgMusic = "";
             }
@@ -625,7 +628,14 @@ public class StoryLogic {
                             try {
                                 String path = file.getAbsolutePath();
                                 File storyDirectory = new File(file.getParent(), entity.storyLocal);
+                                if(storyDirectory.exists()){
+                                    FileUtils.deleteDir(storyDirectory);
+                                }
                                 ZipUtils.unzip(Uri.fromFile(file), storyDirectory);
+                                Intent intent = new Intent();
+                                intent.setAction(StoryBroadcastReciver.STORY_ACTION);
+                                intent.putExtra(StoryBroadcastReciver.EXTRAS_TYPE, StoryBroadcastReciverListener.TYPE_UPDATE_STORY);
+                                WisapeApplication.getInstance().getApplicationContext().sendBroadcast(intent);
                             } catch (IOException e) {
                                 LogUtil.e("story解压失败：" + file.getName(), e);
                             }
@@ -689,6 +699,7 @@ public class StoryLogic {
                 }
                 result.localCover = storyEntity.localCover;
                 result.storyPath = storyEntity.storyPath;
+                result.storyThumbUri = storyEntity.storyThumbUri;
                 dao.update(result);
             }
             db.setTransactionSuccessful();
@@ -817,7 +828,7 @@ public class StoryLogic {
         db.beginTransaction();
         try {
             dao = databaseHelper.getDao(StoryEntity.class);
-            int result = dao.update(storyEntity);
+            dao.delete(storyEntity);
             db.setTransactionSuccessful();
             File storyFileDir = new File(StoryManager.getStoryDirectory(), storyEntity.storyLocal);
             FileUtils.deleteDir(storyFileDir);
@@ -898,6 +909,7 @@ public class StoryLogic {
             StoryLogic.instance().saveStoryEntityToShare(storyEntity);
             message.obj = storyEntity;
         } catch (Exception e) {
+            LogUtil.e("更新story设置出错:", e);
             message.arg1 = HttpUrlConstancts.STATUS_EXCEPTION;
             message.obj = e.getMessage();
         }
