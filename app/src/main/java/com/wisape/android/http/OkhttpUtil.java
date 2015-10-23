@@ -146,6 +146,7 @@ public class OkhttpUtil {
      */
     public static void downLoadFile(final String url, final FileDownloadListener listener) {
         if(Utils.isEmpty(url)){
+            LogUtil.d("下载地址错误:" + url);
             return;
         }
         final Request request = new Request.Builder().url(url)

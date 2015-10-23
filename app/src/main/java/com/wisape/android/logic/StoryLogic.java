@@ -116,7 +116,7 @@ public class StoryLogic {
             } else {
                 attr.storyThumb = "";
             }
-            if (attr.bgMusic == null || attr.bgMusic.equals("null")){
+            if (attr.bgMusic == null || attr.bgMusic.equals("null")) {
                 attr.bgMusic = "";
             }
             ApiStory api = ApiStory.instance();
@@ -606,31 +606,31 @@ public class StoryLogic {
         if (null != serverStoryList && serverStoryList.size() > 0) {
             serverStoryToLocalStory(serverStoryList);
         }
-
         /*获取本地草稿story并且进行实体转换*/
         List<StoryEntity> storyLocalEntityList = getUserStoryFromLocal(WisapeApplication.getInstance().getApplicationContext());
-        LogUtil.d("总共story的数量:"+ storyLocalEntityList.size());
+        LogUtil.d("总共story的数量:" + storyLocalEntityList.size());
         if (storyLocalEntityList != null) {
             getDefaultStoryEntity(storyLocalEntityList);
             int size = storyLocalEntityList.size();
             for (int i = 0; i < size; i++) {
                 final StoryEntity entity = storyLocalEntityList.get(i);
                 final File file = new File(StoryManager.getStoryDirectory().getAbsolutePath() + "/" + entity.storyLocal + ".zip");
-                LogUtil.d("当前story:" + entity.storyName +entity.storyLocal);
+                LogUtil.d("当前story:" + entity.storyName + ":" + entity.storyLocal + ":" + file.getName() + ":" + file.exists());
                 if (!file.exists() && "A".equals(entity.status)) {
                     OkhttpUtil.downLoadFile(entity.storyPath, new FileDownloadListener() {
                         @Override
                         public void onSuccess(byte[] bytes) {
                             LogUtil.d("下载story成功:" + file.getAbsolutePath());
                             FileUtils.saveByteToFile(bytes, file.getAbsolutePath());
-                            try{
+                            try {
                                 String path = file.getAbsolutePath();
-                                File storyDirectory = new File(file.getParent(),entity.storyLocal);
-                                ZipUtils.unzip(Uri.fromFile(file),storyDirectory);
-                            }catch (IOException e){
-                                LogUtil.e("story解压失败：" + file.getName(),e);
+                                File storyDirectory = new File(file.getParent(), entity.storyLocal);
+                                ZipUtils.unzip(Uri.fromFile(file), storyDirectory);
+                            } catch (IOException e) {
+                                LogUtil.e("story解压失败：" + file.getName(), e);
                             }
                         }
+
                         @Override
                         public void onError(String msg) {
                             LogUtil.d("下载story失败:" + msg);
@@ -684,8 +684,11 @@ public class StoryLogic {
                 result.likeNum = storyEntity.likeNum;
                 result.shareNum = storyEntity.shareNum;
                 result.viewNum = storyEntity.viewNum;
-                result.status = storyEntity.status;
-
+                if (!ApiStory.AttrStoryInfo.STORY_STATUS_TEMPORARY.equals(result.status)) {
+                    result.status = storyEntity.status;
+                }
+                result.localCover = storyEntity.localCover;
+                result.storyPath = storyEntity.storyPath;
                 dao.update(result);
             }
             db.setTransactionSuccessful();
@@ -796,7 +799,7 @@ public class StoryLogic {
                 return message;
             }
         }
-        if(deleteLocalStroy(context, storyEntity)){
+        if (deleteLocalStroy(context, storyEntity)) {
             message.arg1 = HttpUrlConstancts.STATUS_SUCCESS;
             message.obj = "deleteStory failure";
         }
@@ -816,10 +819,11 @@ public class StoryLogic {
             dao = databaseHelper.getDao(StoryEntity.class);
             int result = dao.update(storyEntity);
             db.setTransactionSuccessful();
-            File file = new File(StoryManager.getStoryDirectory(),storyEntity.storyLocal);
-            FileUtils.deleteFileInDir(file);
-            File zipFile = new File(StoryManager.getStoryDirectory(),storyEntity.storyLocal + ".zip");
-            if(zipFile.exists()){
+            File storyFileDir = new File(StoryManager.getStoryDirectory(), storyEntity.storyLocal);
+            FileUtils.deleteDir(storyFileDir);
+
+            File zipFile = new File(StoryManager.getStoryDirectory(), storyEntity.storyLocal + ".zip");
+            if (zipFile.exists()) {
                 zipFile.delete();
             }
         } catch (SQLException e) {

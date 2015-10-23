@@ -441,7 +441,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
        }
         for (int i = 0; i < paths.size(); i++) {
             String path = paths.getString(i);
-            System.out.println("saveStory:" + path);
+            LogUtil.d("saveStory:" + path);
             File imagePath = new File(path).getParentFile().getParentFile();
             if (imagePath.getParentFile().getName().equals(StoryManager.TEMPLATE_DIRECTORY)) {
                 String templateName = imagePath.getName();
@@ -458,7 +458,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
             writer.write(html);
             writer.close();
         } catch (IOException e) {
-            Log.e("saveStory", "", e);
+            LogUtil.e("saveStory出错", e);
             return false;
         } finally {
             if (writer != null) {
@@ -498,6 +498,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 }
                 FileUtils.copyFile(file, new File(imgDirectory, file.getName()));
             } catch (IOException e) {
+                LogUtil.e("保存story文件出错",e);
             }
         }
         return true;
@@ -546,7 +547,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
             in.close();
             out.close();
         } catch (IOException e) {
-
+            LogUtil.e("复制assets文件出错:" + src,e);
         } finally {
             if (in != null) {
                 try {
@@ -577,6 +578,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
             reader.close();
             return content.toString();
         } catch (IOException e) {
+            LogUtil.e("根据文件路径读取文件出错:"+path,e);
             return "";
         } finally {
             if (reader != null) {
@@ -603,6 +605,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
             String fontFile = new File(fontDirectory, FILE_NAME_FONT).getAbsolutePath();
             return result.toString().replace(PLACE_HODLER_FONT_CSS, fontFile);
         } catch (Exception e) {
+            LogUtil.e("从assetes文件读取出错:" + fileName,e);
             e.printStackTrace();
         }
         return "";
@@ -628,6 +631,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
             LogUtil.d("读取html文件内容:" + content.toString());
             return content.toString();
         } catch (IOException e) {
+            LogUtil.e("读取html文件内容出错:"+path,e);
             return "";
         } finally {
             if (reader != null) {

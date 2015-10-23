@@ -4,6 +4,8 @@ import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSONObject;
@@ -61,7 +63,7 @@ public class MessageCenterReceiver extends BroadcastReceiver {
     }
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(final Context context, Intent intent) {
         JSONObject jsonObject = JSONObject.parseObject(intent.getExtras().getString(DATA_KEY));
         LogUtil.d("收到推送消息:" + jsonObject.toJSONString());
         if (destroyed) {
@@ -70,12 +72,16 @@ public class MessageCenterReceiver extends BroadcastReceiver {
         int typeKey = jsonObject.getInteger(MESSAGE_TYPE_KEY);
 
         if (LOGIN_OUT_BY_OHTER == typeKey) {
-            ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-            List<ActivityManager.RunningTaskInfo> runningTaskInfos = manager.getRunningTasks(1);
-            if (runningTaskInfos != null) {
-                runningTaskInfos.clear();
-            }
-//            SignUpActivity.launch(context, );
+            LogUtil.d("收到在其他终端登陆消息");
+            Utils.showToast(context,"login in other device");
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    android.os.Process.killProcess(android.os.Process.myPid());    //获取PID
+                    System.exit(0);
+                }
+            },1 * 1000);
+
             return;
         }
         Utils.sendNotificatio(context, MessageCenterDetailActivity.class, jsonObject.getInteger(MESSAGE_ID),
@@ -83,6 +89,16 @@ public class MessageCenterReceiver extends BroadcastReceiver {
                 jsonObject.getString(MESSAGE_SUBJECT));
         broadcastReciverListener.updateMsgCount();
     }
+
+    private static Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+        }
+    };
+
+
+
 
     public void destroy() {
         LogUtil.d("销毁消息中心广播接收器");
