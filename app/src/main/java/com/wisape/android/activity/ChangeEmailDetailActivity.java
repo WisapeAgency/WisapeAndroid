@@ -51,7 +51,7 @@ public class ChangeEmailDetailActivity extends BaseActivity implements SignUpEdi
     @OnClick(R.id.add_emai_btn)
     @SuppressWarnings("unused")
     public void onChangeEmailOnclicked(){
-        String email = editEmail.getText().toString();
+        String email = editEmail.getText().toString().toLowerCase();
         if(verifyEMail(email)){
             Intent intent = new Intent();
             intent.putExtra(EXTRA_EMAIL_ACCOUNT, email);

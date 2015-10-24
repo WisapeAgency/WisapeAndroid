@@ -111,14 +111,6 @@ public class StoryLogic {
                 LogUtil.e("生成story压缩包出错!", e);
                 throw new IllegalStateException(e);
             }
-
-//            File thumbFile = new File(attr.attrStoryThumb.toString());
-//            if (thumbFile.exists()) {
-//                String thumb = Utils.base64ForImage(attr.attrStoryThumb);
-//                attr.storyThumb = thumb;
-//            } else {
-//                attr.storyThumb = "";
-//            }
             if (attr.bgMusic == null || attr.bgMusic.equals("null")) {
                 attr.bgMusic = "";
             }
@@ -628,7 +620,7 @@ public class StoryLogic {
                             try {
                                 String path = file.getAbsolutePath();
                                 File storyDirectory = new File(file.getParent(), entity.storyLocal);
-                                if(storyDirectory.exists()){
+                                if (storyDirectory.exists()) {
                                     FileUtils.deleteDir(storyDirectory);
                                 }
                                 ZipUtils.unzip(Uri.fromFile(file), storyDirectory);
@@ -905,6 +897,7 @@ public class StoryLogic {
             storyEntity.storyThumbUri = storyInfo.small_img;
             storyEntity.storyName = storyInfo.story_name;
             storyEntity.storyDesc = storyInfo.description;
+            storyEntity.localCover = storyInfo.local_cover;
             storyEntity = updateStory(WisapeApplication.getInstance(), storyEntity);
             StoryLogic.instance().saveStoryEntityToShare(storyEntity);
             message.obj = storyEntity;
@@ -915,6 +908,7 @@ public class StoryLogic {
         }
         return message;
     }
+
 
     public void saveStoryEntityToShare(StoryEntity storyEntity) {
         String userEncode = new Gson().toJson(storyEntity);

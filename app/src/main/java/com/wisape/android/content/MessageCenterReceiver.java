@@ -73,14 +73,15 @@ public class MessageCenterReceiver extends BroadcastReceiver {
 
         if (LOGIN_OUT_BY_OHTER == typeKey) {
             LogUtil.d("收到在其他终端登陆消息");
+            UserLogic.instance().clearUserInfo();
             Utils.showToast(context,"login in other device");
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     android.os.Process.killProcess(android.os.Process.myPid());    //获取PID
-                    System.exit(0);
+                    System.exit(1);
                 }
-            },1 * 1000);
+            },2 * 1000);
 
             return;
         }

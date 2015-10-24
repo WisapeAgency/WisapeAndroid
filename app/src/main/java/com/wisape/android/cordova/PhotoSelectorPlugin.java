@@ -81,7 +81,12 @@ public class PhotoSelectorPlugin extends AbsPlugin {
             case REQEUST_CODE_CROP_IMG:
                 if(null != callbackContext){
                     if(null != bgUri){
-                        callbackContext.success(bgUri.getPath());
+                        File imgFile = new File(bgUri.getPath());
+                        if(imgFile.exists()){
+                            callbackContext.success(bgUri.getPath());
+                        }else {
+                            callbackContext.error("crop cancle");
+                        }
                     }else {
                         callbackContext.error("裁剪失败");
                     }

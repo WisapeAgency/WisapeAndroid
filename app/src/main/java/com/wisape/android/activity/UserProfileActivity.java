@@ -229,6 +229,7 @@ public class UserProfileActivity extends BaseActivity {
                 case REQEUST_CODE_CROP_IMG:
                     if(null != userIconUri){
                         Utils.loadImg(this,userIconUri.getPath(),iconView);
+                        Picasso.with(this).invalidate(new File(userIconUri.getPath()));
                         Picasso.with(this).load(new File(userIconUri.getPath()))
                                 .transform(new CircleTransform())
                                 .fit()

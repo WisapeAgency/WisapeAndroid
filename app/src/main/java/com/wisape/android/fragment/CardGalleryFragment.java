@@ -171,6 +171,7 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
                 storyAttr.imgPrefix = StoryManager.getStoryDirectory().getAbsolutePath() + "/" + story.storyLocal;
                 storyAttr.userId = UserLogic.instance().getUserInfoFromLocal().user_id;
                 storyAttr.story_local = story.storyLocal;
+                storyAttr.storyThumb = story.storyThumbUri;
 
                 if ("-1".equals(story.status)) {
                     storyAttr.sid = -1;
@@ -533,6 +534,7 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
             if(storyEntity.localCover == 0){
                 File storyDirectory = new File(StoryManager.getStoryDirectory(), storyEntity.storyLocal);
                 File coverFile = new File(storyDirectory, "thumb.jpg");
+                Picasso.with(getActivity()).invalidate(coverFile);
                 Picasso.with(getActivity()).load(coverFile)
                         .fit()
                         .centerCrop()
@@ -541,7 +543,9 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
                         .into(holder.mStoryBg);
 
             }else{
-                Picasso.with(getActivity()).load(Utils.isEmpty(storyEntity.storyThumbUri)? "":storyEntity.storyThumbUri)
+                File storyDirectory = new File(StoryManager.getStoryDirectory(), storyEntity.storyLocal);
+                File coverFile = new File(storyDirectory, "thumb.jpg");
+                Picasso.with(getActivity()).load(Utils.isEmpty(storyEntity.storyThumbUri)? coverFile.getAbsolutePath():storyEntity.storyThumbUri)
                         .placeholder(R.mipmap.icon_camera)
                         .error(R.mipmap.icon_login_email)
                         .fit()
