@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Looper;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -304,6 +305,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 break;
             }
             case WHAT_SAVE: {
+
                 String storyThumb = args.getString(EXTRA_STORY_THUMB);
                 String html = args.getString(EXTRA_STORY_HTML);
                 String path = args.getString(EXTRA_FILE_PATH);
@@ -349,14 +351,15 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 if (!myStory.exists()) {
                     myStory.mkdirs();
                 }
-                StoryEntity storyEntity = StoryLogic.instance().updateStory(getCurrentActivity(), StoryLogic.instance().getStoryEntityFromShare());
-                LogUtil.d("预览保存story信息:" + storyEntity.storyThumbUri);
-                StoryLogic.instance().saveStoryEntityToShare(storyEntity);
-                sendBroadcastUpdateStory();
+
                 if (!saveStory(myStory, story, storyThumb, html, paths)) {
                     callbackContext.error(-1);
                     return null;
                 }
+                StoryEntity storyEntity = StoryLogic.instance().updateStory(getCurrentActivity(), StoryLogic.instance().getStoryEntityFromShare());
+                LogUtil.d("预览保存story信息:" + storyEntity.storyThumbUri);
+                StoryLogic.instance().saveStoryEntityToShare(storyEntity);
+                sendBroadcastUpdateStory();
                 File previewFile = new File(myStory, FILE_NAME_PREVIEW);
                 if (saveStoryPreview(previewFile, html, story)) {
                     StoryPreviewActivity.launch(cordova.getActivity(), previewFile.getAbsolutePath());
@@ -386,10 +389,13 @@ public class StoryTemplatePlugin extends AbsPlugin {
 //                    callbackContext.error(-1);
 //                    return null;
 //                }
-                if (Utils.isEmpty(story.storyThumbUri) || !new File(story.storyThumbUri).exists()) {
-                    com.wisape.android.util.FileUtils.copyAssetsFile(getCurrentActivity(), "www/public/img/photo_cover.png",
-                            new File(StoryManager.getStoryDirectory(), story.storyLocal + "/thumb.jpg").getAbsolutePath());
-                }
+//                if (Utils.isEmpty(story.storyThumbUri) || !new File(story.storyThumbUri).exists()) {
+//                    com.wisape.android.util.FileUtils.copyAssetsFile(getCurrentActivity(), "www/public/img/photo_cover.png",
+//                            new File(StoryManager.getStoryDirectory(), story.storyLocal + "/thumb.jpg").getAbsolutePath());
+//                }
+//                if(story.localCover == 0){
+//                    story.storyThumbUri = storyThumb;
+//                }
                 ApiStory.AttrStoryInfo storyAttr = new ApiStory.AttrStoryInfo();
                 storyAttr.story = Uri.fromFile(new File(StoryManager.getStoryDirectory(), story.storyLocal));
                 storyAttr.storyName = story.storyName;
@@ -403,6 +409,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 storyAttr.storyStatus = ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE;
                 storyAttr.imgPrefix = StoryManager.getStoryDirectory().getAbsolutePath() + "/" + story.storyLocal;
                 storyAttr.story_local = story.storyLocal;
+//                storyAttr.storyThumb = story.storyThumbUri;
 
                 if ("-1".equals(story.status)) {
                     storyAttr.sid = -1;
@@ -487,7 +494,9 @@ public class StoryTemplatePlugin extends AbsPlugin {
                         new File(StoryManager.getStoryDirectory(), story.storyLocal + "/thumb.jpg"));
             } catch (IOException e) {
                 LogUtil.e("生成封面出错", e);
-                Utils.showToast(WisapeApplication.getInstance(),"generator thumb failure");
+                Looper.prepare();
+                Utils.showToast(WisapeApplication.getInstance(), "generator thum failure");
+                Looper.loop();
             }
         }
 

@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.support.v7.widget.AppCompatEditText;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -26,7 +25,6 @@ import com.wisape.android.widget.QrDialogFragment;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.logging.Handler;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -59,7 +57,6 @@ public class StoryReleaseActivity extends BaseActivity {
     private static final String EXTRAS_STORY_DESC = "story_desc";
     private static final int WIDTH = 600;
     private static final int HEIGHT = 800;
-    private String storyUrl;
     private Uri bgUri;
 
 
@@ -102,8 +99,7 @@ public class StoryReleaseActivity extends BaseActivity {
             thumbImage = storyEntity.storyThumbUri;
         }
         Utils.loadImg(this,thumbImage, storyCoverView);
-        storyUrl = storyEntity.storyUri;
-        LogUtil.d("storylocalCover:"+ storyEntity.localCover +"封面地址:" + thumbImage + ":story地址:" + storyUrl);
+        LogUtil.d("storylocalCover:"+ storyEntity.localCover +"封面地址:" + thumbImage + ":story地址:" + storyEntity.storyUri);
     }
 
     @OnClick(R.id.linear_picture)
@@ -148,7 +144,6 @@ public class StoryReleaseActivity extends BaseActivity {
                     Bundle args = new Bundle();
                     args.putString(EXTRAS_STORY_NAME, storyNameEdit.getText().toString());
                     args.putString(EXTRAS_STORY_DESC, storyDescEdit.getText().toString());
-                    storyEntity.localCover = 1;
                     startLoadWithProgress(LOADER_UPDATE_STORYSETTING, args);
                     break;
             }
@@ -191,21 +186,25 @@ public class StoryReleaseActivity extends BaseActivity {
         closeProgressDialog();
         if (HttpUrlConstancts.STATUS_SUCCESS == data.arg1) {
             String imgPath = storyEntity.storyThumbUri;
-            if (imgPath.contains("http")) {
-                Picasso.with(this).load(imgPath)
+            storyEntity.localCover = 1;
+
+
+//            if (imgPath.contains("http")) {
+                Picasso.with(this).load(Utils.isEmpty(storyEntity.storyThumbUri)? "" :storyEntity.storyThumbUri)
                         .placeholder(R.mipmap.icon_camera)
                         .error(R.mipmap.icon_login_email)
                         .fit()
                         .centerCrop()
                         .into(storyCoverView);
-            } else {
-                Picasso.with(this).load(new File(imgPath))
-                        .fit()
-                        .centerCrop()
-                        .placeholder(R.mipmap.icon_camera)
-                        .error(R.mipmap.icon_login_email)
-                        .into(storyCoverView);
-            }            Intent intent = new Intent();
+//            } else {
+//                Picasso.with(this).load(new File(imgPath))
+//                        .fit()
+//                        .centerCrop()
+//                        .placeholder(R.mipmap.icon_camera)
+//                        .error(R.mipmap.icon_login_email)
+//                        .into(storyCoverView);
+//            }
+        Intent intent = new Intent();
             intent.setAction(StoryBroadcastReciver.STORY_ACTION);
             intent.putExtra(StoryBroadcastReciver.EXTRAS_TYPE, StoryBroadcastReciverListener.UPDATE_STORY_SETTING);
             sendBroadcast(intent);
@@ -219,7 +218,7 @@ public class StoryReleaseActivity extends BaseActivity {
     protected void doShare2Moments() {
         WechatMoments.ShareParams shareParams = new WechatMoments.ShareParams();
         shareParams.setImageUrl(storyEntity.storyThumbUri);
-        shareParams.setUrl(storyUrl);
+        shareParams.setUrl(storyEntity.storyUri);
         shareParams.setTitle(storyNameEdit.getText().toString());
         shareParams.setText(storyDescEdit.getText().toString());
         shareParams.setShareType(Platform.SHARE_WEBPAGE);
@@ -232,7 +231,7 @@ public class StoryReleaseActivity extends BaseActivity {
     protected void doShare2WeChat() {
         Wechat.ShareParams shareParams = new Wechat.ShareParams();
         shareParams.setImageUrl(storyEntity.storyThumbUri);
-        shareParams.setUrl(storyUrl);
+        shareParams.setUrl(storyEntity.storyUri);
         shareParams.setTitle(storyNameEdit.getText().toString());
         shareParams.setText(storyDescEdit.getText().toString());
         shareParams.setShareType(Platform.SHARE_WEBPAGE);
@@ -243,7 +242,7 @@ public class StoryReleaseActivity extends BaseActivity {
     @OnClick(R.id.story_release_link)
     @SuppressWarnings("unused")
     protected void doShare2CopyUrl() {
-        Utils.clipText(this, storyUrl);
+        Utils.clipText(this, storyEntity.storyUri);
         Toast.makeText(this, "copy url", Toast.LENGTH_SHORT).show();
     }
 
@@ -252,9 +251,9 @@ public class StoryReleaseActivity extends BaseActivity {
     protected void doShare2LinkedIn() {
         LinkedIn.ShareParams shareParams = new LinkedIn.ShareParams();
         shareParams.setTitle(storyNameEdit.getText().toString());
-        shareParams.setTitleUrl(storyUrl);
+        shareParams.setTitleUrl(storyEntity.storyUri);
         shareParams.setImageUrl(storyEntity.storyThumbUri);
-        shareParams.setText(storyUrl);
+        shareParams.setText(storyEntity.storyUri);
         startShare(LinkedIn.NAME, shareParams);
     }
 
@@ -263,7 +262,7 @@ public class StoryReleaseActivity extends BaseActivity {
     protected void doShare2Facebook() {
         Facebook.ShareParams shareParams = new Facebook.ShareParams();
         shareParams.setImageUrl(storyEntity.storyThumbUri);
-        shareParams.setText(storyUrl);
+        shareParams.setText(storyEntity.storyUri);
         startShare(Facebook.NAME, shareParams);
     }
 
@@ -274,7 +273,7 @@ public class StoryReleaseActivity extends BaseActivity {
         shareParams.setAddress(UserLogic.instance().getUserInfoFromLocal().user_email);
         shareParams.setImageUrl(storyEntity.storyThumbUri);
         shareParams.setTitle(storyEntity.storyName);
-        shareParams.setText(storyUrl);
+        shareParams.setText(storyEntity.storyUri);
         startShare(FacebookMessenger.NAME, shareParams);
     }
 
@@ -282,7 +281,7 @@ public class StoryReleaseActivity extends BaseActivity {
     @SuppressWarnings("unused")
     protected void doShare2GooglePlus() {
         GooglePlus.ShareParams shareParams = new GooglePlus.ShareParams();
-        shareParams.setText(storyUrl);
+        shareParams.setText(storyEntity.storyUri);
         shareParams.setImageUrl(storyEntity.storyThumbUri);
         startShare(GooglePlus.NAME, shareParams);
     }
@@ -292,7 +291,7 @@ public class StoryReleaseActivity extends BaseActivity {
     protected void doShare2Twitter() {
         Twitter.ShareParams shareParams = new Twitter.ShareParams();
         shareParams.setImageUrl(storyEntity.storyThumbUri);
-        shareParams.setText(storyUrl);
+        shareParams.setText(storyEntity.storyUri);
         startShare(Twitter.NAME, shareParams);
     }
 
@@ -304,7 +303,7 @@ public class StoryReleaseActivity extends BaseActivity {
         shareParams.setAddress(UserLogic.instance().getUserInfoFromLocal().user_email);
         shareParams.setImageUrl(storyEntity.storyThumbUri);
         shareParams.setTitle(storyEntity.storyName);
-        shareParams.setText(storyUrl);
+        shareParams.setText(storyEntity.storyUri);
         startShare(Email.NAME, shareParams);
     }
 
@@ -313,7 +312,7 @@ public class StoryReleaseActivity extends BaseActivity {
     protected void doShare2SMS() {
         ShortMessage.ShareParams shareParams = new ShortMessage.ShareParams();
         shareParams.setTitle(storyNameEdit.getText().toString());
-        shareParams.setText(storyUrl);
+        shareParams.setText(storyEntity.storyUri);
         shareParams.setImageUrl(storyEntity.storyThumbUri);
         startShare(ShortMessage.NAME, shareParams);
     }
@@ -332,7 +331,7 @@ public class StoryReleaseActivity extends BaseActivity {
     protected void doShare2More() {
         Intent intent = new Intent(Intent.ACTION_SEND); // 启动分享发送的属性
         intent.setType("text/plain"); // 分享发送的数据类型
-        String msg = storyNameEdit.getText().toString() + storyUrl;
+        String msg = storyNameEdit.getText().toString() + storyEntity.storyUri;
         intent.putExtra(Intent.EXTRA_TEXT, msg); // 分享的内容
         startActivity(Intent.createChooser(intent, "选择分享"));// 目标应用选择对话框的标题
     }

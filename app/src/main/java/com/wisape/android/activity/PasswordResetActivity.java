@@ -45,7 +45,7 @@ public class PasswordResetActivity extends BaseActivity implements SignUpEditTex
     @OnClick(R.id.password_reset_btn)
     @SuppressWarnings("unused")
     protected void doResetPassword() {
-        String email = mPasswordRestEmailEdit.getText().toString();
+        String email = mPasswordRestEmailEdit.getText().toString().toLowerCase();
         if (verifyEMail(email)) {
             Bundle args = new Bundle();
             args.putString(EXTARS_EMAIL_ACCOUNT, email.trim());

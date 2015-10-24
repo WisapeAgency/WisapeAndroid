@@ -110,7 +110,7 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
     @OnClick(R.id.sign_up_btn)
     @SuppressWarnings("unused")
     protected void doSignUp() {
-        String email = emailEdit.getText();
+        String email = emailEdit.getText().toLowerCase();
         String password = passwordEdit.getText();
         if (verifyEMail(email) && verifyPassword(password)) {
             email = email.trim();

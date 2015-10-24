@@ -119,7 +119,7 @@ public class StoryDownloader implements Runnable {
             }
             ZipUtils.unzip(downUri, storyDirectory);
         } catch (IOException e) {
-            restartDownload(downUri, storyDirectory, story);
+//            restartDownload(downUri, storyDirectory, story);
         }
     }
 
