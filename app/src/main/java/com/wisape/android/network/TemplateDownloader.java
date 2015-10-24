@@ -130,7 +130,7 @@ public class TemplateDownloader implements Runnable {
             }
             ZipUtils.unzip(downUri, template);
         } catch (IOException e) {
-            restartDownload(downUri, template, templateInfo);
+//            restartDownload(downUri, template, templateInfo);
         }
     }
 
