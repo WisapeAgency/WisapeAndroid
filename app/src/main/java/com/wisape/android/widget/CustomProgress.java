@@ -67,7 +67,7 @@ public class CustomProgress extends Dialog {
             txt.setText(message);
         }
         // 按返回键是否取消
-        dialog.setCancelable(cancelable);
+        dialog.setCancelable(false);
         // 设置居中
         dialog.getWindow().getAttributes().gravity = Gravity.CENTER;
         WindowManager.LayoutParams lp = dialog.getWindow().getAttributes();

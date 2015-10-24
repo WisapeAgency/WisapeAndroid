@@ -494,9 +494,6 @@ public class StoryTemplatePlugin extends AbsPlugin {
                         new File(StoryManager.getStoryDirectory(), story.storyLocal + "/thumb.jpg"));
             } catch (IOException e) {
                 LogUtil.e("生成封面出错", e);
-                Looper.prepare();
-                Utils.showToast(WisapeApplication.getInstance(), "generator thum failure");
-                Looper.loop();
             }
         }
 
