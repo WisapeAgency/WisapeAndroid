@@ -506,7 +506,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
             ZipUtils.unzip(downUri, template);
         } catch (IOException e) {
             Log.e(TAG, "", e);
-            startLoad(WHAT_DOWNLOAD_TEMPLATE, args);
+//            startLoad(WHAT_DOWNLOAD_TEMPLATE, args);
         }
     }
 
