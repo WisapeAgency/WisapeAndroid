@@ -268,7 +268,7 @@
 
     </div>
 
-    <div class="pop-layer pop-editer-opt" style="display: block">
+    <div class="pop-layer pop-editer-opt" style="display: none">
         <div class="hd">
             <i class="icon-bold" id="setFontWeight" ></i>
             <i class="icon-italic" id="setFontStyle"></i>
@@ -285,9 +285,8 @@
 
 
     <div class="pop-layer pop-editer-text" style="display: block">
-        <textarea class="textarea-word J-textarea-word" name="" id="textarea" rows="1" ></textarea>
-        <!--<span class="btn-text-del J-btn-text-del">del</span>-->
-        <!--<span class="btn-text-done J-btn-text-done">Done</span>-->
+        <textarea class="textarea-word J-textarea-word" name="" id="textarea" rows="1" >asdfasdfa</textarea>
+        <span class="btn-text-done J-btn-text-done">Done</span>
     </div>
     <script>
         $(function(){
@@ -307,7 +306,7 @@
                 };
             }
 
-            init();
+           // init();
             function init () {
                 var text = $('.J-textarea-word')[0];
                 function resize () {
@@ -602,8 +601,8 @@
 
 </div>
 
-<div class="ui-mask" style="display: none; width: 100%; height: 671px;"></div>
-<div class="ui-dialog href-dialog" style="width: 300px; height: 220px; display: none; left: 50%; margin-left: -150px; top: 50%; margin-top: -110px;">
+<div class="ui-mask" style="display: block; width: 100%; height: 671px;"></div>
+<div class="ui-dialog href-dialog" style="width: 300px; height: 220px; display: block; left: 50%; margin-left: -150px; top: 50%; margin-top: -110px;">
     <div class="ui-dialog-title">Set Destination</div>
     <div class="ui-dialog-content">
         <div class="input-href">
@@ -613,6 +612,27 @@
     <div class="ui-dialog-btns">
         <a class="ui-btn btn-cancle">Cancle</a>
         <a class="ui-btn btn-submit">Confirm</a>
+    </div>
+    <div class="clearfix"></div>
+</div>
+<div class="ui-dialog del-dialog" style="width: 300px; height: 220px; display: block; left: 50%; margin-left: -150px; top: 50%; margin-top: -110px;">
+    <div class="ui-dialog-title">Delete Page</div>
+    <div class="ui-dialog-content">
+        Pages will be deleted from the device and cannot be recovered.
+    </div>
+    <div class="ui-dialog-btns">
+        <a class="ui-btn btn-cancle">Cancle</a>
+        <a class="ui-btn btn-submit">Confirm</a>
+    </div>
+    <div class="clearfix"></div>
+</div>
+<div class="ui-dialog del-tip-dialog" style="width: 300px; height: 220px; display: block; left: 50%; margin-left: -150px; top: 50%; margin-top: -110px;">
+    <div class="ui-dialog-title">Delete Page</div>
+    <div class="ui-dialog-content">
+        You have to keep one page.
+    </div>
+    <div class="ui-dialog-btns">
+        <a class="ui-btn btn-cancle">Cancle</a>
     </div>
     <div class="clearfix"></div>
 </div>

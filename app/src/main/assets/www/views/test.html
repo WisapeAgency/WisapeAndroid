@@ -223,6 +223,27 @@
         <a class="ui-btn btn-cancle">Close</a>
     </div>
 </div>
+<div class="ui-dialog del-dialog" style="width: 300px; height: 220px; display: none; left: 50%; margin-left: -150px; top: 50%; margin-top: -110px;">
+    <div class="ui-dialog-title">Delete Page</div>
+    <div class="ui-dialog-content">
+        Pages will be deleted from the device and cannot be recovered.
+    </div>
+    <div class="ui-dialog-btns">
+        <a class="ui-btn btn-cancle">Cancle</a>
+        <a class="ui-btn btn-submit">Confirm</a>
+    </div>
+    <div class="clearfix"></div>
+</div>
+<div class="ui-dialog del-tip-dialog" style="width: 300px; height: 200px; display: none; left: 50%; margin-left: -150px; top: 50%; margin-top: -100px;">
+    <div class="ui-dialog-title">Delete Page</div>
+    <div class="ui-dialog-content">
+        You have to keep one page.
+    </div>
+    <div class="ui-dialog-btns">
+        <a class="ui-btn btn-cancle">Cancle</a>
+    </div>
+    <div class="clearfix"></div>
+</div>
 
 <script src="../public/js/cordova.js"></script>
 <script type="text/javascript" charset="utf-8" src="cordova.file.js"></script>
@@ -373,7 +394,8 @@
             }
         });
 
-        console.info("phy save!!!")
+        console.info("物理保存");
+        WisapeEditer.logger("物理保存","");
         WisapeEditer.GetNativeData("save", [retImg[0],retHtml, retImg], function () {
             console.info(type + " done!!!");
         })
@@ -439,7 +461,29 @@
         });
 
         $("#pageDel").click(function(){
-            $("#storyDragBox li.selected").remove();
+            var mask = $(".ui-mask");
+            var $dragBoxLi = $("#storyDragBox li");
+            var delDialog = $(".del-dialog");
+            var delTipDialog = $(".del-tip-dialog");
+            if($dragBoxLi.length == $dragBoxLi.filter(".selected").length) {
+                Dialog.show(delTipDialog);
+                delTipDialog.find(".btn-cancle").click(function () {
+                    Dialog.hide(delTipDialog);
+                });
+                return;
+            }
+
+            if($dragBoxLi.filter(".selected").length == 0) return;
+
+            Dialog.show(delDialog);
+            delDialog.find(".btn-cancle").click(function () {
+                Dialog.hide(delDialog);
+            });
+            delDialog.find(".btn-submit").click(function () {
+                mask.hide();
+                Dialog.hide(delDialog);
+                $dragBoxLi.filter(".selected").remove();
+            });
         })
 
     })

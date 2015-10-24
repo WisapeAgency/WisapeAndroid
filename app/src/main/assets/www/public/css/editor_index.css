@@ -417,9 +417,10 @@ a {text-decoration: none;color:inherit;}
     position: relative;
     padding:0 20px 30px 20px;
     color:#999;
+    font-size: 16px;
 }
 .ui-dialog-btns {float:right;width:100%;overflow:hidden;text-align: right}
-.ui-dialog-btns a {display:inline-block;padding:10px 20px;color:#999;}
+.ui-dialog-btns a {display:inline-block;padding:10px 20px;color:#999;font-size:16px;}
 .ui-dialog-btns a.btn-submit {color:green;}
 .input-href {width:100%;padding:10px 0;border-bottom:1px solid green;}
 .input-href input {border:none;}

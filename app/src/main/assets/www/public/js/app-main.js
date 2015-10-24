@@ -195,8 +195,9 @@ WisapeEditer = {
         })
 
 
-        //预览，保存
-        $("#storyPreview,#storySave").click(function () {
+        //预览
+        $("#storyPreview").click(function () {
+            WisapeEditer.logger("预览","");
             var retHtml = '<div class="p-index main" id="con">', retImg = [],type="";
             for (var i = 0; i < WisapeEditer.storyData.length; i++) {
                 retHtml += '<section class="m-page hide pages-item" > <div class="m-img" >' + WisapeEditer.storyData[i].replace("file://","") + '</div> </section>';
@@ -210,22 +211,32 @@ WisapeEditer = {
                     retImg.push(me.find("img").attr("src").replace("file://",""));
                 }
             });
-
-            console.info("storyPublish");
-            console.info(retHtml);
-            console.info(retImg);
-            if($(this).attr("id") == "storySave") {
-                type = "save";
-            } else {
-                type = "preview";
-            }
-
-            WisapeEditer.GetNativeData(type, [retImg[0],retHtml, retImg], function () {
-                console.info(type + " done!!!");
+            WisapeEditer.GetNativeData("preview", [retImg[0],retHtml, retImg], function () {
+                console.info("save done!!!");
             })
+        });
+
+        //保存
+        $("#storySave").click(function () {
+            WisapeEditer.logger("保存","");
+            var retHtml = '', retImg = [];
+            for (var i = 0; i < WisapeEditer.storyData.length; i++) {
+                retHtml += '<section class="m-page hide pages-item" > <div class="m-img" >' + WisapeEditer.storyData[i].replace("file://","") + '</div> </section>';
+            }
+            pageScroll.find(".pages-img").each(function () {
+                var me = $(this);
+                if (me.hasClass("pages-img-bg")) {
+                    retImg.push((me.css("background-image").split("url(")[1].split(")")[0]+"").replace("file://",""));
+                } else {
+                    retImg.push(me.find("img").attr("src").replace("file://",""));
+                }
+            });
+            WisapeEditer.GetNativeData("save", [retImg[0],retHtml, retImg], function () {
+                console.info("preview done!!!");
+            })
+        });
 
 
-        })
 
         //模板分类事件
         console.info("menu-scroll length:" + menuScroll.length);
@@ -255,6 +266,7 @@ WisapeEditer = {
         //管理stage列表
         $("#manageStageList").click(function () {
             console.info("manageStageList:");
+            WisapeEditer.logger("管理stage列表","");
             console.info(typeof WisapeEditer.storyData);
             $("#pageScroll li").find(".ico-acitve").remove();
             $("#pageScroll li").find(".count").remove();
@@ -302,6 +314,9 @@ WisapeEditer = {
             console.info("storyStageList:");
             console.info(retHtml);
             WisapeEditer.storyData = retHtml;//覆盖更新storyData
+            WisapeEditer.logger("管理stage列表返回","");
+            WisapeEditer.logger("WisapeEditer.currentTplData",WisapeEditer.currentTplData);
+            WisapeEditer.logger("WisapeEditer.storyData",WisapeEditer.storyData);
             WisapeEditer.LoadStageList(retHtml, function () {//重新加载主界面的stage列表
                 WisapeEditer.ShowView('storyStageList', 'main')
             })
@@ -431,6 +446,7 @@ WisapeEditer = {
         //新建stage事件
         AddNewStage.click(function () {
 
+            WisapeEditer.logger("新建stage事件 WisapeEditer.currentTplData",WisapeEditer.currentTplData);
             var target = pageScroll.find("li.active");
             var tipDialog = $(".tip-dialog");
 
