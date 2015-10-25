@@ -223,11 +223,6 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 callbackContext.success(html);
             }
         } else if (ACTION_CHECK_DOWNLOAD.equals(action)) {
-//            if (!DataSynchronizer.getInstance().isDownloading()){
-//                ((StoryTemplateActivity)cordova.getActivity()).onInitCompleted();
-//            } else {
-//                startLoad(WHAT_EDIT_INIT, null);
-//            }
             startLoad(WHAT_EDIT_INIT, null);
         } else if (ACTION_OPEN_LINK.equals(action)) {
             if (null != args && args.length() == 1) {
@@ -424,6 +419,13 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 break;
             }
             case WHAT_EDIT_INIT: {
+                while (DataSynchronizer.getInstance().isDownloading()){
+                    try{
+                        Thread.sleep(300);
+                    }catch (InterruptedException e){
+
+                    }
+                }
                 StoryTemplateInfo templateInfo = DataSynchronizer.getInstance().getFirstTemplate();
                 String content = "";
                 if (templateInfo != null) {
