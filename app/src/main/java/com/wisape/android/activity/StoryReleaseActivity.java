@@ -53,6 +53,7 @@ public class StoryReleaseActivity extends BaseActivity {
     public static final int REQUEST_CODE_STORY_RELEASE = 110;
     public static final int REQEUST_CODE_CROP_IMG = 0x01;
     private static final int LOADER_UPDATE_STORYSETTING = 1;
+    private static final int LOADER_UPDATE_INFO = 2;
     private static final String EXTRAS_STORY_NAME = "stroy_name";
     private static final String EXTRAS_STORY_DESC = "story_desc";
     private static final int WIDTH = 600;
@@ -73,6 +74,7 @@ public class StoryReleaseActivity extends BaseActivity {
     protected ImageView storyCoverView;
     private StoryEntity storyEntity;
     private String thumbImage;
+//    private String storyUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,19 +89,19 @@ public class StoryReleaseActivity extends BaseActivity {
         storyEntity = StoryLogic.instance().getStoryEntityFromShare();
         storyNameEdit.setText(storyEntity.storyName);
         storyDescEdit.setText(storyEntity.storyDesc);
-        if (storyEntity.localCover == 0){
+        if (storyEntity.localCover == 0) {
             File storyDirectory = new File(StoryManager.getStoryDirectory(), storyEntity.storyLocal);
-            File coverFile = new File (storyDirectory, "thumb.jpg");
-            if (coverFile.exists()){
+            File coverFile = new File(storyDirectory, "thumb.jpg");
+            if (coverFile.exists()) {
                 thumbImage = coverFile.getAbsolutePath();
-            }else{
+            } else {
                 thumbImage = storyEntity.storyThumbUri;
             }
         } else {
             thumbImage = storyEntity.storyThumbUri;
         }
-        Utils.loadImg(this,thumbImage, storyCoverView);
-        LogUtil.d("storylocalCover:"+ storyEntity.localCover +"封面地址:" + thumbImage + ":story地址:" + storyEntity.storyUri);
+        Utils.loadImg(this, thumbImage, storyCoverView);
+        LogUtil.d("storylocalCover:" + storyEntity.localCover + "封面地址:" + storyEntity.storyThumbUri + ":story地址:" + storyEntity.storyUri);
     }
 
     @OnClick(R.id.linear_picture)
@@ -110,7 +112,7 @@ public class StoryReleaseActivity extends BaseActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(data == null){
+        if (data == null) {
             return;
         }
         if (resultCode == RESULT_OK) {
@@ -119,7 +121,7 @@ public class StoryReleaseActivity extends BaseActivity {
                 case PhotoSelectorActivity.REQUEST_CODE_PHOTO:
                     Uri imgUri = extras.getParcelable(PhotoSelectorActivity.EXTRA_IMAGE_URI);
                     File file = new File(StoryManager.getStoryDirectory(), storyEntity.storyLocal + "/thumb.jpg");
-                    if(file.exists()){
+                    if (file.exists()) {
                         file.delete();
                     }
                     bgUri = Uri.fromFile(file);
@@ -158,12 +160,6 @@ public class StoryReleaseActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        if(isStorySettingChange()){
-            Bundle args = new Bundle();
-            args.putString(EXTRAS_STORY_NAME, storyNameEdit.getText().toString());
-            args.putString(EXTRAS_STORY_DESC, storyDescEdit.getText().toString());
-            startLoad(LOADER_UPDATE_STORYSETTING, args);
-        }
         MainActivity.launch(this);
         super.onBackPressed();
     }
@@ -176,26 +172,42 @@ public class StoryReleaseActivity extends BaseActivity {
 
     @Override
     protected Message onLoadBackgroundRunning(int what, Bundle args) throws AsyncLoaderError {
-        return StoryLogic.instance().updateStorySetting(storyEntity,
-                args.getString(EXTRAS_STORY_NAME), bgUri.getPath(),
-                args.getString(EXTRAS_STORY_DESC));
+        Message message = Message.obtain();
+
+        switch (what) {
+            case LOADER_UPDATE_INFO:
+                message =  StoryLogic.instance().updateStorySetting(storyEntity,
+                        args.getString(EXTRAS_STORY_NAME), "",
+                        args.getString(EXTRAS_STORY_DESC));
+            break;
+            case LOADER_UPDATE_STORYSETTING:
+                message =  StoryLogic.instance().updateStorySetting(storyEntity,
+                        args.getString(EXTRAS_STORY_NAME), bgUri.getPath(),
+                        args.getString(EXTRAS_STORY_DESC));
+            break;
+        }
+
+        return message;
     }
 
     @Override
     protected void onLoadCompleted(Message data) {
         closeProgressDialog();
-        if (HttpUrlConstancts.STATUS_SUCCESS == data.arg1) {
-            String imgPath = storyEntity.storyThumbUri;
-            storyEntity.localCover = 1;
+        switch (data.arg1) {
+            case LOADER_UPDATE_STORYSETTING:
+
+                if (HttpUrlConstancts.STATUS_SUCCESS == data.arg1) {
+                    String imgPath = storyEntity.storyThumbUri;
+                    storyEntity.localCover = 1;
 
 
 //            if (imgPath.contains("http")) {
-                Picasso.with(this).load(Utils.isEmpty(storyEntity.storyThumbUri)? "" :storyEntity.storyThumbUri)
-                        .placeholder(R.mipmap.icon_camera)
-                        .error(R.mipmap.icon_login_email)
-                        .fit()
-                        .centerCrop()
-                        .into(storyCoverView);
+                    Picasso.with(this).load(Utils.isEmpty(storyEntity.storyThumbUri) ? "" : storyEntity.storyThumbUri)
+                            .placeholder(R.mipmap.icon_camera)
+                            .error(R.mipmap.icon_login_email)
+                            .fit()
+                            .centerCrop()
+                            .into(storyCoverView);
 //            } else {
 //                Picasso.with(this).load(new File(imgPath))
 //                        .fit()
@@ -204,12 +216,18 @@ public class StoryReleaseActivity extends BaseActivity {
 //                        .error(R.mipmap.icon_login_email)
 //                        .into(storyCoverView);
 //            }
-        Intent intent = new Intent();
-            intent.setAction(StoryBroadcastReciver.STORY_ACTION);
-            intent.putExtra(StoryBroadcastReciver.EXTRAS_TYPE, StoryBroadcastReciverListener.UPDATE_STORY_SETTING);
-            sendBroadcast(intent);
-        }else{
-            showToast((String)data.obj);
+                    Intent intent = new Intent();
+                    intent.setAction(StoryBroadcastReciver.STORY_ACTION);
+                    intent.putExtra(StoryBroadcastReciver.EXTRAS_TYPE, StoryBroadcastReciverListener.UPDATE_STORY_SETTING);
+                    sendBroadcast(intent);
+                } else {
+                    showToast((String) data.obj);
+                }
+
+                break;
+            case LOADER_UPDATE_INFO:
+                MainActivity.launch(this);
+                break;
         }
     }
 
@@ -349,24 +367,26 @@ public class StoryReleaseActivity extends BaseActivity {
 
             @Override
             public void onError(Platform platform, int i, Throwable throwable) {
-                LogUtil.e(platName + "分享成功失败",throwable);
+                LogUtil.e(platName + "分享成功失败", throwable);
                 Message message = Message.obtain();
                 message.obj = platName + " publish failure,not client";
-                handler.sendMessage(message);            }
+                handler.sendMessage(message);
+            }
 
             @Override
             public void onCancel(Platform platform, int i) {
                 Message message = Message.obtain();
                 message.obj = platName + " publish cancle";
-                handler.sendMessage(message);            }
+                handler.sendMessage(message);
+            }
         });
         platform.share(shareParams);
     }
 
-    android.os.Handler handler = new android.os.Handler(){
+    android.os.Handler handler = new android.os.Handler() {
         @Override
         public void handleMessage(Message msg) {
-            showToast((String)msg.obj);
+            showToast((String) msg.obj);
         }
     };
 

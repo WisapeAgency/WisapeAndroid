@@ -22,6 +22,7 @@ import com.wisape.android.network.DataSynchronizer;
 import com.wisape.android.network.Downloader;
 import com.wisape.android.network.WWWConfig;
 import com.wisape.android.util.EnvironmentUtils;
+import com.wisape.android.util.LogUtil;
 import com.wisape.android.util.Utils;
 import com.wisape.android.util.ZipUtils;
 
@@ -505,7 +506,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
             }
             ZipUtils.unzip(downUri, template);
         } catch (IOException e) {
-            Log.e(TAG, "", e);
+            LogUtil.e("解压模版失败", e);
 //            startLoad(WHAT_DOWNLOAD_TEMPLATE, args);
         }
     }

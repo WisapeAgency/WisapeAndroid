@@ -162,7 +162,7 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
                 StoryEntity story = StoryLogic.instance().getStoryEntityFromShare();
 
                 ApiStory.AttrStoryInfo storyAttr = new ApiStory.AttrStoryInfo();
-//                storyAttr.attrStoryThumb = Uri.parse((new File(StoryManager.getStoryDirectory(), story.storyLocal + "/thumb.jpg")).getAbsolutePath());
+                storyAttr.attrStoryThumb = Uri.parse((new File(StoryManager.getStoryDirectory(), story.storyLocal + "/thumb.jpg")).getAbsolutePath());
                 storyAttr.storyStatus = ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE;
                 storyAttr.story = Uri.fromFile(new File(StoryManager.getStoryDirectory(), story.storyLocal));
                 storyAttr.storyName = story.storyName;
