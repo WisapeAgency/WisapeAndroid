@@ -122,4 +122,5 @@
     <string name="delete_story_title">Delete Story</string>
     <string name="delete_story_content">the story will be deleted from the device and can not be recovered</string>
 
+    <string name="category_name_all">All</string>
 </resources>

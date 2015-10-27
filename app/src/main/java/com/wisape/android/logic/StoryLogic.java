@@ -18,6 +18,7 @@ import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.Where;
 import com.squareup.okhttp.FormEncodingBuilder;
 import com.squareup.okhttp.RequestBody;
+import com.wisape.android.R;
 import com.wisape.android.WisapeApplication;
 import com.wisape.android.activity.StoryMusicActivity;
 import com.wisape.android.api.ApiStory;
@@ -38,6 +39,7 @@ import com.wisape.android.model.StoryMusicInfo;
 import com.wisape.android.model.StoryMusicTypeInfo;
 import com.wisape.android.model.StoryTemplateInfo;
 import com.wisape.android.model.UserInfo;
+import com.wisape.android.network.DataSynchronizer;
 import com.wisape.android.network.Downloader;
 import com.wisape.android.network.Requester;
 import com.wisape.android.network.StoryDownloader;
@@ -50,6 +52,7 @@ import com.wisape.android.widget.StoryMusicAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -423,7 +426,24 @@ public class StoryLogic {
         try {
             dao = helper.getDao(StoryTemplateEntity.class);
             QueryBuilder<StoryTemplateEntity, Long> builder = dao.queryBuilder();
-            List<StoryTemplateEntity> storyTemplateList = builder.where().eq("type", typeId).query();
+            List<StoryTemplateEntity> storyTemplateList = null;
+            if (typeId == -1){//all
+//                storyTemplateList = builder.query();
+                List<StoryTemplateInfo> templateList = DataSynchronizer.getInstance().getAllTemplate();
+                for (StoryTemplateInfo template : templateList) {
+                    File file = new File(StoryManager.getStoryTemplateDirectory(), template.temp_name + "/thumb.jpg");
+                    template.temp_img_local = file.getAbsolutePath();
+                    File zipFile = new File(StoryManager.getStoryTemplateDirectory(), template.temp_name + ".zip");
+                    if (zipFile.exists()) {
+                        template.rec_status = "1";
+                    } else {
+                        template.rec_status = "0";
+                    }
+                }
+                return templateList;
+            }else{
+                storyTemplateList = builder.where().eq("type", typeId).query();
+            }
             if (storyTemplateList == null || storyTemplateList.size() == 0) {
                 return storyTemplateInfoList;
             }
@@ -573,9 +593,17 @@ public class StoryLogic {
         ApiStory api = ApiStory.instance();
         JSONArray templateTypeJson = api.listStoryTemplateTypeJson(context, tag);
         if (null == templateTypeJson) {
-            return new JSONArray();
+            templateTypeJson =  new JSONArray();
         }
-
+        JSONObject objectAll = new JSONObject();
+        try{
+            objectAll.put("id",-1);
+            objectAll.put("name",context.getString(R.string.category_name_all));
+            objectAll.put("order",1);
+            templateTypeJson.put(0,objectAll);
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
         //save to local
         SharedPreferences preferences = getSharedPreferences(context);
         preferences.edit().putString(EXTRA_STORY_TEMPLATE_TYPE, templateTypeJson.toString()).apply();

@@ -41,6 +41,7 @@ public class DataSynchronizer {
     private WisapeApplication application;
     private StoryTemplateInfo firstTemplate;
     private StoryLogic logic = StoryLogic.instance();
+    private List<StoryTemplateInfo> allTemplate = new ArrayList<>();
     private BlockingQueue<StoryFontInfo> fontPreviewQueue = new LinkedBlockingQueue<>();
     private BlockingQueue<StoryTemplateInfo> downloadQueue = new LinkedBlockingQueue<>();
     private BlockingQueue<StoryTemplateInfo> downloadTempQueue = new LinkedBlockingQueue<>();
@@ -49,8 +50,16 @@ public class DataSynchronizer {
 
     }
 
+    public List<StoryTemplateInfo> getAllTemplate(){
+        return allTemplate;
+    }
+
     public StoryTemplateInfo getFirstTemplate() {
-        return firstTemplate;
+//        return firstTemplate;
+        if (allTemplate.size() != 0){
+            return allTemplate.get(0);
+        }
+        return null;
     }
 
     void setFirstTemplate(StoryTemplateInfo firstTemplate) {
@@ -77,7 +86,7 @@ public class DataSynchronizer {
         JSONArray remoteData = logic.listStoryTemplateType(context, null);
         System.out.println(remoteData);
         try {
-            for (int i = 0; i < remoteData.length(); i++) {
+            for (int i = 1; i < remoteData.length(); i++) {
                 JSONObject obj = (JSONObject) remoteData.get(i);
                 getStoryTemplate(obj);
             }
@@ -103,6 +112,7 @@ public class DataSynchronizer {
         boolean isFirstTemplate = true;
         for (StoryTemplateEntity template : entities) {
             StoryTemplateInfo templateInfo = StoryTemplateEntity.convert(template);
+            allTemplate.add(templateInfo);
             if (isFirstTemplate){
                 isFirstTemplate = false;
                 downloadTempQueue.offer(templateInfo);

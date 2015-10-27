@@ -181,11 +181,6 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Uri uri = new Uri.Builder().scheme(ContentResolver.SCHEME_FILE)
-                .encodedPath(EnvironmentUtils.getAppDataDirectory().getPath())
-                .appendEncodedPath("template_light/index.html").build();
-        String url = uri.toString();
-        Log.d(TAG, "#onCreate url:" + url);
         html = getIntent().getStringExtra(EXTRA_EDIT_CONTENT);
         loadUrl(START_URL);
         startLoad(WHAT_INIT, null);
@@ -201,29 +196,6 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
         loadUrl("javascript:doSaveStory()");
     }
 
-    public void onInitCompleted() {
-        startLoad(WHAT_INIT_COMPLETED, null);
-    }
-    public void onInitCompleted2(){
-        startLoad(WHAT_INIT_COMPLETED, null);
-//            new Handler() {
-//                boolean isCompleted = false;
-//                @Override
-//                public void handleMessage(Message msg) {
-//                    super.handleMessage(msg);
-//                    while (!isCompleted){
-//                        try{
-//                            Thread.sleep(200);
-//                        }catch (InterruptedException e) {
-//                        }
-//                        isCompleted = DataSynchronizer.getInstance().isDownloading();
-//                        if (isCompleted){
-//                            loadUrl("javascript:onInitCompleted()");
-//                        }
-//                    }
-//                }
-//            }.sendEmptyMessage(1);
-    }
     public void downloadTemplate(String data, int id, int categoryId) throws JSONException {
         JSONObject json = new JSONObject(data);
         String name = json.getString(EXTRA_TEMPLATE_NAME);
