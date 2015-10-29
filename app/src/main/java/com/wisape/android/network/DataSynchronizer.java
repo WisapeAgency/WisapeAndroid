@@ -3,6 +3,7 @@ package com.wisape.android.network;
 import android.content.Context;
 import android.util.Log;
 
+import com.parse.codec.digest.DigestUtils;
 import com.wisape.android.WisapeApplication;
 import com.wisape.android.api.ApiStory;
 import com.wisape.android.common.StoryManager;
@@ -17,6 +18,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -42,6 +46,7 @@ public class DataSynchronizer {
     private StoryTemplateInfo firstTemplate;
     private StoryLogic logic = StoryLogic.instance();
     private List<StoryTemplateInfo> allTemplate = new ArrayList<>();
+    private BlockingQueue<StoryFontInfo> fontQueue = new LinkedBlockingQueue<>();
     private BlockingQueue<StoryFontInfo> fontPreviewQueue = new LinkedBlockingQueue<>();
     private BlockingQueue<StoryTemplateInfo> downloadQueue = new LinkedBlockingQueue<>();
     private BlockingQueue<StoryTemplateInfo> downloadTempQueue = new LinkedBlockingQueue<>();
@@ -78,6 +83,7 @@ public class DataSynchronizer {
         service.execute(new ThumbDownloader(downloadQueue));
         service.execute(new ThumbDownloader(downloadQueue));
         service.execute(new TemplateDownloader(downloadTempQueue));
+        service.execute(new FontDownloader(fontQueue));
         service.execute(new FontPreviewDownloader(fontPreviewQueue));
         service.shutdown();
 
@@ -96,6 +102,7 @@ public class DataSynchronizer {
 
         //获取字体模板
         StoryFontInfo[] fonts = logic.listFont(context, "getFonts");
+        fontQueue.addAll(Arrays.asList(fonts));
         fontPreviewQueue.addAll(Arrays.asList(fonts));
     }
 
@@ -113,6 +120,19 @@ public class DataSynchronizer {
         for (StoryTemplateEntity template : entities) {
             StoryTemplateInfo templateInfo = StoryTemplateEntity.convert(template);
             allTemplate.add(templateInfo);
+            File templateFile = new File(StoryManager.getStoryTemplateDirectory(), templateInfo.temp_name + ".zip");
+            if (templateFile.exists()){
+                try{
+                    InputStream is = new FileInputStream(templateFile);
+                    String md5 = DigestUtils.md5Hex(is);
+                    //服务器文件与本地文件的md5不相同需要重新下载
+                    if (!md5.equals(template.hashCode)){
+                        downloadTempQueue.offer(templateInfo);
+                    }
+                }catch (IOException e){
+                    e.printStackTrace();
+                }
+            }
             if (isFirstTemplate){
                 isFirstTemplate = false;
                 downloadTempQueue.offer(templateInfo);

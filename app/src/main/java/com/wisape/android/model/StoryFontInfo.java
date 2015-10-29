@@ -12,6 +12,7 @@ public class StoryFontInfo extends ServerInfo{
     public String zip_url;
     public int default_down;
     public int downloaded;
+    public String hash_code;
 
     public static StoryFontInfo fromJsonObject(JSONObject json){
         if(null == json){
@@ -24,6 +25,7 @@ public class StoryFontInfo extends ServerInfo{
         font.preview_img = json.optString("preview_img");
         font.zip_url = json.optString("zip_url");
         font.default_down = json.optInt("default_down");
+        font.hash_code = json.optString("hash_code");
         return font;
     }
 
@@ -39,6 +41,7 @@ public class StoryFontInfo extends ServerInfo{
         dest.writeString(this.preview_img);
         dest.writeString(this.zip_url);
         dest.writeInt(this.default_down);
+        dest.writeString(this.hash_code);
     }
 
     public StoryFontInfo() {
@@ -50,6 +53,7 @@ public class StoryFontInfo extends ServerInfo{
         this.preview_img = in.readString();
         this.zip_url = in.readString();
         this.default_down = in.readInt();
+        this.hash_code = in.readString();
     }
 
     public static final Creator<StoryFontInfo> CREATOR = new Creator<StoryFontInfo>() {

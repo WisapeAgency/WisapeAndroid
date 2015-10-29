@@ -34,6 +34,7 @@ public class StoryTemplateInfo extends ServerInfo{
     public boolean exists;
     public int order;
     public String order_type;
+    public String hash_code;
 
     public static StoryTemplateInfo fromJsonObject(JSONObject json){
         if(null == json){
@@ -50,6 +51,7 @@ public class StoryTemplateInfo extends ServerInfo{
         template.type = json.optLong("type");
         template.order = json.optInt("order");
         template.order_type = json.optString("order_type");
+        template.hash_code = json.optString("hash_code");
         return template;
     }
 
@@ -69,6 +71,7 @@ public class StoryTemplateInfo extends ServerInfo{
         dest.writeLong(this.type);
         dest.writeInt(this.order);
         dest.writeString(this.order_type);
+        dest.writeString(this.hash_code);
     }
 
     public StoryTemplateInfo() {
@@ -84,6 +87,7 @@ public class StoryTemplateInfo extends ServerInfo{
         this.type = in.readLong();
         this.order = in.readInt();
         this.order_type = in.readString();
+        this.hash_code = in.readString();
     }
 
     public static final Creator<StoryTemplateInfo> CREATOR = new Creator<StoryTemplateInfo>() {

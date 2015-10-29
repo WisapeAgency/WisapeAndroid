@@ -39,6 +39,9 @@ public class StoryTemplateEntity extends BaseEntity implements Parcelable {
     @DatabaseField(dataType= DataType.STRING)
     public String thumbLocal;
 
+    @DatabaseField(dataType = DataType.STRING)
+    public String hashCode;
+
     public static StoryTemplateEntity transform(StoryTemplateInfo info){
         if(null == info){
             return null;
@@ -55,6 +58,7 @@ public class StoryTemplateEntity extends BaseEntity implements Parcelable {
         entity.order = info.order;
         entity.orderType = info.order_type;
         entity.thumbLocal = info.temp_img_local;
+        entity.hashCode = info.hash_code;
         return entity;
     }
 
@@ -74,6 +78,7 @@ public class StoryTemplateEntity extends BaseEntity implements Parcelable {
         info.order = entity.order;
         info.order_type = entity.orderType;
         info.temp_img_local = entity.thumbLocal;
+        info.hash_code = entity.hashCode;
         return info;
     }
 
@@ -95,6 +100,7 @@ public class StoryTemplateEntity extends BaseEntity implements Parcelable {
         dest.writeString(this.orderType);
         dest.writeString(this.templateLocal);
         dest.writeString(this.thumbLocal);
+        dest.writeString(this.hashCode);
     }
 
     public StoryTemplateEntity() {
@@ -112,6 +118,7 @@ public class StoryTemplateEntity extends BaseEntity implements Parcelable {
         this.orderType = in.readString();
         this.templateLocal = in.readString();
         this.thumbLocal = in.readString();
+        this.hashCode = in.readString();
     }
 
     public static final Creator<StoryTemplateEntity> CREATOR = new Creator<StoryTemplateEntity>() {

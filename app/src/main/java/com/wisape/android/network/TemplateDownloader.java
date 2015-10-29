@@ -3,6 +3,7 @@ package com.wisape.android.network;
 import android.net.Uri;
 import android.util.Log;
 
+import com.parse.codec.digest.DigestUtils;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -17,6 +18,7 @@ import org.json.JSONObject;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -62,7 +64,15 @@ public class TemplateDownloader implements Runnable {
         }
         File destFile = new File(StoryManager.getStoryTemplateDirectory(), templateInfo.temp_name + ".zip");
         if (destFile.exists()){
-            return;
+            try{
+                InputStream is = new FileInputStream(destFile);
+                String md5 = DigestUtils.md5Hex(is);
+                if (md5.equals(templateInfo.hash_code)){
+                    return;
+                }
+            }catch (IOException e){
+                e.printStackTrace();
+            }
         }
         File parent = destFile.getParentFile();
         if (!parent.exists()) {
