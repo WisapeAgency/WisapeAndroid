@@ -10,15 +10,6 @@ import android.support.v7.widget.AppCompatEditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.facebook.AccessToken;
-import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.FacebookSdk;
-import com.facebook.share.ShareApi;
-import com.facebook.share.Sharer;
-import com.facebook.share.model.ShareLinkContent;
-import com.facebook.share.widget.ShareButton;
 import com.squareup.picasso.Picasso;
 import com.wisape.android.R;
 import com.wisape.android.common.StoryManager;
@@ -91,7 +82,6 @@ public class StoryReleaseActivity extends BaseActivity {
         setContentView(R.layout.activity_story_release);
         ButterKnife.inject(this);
         ShareSDK.initSDK(this);
-        FacebookSdk.sdkInitialize(getApplicationContext());
         setStoryInfo();
 
     }

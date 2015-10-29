@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -46,11 +47,13 @@ public class QrDialogFragment extends DialogFragment {
             url = args.getString(EXTRAS_URL);
             savePath = args.getString(EXRAS_SAVE_PATH);
         }
+
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
         View veiw = inflater.inflate(R.layout.fragment_qr, container, false);
         initView(veiw);
         return veiw;
@@ -61,7 +64,7 @@ public class QrDialogFragment extends DialogFragment {
         TextView textSave = (TextView) veiw.findViewById(R.id.text_save);
         TextView textCancle = (TextView) veiw.findViewById(R.id.text_cancle);
         try {
-            bitmap = Utils.createQRCode(url, QR_WIDTH_AND_HEIGHT);
+            bitmap = FileUtils.Create2DCode(url);
             if (null != bitmap) {
                 imgQr.setImageBitmap(bitmap);
             }
@@ -86,29 +89,6 @@ public class QrDialogFragment extends DialogFragment {
         });
     }
 
-    private void saveQrToLocal(Bitmap bitmap) {
-//        FileOutputStream fileOutputStream = null;
-//        try {
-//            if (file.exists()) {
-//                file.delete();
-//            }
-//            fileOutputStream = new FileOutputStream(file);
-//            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, fileOutputStream);
-//            fileOutputStream.flush();
-//            fileOutputStream.close();
-//            bitmap.recycle();
-//        } catch (IOException e) {
-//            LogUtil.e("保存二维码失败!",e);
-//        } finally {
-//            if (null != fileOutputStream) {
-//                try {
-//                    fileOutputStream.close();
-//                } catch (IOException e) {
-//                    Log.e(TAG, e.getMessage());
-//                }
-//            }
-//        }
-    }
 
     public static QrDialogFragment instance(String url, String savePath) {
         Bundle args = new Bundle();

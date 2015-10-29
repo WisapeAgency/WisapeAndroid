@@ -365,7 +365,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 StoryEntity storyEntity = StoryLogic.instance().updateStory(getCurrentActivity(), StoryLogic.instance().getStoryEntityFromShare());
                 LogUtil.d("预览保存story信息:" + storyEntity.storyThumbUri);
                 StoryLogic.instance().saveStoryEntityToShare(storyEntity);
-                sendBroadcastUpdateStory();
+//                sendBroadcastUpdateStory();
                 File previewFile = new File(myStory, FILE_NAME_PREVIEW);
                 if (saveStoryPreview(previewFile, html, story)) {
                     StoryPreviewActivity.launch(cordova.getActivity(), previewFile.getAbsolutePath());

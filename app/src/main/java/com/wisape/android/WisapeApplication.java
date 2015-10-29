@@ -27,10 +27,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-//import com.wisape.android.network.NanoServer;
-//import com.wisape.android.service.NanoService;
-//import com.wisape.android.service.NanoService;
-
 /**
  * @author Duke
  */
@@ -48,11 +44,9 @@ public class WisapeApplication extends Application {
 
     private List<StoryTemplateTypeInfo> templateTypeList = new ArrayList<>();
     private Map<Integer, List<StoryTemplateInfo>> templateMap = new HashMap<>();
-//    private UserInfo userInfo;
     private SharedPreferences sharedPreferences;
     private String installId;
     private DataSynchronizerReceiver dataSynchronizerReceiver;
-//    private StoryEntity storyEntity;
 
 
     @Override
@@ -93,8 +87,6 @@ public class WisapeApplication extends Application {
      * 初始化parse
      */
     private void initParse(){
-//        Parse.initialize(this, "L3WrrhBJmbPhRoJ4GYIUDMIErlR8IlvkJuQQJ0Px", "yfC5kFI4jLLeeDaKlepK1hgAGiYJJEHjXfnpaCks");
-//        ParseInstallation.getCurrentInstallation().saveInBackground();
 
         Parse.initialize(this, "L3WrrhBJmbPhRoJ4GYIUDMIErlR8IlvkJuQQJ0Px", "yfC5kFI4jLLeeDaKlepK1hgAGiYJJEHjXfnpaCks");
 
