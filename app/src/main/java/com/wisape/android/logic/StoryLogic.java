@@ -773,7 +773,7 @@ public class StoryLogic {
     /**
      * 从数据库查询查询用户所有的story
      */
-    private List<StoryEntity> getUserStoryFromLocal(Context context) {
+    public List<StoryEntity> getUserStoryFromLocal(Context context) {
         long userId = UserLogic.instance().getUserInfoFromLocal().user_id;
         DatabaseHelper databaseHelper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
         Dao<StoryEntity, Log> dao;
