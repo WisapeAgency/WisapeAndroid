@@ -14,7 +14,7 @@
 <body>
 <div class="loading" style="display:none;position: fixed;left:0;top:0;bottom:0;right:0;background-image:url(../public/img/loading.gif);background-position:50% 50%;background-size:cover;z-index: 10000">
 </div>
-<div id="main" class="page" style="display: none">
+<div id="main" class="page" style="display: block">
     <div class="header">
         <div class="pull-left">
             <a class="icon-arrow-left" id="storySave"></a>
@@ -24,11 +24,11 @@
                 <li><a class="icon-play" id="storyPreview"></a></li>
                 <li><a class="icon-layout" id="toggleCat" ></a></li>
                 <li><a class="icon-list" id="manageStageList"></a></li>
-                <li><a class="icon-settings" onclick="setting(1);"></a></li>
+                <li><a class="icon-music" onclick="setting(1);"></a></li>
             </ul>
         </div>
     </div>
-    <div class="tpl-page-cat">
+    <div class="tpl-page-cat" style="display: block">
         <div class="hd" id="menu-scroll" >
             <ul class="tabcon-item">
                 <li class="tabnav-item active">ALL</li>
@@ -37,184 +37,258 @@
             </ul>
         </div>
         <div class="bd" id="cat-scroll">
+            <ul>
             <li class="tpl-page-item active">
-                <div style="display:block;" class="download-progress-bar"><div class="download-progress-percent"></div></div>
+                <div style="display:block;" class="download-progress-bar"><div class="download-progress-percent" style="width:20%"></div></div>
                 <i class="icon-tags-new" style="display:block;"></i>
                 <img class="stage-thumb" src="img/bg.jpg"  alt="{{value.temp_name}}"/>
-                <div class="tpl-page-item-name">{{value.temp_name}}</div>
                 <span class="icon-download"></span>
 
             </li>
             <li class="tpl-page-item">
                 <i class="icon-tags-new" style="display:block;"></i>
                 <img class="stage-thumb" src="img/bg.jpg"  alt="{{value.temp_name}}"/>
-                <div class="tpl-page-item-name">{{value.temp_name}}</div>
             </li>
 
             <li class="tpl-page-item tpl-exist">
                 <i class="icon-tags-hot" style="display:block;"></i>
                 <img class="stage-thumb" src="img/bg.jpg"  alt="{{value.temp_name}}"/>
-                <div class="tpl-page-item-name">{{value.temp_name}}</div>
             </li>
+            <li class="tpl-page-item active">
+                <div style="display:block;" class="download-progress-bar"><div class="download-progress-percent" style="width:20%"></div></div>
+                <i class="icon-tags-new" style="display:block;"></i>
+                <img class="stage-thumb" src="img/bg.jpg"  alt="{{value.temp_name}}"/>
+                <span class="icon-download"></span>
+
+            </li>
+            <li class="tpl-page-item">
+                <i class="icon-tags-new" style="display:block;"></i>
+                <img class="stage-thumb" src="img/bg.jpg"  alt="{{value.temp_name}}"/>
+            </li>
+
+            <li class="tpl-page-item tpl-exist">
+                <i class="icon-tags-hot" style="display:block;"></i>
+                <img class="stage-thumb" src="img/bg.jpg"  alt="{{value.temp_name}}"/>
+            </li>
+            <li class="tpl-page-item active">
+                <div style="display:block;" class="download-progress-bar"><div class="download-progress-percent" style="width:20%"></div></div>
+                <i class="icon-tags-new" style="display:block;"></i>
+                <img class="stage-thumb" src="img/bg.jpg"  alt="{{value.temp_name}}"/>
+                <span class="icon-download"></span>
+
+            </li>
+            <li class="tpl-page-item">
+                <i class="icon-tags-new" style="display:block;"></i>
+                <img class="stage-thumb" src="img/bg.jpg"  alt="{{value.temp_name}}"/>
+            </li>
+
+            <li class="tpl-page-item tpl-exist">
+                <i class="icon-tags-hot" style="display:block;"></i>
+                <img class="stage-thumb" src="img/bg.jpg"  alt="{{value.temp_name}}"/>
+            </li>
+            <li class="tpl-page-item active">
+                <div style="display:block;" class="download-progress-bar"><div class="download-progress-percent" style="width:20%"></div></div>
+                <i class="icon-tags-new" style="display:block;"></i>
+                <img class="stage-thumb" src="img/bg.jpg"  alt="{{value.temp_name}}"/>
+                <span class="icon-download"></span>
+
+            </li>
+            <li class="tpl-page-item">
+                <i class="icon-tags-new" style="display:block;"></i>
+                <img class="stage-thumb" src="img/bg.jpg"  alt="{{value.temp_name}}"/>
+            </li>
+
+            <li class="tpl-page-item tpl-exist">
+                <i class="icon-tags-hot" style="display:block;"></i>
+                <img class="stage-thumb" src="img/bg.jpg"  alt="{{value.temp_name}}"/>
+            </li>
+            <li class="tpl-page-item active">
+                <div style="display:block;" class="download-progress-bar"><div class="download-progress-percent" style="width:20%"></div></div>
+                <i class="icon-tags-new" style="display:block;"></i>
+                <img class="stage-thumb" src="img/bg.jpg"  alt="{{value.temp_name}}"/>
+                <span class="icon-download"></span>
+
+            </li>
+            <li class="tpl-page-item">
+                <i class="icon-tags-new" style="display:block;"></i>
+                <img class="stage-thumb" src="img/bg.jpg"  alt="{{value.temp_name}}"/>
+            </li>
+
+            <li class="tpl-page-item tpl-exist">
+                <i class="icon-tags-hot" style="display:block;"></i>
+                <img class="stage-thumb" src="img/bg.jpg"  alt="{{value.temp_name}}"/>
+            </li>
+            <li class="tpl-page-item active">
+                <div style="display:block;" class="download-progress-bar"><div class="download-progress-percent" style="width:20%"></div></div>
+                <i class="icon-tags-new" style="display:block;"></i>
+                <img class="stage-thumb" src="img/bg.jpg"  alt="{{value.temp_name}}"/>
+                <span class="icon-download"></span>
+
+            </li>
+            <li class="tpl-page-item">
+                <i class="icon-tags-new" style="display:block;"></i>
+                <img class="stage-thumb" src="img/bg.jpg"  alt="{{value.temp_name}}"/>
+            </li>
+
+            <li class="tpl-page-item tpl-exist">
+                <i class="icon-tags-hot" style="display:block;"></i>
+                <img class="stage-thumb" src="img/bg.jpg"  alt="{{value.temp_name}}"/>
+            </li>
+            </ul>
         </div>
 
     </div>
-    <div class="pages pages-big " id="pages-scroll" style="" >
+    <div class="pages" id="pages-scroll" style="" >
         <ul>
+            <!--cover-->
             <li class="active">
-                <div class="count">1/2</div>
-                <div class="stage-content edit-area pages-img pages-img-bg" style=" text-align:center;word-break:break-all;display: box;display: -webkit-box;display: -moz-box;-webkit-box-pack:center;-moz-box-pack:center;-webkit-box-align:center;-moz-box-align:center;background: url(img/bg.jpg);background-size: cover;background-position:50% 50%;width:100%;height:100%;position: relative;">
-                    <div class="stage-content-box" style="-webkit-transform-origin:0 0;">
+                <div class="count">about</div>
 
-                        <div style="width:12.14rem;margin:3.5rem 1.929rem;padding:5.18rem 0 1.18rem 0;background-color: rgba(255,255,255,0.5);border-radius: 0.5rem;position:relative;">
-                            <div class="symbol" style="z-index: 999; display: inline-block;top: -2rem; position: absolute; margin-left: -3rem;">
-                                <div class="pages-img edit-area">
-                                    <img data-name="img1" style="width:5.4rem;height:5.4rem;border-radius: 2.7rem;border:0.3rem solid #fff;" src="img/t.jpg"></div>
+                <div class="stage-content edit-area pages-img pages-img-bg"
+                     style=" text-align:center;word-break:break-all;background: url(img/bg.jpg);background-size: cover;background-position:50% 50%;width:100%;height:100%;position: relative;">
+                    <div class="stage-content-box" style="position: absolute;text-align: center;top:3.65rem;width:16rem;-webkit-transform-origin:0 0;">
+                        <div class="symbol">
+                            <div class="pages-txt edit-area" style="display: inline-block;font-family: 'bebas';font-size:3.5rem;line-height: 3.5rem;min-height: 3.5rem;min-width:14rem;color:#cc0001;">
+                                JOITN
                             </div>
-                            <div class="symbol" style="z-index: 3;">
-                                <div class="pages-txt edit-area" style="font-size:0.78rem;color:#000;font-weight: bold">
-                                    JackeyWisape
-                                </div>
-                            </div>
-                            <div class="symbol" style="z-index: 3;">
-                                <div class="pages-txt edit-area" style="font-size:0.533rem;color:#000;">
-                                    Co-founder
-                                </div>
-                            </div>
-                            <div class="symbol" style="z-index: 3;">
-                                <div class="pages-txt edit-area" style="margin-top:1rem;font-size:0.444rem;line-height:0.888rem;color:#448aff;text-decoration:underline;">
-                                    Email: support@wisape.com<br>
-                                    Tel:(702) 825-1558<br>
-                                    Tel:(702) 825-1558<br>
-                                    Site:www.wisape.com<br>
-                                    Adress:Room 8001 California, Mountain View,<br>
-                                    Amphitheatre Pkwy
-                                </div>
+                        </div>
+                        <div class="symbol" style="z-index: 3;">
+                            <div class="pages-txt edit-area" style="display: inline-block;margin-top:0.5rem;font-family: 'bebas';font-size:3.5rem;line-height: 3.5rem;min-height: 3.5rem;min-width:14rem;color:#000;">
+                                WISAPE
                             </div>
                         </div>
                     </div>
-                </div>
-
-            </li>
-            <li>
-                <div class="count">1/2</div>
-                <div class="stage-content edit-area pages-img pages-img-bg" style=" display: box;display: -webkit-box;display: -moz-box;-webkit-box-pack:center;-moz-box-pack:center;-webkit-box-align:center;-moz-box-align:center;background: url(img/bg.jpg);background-size: cover;background-position:50% 50%;width:100%;height:100%;position: relative;">
-                    <div class="stage-content-box">
-                        <div class="symbol" style="display:inline-block;position:absolute;left:10px;top:10px;">
-                            <div class="pages-img edit-area"><img data-name="img1" style="" width="50" height="50"
-                                                                  src="img/icon-earth.png"/></div>
-                        </div>
-                        <div class="symbol" style="z-index: 3;vertical-align:middle;">
-                            <div class="pages-txt edit-area" data-animation="animated slideInUp"
-                                 style="margin-top:1rem;width:80%;margin:0 10%;color:#fff;font-size:22px;text-align:center;color:red;">asdfasdasfadsfasdf As c update of the classictranslation corpus, the combination of
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </li>
-            <li>
-                <div class="count">1/2</div>
-                <div class="stage-content edit-area pages-img pages-img-bg" style=" text-align:center;word-break:break-all;display: box;display: -webkit-box;display: -moz-box;-webkit-box-pack:center;-moz-box-pack:center;-webkit-box-align:center;-moz-box-align:center;background: url(img/bg.jpg);background-size: cover;background-position:50% 50%;width:100%;height:100%;position: relative;">
-                    <div class="stage-content-box" style="-webkit-transform-origin:0 0;">
-                        <div class="symbol" style="z-index:999;display: inline-block; position: absolute; left: 5rem; top: 1rem; ">
+                    <div class="stage-content-box" style="position: absolute;bottom:1rem;text-align: center;width:16rem;-webkit-transform-origin:0 100%;">
+                        <div class="symbol" style="z-index: 999; ">
                             <div class="pages-img edit-area">
-                                <img data-name="img1" style="width:5.4rem;height:5.4rem;border-radius: 2.7rem;border:0.3rem solid #fff;" src="img/t.jpg"></div>
+                                <img style="width:4.44rem;height:1.03rem;" src="img/logo.png"></div>
                         </div>
-                        <div style="width:12.14rem;margin:3.5rem 1.929rem;padding:3.18rem 0 1.18rem 0;background-color: rgba(255,255,255,0.5);border-radius: 0.5rem;">
-                            <div class="symbol" style="z-index: 3;">
-                                <div class="pages-txt edit-area" style="font-size:0.78rem;color:#000;font-weight: bold">
-                                    JackeyWisape
+                        <div class="symbol" style="z-index: 3;">
+                            <div class="pages-txt edit-area" style="font-size:0.53rem;color:#000;font-family: 'Lato';margin-top:0.3rem;min-height: 0.53rem;min-width:14rem;">
+                                Something Wonderful is Coming
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li class="">
+                <div class="count">Contact</div>
+
+                <div class="stage-content edit-area edit-area-active pages-img pages-img-bg"
+                     style=" text-align:center;word-break:break-all;background: url(img/bg.jpg);background-size: cover;background-position:50% 50%;width:100%;height:100%;position: relative;">
+                    <div class="stage-content-box" style="text-align: center;width:16rem;-webkit-transform-origin:0 0;">
+                        <div class="symbol"  style="padding-top:6.4rem;">
+                            <div class="pages-txt edit-area active" style="min-width:14rem;min-height:2rem;display: inline-block;font-family: 'bebas';font-size:1.92rem;line-height: 1.92rem;color:#cc0001;">
+                                CONTACT US
+                            </div>
+                        </div>
+                        <div class="symbol" style="margin-top:1.62rem;">
+                            <div class="pages-txt edit-area" style="min-width:14rem;min-height:9rem;padding:0.4rem 0;text-align:center;font-family: 'Lato';font-size:0.71rem;line-height: 1.41rem;color:#000;">
+                                Site:www.wisape.com<br/>
+                                Tel: (702) 825-1558<br/>
+                                Email:support@wisape.com<br/>
+                                Facebook Page: Wisape<br/>
+                                Twitter: @WisapeAgency<br/>
+                                Line: WisapeJackey
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <!--03我们的工作-->
+            <li class="">
+                <div class="count">Jobs</div>
+
+                <div class="stage-content edit-area pages-img pages-img-bg"
+                     style="text-align:center;word-break:break-all;background: url(img/bg.jpg);background-size: cover;background-position:50% 50%;width:100%;height:100%;position: relative;">
+                        <div class="stage-content-box" style="text-align: center;width:16rem;-webkit-transform-origin:0 0;">
+                            <div class="symbol"  style="padding-top:2.96rem;">
+                                <div class="pages-txt edit-area" style="min-height:4.41rem;min-width:14rem;display: inline-block;font-family: 'bebas';font-size:4.41rem;line-height: 4.41rem;color:#cc0001;">
+                                    JOBS
                                 </div>
                             </div>
                             <div class="symbol" style="z-index: 3;">
-                                <div class="pages-txt edit-area" style="font-size:0.533rem;color:#000;">
-                                    Co-founder
+                                <div class="pages-txt edit-area" style="min-height:0.8rem;min-width:14rem;display: inline-block;margin-top:0.8rem;font-family: 'Lato';font-size:0.8rem;line-height:0.8rem;color:#444;">
+                                    FOR WISAPE
+                                </div>
+                            </div>
+                            <div class="stage-content-box" style="padding-top:1.62rem;text-align: left;">
+                                <div style="margin:0 2rem;overflow: hidden">
+                                    <div style="display: inline-block;width: 50%;float:left;">
+                                        <div class="symbol" >
+                                            <div class="pages-txt edit-area" style="font-weight:bold;text-align:left;font-family: 'Lato';font-size:0.71rem;line-height: 0.71rem;color:#444;">
+                                                Global Partner
+                                            </div>
+                                        </div>
+                                        <div class="symbol" >
+                                            <div class="pages-txt edit-area" style="font-weight:bold;text-align:left;font-family: 'Lato';font-size:0.62rem;line-height: 0.62rem;color:#444;">
+                                                Indonesia
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style="display: inline-block;width: 50%;float:left;">
+                                        <div class="symbol" >
+                                            <div class="pages-txt edit-area" style="font-weight:bold;text-align:left;font-family: 'Lato';font-size:0.71rem;line-height: 0.71rem;color:#444;">
+                                                Global Partner
+                                            </div>
+                                        </div>
+                                        <div class="symbol" >
+                                            <div class="pages-txt edit-area" style="font-weight:bold;text-align:left;font-family: 'Lato';font-size:0.62rem;line-height: 0.62rem;color:#444;">
+                                                Indonesia
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="margin:1rem 2rem;overflow: hidden">
+                                    <div style="display: inline-block;width: 50%;float:left;">
+                                        <div class="symbol" >
+                                            <div class="pages-txt edit-area" style="min-height:0.8rem;min-width:5.51rem;text-align:left;font-family: 'Lato';font-size:0.71rem;line-height: 0.71rem;color:#444;">
+                                                Global Partner
+                                            </div>
+                                        </div>
+                                        <div class="symbol" >
+                                            <div class="pages-txt edit-area" style="min-height:0.62rem;min-width:5.51rem;text-align:left;font-family: 'Lato';font-size:0.62rem;line-height: 0.62rem;color:#444;">
+                                                Indonesia
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style="display: inline-block;width: 50%;float:left;">
+                                        <div class="symbol" >
+                                            <div class="pages-txt edit-area" style="min-height:0.8rem;min-width:5.51rem;text-align:left;font-family: 'Lato';font-size:0.71rem;line-height: 0.71rem;color:#444;">
+                                                Global Partner
+                                            </div>
+                                        </div>
+                                        <div class="symbol" >
+                                            <div class="pages-txt edit-area" style="min-height:0.62rem;min-width:5.51rem;text-align:left;font-family: 'Lato';font-size:0.62rem;line-height: 0.62rem;color:#444;">
+                                                Indonesia
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            </li>
+            <!--02我们是谁-->
+            <li>
+                <div class="count">1/2</div>
+                <div class="stage-content edit-area pages-img pages-img-bg" style=" text-align:center;word-break:break-all;background: url(img/bg.jpg);background-size: cover;background-position:50% 50%;width:100%;height:100%;position: relative;">
+                    <div class="stage-content-box" style="-webkit-transform-origin:0 0;position: absolute;top:50%;margin-top:-4rem;">
+                        <div style="width:12.14rem;margin:0 1.929rem;">
+                            <div class="symbol" style="z-index: 3;">
+                                <div class="pages-txt edit-area active" style="min-height:1.64rem;min-width:12.4rem;font-size:1.64rem;line-height:1.64rem;color:#000;font-weight: bold;font-family: 'bebas';">
+                                    what  is wisape
                                 </div>
                             </div>
                             <div class="symbol" style="z-index: 3;">
-                                <div class="pages-txt edit-area" style="margin-top:1rem;font-size:0.444rem;line-height:0.888rem;color:#448aff;text-decoration:underline;">
-                                    Email: support@wisape.com<br>
-                                    Tel:(702) 825-1558<br>
-                                    Tel:(702) 825-1558<br>
-                                    Site:www.wisape.com<br>
-                                    Adress:Room 8001 California, Mountain View,<br>
-                                    Amphitheatre Pkwy
+                                <div class="pages-txt edit-area" style="min-height:1.64rem;min-width:8rem;font-size:0.444rem;color:#000;font-family: 'Lato';margin-top:1.1rem;line-height: 0.8rem;">
+                                    Wisape is an all-in-one mobile marketing platform. It now enables you to build stunning business stories with various of category templates（eg：Display goods, Create poster, broadcast brand, interaction, etc）. Variety of social network channels are supported, so you can promote your business through them. monitor the overall sales trends and manage the whole marketing process. Wisape can help you get more target customer and improve ROI(Return on investment), take your business to the next level. by the way, of course no technical skills required and FREE！
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-            </li>
-            <li>
-                <div class="count">1/2</div>
-                <div class="stage-content edit-area pages-img pages-img-bg" style=" display: box;display: -webkit-box;display: -moz-box;-webkit-box-pack:center;-moz-box-pack:center;-webkit-box-align:center;-moz-box-align:center;background: url(img/bg.jpg);background-size: cover;background-position:50% 50%;width:100%;height:100%;position: relative;">
-                    <div class="symbol" style="display:inline-block;position:absolute;left:10px;top:10px;">
-                        <div class="pages-img edit-area"><img data-name="img1" style="" width="50" height="50"
-                                                              src="img/icon-earth.png"/></div>
-                    </div>
-                    <div class="symbol" style="z-index: 3;vertical-align:middle;">
-                        <div class="pages-txt edit-area" data-animation="animated slideInUp"
-                             style="width:80%;color:#fff;font-size:22px;text-align:center;color:red;">asdfasdasfadsfasdf As c update of the classictranslation corpus, the combination of
-                        </div>
-                    </div>
-                </div>
-            </li>
-            <li>
-                <div class="count">1/2</div>
-                <div class="stage-content edit-area pages-img pages-img-bg" style=" display: box;display: -webkit-box;display: -moz-box;-webkit-box-pack:center;-moz-box-pack:center;-webkit-box-align:center;-moz-box-align:center;background: url(img/bg.jpg);background-size: cover;background-position:50% 50%;width:100%;height:100%;position: relative;">
-                    <div class="symbol" style="display:inline-block;position:absolute;left:10px;top:10px;">
-                        <div class="pages-img edit-area"><img data-name="img1" style="" width="50" height="50"
-                                                              src="img/icon-earth.png"/></div>
-                    </div>
-                    <div class="symbol" style="z-index: 3;vertical-align:middle;">
-                        <div class="pages-txt edit-area" data-animation="animated slideInUp"
-                             style="width:80%;color:#fff;font-size:22px;text-align:center;color:red;">asdfasdasfadsfasdf As c update of the classictranslation corpus, the combination of
-                        </div>
-                    </div>
-                </div>
-            </li>
-            <li>
-                <div class="count">1/2</div>
-                <div class="stage-content edit-area pages-img pages-img-bg" style=" display: box;display: -webkit-box;display: -moz-box;-webkit-box-pack:center;-moz-box-pack:center;-webkit-box-align:center;-moz-box-align:center;background: url(img/bg.jpg);background-size: cover;background-position:50% 50%;width:100%;height:100%;position: relative;">
-                    <div class="symbol" style="display:inline-block;position:absolute;left:10px;top:10px;">
-                        <div class="pages-img edit-area"><img data-name="img1" style="" width="50" height="50"
-                                                              src="img/icon-earth.png"/></div>
-                    </div>
-                    <div class="symbol" style="z-index: 3;vertical-align:middle;">
-                        <div class="pages-txt edit-area" data-animation="animated slideInUp"
-                             style="width:80%;color:#fff;font-size:22px;text-align:center;color:red;">asdfasdasfadsfasdf As c update of the classictranslation corpus, the combination of
-                        </div>
-                    </div>
-                </div>
-            </li>
-            <li>
-                <div class="count">1/2</div>
-                <div class="stage-content edit-area pages-img pages-img-bg" style=" display: box;display: -webkit-box;display: -moz-box;-webkit-box-pack:center;-moz-box-pack:center;-webkit-box-align:center;-moz-box-align:center;background: url(img/bg.jpg);background-size: cover;background-position:50% 50%;width:100%;height:100%;position: relative;">
-                    <div class="symbol" style="display:inline-block;position:absolute;left:10px;top:10px;">
-                        <div class="pages-img edit-area"><img data-name="img1" style="" width="50" height="50"
-                                                              src="img/icon-earth.png"/></div>
-                    </div>
-                    <div class="symbol" style="z-index: 3;vertical-align:middle;">
-                        <div class="pages-txt edit-area" data-animation="animated slideInUp"
-                             style="width:80%;color:#fff;font-size:22px;text-align:center;color:red;">asdfasdasfadsfasdf As c update of the classictranslation corpus, the combination of
-                        </div>
-                    </div>
-                </div>
-            </li>
-            <li>
-                <div class="count">1/2</div>
-                <div class="stage-content edit-area pages-img pages-img-bg" style=" display: box;display: -webkit-box;display: -moz-box;-webkit-box-pack:center;-moz-box-pack:center;-webkit-box-align:center;-moz-box-align:center;background: url(img/bg.jpg);background-size: cover;background-position:50% 50%;width:100%;height:100%;position: relative;">
-                    <div class="symbol" style="display:inline-block;position:absolute;left:10px;top:10px;">
-                        <div class="pages-img edit-area"><img data-name="img1" style="" width="50" height="50"
-                                                              src="img/icon-earth.png"/></div>
-                    </div>
-                    <div class="symbol" style="z-index: 3;vertical-align:middle;">
-                        <div class="pages-txt edit-area" data-animation="animated slideInUp"
-                             style="width:80%;color:#fff;font-size:22px;text-align:center;color:red;">asdfasdasfadsfasdf As c update of the classictranslation corpus, the combination of
-                        </div>
-                    </div>
-                </div>
             </li>
         </ul>
     </div>
@@ -234,41 +308,37 @@
         </div>
     </div>
     <div class="pages editable">
-        <div class="stage-content edit-area pages-img pages-img-bg" style=" text-align:center;word-break:break-all;display: box;display: -webkit-box;display: -moz-box;-webkit-box-pack:center;-moz-box-pack:center;-webkit-box-align:center;-moz-box-align:center;background: url(img/bg.jpg);background-size: cover;background-position:50% 50%;width:100%;height:100%;position: relative;">
-            <div class="stage-content-box" style="-webkit-transform-origin:0 0;">
-
-                <div style="width:12.14rem;margin:3.5rem 1.929rem;padding:5.18rem 0 1.18rem 0;background-color: rgba(255,255,255,0.5);border-radius: 0.5rem;position:relative;">
-                    <div class="symbol" style="z-index: 999; display: inline-block;top: -2rem; position: absolute; margin-left: -3rem;">
-                        <div class="pages-img edit-area">
-                            <img data-name="img1" style="width:5.4rem;height:5.4rem;border-radius: 2.7rem;border:0.3rem solid #fff;" src="img/t.jpg"></div>
+        <div class="stage-content edit-area pages-img pages-img-bg"
+             style=" text-align:center;word-break:break-all;background: url(img/bg.jpg);background-size: cover;background-position:50% 50%;width:100%;height:100%;position: relative;">
+            <!--<div class="stage-content-box" style="">-->
+            <div class="stage-content-box" style="position: absolute;text-align: center;top:3.65rem;width:16rem;-webkit-transform-origin:0 0;">
+                <div class="symbol" >
+                    <div class="pages-txt edit-area" style="display: inline-block;font-family: 'bebas';font-size:3.5rem;line-height: 3.5rem;color:#cc0001;">
+                        JOITN
                     </div>
-                    <div class="symbol" style="z-index: 3;">
-                        <div class="pages-txt edit-area" style="font-size:0.78rem;color:#000;font-weight: bold">
-                            JackeyWisape
-                        </div>
-                    </div>
-                    <div class="symbol" style="z-index: 3;">
-                        <div class="pages-txt edit-area" style="font-size:0.533rem;color:#000;">
-                            Co-founder
-                        </div>
-                    </div>
-                    <div class="symbol" style="z-index: 3;">
-                        <div class="pages-txt active edit-area" style="margin-top:1rem;font-size:0.444rem;line-height:0.888rem;color:#448aff;text-decoration:underline;">
-                            Email: support@wisape.com<br>
-                            Tel:(702) 825-1558<br>
-                            Tel:(702) 825-1558<br>
-                            Site:www.wisape.com<br>
-                            Adress:Room 8001 California, Mountain View,<br>
-                            Amphitheatre Pkwy
-                        </div>
+                </div>
+                <div class="symbol" style="z-index: 3;">
+                    <div class="pages-txt edit-area" style="display: inline-block;margin-top:0.5rem;font-family: 'bebas';font-size:3.5rem;line-height: 3.5rem;color:#000;">
+                        WISAPE
                     </div>
                 </div>
             </div>
+            <div class="stage-content-box" style="position: absolute;bottom:2rem;text-align: center;width:16rem;-webkit-transform-origin:0 0;">
+                <div class="symbol" style="z-index: 999; ">
+                    <div class="pages-img edit-area">
+                        <img data-name="img1" style="width:4.44rem;height:1.03rem;" src="img/logo.png"></div>
+                </div>
+                <div class="symbol" style="z-index: 3;">
+                    <div class="pages-txt edit-area active" style="font-size:0.53rem;color:#000;font-family: 'Lato';margin-top:0.3rem;">
+                        Something Wonderful is Coming
+                    </div>
+                </div>
+            </div>
+            <!--</div>-->
         </div>
-
     </div>
 
-    <div class="pop-layer pop-editer-opt" style="display: none">
+    <div class="pop-layer pop-editer-opt" style="display: block">
         <div class="hd">
             <i class="icon-bold" id="setFontWeight" ></i>
             <i class="icon-italic" id="setFontStyle"></i>
@@ -284,7 +354,7 @@
     </div>
 
 
-    <div class="pop-layer pop-editer-text" style="display: block">
+    <div class="pop-layer pop-editer-text" style="display: none">
         <textarea class="textarea-word J-textarea-word" name="" id="textarea" rows="1" >asdfasdfa</textarea>
         <span class="btn-text-done J-btn-text-done">Done</span>
     </div>
@@ -422,35 +492,33 @@
         <ul id="storyDragBox">
             <li class="tpl-page-item" draggable="false">
                 <span class="drag-handle">☰</span>
-                <div class="stage-content edit-area pages-img pages-img-bg" style=" text-align:center;word-break:break-all;display: box;display: -webkit-box;display: -moz-box;-webkit-box-pack:center;-moz-box-pack:center;-webkit-box-align:center;-moz-box-align:center;background: url(img/bg.jpg);background-size: cover;background-position:50% 50%;width:100%;height:100%;position: relative;">
-                    <div class="stage-content-box" style="-webkit-transform-origin:0 0;">
-                        <div class="symbol" style="z-index:999;display: inline-block; position: absolute; left: 5rem; top: 1rem; ">
-                            <div class="pages-img edit-area">
-                                <img data-name="img1" style="width:5.4rem;height:5.4rem;border-radius: 2.7rem;border:0.3rem solid #fff;" src="img/t.jpg"></div>
+                <div class="stage-content edit-area pages-img pages-img-bg"
+                     style=" text-align:center;word-break:break-all;background: url(img/bg.jpg);background-size: cover;background-position:50% 50%;width:100%;height:100%;position: relative;">
+                    <!--<div class="stage-content-box" style="">-->
+                    <div class="stage-content-box" style="position: absolute;text-align: center;top:3.65rem;width:16rem;-webkit-transform-origin:0 0;">
+                        <div class="symbol" >
+                            <div class="pages-txt edit-area" style="display: inline-block;font-family: 'bebas';font-size:3.5rem;line-height: 3.5rem;color:#cc0001;">
+                                JOITN
+                            </div>
                         </div>
-                        <div style="width:12.14rem;margin:3.5rem 1.929rem;padding:3.18rem 0 1.18rem 0;background-color: rgba(255,255,255,0.5);border-radius: 0.5rem;">
-                            <div class="symbol" style="z-index: 3;">
-                                <div class="pages-txt edit-area" style="font-size:0.78rem;color:#000;font-weight: bold">
-                                    JackeyWisape
-                                </div>
-                            </div>
-                            <div class="symbol" style="z-index: 3;">
-                                <div class="pages-txt edit-area" style="font-size:0.533rem;color:#000;">
-                                    Co-founder
-                                </div>
-                            </div>
-                            <div class="symbol" style="z-index: 3;">
-                                <div class="pages-txt edit-area" style="margin-top:1rem;font-size:0.444rem;line-height:0.888rem;color:#448aff;text-decoration:underline;">
-                                    Email: support@wisape.com<br>
-                                    Tel:(702) 825-1558<br>
-                                    Tel:(702) 825-1558<br>
-                                    Site:www.wisape.com<br>
-                                    Adress:Room 8001 California, Mountain View,<br>
-                                    Amphitheatre Pkwy
-                                </div>
+                        <div class="symbol" style="z-index: 3;">
+                            <div class="pages-txt edit-area" style="display: inline-block;margin-top:0.5rem;font-family: 'bebas';font-size:3.5rem;line-height: 3.5rem;color:#000;">
+                                WISAPE
                             </div>
                         </div>
                     </div>
+                    <div class="stage-content-box" style="position: absolute;bottom:1rem;text-align: center;width:16rem;-webkit-transform-origin:0 0;">
+                        <div class="symbol" style="z-index: 999; ">
+                            <div class="pages-img edit-area">
+                                <img data-name="img1" style="width:4.44rem;height:1.03rem;" src="img/logo.png"></div>
+                        </div>
+                        <div class="symbol" style="z-index: 3;">
+                            <div class="pages-txt edit-area" style="font-size:0.53rem;color:#000;font-family: 'Lato';margin-top:0.3rem;">
+                                Something Wonderful is Coming
+                            </div>
+                        </div>
+                    </div>
+                    <!--</div>-->
                 </div>
                 <i class="icon-correct" style="display: block"></i>
             </li>
@@ -601,8 +669,8 @@
 
 </div>
 
-<div class="ui-mask" style="display: block; width: 100%; height: 671px;"></div>
-<div class="ui-dialog href-dialog" style="width: 300px; height: 220px; display: block; left: 50%; margin-left: -150px; top: 50%; margin-top: -110px;">
+<div class="ui-mask" style="display: none; width: 100%; height: 671px;"></div>
+<div class="ui-dialog href-dialog" style="width: 300px; height: 220px; display: none; left: 50%; margin-left: -150px; top: 50%; margin-top: -110px;">
     <div class="ui-dialog-title">Set Destination</div>
     <div class="ui-dialog-content">
         <div class="input-href">
@@ -615,7 +683,7 @@
     </div>
     <div class="clearfix"></div>
 </div>
-<div class="ui-dialog del-dialog" style="width: 300px; height: 220px; display: block; left: 50%; margin-left: -150px; top: 50%; margin-top: -110px;">
+<div class="ui-dialog del-dialog" style="width: 300px; height: 220px; display: none; left: 50%; margin-left: -150px; top: 50%; margin-top: -110px;">
     <div class="ui-dialog-title">Delete Page</div>
     <div class="ui-dialog-content">
         Pages will be deleted from the device and cannot be recovered.
@@ -626,7 +694,7 @@
     </div>
     <div class="clearfix"></div>
 </div>
-<div class="ui-dialog del-tip-dialog" style="width: 300px; height: 220px; display: block; left: 50%; margin-left: -150px; top: 50%; margin-top: -110px;">
+<div class="ui-dialog del-tip-dialog" style="width: 300px; height: 220px; display: none; left: 50%; margin-left: -150px; top: 50%; margin-top: -110px;">
     <div class="ui-dialog-title">Delete Page</div>
     <div class="ui-dialog-content">
         You have to keep one page.
@@ -807,6 +875,7 @@
 
         //FastClick.attach(document.body);
 
+        $(".edit-area").addClass("edit-area-active");
 
         var target = $("#editorText .pages-txt.active");
         var fontSizeLim = [14,30];
@@ -881,6 +950,15 @@
     //        preventDefault: false
     //    });
 
+    set_wrap_width($("#cat-scroll"));
+    var  myScroll2 = new iScroll('cat-scroll', {
+        snap: true,
+        momentum: false,
+        scrollX: true,
+        scrollY: false,
+        preventDefault: false
+    });
+
         set_wrap_width($("#pages-scroll"));
         var  myScroll = new iScroll('pages-scroll', {
             snap: true,
@@ -904,7 +982,7 @@
 //            $("#pages-scroll li").removeClass("active").eq(parseInt(Math.abs(myScroll.x/scrollLimt)) + 1).addClass("active");
 //        }
 
-        $("#pages-scroll li").removeClass("active").eq(parseInt(Math.abs(myScroll.x/scrollLimt)) + 1).addClass("active");
+       // $("#pages-scroll li").removeClass("active").eq(parseInt(Math.abs(myScroll.x/scrollLimt)) + 1).addClass("active");
 
     }
     setPagesScroll();
@@ -912,33 +990,61 @@
 
     $(".J-font-resize .opt-right").delegate("span","click",function(){
         var target = $("#editorText .pages-txt.active");
-        var fontSizeLim = [14,60];
         var htmlFontSize = parseInt($("html").css("font-size"));
+        var fontSizeLim = [parseFloat((30/1080*16).toFixed(2)),parseFloat((300/1080*16).toFixed(2))];
         var me = $(this);
-        var curFontSize = parseInt(target.css("fontSize"));
+        var curFontSize = parseFloat(target.css("fontSize"))/htmlFontSize;
+        console.info(target.css("fontSize"));
         console.info(curFontSize);
         if(me.hasClass("J-font-reduce")) {
-            --curFontSize;
-            if(curFontSize < fontSizeLim[0]) {
+            console.info(curFontSize <= fontSizeLim[0])
+            if(curFontSize <= fontSizeLim[0]) {
+                console.info("disable");
                 me.addClass("disable") ;
                 return;
             }
+            curFontSize -= 0.1;
+
         }
         if(me.hasClass("J-font-add")){
-            ++curFontSize;
-            if(curFontSize > fontSizeLim[1]) {
+            if(curFontSize >= fontSizeLim[1]) {
+                console.info("disable");
                 me.addClass("disable") ;
                 return ;
             }
             console.info("add");
+            curFontSize += 0.1;
+
         }
-        if(curFontSize != fontSizeLim[0] && curFontSize != fontSizeLim[1]){
+        if(curFontSize > fontSizeLim[0] && curFontSize < fontSizeLim[1]){
             $(".J-font-resize .opt-right span").removeClass("disable");
         }
-        console.info(curFontSize/htmlFontSize);
-        target.css({"font-size": curFontSize/htmlFontSize + "rem"});
-    });
 
+        console.info(fontSizeLim);
+        target.css({"font-size": curFontSize + "rem"});
+    });
+    function changeTwoDecimal_f(x)
+    {
+        var f_x = parseFloat(x);
+        if (isNaN(f_x))
+        {
+            alert('function:changeTwoDecimal->parameter error');
+            return false;
+        }
+        f_x = Math.round(f_x*100)/100;
+        var s_x = f_x.toString();
+        var pos_decimal = s_x.indexOf('.');
+        if (pos_decimal < 0)
+        {
+            pos_decimal = s_x.length;
+            s_x += '.';
+        }
+        while (s_x.length <= pos_decimal + 2)
+        {
+            s_x += '0';
+        }
+        return s_x;
+    }
     function setPagesScroll() {
         //set_wrap_width($("#pages-scroll"));
 //        $("#pages-scroll").iScroll({

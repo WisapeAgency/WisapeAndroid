@@ -19,7 +19,7 @@ WisapeEditer = {
     catIScroll : null,
 
     logger : function(name,str){
-        var ret = "\n" + CurentTime() + "WisapeEditer.logger " + name+ " :" +str  ;
+        var ret = "\n" + CurentTime() + "WisapeEditer.logger " + name + " :" + str  + "\n";
         this.loggerStr += ret;
     },
 
@@ -58,15 +58,14 @@ WisapeEditer = {
 
             $("#menu-scroll").html(htmlStr);
             set_wrap_width($("#menu-scroll"));
-            $("#menu-scroll").iScroll({
+            new iScroll('menu-scroll',{
                 scrollX: true,
                 scrollY: false,
-                mouseWheel: true,
-                preventDefault: false,
                 click : false,
                 hScrollbar :false
             });
             $("#menu-scroll").find("li").eq(0).addClass("active");
+
 
 
             //获取默认模板模板列表
@@ -197,8 +196,8 @@ WisapeEditer = {
 
         //预览
         $("#storyPreview").click(function () {
-            WisapeEditer.logger("预览","");
-            var retHtml = '<div class="p-index main" id="con">', retImg = [],type="";
+            WisapeEditer.logger("预览",WisapeEditer.storyData);
+            var retHtml = '<div class="p-index main" id="con">', retImg = [];
             for (var i = 0; i < WisapeEditer.storyData.length; i++) {
                 retHtml += '<section class="m-page hide pages-item" > <div class="m-img" >' + WisapeEditer.storyData[i].replace("file://","") + '</div> </section>';
             }
@@ -218,22 +217,7 @@ WisapeEditer = {
 
         //保存
         $("#storySave").click(function () {
-            WisapeEditer.logger("保存","");
-            var retHtml = '', retImg = [];
-            for (var i = 0; i < WisapeEditer.storyData.length; i++) {
-                retHtml += '<section class="m-page hide pages-item" > <div class="m-img" >' + WisapeEditer.storyData[i].replace("file://","") + '</div> </section>';
-            }
-            pageScroll.find(".pages-img").each(function () {
-                var me = $(this);
-                if (me.hasClass("pages-img-bg")) {
-                    retImg.push((me.css("background-image").split("url(")[1].split(")")[0]+"").replace("file://",""));
-                } else {
-                    retImg.push(me.find("img").attr("src").replace("file://",""));
-                }
-            });
-            WisapeEditer.GetNativeData("save", [retImg[0],retHtml, retImg], function () {
-                console.info("preview done!!!");
-            })
+            WisapeEditer.SaveStory();
         });
 
 
@@ -336,12 +320,13 @@ WisapeEditer = {
 
             var _me = $(this),localTplPath = _me.find(".stage-thumb").attr("src").split("/thumb.jpg")[0] + "/stage.html";
             _me.addClass("active");
-
             _me.addClass("active").siblings().removeClass("active");
             console.info("page click:");
             console.info(!_me.hasClass("tpl-exist"));
             console.info(catClickTimmer);
             if (!_me.hasClass("tpl-exist")) {
+                if(_me.find(".download-progress-bar:visible").length) return;
+                console.info(".download-progress-bar:visible " + _me.find(".download-progress-bar:visible").length);
                 console.info("down");
                 WisapeEditer.GetNativeData("start", [parseInt(_me.data("id")), parseInt(_me.data("type"))], function (data) {
                 });
@@ -353,7 +338,8 @@ WisapeEditer = {
                     WisapeEditer.currentTplData = data;
                     pageScroll.find("ul li.active").html('<span class="count">' + WisapeEditer.selectedStagetIndex + '/' + WisapeEditer.storyData.length + '</span>' + data);
                     WisapeEditer.storyData[WisapeEditer.selectedStagetIndex - 1] = data;
-
+                    pageScroll.find(".pages-txt").removeClass("edit-area-active");
+                    pageScroll.find("li.active .pages-txt").addClass("edit-area-active");
                     console.info("WisapeEditer.storyData:");
                     console.info(WisapeEditer.storyData);
                 });
@@ -373,6 +359,8 @@ WisapeEditer = {
             var _me = $(this);
             WisapeEditer.selectedStagetIndex = _me.index() + 1;
             _me.addClass("active").siblings().removeClass("active").find(".pages-img,.pages-txt").removeClass("active");
+            pageScroll.find(".pages-txt").removeClass("edit-area-active");
+            pageScroll.find("li.active .pages-txt").addClass("edit-area-active");
         });
 
         pageScroll.delegate("li.active .pages-img", "click", function (event) {
@@ -481,7 +469,9 @@ WisapeEditer = {
             pageScroll.find("li").each(function (i) {
                 var me = $(this);
                 me.find(".count").html((i + 1) + "/" + WisapeEditer.storyData.length);
-            })
+            });
+            pageScroll.find(".pages-txt").removeClass("edit-area-active");
+            pageScroll.find("li.active .pages-txt").addClass("edit-area-active");
         })
 
         //文本编辑事件
@@ -503,6 +493,8 @@ WisapeEditer = {
 
             WisapeEditer.storyData[WisapeEditer.selectedStagetIndex - 1] = ret;
             WisapeEditer.ShowView('editorText', 'main');
+            pageScroll.find(".pages-txt").removeClass("edit-area-active");
+            pageScroll.find("li.active .pages-txt").addClass("edit-area-active");
             setPagesScroll();
 
         })
@@ -560,8 +552,7 @@ WisapeEditer = {
 
         })
         $(".J-btn-text-done").click(function(){
-            $("#editorText .pages-txt.active").html($(".textarea-word").val());
-            console.info(".J-textarea-word:" + $(".textarea-word").val());
+            $("#editorText .pages-txt.active").html($(".textarea-word").val().replace(" ","&nbsp;&nbsp;").replace(/\n/g,'<br/>'));
         });
 
         var observe;
@@ -603,30 +594,37 @@ WisapeEditer = {
 
         $(".J-font-resize .opt-right").delegate("span","click",function(){
             var target = $("#editorText .pages-txt.active");
-            var fontSizeLim = [14,60];
             var htmlFontSize = parseInt($("html").css("font-size"));
+            var fontSizeLim = [parseFloat((30/1080*16).toFixed(2)),parseFloat((300/1080*16).toFixed(2))];
             var me = $(this);
             var curFontSize = parseFloat(target.css("fontSize"))/htmlFontSize;
+            console.info(target.css("fontSize"));
             console.info(curFontSize);
             if(me.hasClass("J-font-reduce")) {
+                console.info(curFontSize <= fontSizeLim[0])
+                if(curFontSize <= fontSizeLim[0]) {
+                    console.info("disable");
+                    me.addClass("disable") ;
+                    return;
+                }
                 curFontSize -= 0.1;
-                //if(curFontSize < fontSizeLim[0]) {
-                //    me.addClass("disable") ;
-                //    return;
-                //}
+
             }
             if(me.hasClass("J-font-add")){
-                curFontSize += 0.1;
-                //if(curFontSize > fontSizeLim[1]) {
-                //    me.addClass("disable") ;
-                //    return ;
-                //}
+                if(curFontSize >= fontSizeLim[1]) {
+                    console.info("disable");
+                    me.addClass("disable") ;
+                    return ;
+                }
                 console.info("add");
+                curFontSize += 0.1;
+
             }
-            if(curFontSize != fontSizeLim[0] && curFontSize != fontSizeLim[1]){
+            if(curFontSize > fontSizeLim[0] && curFontSize < fontSizeLim[1]){
                 $(".J-font-resize .opt-right span").removeClass("disable");
             }
-            console.info(curFontSize/htmlFontSize);
+
+            console.info(fontSizeLim);
             target.css({"font-size": curFontSize + "rem"});
         });
 
@@ -714,6 +712,36 @@ WisapeEditer = {
 
     },
 
+    SaveStory : function(){
+        var mask = $(".mask");
+        var saveDialog = $(".save-dialog");
+        var pageScroll = $("#pages-scroll");
+        var retHtml = '', retImg = [];
+        Dialog.show(saveDialog);
+        saveDialog.find(".btn-cancle").click(function () {
+            Dialog.hide(saveDialog);
+        });
+        saveDialog.find(".btn-submit").click(function () {
+            mask.hide();
+            Dialog.hide(saveDialog);
+            $(".loading").show();
+            for (var i = 0; i < WisapeEditer.storyData.length; i++) {
+                retHtml += '<section class="m-page hide pages-item" > <div class="m-img" >' + WisapeEditer.storyData[i].replace("file://","") + '</div> </section>';
+            }
+            pageScroll.find(".pages-img").each(function () {
+                var me = $(this);
+                if (me.hasClass("pages-img-bg")) {
+                    retImg.push((me.css("background-image").split("url(")[1].split(")")[0]+"").replace("file://",""));
+                } else {
+                    retImg.push(me.find("img").attr("src").replace("file://",""));
+                }
+            });
+            WisapeEditer.logger("保存",WisapeEditer.storyData);
+            WisapeEditer.GetNativeData("save", [retImg[0],retHtml, retImg], function () {
+            })
+        });
+    },
+
     //通过接口加载模板列表
     LoadTplList: function (id, cb) {
         WisapeEditer.GetNativeData("getStageList", [id], function (data) {
@@ -729,9 +757,7 @@ WisapeEditer = {
                 + '<i {{if value.order_type == "N" }} style="display: block" class="icon-tags-new" {{/if}} {{if value.order_type == "H" }} style="display: block" class="icon-tags-hot" {{/if}} ></i>'
                 + '{{if value.rec_status == 0}} <span class="icon-download"></span> {{/if}}<div style="display:none;" class="download-progress-bar"><div class="download-progress-percent"></div></div>'
                 + '<img class="stage-thumb" src="{{value.temp_img_local}}"  alt="{{value.temp_name}}"/>'
-                + '<div class="tpl-page-item-name">{{value.temp_name}}</div>'
                 + ' </li>'
-
                 + '{{/each}}'
                 + '</ul>';
 
@@ -743,19 +769,13 @@ WisapeEditer = {
 
             document.getElementById('cat-scroll').innerHTML = html;
             set_wrap_width(catScroll);
-            if(!WisapeEditer.catIScroll) {
-                console.info("new");
-                WisapeEditer.catIScroll = new iScroll('cat-scroll',{
-                    scrollX: true,
-                    scrollY: false,
-                    click : false,
-                    hScrollbar :false,
-                });
-
-            } else {
-                console.info("old");
-                WisapeEditer.catIScroll.refresh();
-            };
+            if(WisapeEditer.catIScroll) WisapeEditer.catIScroll.destroy();
+            WisapeEditer.catIScroll = new iScroll('cat-scroll',{
+                scrollX: true,
+                scrollY: false,
+                click : false,
+                hScrollbar :false
+            });
             catScroll.find("li").eq(0).addClass("active");
             if (cb !== null)cb();
         });
@@ -770,6 +790,9 @@ WisapeEditer = {
             retHtml += '<li><span class="count">' + (parseInt(i) + 1) + '/' + WisapeEditer.storyData.length + '</span>' + arr[i] + '</li>';
         };
         $("#pages-scroll ul").html(retHtml).find("li").eq("0").addClass("active");
+
+        $("#pages-scroll ul").find("li").eq(0).siblings().find(".pages-txt").removeClass("edit-area-active");
+        $("#pages-scroll ul").find("li").eq(0).find(".pages-txt").addClass("edit-area-active");
         WisapeEditer.selectedStagetIndex = 1;
         console.info($("#pages-scroll ul").html());
         if (cb !== null)cb();
@@ -948,6 +971,7 @@ function setPagesScroll() {
             scrollY: false,
             click : true,
             hScrollbar :false,
+            lockDirection:true,
             //onScrollMove : function(){
             //    console.info("scrollMove");
             //    console.info(WisapeEditer.pagesIScroll.x);

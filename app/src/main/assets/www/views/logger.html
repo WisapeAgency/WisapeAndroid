@@ -12,57 +12,18 @@
 <body>
 <script src="../public/js/jquery2.1.4.min.js"></script>
 <script>
-    var WisapeEditer = WisapeEditer || {};
-    WisapeEditer = {
-        loggerStr : "",
-
-        logger : function(str){
-            console.info(str);
-            this.loggerStr += CurentTime() + ":" +str + "||";
-        },
-
-        Init : function(){
-            //设置日志定时器
-            var loggerTimer = setInterval(function(){
-                //调用接口
-
-                console.info("调用接口:" + WisapeEditer.loggerStr);
-
-                WisapeEditer.loggerStr == "";
-            },1000*10);
+    var pageClickTimmer = true;
+    $('body').click(function(){
+        if(!pageClickTimmer) {
+            console.info("cancle")
+            return;
         }
-    };
-
-    WisapeEditer.Init();
-
-    WisapeEditer.logger('<div id="main" class="page" style="display: block"> <div class="header"> <div class="pull-left"> <a class="icon-arrow-left" id="storySave"></a> </div> <div class="pull-right"> <ul class="list-inline"> <li><a class="icon-play" id="storyPreview"></a></li> <li><a class="icon-layout" id="toggleCat" ></a></li> <li><a class="icon-list" id="manageStageList"></a></li> <li><a class="icon-settings" onclick="setting(1);"></a></li> </ul> </div> </div> <div class="tpl-page-cat"> <div class="hd" id="menu-scroll" > <ul class="tabcon-item"> </ul> </div> <div class="bd" id="cat-scroll"> </div> </div> <div class="pages" id="pages-scroll" > <ul> <!--<li class="active">--> <!--<div class="stage-content edit-area pages-img pages-img-bg"--> <!--style="background-image: url(/mnt/sdcard/wisape/com.wisape.android/data/template/dddddddddddd/img/bg.jpg);background-size: cover;background-position:50% 50%;width:100%;height:100%;">--> <!--<div class="symbol" style="background:red;">--> <!--<div class="pages-img edit-area"><img data-name="img1" style=""--> <!--src="/mnt/sdcard/wisape/com.wisape.android/data/template/dddddddddddd/img/icon-earth.png"/--> <!--width="50" height="50">--> <!--</div>--> <!--</div>--> <!--<div class="symbol" style="background: green;">--> <!--<div class="pages-img edit-area"><img data-name="img1" style=""--> <!--src="/mnt/sdcard/wisape/com.wisape.android/data/template/dddddddddddd/img/icon-earth.png"/--> <!--width="50" height="50">--> <!--</div>--> <!--</div>--> <!--<div class="symbol" style="z-index: 3;">--> <!--<div class="pages-txt edit-area"--> <!--style="margin:70px auto;width:150px;color:#fff;text-align: center;">As c update of the--> <!--classictranslation corpus, the combination of network technology and language essence--> <!--</div>--> <!--</div>--> <!--</div>--> <!--</li>--> </ul> </div> <span class="icon-add-stage" id="AddNewStage"></span> </div>');
-    WisapeEditer.logger("xxxx2");
-    WisapeEditer.logger("xxxx3");
-    WisapeEditer.logger("xxxx4");
-    WisapeEditer.logger("xxxx5");
-    WisapeEditer.logger("xxxx6");
-    WisapeEditer.logger("xxxx7");
-    WisapeEditer.logger("xxxx8");
-
-
-    function CurentTime()
-    {
-        var date = new Date();
-        var seperator1 = "-";
-        var seperator2 = ":";
-        var month = date.getMonth() + 1;
-        var strDate = date.getDate();
-        if (month >= 1 && month <= 9) {
-            month = "0" + month;
-        }
-        if (strDate >= 0 && strDate <= 9) {
-            strDate = "0" + strDate;
-        }
-        var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate
-                + " " + date.getHours() + seperator2 + date.getMinutes()
-                + seperator2 + date.getSeconds();
-        return currentdate;
-    }
+        pageClickTimmer = false;
+        setTimeout(function(){
+            pageClickTimmer = true;
+        },500);
+        console.info("click!!")
+    });
 </script>
 </body>
 </html>
