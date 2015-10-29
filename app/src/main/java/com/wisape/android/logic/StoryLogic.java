@@ -595,19 +595,28 @@ public class StoryLogic {
         if (null == templateTypeJson) {
             templateTypeJson =  new JSONArray();
         }
+        JSONArray categoryArray = new JSONArray();
         JSONObject objectAll = new JSONObject();
         try{
             objectAll.put("id",-1);
             objectAll.put("name",context.getString(R.string.category_name_all));
-            objectAll.put("order",1);
-            templateTypeJson.put(0,objectAll);
+            objectAll.put("order",-1);
+            categoryArray.put(objectAll);
+            for (int i=0; i<templateTypeJson.length(); i++){
+                JSONObject temp = (JSONObject)templateTypeJson.get(i);
+                JSONObject object = new JSONObject();
+                object.put("id",temp.optInt("id"));
+                object.put("name",temp.optString("name"));
+                object.put("order",temp.optInt("order"));
+                categoryArray.put(object);
+            }
         }catch (JSONException e){
             e.printStackTrace();
         }
         //save to local
         SharedPreferences preferences = getSharedPreferences(context);
-        preferences.edit().putString(EXTRA_STORY_TEMPLATE_TYPE, templateTypeJson.toString()).apply();
-        return templateTypeJson;
+        preferences.edit().putString(EXTRA_STORY_TEMPLATE_TYPE, categoryArray.toString()).apply();
+        return categoryArray;
     }
 
     public Requester.ServerMessage getStoryTemplateUrl(Context context, ApiStory.AttrTemplateInfo attrInfo, Object tag) {
