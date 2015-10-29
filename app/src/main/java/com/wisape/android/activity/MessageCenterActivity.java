@@ -131,7 +131,6 @@ public class MessageCenterActivity extends BaseActivity {
             holder.messageTime.setText(messageInfo.getParsetime());
             String subject = messageInfo.getSubject();
             if (null == subject || "".equals(subject)) {
-                holder.messageContent.setText("没有简介");
             }else{
                 holder.messageContent.setText(messageInfo.getSubject());
             }

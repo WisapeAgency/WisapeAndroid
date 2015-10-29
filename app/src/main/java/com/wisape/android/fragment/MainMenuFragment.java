@@ -77,6 +77,7 @@ public class MainMenuFragment extends AbsFragment implements BroadCastReciverLis
     }
 
     private void registerReciver(){
+
         messageCenterReceiver = new MessageCenterReceiver(this);
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("com.wisape.android.content.MessageCenterReceiver");

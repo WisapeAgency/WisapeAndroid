@@ -10,6 +10,15 @@ import android.support.v7.widget.AppCompatEditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.share.ShareApi;
+import com.facebook.share.Sharer;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareButton;
 import com.squareup.picasso.Picasso;
 import com.wisape.android.R;
 import com.wisape.android.common.StoryManager;
@@ -19,6 +28,7 @@ import com.wisape.android.database.StoryEntity;
 import com.wisape.android.http.HttpUrlConstancts;
 import com.wisape.android.logic.StoryLogic;
 import com.wisape.android.logic.UserLogic;
+import com.wisape.android.util.FileUtils;
 import com.wisape.android.util.LogUtil;
 import com.wisape.android.util.Utils;
 import com.wisape.android.widget.QrDialogFragment;
@@ -74,7 +84,6 @@ public class StoryReleaseActivity extends BaseActivity {
     protected ImageView storyCoverView;
     private StoryEntity storyEntity;
     private String thumbImage;
-//    private String storyUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +91,9 @@ public class StoryReleaseActivity extends BaseActivity {
         setContentView(R.layout.activity_story_release);
         ButterKnife.inject(this);
         ShareSDK.initSDK(this);
+        FacebookSdk.sdkInitialize(getApplicationContext());
         setStoryInfo();
+
     }
 
     private void setStoryInfo() {
@@ -146,6 +157,7 @@ public class StoryReleaseActivity extends BaseActivity {
                     Bundle args = new Bundle();
                     args.putString(EXTRAS_STORY_NAME, storyNameEdit.getText().toString());
                     args.putString(EXTRAS_STORY_DESC, storyDescEdit.getText().toString());
+                    storyEntity.localCover = 1;
                     startLoadWithProgress(LOADER_UPDATE_STORYSETTING, args);
                     break;
             }
@@ -176,15 +188,16 @@ public class StoryReleaseActivity extends BaseActivity {
 
         switch (what) {
             case LOADER_UPDATE_INFO:
-                message =  StoryLogic.instance().updateStorySetting(storyEntity,
+                message = StoryLogic.instance().updateStorySetting(storyEntity,
                         args.getString(EXTRAS_STORY_NAME), "",
                         args.getString(EXTRAS_STORY_DESC));
-            break;
+                break;
             case LOADER_UPDATE_STORYSETTING:
-                message =  StoryLogic.instance().updateStorySetting(storyEntity,
+                FileUtils.saveBitmap(bgUri.getPath(), FileUtils.getSmallBitmap(bgUri.getPath()));
+                message = StoryLogic.instance().updateStorySetting(storyEntity,
                         args.getString(EXTRAS_STORY_NAME), bgUri.getPath(),
                         args.getString(EXTRAS_STORY_DESC));
-            break;
+                break;
         }
 
         return message;
@@ -200,22 +213,13 @@ public class StoryReleaseActivity extends BaseActivity {
                     String imgPath = storyEntity.storyThumbUri;
                     storyEntity.localCover = 1;
 
-
-//            if (imgPath.contains("http")) {
                     Picasso.with(this).load(Utils.isEmpty(storyEntity.storyThumbUri) ? "" : storyEntity.storyThumbUri)
                             .placeholder(R.mipmap.icon_camera)
                             .error(R.mipmap.icon_login_email)
                             .fit()
                             .centerCrop()
                             .into(storyCoverView);
-//            } else {
-//                Picasso.with(this).load(new File(imgPath))
-//                        .fit()
-//                        .centerCrop()
-//                        .placeholder(R.mipmap.icon_camera)
-//                        .error(R.mipmap.icon_login_email)
-//                        .into(storyCoverView);
-//            }
+
                     Intent intent = new Intent();
                     intent.setAction(StoryBroadcastReciver.STORY_ACTION);
                     intent.putExtra(StoryBroadcastReciver.EXTRAS_TYPE, StoryBroadcastReciverListener.UPDATE_STORY_SETTING);
@@ -278,6 +282,35 @@ public class StoryReleaseActivity extends BaseActivity {
     @OnClick(R.id.story_release_fb)
     @SuppressWarnings("unused")
     protected void doShare2Facebook() {
+
+//        ShareLinkContent content = new ShareLinkContent.Builder().setContentDescription(storyDescEdit.getText().toString())
+//                .setContentTitle(storyNameEdit.getText().toString())
+//                .setImageUrl(Uri.parse(storyEntity.storyThumbUri))
+//                .setContentUrl(Uri.parse(storyEntity.storyUri))
+//                .build();
+//
+//       AccessToken accessToken =  AccessToken.getCurrentAccessToken();
+//        if(null == accessToken){
+//        }
+//        ShareApi.share(content, new FacebookCallback<Sharer.Result>() {
+//            @Override
+//            public void onSuccess(Sharer.Result result) {
+//                LogUtil.d("facebook分享成功:");
+//            }
+//
+//            @Override
+//            public void onCancel() {
+//                LogUtil.d("facebook分享取消:");
+//            }
+//
+//            @Override
+//            public void onError(FacebookException error) {
+//                LogUtil.e("facebook分享失败:",error.getCause());
+//
+//            }
+//        });
+
+
         Facebook.ShareParams shareParams = new Facebook.ShareParams();
         shareParams.setImageUrl(storyEntity.storyThumbUri);
         shareParams.setText(storyEntity.storyUri);

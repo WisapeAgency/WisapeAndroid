@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 
 import com.bugtags.library.Bugtags;
 import com.bugtags.library.BugtagsOptions;
+import com.flurry.android.FlurryAgent;
 import com.google.code.microlog4android.config.PropertyConfigurator;
 import com.parse.Parse;
 import com.parse.ParseInstallation;
@@ -62,8 +63,22 @@ public class WisapeApplication extends Application {
         final Context context = getApplicationContext();
         sharedPreferences = getSharedPreferences(PREFERENCES_NAME, MODE_PRIVATE);
         WWWConfig.initialize(context);
-//        FlurryAgent.init(this, "BKNHHSXHP986YBR666ZY");
+        FlurryAgent.init(this, "BKNHHSXHP986YBR666ZY");
         PlayerProxy.launch(context);
+
+        initBugTags();
+        //初始化parse通讯
+        initParse();
+
+        dataSynchronizerReceiver = new DataSynchronizerReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("com.wisape.android.content.DataSynchronizerReceiver");
+        registerReceiver(dataSynchronizerReceiver, intentFilter);
+
+    }
+
+
+    private void initBugTags(){
         BugtagsOptions options = new BugtagsOptions.Builder().
                 trackingLocation(false).//是否获取位置
                 trackingCrashLog(true).//是否收集crash
@@ -71,19 +86,27 @@ public class WisapeApplication extends Application {
                 trackingUserSteps(false).//是否收集用户操作步骤
                 build();
         Bugtags.start("2de05eeb48ef1f51c597ed035315fabe", this, Bugtags.BTGInvocationEventNone, options);
-        //初始化parse通讯
+    }
+
+
+    /**
+     * 初始化parse
+     */
+    private void initParse(){
+//        Parse.initialize(this, "L3WrrhBJmbPhRoJ4GYIUDMIErlR8IlvkJuQQJ0Px", "yfC5kFI4jLLeeDaKlepK1hgAGiYJJEHjXfnpaCks");
+//        ParseInstallation.getCurrentInstallation().saveInBackground();
+
         Parse.initialize(this, "L3WrrhBJmbPhRoJ4GYIUDMIErlR8IlvkJuQQJ0Px", "yfC5kFI4jLLeeDaKlepK1hgAGiYJJEHjXfnpaCks");
+
         PushService.subscribe(this, "abcde", MainActivity.class);
         PushService.setDefaultPushCallback(this, MainActivity.class);
         ParseInstallation.getCurrentInstallation().put("localeIdentifier", Utils.getCountry(this).toUpperCase());
         ParseInstallation.getCurrentInstallation().saveInBackground();
         installId = ParseInstallation.getCurrentInstallation().getInstallationId();
 
-        dataSynchronizerReceiver = new DataSynchronizerReceiver();
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("com.wisape.android.content.DataSynchronizerReceiver");
-        registerReceiver(dataSynchronizerReceiver, intentFilter);
+
     }
+
 
     public String getInstallId() {
         return installId;

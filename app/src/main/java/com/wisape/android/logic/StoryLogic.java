@@ -956,7 +956,7 @@ public class StoryLogic {
     public void saveStoryEntityToShare(StoryEntity storyEntity) {
         String userEncode = new Gson().toJson(storyEntity);
         WisapeApplication.getInstance().getSharePrefrence().edit()
-                .putString(EXTARAS_STORY_ENTITY, Base64.encodeToString(userEncode.getBytes(), Base64.DEFAULT)).apply();
+                .putString(EXTARAS_STORY_ENTITY, Base64.encodeToString(userEncode.getBytes(), Base64.DEFAULT)).commit();
     }
 
     public StoryEntity getStoryEntityFromShare() {

@@ -9,7 +9,7 @@ import com.wisape.android.WisapeApplication;
 import com.wisape.android.activity.PhotoSelectorActivity;
 import com.wisape.android.common.StoryManager;
 import com.wisape.android.logic.StoryLogic;
-import com.wisape.android.util.Utils;
+import com.wisape.android.util.*;
 
 import org.apache.cordova.CallbackContext;
 import org.json.JSONArray;
@@ -81,14 +81,16 @@ public class PhotoSelectorPlugin extends AbsPlugin {
             case REQEUST_CODE_CROP_IMG:
                 if(null != callbackContext){
                     if(null != bgUri){
+                        com.wisape.android.util.FileUtils.saveBitmap(bgUri.getPath(), com.wisape.android.util.FileUtils.getSmallBitmap(bgUri.getPath()));
                         File imgFile = new File(bgUri.getPath());
+
                         if(imgFile.exists()){
                             callbackContext.success(bgUri.getPath());
                         }else {
                             callbackContext.error("crop cancle");
                         }
                     }else {
-                        callbackContext.error("裁剪失败");
+                        callbackContext.error("crop error");
                     }
                 }
                 bgUri = null;

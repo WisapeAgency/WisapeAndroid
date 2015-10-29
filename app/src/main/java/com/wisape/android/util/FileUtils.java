@@ -1,8 +1,11 @@
 package com.wisape.android.util;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.util.Base64;
+import android.util.Log;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -57,16 +60,17 @@ public class FileUtils {
 
     /**
      * 递归删除目录下的所有文件及子目录下所有文件
+     *
      * @param dir 将要删除的文件目录
      * @return boolean Returns "true" if all deletions were successful.
-     *                 If a deletion fails, the method stops attempting to
-     *                 delete and returns "false".
+     * If a deletion fails, the method stops attempting to
+     * delete and returns "false".
      */
     public static boolean deleteDir(File dir) {
         if (dir.isDirectory()) {
             String[] children = dir.list();
             //递归删除目录中的子目录下
-            for (int i=0; i<children.length; i++) {
+            for (int i = 0; i < children.length; i++) {
                 boolean success = deleteDir(new File(dir, children[i]));
                 if (!success) {
                     return false;
@@ -163,7 +167,7 @@ public class FileUtils {
         FileOutputStream fileOuputStream = null;
         try {
             File file = new File(filePath);
-            if(file.exists()){
+            if (file.exists()) {
                 file.delete();
             }
             fileOuputStream = new FileOutputStream(filePath);
@@ -185,9 +189,10 @@ public class FileUtils {
 
     /**
      * 复制assest目录下的文件
-     * @param context  上下文
-     * @param src   源
-     * @param dest  目标
+     *
+     * @param context 上下文
+     * @param src     源
+     * @param dest    目标
      */
     public static void copyAssetsFile(Context context, String src, String dest) {
         InputStream in = null;
@@ -290,17 +295,16 @@ public class FileUtils {
                 }
             }
         }
-        LogUtil.d("读取文件为字符串:" + local.toString());
         return local.toString();
     }
 
-   /*  解压assets的zip压缩文件到指定目录
-    * @param context上下文对象
-    * @param assetName压缩文件名
-    * @param outputDirectory输出目录
-    * @param isReWrite是否覆盖
-    * @throws IOException
-    */
+    /*  解压assets的zip压缩文件到指定目录
+     * @param context上下文对象
+     * @param assetName压缩文件名
+     * @param outputDirectory输出目录
+     * @param isReWrite是否覆盖
+     * @throws IOException
+     */
     public static void unZip(Context context, String assetName, String outputDirectory, boolean isReWrite) throws IOException {
         // 创建解压目标目录
         File file = new File(outputDirectory);
@@ -343,6 +347,71 @@ public class FileUtils {
             zipEntry = zipInputStream.getNextEntry();
         }
         zipInputStream.close();
+    }
+
+
+    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+            final int heightRatio = Math.round((float) height / (float) reqHeight);
+            final int widthRatio = Math.round((float) width / (float) reqWidth);
+            inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
+        }
+        return inSampleSize;
+    }
+
+    // 根据路径获得图片并压缩，返回bitmap用于显示
+    public static Bitmap getSmallBitmap(String filePath) {
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(filePath, options);
+
+        // Calculate inSampleSize
+        options.inSampleSize = calculateInSampleSize(options, 480, 800);
+
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
+
+        return BitmapFactory.decodeFile(filePath, options);
+    }
+
+    //保存bitmap到指定文件
+    public static void saveBitmap(String filePath, Bitmap bitmap) {
+        FileOutputStream fileOutputStream = null;
+        try {
+            File file = new File(filePath);
+            if (file.exists()) {
+                file.delete();
+            }
+            fileOutputStream = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 40, fileOutputStream);
+            fileOutputStream.flush();
+            fileOutputStream.close();
+            bitmap.recycle();
+        } catch (IOException e) {
+            LogUtil.e("保存二维码失败!", e);
+        } finally {
+            if (null != fileOutputStream) {
+                try {
+                    fileOutputStream.close();
+                } catch (IOException e) {
+                    LogUtil.e("关闭文件流出现错误:",e);
+                }
+            }
+        }
+    }
+
+    //把bitmap转换成String
+    public static String bitmapToString(String filePath) {
+
+        Bitmap bm = getSmallBitmap(filePath);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bm.compress(Bitmap.CompressFormat.JPEG, 40, baos);
+        byte[] b = baos.toByteArray();
+        return Base64.encodeToString(b, Base64.DEFAULT);
     }
 
 }

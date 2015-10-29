@@ -13,6 +13,8 @@ import android.widget.TextView;
 
 import com.google.zxing.WriterException;
 import com.wisape.android.R;
+import com.wisape.android.util.FileUtils;
+import com.wisape.android.util.LogUtil;
 import com.wisape.android.util.Utils;
 
 import java.io.File;
@@ -71,7 +73,7 @@ public class QrDialogFragment extends DialogFragment {
         textSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                saveQrToLocal(bitmap);
+                FileUtils.saveBitmap(savePath + "/" + QR_NAME, bitmap);
                 dismiss();
             }
         });
@@ -85,28 +87,27 @@ public class QrDialogFragment extends DialogFragment {
     }
 
     private void saveQrToLocal(Bitmap bitmap) {
-        FileOutputStream fileOutputStream = null;
-        try {
-            File file = new File(savePath + "/" + QR_NAME);
-            if (file.exists()) {
-                file.delete();
-            }
-            fileOutputStream = new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, fileOutputStream);
-            fileOutputStream.flush();
-            fileOutputStream.close();
-            bitmap.recycle();
-        } catch (IOException e) {
-            Log.e(TAG, "保存二维码失败!");
-        } finally {
-            if (null != fileOutputStream) {
-                try {
-                    fileOutputStream.close();
-                } catch (IOException e) {
-                    Log.e(TAG, e.getMessage());
-                }
-            }
-        }
+//        FileOutputStream fileOutputStream = null;
+//        try {
+//            if (file.exists()) {
+//                file.delete();
+//            }
+//            fileOutputStream = new FileOutputStream(file);
+//            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, fileOutputStream);
+//            fileOutputStream.flush();
+//            fileOutputStream.close();
+//            bitmap.recycle();
+//        } catch (IOException e) {
+//            LogUtil.e("保存二维码失败!",e);
+//        } finally {
+//            if (null != fileOutputStream) {
+//                try {
+//                    fileOutputStream.close();
+//                } catch (IOException e) {
+//                    Log.e(TAG, e.getMessage());
+//                }
+//            }
+//        }
     }
 
     public static QrDialogFragment instance(String url, String savePath) {

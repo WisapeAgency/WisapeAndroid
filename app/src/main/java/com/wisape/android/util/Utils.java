@@ -106,41 +106,44 @@ public class Utils {
 
 
     public static String base64ForImage(Uri uri) {
-        InputStream inputStream;
-        try {
-            inputStream = new BufferedInputStream(new FileInputStream(uri.getPath()));
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        }
 
-        ByteArrayOutputStream outputStream = null;
-        try {
-            outputStream = new ByteArrayOutputStream(102400 * 2);
-            byte[] buffer = new byte[102400];
-            int count;
-            for (; 0 < (count = inputStream.read(buffer)); ) {
-                outputStream.write(buffer, 0, count);
-            }
+       return FileUtils.base64ForImage(uri.getPath());
 
-            byte[] data = outputStream.toByteArray();
-
-            String base64 = Base64.encodeToString(data, Base64.DEFAULT);
-            return base64;
-        } catch (IOException e) {
-            return "";
-        } finally {
-            try {
-                if (null != inputStream) {
-                    inputStream.close();
-                }
-
-                if (null != outputStream) {
-                    outputStream.close();
-                }
-            } catch (IOException e) {
-                //do nothing
-            }
-        }
+//        InputStream inputStream;
+//        try {
+//            inputStream = new BufferedInputStream(new FileInputStream(uri.getPath()));
+//        } catch (IOException e) {
+//            throw new IllegalStateException(e);
+//        }
+//
+//        ByteArrayOutputStream outputStream = null;
+//        try {
+//            outputStream = new ByteArrayOutputStream(102400 * 2);
+//            byte[] buffer = new byte[102400];
+//            int count;
+//            for (; 0 < (count = inputStream.read(buffer)); ) {
+//                outputStream.write(buffer, 0, count);
+//            }
+//
+//            byte[] data = outputStream.toByteArray();
+//
+//            String base64 = Base64.encodeToString(data, Base64.DEFAULT);
+//            return base64;
+//        } catch (IOException e) {
+//            return "";
+//        } finally {
+//            try {
+//                if (null != inputStream) {
+//                    inputStream.close();
+//                }
+//
+//                if (null != outputStream) {
+//                    outputStream.close();
+//                }
+//            } catch (IOException e) {
+//                //do nothing
+//            }
+//        }
     }
 
     public static String acquireCountryIso(Context context) {

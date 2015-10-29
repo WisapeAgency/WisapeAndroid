@@ -71,7 +71,7 @@ public class PhotoBucketsFragment extends AbsFragment implements PhotoBucketsAda
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
         bucketRecyclerView.setLayoutManager(layoutManager);
         bucketRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
-                DividerItemDecoration.VERTICAL_LIST));
+                DividerItemDecoration.VERTICAL_LIST,true));
         bucketRecyclerView.setAdapter(bucketAdapter);
         bucketRecyclerView.setRecyclerListener(this);
         recyclerView = bucketRecyclerView;

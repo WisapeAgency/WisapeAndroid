@@ -14,6 +14,7 @@ import android.support.v7.widget.RecyclerView;
 import com.wisape.android.R;
 import com.wisape.android.common.StoryManager;
 import com.wisape.android.content.DynamicBroadcastReceiver;
+import com.wisape.android.database.StoryEntity;
 import com.wisape.android.database.StoryMusicEntity;
 import com.wisape.android.logic.StoryLogic;
 import com.wisape.android.network.Downloader;
@@ -115,11 +116,15 @@ public class StoryMusicActivity extends BaseActivity implements StoryMusicAdapte
     private void doSelectedMusic(){
         StoryMusicEntity selectedMusic = adapter.getSelectedStoryMusic();
         if(null != selectedMusic){
-            Intent intent = new Intent();
-            intent.putExtra(EXTRA_SELECTED_MUSIC, selectedMusic);
-            setResult(RESULT_OK, intent);
-        }else{
-            setResult(RESULT_CANCELED);
+
+            StoryEntity storyEntity = StoryLogic.instance().getStoryEntityFromShare();
+            storyEntity.storyMusicName = selectedMusic.name;
+            storyEntity.storyMusicLocal = Uri.parse(selectedMusic.musicLocal).getPath();
+            storyEntity.musicServerId = selectedMusic.serverId;
+
+            StoryEntity result = StoryLogic.instance().updateStory(getApplicationContext(), storyEntity);
+            StoryLogic.instance().saveStoryEntityToShare(result);
+
         }
     }
 

@@ -72,7 +72,7 @@ public class MessageCenterDetailActivity extends BaseActivity {
                 messageTime.setText(messageInfo.getParsetime());
                 messageContent.setText(Html.fromHtml(messageInfo.getUser_message()));
             }else{
-                messageTietle.setText("获取消息失败!");
+                messageTietle.setText("get message failure!");
             }
         }else{
             showToast((String)data.obj);

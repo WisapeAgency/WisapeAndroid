@@ -38,11 +38,14 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
 
     private int mOrientation;
 
-    public DividerItemDecoration(Context context, int orientation) {
+    private boolean isShowLine;
+
+    public DividerItemDecoration(Context context, int orientation, boolean showLine) {
         final TypedArray a = context.obtainStyledAttributes(ATTRS);
         mDivider = a.getDrawable(0);
         a.recycle();
         setOrientation(orientation);
+        isShowLine = showLine;
     }
 
     public void setOrientation(int orientation) {
@@ -75,7 +78,9 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
             final int top = child.getBottom() + params.bottomMargin;
             final int bottom = top + mDivider.getIntrinsicHeight();
             mDivider.setBounds(left, top, right, bottom);
-            mDivider.draw(c);
+            if (isShowLine) {
+                mDivider.draw(c);
+            }
         }
     }
 
@@ -91,7 +96,9 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
             final int left = child.getRight() + params.rightMargin;
             final int right = left + mDivider.getIntrinsicHeight();
             mDivider.setBounds(left, top, right, bottom);
-            mDivider.draw(c);
+            if (isShowLine) {
+                mDivider.draw(c);
+            }
         }
     }
 
@@ -100,7 +107,7 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
         if (mOrientation == VERTICAL_LIST) {
             outRect.set(0, 0, 0, mDivider.getIntrinsicHeight());
         } else {
-            outRect.set(0, 0, mDivider.getIntrinsicWidth(), 0);
+            outRect.set(15, 0, 15, 0);
         }
     }
 }

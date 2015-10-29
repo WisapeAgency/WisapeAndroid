@@ -14,6 +14,7 @@ import com.google.gson.Gson;
 import com.wisape.android.R;
 import com.wisape.android.WisapeApplication;
 import com.wisape.android.activity.MainActivity;
+import com.wisape.android.activity.StoryMusicActivity;
 import com.wisape.android.activity.StoryPreviewActivity;
 import com.wisape.android.activity.StoryReleaseActivity;
 import com.wisape.android.activity.StorySettingsActivity;
@@ -207,7 +208,14 @@ public class StoryTemplatePlugin extends AbsPlugin {
             showProgressDialog();
             startLoad(WHAT_PUBLISH, bundle);
         } else if (ACTION_SETTING.equals(action)) {
-            StorySettingsActivity.launch(getCurrentActivity(), 0);
+            StoryMusicEntity musicEntity = new StoryMusicEntity();
+            StoryEntity storyEntity = StoryLogic.instance().getStoryEntityFromShare();
+            String musicName = storyEntity.storyMusicName;
+            musicEntity.musicLocal = storyEntity.storyMusicLocal;
+            musicEntity.name = storyEntity.storyMusicName;
+            musicEntity.serverId = storyEntity.musicServerId;
+            StoryMusicActivity.launch(getCurrentActivity(),musicEntity,0);
+//            StorySettingsActivity.launch(getCurrentActivity(), 0);
         } else if (ACTION_BACK.equals(action)) {
             cordova.getActivity().finish();
         } else if (ACTION_EDIT.equals(action)) {
@@ -312,7 +320,6 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 com.alibaba.fastjson.JSONArray paths = JSON.parseArray(path);
 
                 LogUtil.d("保存story前端返回的封面路径:" + storyThumb);
-                LogUtil.d("保存story前端返回的文件信息:" + html);
                 LogUtil.d("保存story前端返回的需要替换路径:" + paths.toJSONString());
 
                 StoryEntity story = StoryLogic.instance().getStoryEntityFromShare();
@@ -342,7 +349,6 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 com.alibaba.fastjson.JSONArray paths = JSON.parseArray(path);
 
                 LogUtil.d("预览story前端返回的封面路径:" + storyThumb);
-                LogUtil.d("预览story前端返回的文件信息:" + html);
                 LogUtil.d("预览story前端返回需要替换的路径:" + paths.toJSONString());
 
                 StoryEntity story = StoryLogic.instance().getStoryEntityFromShare();
@@ -376,7 +382,6 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 com.alibaba.fastjson.JSONArray paths = JSON.parseArray(path);
 
                 LogUtil.d("发布story前端返回的封面路径:" + storyThumb);
-                LogUtil.d("发布story前端返回的文件信息:" + html);
                 LogUtil.d("发布story前端返回需要替换的路径:" + paths.toJSONString());
 
                 StoryEntity story = StoryLogic.instance().getStoryEntityFromShare();

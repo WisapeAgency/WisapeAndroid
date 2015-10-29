@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.TypedValue;
@@ -25,6 +26,7 @@ import com.wisape.android.logic.ActiveLogic;
 import com.wisape.android.model.ActiveInfo;
 import com.wisape.android.util.Utils;
 import com.wisape.android.view.GalleryView;
+import com.wisape.android.widget.DividerItemDecoration;
 import com.wisape.android.widget.NoticeDialog;
 
 import java.util.List;
@@ -45,7 +47,7 @@ public class GiftFragment extends AbsFragment {
     private static final String EXTRAS_COUNTRY_CODE = "country_code";
 
     @InjectView(R.id.gift_gallery)
-    GalleryView giftGallery;
+    RecyclerView giftGallery;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -59,7 +61,12 @@ public class GiftFragment extends AbsFragment {
     }
 
     private void init() {
-        giftGallery.setSpace((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 30, mDisplayMetrics));
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        giftGallery.setLayoutManager(linearLayoutManager);
+        giftGallery.addItemDecoration(new DividerItemDecoration(getActivity(),DividerItemDecoration.HORIZONTAL_LIST,false));
+
         Bundle args = new Bundle();
         args.putString(EXTRAS_COUNTRY_CODE, Utils.getCountry(getActivity()));
         startLoadWithProgress(LOADER_USER_ACTIVE, args);
@@ -87,7 +94,7 @@ public class GiftFragment extends AbsFragment {
         }
     }
 
-    Handler handler = new Handler(){
+   private Handler handler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
             closeFragment();
@@ -142,21 +149,9 @@ public class GiftFragment extends AbsFragment {
             final ActiveInfo activeInfo = activeInfoList.get(position);
 
             LinearLayout.LayoutParams params;
-            float screenWidth = mDisplayMetrics.widthPixels;
-            float screenHeight = mDisplayMetrics.heightPixels;
 
-            float bili = screenWidth / screenHeight;
-            if(bili * 10 <= 6){
-                int width = (int)(mDisplayMetrics.widthPixels * 0.7);
-//                int height = (int)(mDisplayMetrics.heightPixels * 0.58);
-                params = new LinearLayout.LayoutParams(width,width);
-
-            }else{
-                int width = (int)(mDisplayMetrics.widthPixels * 0.7);
-//                int height = (int)(mDisplayMetrics.heightPixels * 0.6);
-                params = new LinearLayout.LayoutParams(width,width);
-
-            }
+            int width = (int)(mDisplayMetrics.heightPixels * 0.43);
+            params = new LinearLayout.LayoutParams(width,width);
 
             holder.linearGif.setLayoutParams(params);
             Picasso.with(mContext).load(activeInfo.getBg_img())

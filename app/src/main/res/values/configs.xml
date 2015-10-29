@@ -34,6 +34,8 @@
     <string name="wechat_open_platform_api_secret_key"></string>
     <string name="wechat_api_callback_uri">http://localhost</string>
 
+    <string name="face_book_id">305010149669435</string>
+
     <string-array name="player_mode">
         <item>MODE_ORDER</item>
     </string-array>

@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.wisape.android"
-        minSdkVersion 14
+        minSdkVersion 15
         targetSdkVersion 22
         versionCode 1
         versionName "0.07"
@@ -74,14 +74,10 @@ tasks.withType(JavaCompile) {
 dependencies {
     compile fileTree(dir: "$buildDir/native-libs", include: 'native-libs.jar')
     compile fileTree(include: ['*.jar'], dir: 'libs')
-//    compile files('libs/libammsdk.jar')
     compile files('libs/Parse-1.2.0.jar')
     compile files('libs/FlurryAnalytics-6.0.0.jar')
-//    compile files('libs/bugtags-lib-1.0.4.jar')
-//    compile project(':oauth')
     compile project(':mobihelp_sdk_android_v1_4')
     compile project(':cordova')
-//    compile project(':nanohttpd')
     compile project(':VolleyPlus')
     compile project(':lplayer')
     compile files('libs/MobTools.jar')
@@ -92,15 +88,13 @@ dependencies {
     compile files('libs/ShareSDK-Wechat-2.6.2.jar')
     compile files('libs/ShareSDK-Wechat-Core-2.6.2.jar')
     compile files('libs/ShareSDK-Wechat-Moments-2.6.2.jar')
-    compile files('libs/ShareSDK-Facebook-2.6.2.jar')
+//    compile files('libs/ShareSDK-Facebook-2.6.2.jar')
     compile files('libs/ShareSDK-GooglePlus-2.6.2.jar')
     compile files('libs/ShareSDK-Twitter-2.6.2.jar')
     compile files('libs/ShareSDK-Core-2.6.2.jar')
     compile files('libs/MobLogCollector.jar')
     compile files('libs/microlog4android-1.1.jar')
-//    compile "com.android.support:appcompat-v7:${ANDROID_SUPPORT_VERSION}"
     compile "com.android.support:recyclerview-v7:${ANDROID_SUPPORT_VERSION}"
-//    compile "com.android.support:support-v4:${ANDROID_SUPPORT_VERSION}"
     compile "com.squareup.okhttp:okhttp-urlconnection:${OKHTTP_VERSION}"
     compile 'com.jakewharton:butterknife:6.1.0'
     compile 'com.alibaba:fastjson:1.2.6'
@@ -110,5 +104,5 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.bugtags.library:bugtags-lib:1.0.6'
     compile 'com.android.support:percent:22.2.0'
-
+//    compile 'com.facebook.android:facebook-android-sdk:4.7.0'
 }

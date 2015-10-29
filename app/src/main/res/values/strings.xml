@@ -51,7 +51,7 @@
     <string name="user_profile_email_title">Email Account</string>
     <string name="btn_change_email_address">Change email address</string>
     <string name="btn_logout_email_account">Logout email account</string>
-    <string name="change_main_text">The information relaled to Wisape and your account will be sent to you.\n\nChange email account,the information will be sent your new email address.\n\nLogout email account,you may miss important account information.
+    <string name="change_main_text">The information relaled to Wisape and your account will be sent to you. \n\n Change email account,the information will be sent your new email address.
     </string>
     <string name="name_change_email_detail_label">Change Email Address</string>
     <string name="logout_email_account">Logout email account</string>

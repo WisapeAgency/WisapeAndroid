@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Message;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -72,6 +73,7 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
     private static final int LOADER_PREVIEW_STORY = 3;
     private static final int LOADER_PUBLISH_STORY = 4;
     private static final int LOADER_EDIT_STORY = 5;
+    private static final int LOADER_GET_STORY_LOCAL = 6;
 
     private static final String EXTRAS_ACCESS_TOKEN = "access_token";
     private static final String EXTRAS_STORY_ENTITY = "story_entity";
@@ -133,7 +135,7 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
                 break;
             case LOADER_PREVIEW_STORY:
                 File file = new File(StoryManager.getStoryDirectory(), StoryLogic.instance().getStoryEntityFromShare().storyLocal + "/story.html");
-                LogUtil.d("首页预览story路径故事:" + file.getAbsolutePath());
+                LogUtil.d("首页story路径故事:" + file.getAbsolutePath());
                 File previewFile = new File(StoryManager.getStoryDirectory(), StoryLogic.instance().getStoryEntityFromShare().storyLocal + "/preview.html");
                 LogUtil.d("首页预览story路径:" + previewFile.getAbsolutePath());
                 if (previewFile.exists()) {
@@ -149,7 +151,7 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
             case LOADER_EDIT_STORY:
                 File editFile = new File(StoryManager.getStoryDirectory(), StoryLogic.instance().getStoryEntityFromShare().storyLocal + "/story.html");
                 String data = FileUtils.readFileToString(editFile);
-                LogUtil.d("首页编辑story:" + editFile.getAbsolutePath() + ":" + data);
+                LogUtil.d("首页编辑story:" + editFile.getAbsolutePath());
                 if (Utils.isEmpty(data)) {
                     message.arg1 = HttpUrlConstancts.STATUS_EXCEPTION;
                     message.obj = "Get StoryInfo Failure";
@@ -182,6 +184,15 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
                 StoryLogic.instance().update(getActivity().getApplicationContext(),
                         storyAttr, "release");
 
+                break;
+            case LOADER_GET_STORY_LOCAL:
+                List<StoryEntity> storyEntities = StoryLogic.instance().getUserStoryFromLocal(getActivity());
+                if(null != storyEntities){
+                    message.obj = storyEntities;
+                    message.arg1 = HttpUrlConstancts.STATUS_SUCCESS;
+                }else{
+                    message.arg1 = HttpUrlConstancts.STATUS_EXCEPTION;
+                }
                 break;
         }
         message.what = what;
@@ -237,6 +248,19 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
                     showToast("No StoryInfo");
                 }
                 break;
+            case LOADER_GET_STORY_LOCAL:
+                if (HttpUrlConstancts.STATUS_SUCCESS == data.arg1) {
+                    storyEntityList = (List<StoryEntity>) data.obj;
+                    if (0 == storyEntityList.size()) {
+                        showToast("No Story");
+                    } else {
+                        mGalleryAdapter = new GalleryAdapter();
+                        mCardGallery.setAdapter(mGalleryAdapter);
+                    }
+                } else {
+                    showToast("get story error");
+                }
+                break;
         }
     }
 
@@ -288,47 +312,51 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
 
     @Override
     public void storyStateChange(int type) {
-        if (StoryBroadcastReciverListener.TYPE_ADD_STORY == type) {
-            addStoryData();
-        }
-        if (StoryBroadcastReciverListener.UPDATE_STORY_SETTING == type) {
-            updateStorySeeting();
-        }
 
-        if(StoryBroadcastReciverListener.TYPE_UPDATE_STORY == type){
-            mGalleryAdapter.notifyDataSetChanged();
-        }
+        startLoad(LOADER_GET_STORY_LOCAL, null);
+
+
+//        if (StoryBroadcastReciverListener.TYPE_ADD_STORY == type) {
+//            addStoryData();
+//        }
+//        if (StoryBroadcastReciverListener.UPDATE_STORY_SETTING == type) {
+//            updateStorySeeting();
+//        }
+//
+//        if(StoryBroadcastReciverListener.TYPE_UPDATE_STORY == type){
+//            mGalleryAdapter.notifyDataSetChanged();
+//        }
     }
 
     /**
      * 更新storys设置
      */
-    private void updateStorySeeting() {
-        StoryEntity storyEntity = StoryLogic.instance().getStoryEntityFromShare();
-        int postion = 0;
-        int size = storyEntityList.size();
-        if (ApiStory.AttrStoryInfo.STORY_STATUS_TEMPORARY.equals(storyEntity.status)) {
-            for (int i = 0; i < size; i++) {
-                StoryEntity entity = storyEntityList.get(i);
-                if (entity.id == storyEntity.id) {
-                    postion = i;
-                    break;
-                }
-            }
-        } else {
-            for (int i = 0; i < size; i++) {
-                StoryEntity entity = storyEntityList.get(i);
-                if (entity.storyServerId == storyEntity.storyServerId) {
-                    postion = i;
-                    break;
-                }
-            }
-        }
-        storyEntityList.remove(postion);
-        storyEntityList.add(postion, storyEntity);
-        mGalleryAdapter.notifyItemChanged(postion);
-        mGalleryAdapter.notifyDataSetChanged();
-    }
+//    private void updateStorySeeting() {
+//        StoryEntity storyEntity = StoryLogic.instance().getStoryEntityFromShare();
+//        int postion = 0;
+//        int size = storyEntityList.size();
+//        if (ApiStory.AttrStoryInfo.STORY_STATUS_TEMPORARY.equals(storyEntity.status)) {
+//            for (int i = 0; i < size; i++) {
+//                StoryEntity entity = storyEntityList.get(i);
+//                if (entity.id == storyEntity.id) {
+//                    postion = i;
+//                    break;
+//                }
+//            }
+//        } else {
+//            for (int i = 0; i < size; i++) {
+//                StoryEntity entity = storyEntityList.get(i);
+//                if (entity.storyServerId == storyEntity.storyServerId) {
+//                    postion = i;
+//                    break;
+//                }
+//            }
+//        }
+//        storyEntityList.remove(postion);
+//        storyEntityList.add(postion, storyEntity);
+//        mGalleryAdapter.notifyItemChanged(postion);
+//        mGalleryAdapter.notifyDataSetChanged();
+//    }
 
 
     @Override
@@ -409,37 +437,37 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
     }
 
     /*新增story包含更新*/
-    private void addStoryData() {
-        StoryEntity storyEntity = StoryLogic.instance().getStoryEntityFromShare();
-        if (null == storyEntityList) {
-            storyEntityList = new ArrayList<>();
-        }
-        if (mGalleryAdapter == null) {
-            mGalleryAdapter = new GalleryAdapter();
-            mCardGallery.setAdapter(mGalleryAdapter);
-        }
-        boolean haveStory = false;
-        int postion = 0;
-        int size = storyEntityList.size();
-        for (int i = 0; i < size; i++) {
-            StoryEntity entity = storyEntityList.get(i);
-            if (entity.id == storyEntity.id) {
-                haveStory = true;
-                postion = i;
-                break;
-            }
-        }
-        LogUtil.d("更新story封面信息:" + haveStory + postion);
-        if (haveStory) {
-            storyEntityList.remove(postion);
-            storyEntityList.add(postion, storyEntity);
-            mGalleryAdapter.notifyItemChanged(postion);
-        } else {
-            storyEntityList.add(size, StoryLogic.instance().getStoryEntityFromShare());
-            mGalleryAdapter.notifyItemInserted(size);
-        }
-        mGalleryAdapter.notifyDataSetChanged();
-    }
+//    private void addStoryData() {
+//        StoryEntity storyEntity = StoryLogic.instance().getStoryEntityFromShare();
+//        if (null == storyEntityList) {
+//            storyEntityList = new ArrayList<>();
+//        }
+//        if (mGalleryAdapter == null) {
+//            mGalleryAdapter = new GalleryAdapter();
+//            mCardGallery.setAdapter(mGalleryAdapter);
+//        }
+//        boolean haveStory = false;
+//        int postion = 0;
+//        int size = storyEntityList.size();
+//        for (int i = 0; i < size; i++) {
+//            StoryEntity entity = storyEntityList.get(i);
+//            if (entity.id == storyEntity.id) {
+//                haveStory = true;
+//                postion = i;
+//                break;
+//            }
+//        }
+//        LogUtil.d("更新story封面信息:" + haveStory + postion);
+//        if (haveStory) {
+//            storyEntityList.remove(postion);
+//            storyEntityList.add(postion, storyEntity);
+//            mGalleryAdapter.notifyItemChanged(postion);
+//        } else {
+//            storyEntityList.add(size, StoryLogic.instance().getStoryEntityFromShare());
+//            mGalleryAdapter.notifyItemInserted(size);
+//        }
+//        mGalleryAdapter.notifyDataSetChanged();
+//    }
 
     /**
      * 保存预览文件
@@ -452,7 +480,6 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
     private boolean saveStoryPreview(File previewFile, String html, StoryEntity story) {
         String header = getFromAssets(PREVIEW_HEADER);
         String footer = getFromAssets(PREVIEW_FOOTER);
-        LogUtil.d("首页点击预览story:" + html);
         PrintWriter writer = null;
         try {
             writer = new PrintWriter(previewFile, "utf-8");
@@ -507,13 +534,11 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
             float bili = screenWidth / screenHeight;
             if (bili * 10 <= 6) {
                 int width = (int) (mDisplayMetrics.widthPixels * 0.7);
-                int height = (int) ((mDisplayMetrics.heightPixels - 74) * 0.74);
-                params = new LinearLayout.LayoutParams(width, height);
+                params = new LinearLayout.LayoutParams(width, LinearLayout.LayoutParams.MATCH_PARENT);
 
             } else {
                 int width = (int) (mDisplayMetrics.widthPixels * 0.78);
-                int height = (int) ((mDisplayMetrics.heightPixels - 54) * 0.85);
-                params = new LinearLayout.LayoutParams(width, height);
+                params = new LinearLayout.LayoutParams(width, LinearLayout.LayoutParams.MATCH_PARENT);
             }
 
             holder.linearLayout.setLayoutParams(params);
@@ -531,7 +556,7 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
                 holder.mTextStoryState.setText("publish");
             }
 
-            if(storyEntity.localCover == 0){
+            if (storyEntity.localCover == 0) {
                 File storyDirectory = new File(StoryManager.getStoryDirectory(), storyEntity.storyLocal);
                 File coverFile = new File(storyDirectory, "thumb.jpg");
                 Picasso.with(getActivity()).invalidate(coverFile);
@@ -542,10 +567,10 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
                         .error(R.mipmap.icon_login_email)
                         .into(holder.mStoryBg);
 
-            }else{
+            } else {
                 File storyDirectory = new File(StoryManager.getStoryDirectory(), storyEntity.storyLocal);
                 File coverFile = new File(storyDirectory, "thumb.jpg");
-                Picasso.with(getActivity()).load(Utils.isEmpty(storyEntity.storyThumbUri)? coverFile.getAbsolutePath():storyEntity.storyThumbUri)
+                Picasso.with(getActivity()).load(Utils.isEmpty(storyEntity.storyThumbUri) ? coverFile.getAbsolutePath() : storyEntity.storyThumbUri)
                         .placeholder(R.mipmap.icon_camera)
                         .error(R.mipmap.icon_login_email)
                         .fit()
@@ -553,23 +578,6 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
                         .into(holder.mStoryBg);
             }
 
-
-//            if (coverFile != null && coverFile.exists()) {
-//                Picasso.with(getActivity()).invalidate(coverFile);
-//
-//            } else {
-//                String imgPath = storyEntity.storyThumbUri;
-//                if (imgPath.contains("http")) {
-//
-//                } else {
-//                    Picasso.with(getActivity()).load(new File(imgPath))
-//                            .fit()
-//                            .centerCrop()
-//                            .placeholder(R.mipmap.icon_camera)
-//                            .error(R.mipmap.icon_login_email)
-//                            .into(holder.mStoryBg);
-//                }
-//            }
             holder.imageShare.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
