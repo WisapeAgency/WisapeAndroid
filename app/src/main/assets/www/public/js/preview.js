@@ -4,6 +4,7 @@ $(function(){
         cordova.exec(function(retval) {
             console(retval);
         }, function(e) {
+
         }, "StoryTemplate", "back", []);
     });
     $("#prEdit").click(function(){

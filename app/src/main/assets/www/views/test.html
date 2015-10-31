@@ -229,7 +229,7 @@
         Pages will be deleted from the device and cannot be recovered.
     </div>
     <div class="ui-dialog-btns">
-        <a class="ui-btn btn-cancle">Cancle</a>
+        <a class="ui-btn btn-cancle">Cancel</a>
         <a class="ui-btn btn-submit">Confirm</a>
     </div>
     <div class="clearfix"></div>
@@ -240,7 +240,7 @@
         Comfirm to save stroy ？
     </div>
     <div class="ui-dialog-btns">
-        <a class="ui-btn btn-cancle">Cancle</a>
+        <a class="ui-btn btn-cancle">Cancel</a>
         <a class="ui-btn btn-submit">Confirm</a>
     </div>
     <div class="clearfix"></div>
@@ -251,7 +251,7 @@
         You have to keep one page.
     </div>
     <div class="ui-dialog-btns">
-        <a class="ui-btn btn-cancle">Cancle</a>
+        <a class="ui-btn btn-cancle">Cancel</a>
     </div>
     <div class="clearfix"></div>
 </div>
@@ -357,9 +357,9 @@
         target.find(".download-progress-bar").hide();
         target.attr({"data-path":path.path});
         target.addClass("tpl-exist");
-        setTimeout(function(){
-            target.click();
-        },300)
+//        setTimeout(function(){
+//            target.click();
+//        },300)
         firstTplDown = true;
     }
     function onError(){
@@ -399,7 +399,7 @@
 <script>
     $(function(){
 
-        //FastClick.attach(document.body);
+        FastClick.attach(document.body);
 
 
         var ColorArr = [

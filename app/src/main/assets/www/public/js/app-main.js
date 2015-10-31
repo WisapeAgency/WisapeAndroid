@@ -62,7 +62,8 @@ WisapeEditer = {
                 scrollX: true,
                 scrollY: false,
                 click : false,
-                hScrollbar :false
+                hScrollbar :false,
+                lockDirection:true
             });
             $("#menu-scroll").find("li").eq(0).addClass("active");
 
@@ -211,7 +212,6 @@ WisapeEditer = {
                 }
             });
             WisapeEditer.GetNativeData("preview", [retImg[0],retHtml, retImg], function () {
-                console.info("save done!!!");
             })
         });
 
@@ -403,7 +403,7 @@ WisapeEditer = {
                 console.info(WisapeEditer.storyData);
 
             }, function (e) {
-                alert("Error: " + e);
+                //alert("Error: " + e);
             }, "PhotoSelector", "execute", wh);
             event.stopPropagation();
 
@@ -719,6 +719,7 @@ WisapeEditer = {
         var retHtml = '', retImg = [];
         Dialog.show(saveDialog);
         saveDialog.find(".btn-cancle").click(function () {
+            WisapeEditer.GetNativeData("back", [], null);
             Dialog.hide(saveDialog);
         });
         saveDialog.find(".btn-submit").click(function () {
@@ -774,7 +775,8 @@ WisapeEditer = {
                 scrollX: true,
                 scrollY: false,
                 click : false,
-                hScrollbar :false
+                hScrollbar :false,
+                lockDirection:true,
             });
             catScroll.find("li").eq(0).addClass("active");
             if (cb !== null)cb();
@@ -880,7 +882,7 @@ WisapeEditer = {
     GetNativeData: function (fn, params, cb) {
         cordova.exec(function (retval) {
             console.info(fn + "exec: " + retval);
-            cb(retval);
+            if(cb) cb(retval);
         }, function (e) {
             console.info(fn + " Error: " + e);
         }, "StoryTemplate", fn, params);
@@ -993,11 +995,12 @@ var Dialog = {
 
     mask : $(".ui-mask"),
 
-    init : function(){
-        this.mask.css({"width": $(window).width(),"height": $(window).height()})
+    init : function(target){
+        this.mask.css({"width": $(window).width(),"height": $(window).height()});
+        target.css({"margin-left" : -target.width()/2,"margin-top" : -target.height()/2});
     },
     show : function(target){
-        this.init();
+        this.init(target);
         this.mask.show();
         target.show();
     },
