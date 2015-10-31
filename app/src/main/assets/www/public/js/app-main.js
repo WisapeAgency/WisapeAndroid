@@ -168,7 +168,8 @@ WisapeEditer = {
                 $(".pop-editer-font .opts .item").each(function(){
                     console.info("curFamily" + curFamily);
                     console.info("data-fontname" + $(this).attr("data-fontname"));
-                    if(curFamily == $(this).attr("data-fontname")) {
+                    console.info("xxx:" + $(this).hasClass("download"));
+                    if(!$(this).hasClass("download") && (curFamily == $(this).attr("data-fontname"))) {
                         $(this).addClass("selected");
                     }
                 })
@@ -552,6 +553,7 @@ WisapeEditer = {
             if($("#TextEditerOpt").hasClass("active"))  $("#TextEditerOpt").click();
             $(".pop-editer-text").show();
             $(".J-textarea-word").val($.trim($(this).text())).focus();
+            $(".J-textarea-word")[0].focus().select()
             wordEditResize();
 
         })
@@ -689,7 +691,6 @@ WisapeEditer = {
 
         //动画事件
         var preAnimation = "";
-
         $(".pop-editer-animation .anim-item").click(function () {
 
             var selected = $("#editorText .pages-txt.active");
@@ -867,8 +868,10 @@ WisapeEditer = {
         $("#setFontAlign").attr({"css":"icon-align-" + fontAlign});
 
         $(".opt-font-val").html(curFamily);//字体
-        $(".pop-editer-font").find(".item");
-        $(".pop-editer-font").find('.item[data-fontname=' + curFamily+ ']').addClass("selected").siblings().removeClass("selected");
+        $(".pop-editer-font .item").removeClass("selected");
+        if(!$(".pop-editer-font").find('.item[data-fontname=' + curFamily+ ']').hasClass("download")) {
+            $(".pop-editer-font").find('.item[data-fontname=' + curFamily+ ']').addClass("selected");
+        }
 
 
         $(".opt-color-val").css({"background-color":curColor});//字体颜色

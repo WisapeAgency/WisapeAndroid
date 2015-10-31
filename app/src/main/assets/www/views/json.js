@@ -1,39 +1,4 @@
-<div class="stage-content edit-area pages-img pages-img-bg"
-     style=" text-align:center;word-break:break-all;display: box;display: -webkit-box;display: -moz-box;-webkit-box-pack:center;-moz-box-pack:center;-webkit-box-align:center;-moz-box-align:center;background: url(/storage/emulated/0/wisape/com.wisape.android/data/story/20151020040642/ume/img/bg.jpg);background-size: cover;background-position:50% 50%;width:100%;height:100%;position: relative;">
-    <div class="stage-content-box" style="-webkit-transform-origin:0 0;">
-        <div
-            style="float:left;width:12.14rem;margin:3.5rem 1.929rem;padding:5.18rem 0 1.18rem 0;background-color: rgba(255,255,255,0.5);border-radius: 0.5rem;position:relative;">
-            <div class="symbol"
-                 style="z-index: 999; display: inline-block;top: -2rem; position: absolute; left:50%;margin-left: -3rem;">
-                <div class="pages-img edit-area"><img data-name="img1"
-                                                      style="width:5.4rem;height:5.4rem;border-radius: 2.7rem;border:0.3rem solid #fff;"
-                                                      src="/storage/emulated/0/wisape/com.wisape.android/data/story/20151020040642/ume/img/t.jpg"></div>
-                </div>
-                <div class="symbol" style="z-index: 3;">
-                    <div class="pages-txt edit-area" style="font-size:0.78rem;color:#000;font-weight: bold">
-                        JackeyWisape
-                    </div>
-                </div>
-                <div class="symbol" style="z-index: 3;">
-                    <div class="pages-txt edit-area" style="font-size:0.533rem;color:#000;"> Co-founder</div>
-                </div>
-                <div class="symbol" style="z-index: 3;">
-                    <div class="pages-txt edit-area"
-                         style="margin-top:1rem;font-size:0.444rem;line-height:0.888rem;color:#448aff;text-decoration:underline;">
-                        Email: support@wisape.com<br> Tel:(702) 825-1558<br> Tel:(702) 825-1558<br>
-                        Site:www.wisape.com<br> Adress:Room 8001 California, Mountain View,<br> Amphitheatre Pkwy </div>
-                    </div> </div> </div> </div> ,
-                        <div class="stage-content edit-area pages-img pages-img-bg"
-                             style=" text-align:center;word-break:break-all;display: box;display: -webkit-box;display: -moz-box;-webkit-box-pack:center;-moz-box-pack:center;-webkit-box-align:center;-moz-box-align:center;background: url(/storage/emulated/0/wisape/com.wisape.android/data/story/20151020040642/ume/img/bg.jpg);background-size: cover;background-position:50% 50%;width:100%;height:100%;position: relative;">
-                            <div class="stage-content-box" style="-webkit-transform-origin:0 0;">
-                                <div
-                                    style="float:left;width:12.14rem;margin:3.5rem 1.929rem;padding:5.18rem 0 1.18rem 0;background-color: rgba(255,255,255,0.5);border-radius: 0.5rem;position:relative;">
-                                    <div class="symbol"
-                                         style="z-index: 999; display: inline-block;top: -2rem; position: absolute; left:50%;margin-left: -3rem;">
-                                        <div class="pages-img edit-area"><img data-name="img1"
-                                                                              style="width:5.4rem;height:5.4rem;border-radius: 2.7rem;border:0.3rem solid #fff;"
-                                                                              src="/storage/emulated/0/wisape/com.wisape.android/data/story/20151020040642/ume/img/t.jpg"></div>
-                                        </div>
-                                        <div class="symbol" style="z-index: 3;">
-                                            <div class="pages-txt edit-area"
-                                                 style="font-size:0.78rem;color:#000;font-weight: bold">
+"[{"
+zip_url
+":"
+http://106.75.196.252/uploads/fonts/UniSansHeavy.zip","preview_img_local":"/storage/emulated/0/wisape/com.wisape.android/data/font/UniSansHeavy/preview.jpg","hash_code":"dcae59e9ce6955cf70dc2ff6d9b2815e","preview_img":"http://106.75.196.252/uploads/fonts/preview_image/Uni-Sans-Heavy.png","name":"UniSansHeavy","default_down":1,"id":5,"downloaded":0,"status":0}, {"zip_url":"http://106.75.196.252/uploads/fonts/Lato.zip","preview_img_local":"/storage/emulated/0/wisape/com.wisape.android/data/font/Lato/preview.jpg","hash_code":"654e46150170a0576051805d3ae392d8","preview_img":"http://106.75.196.252/uploads/fonts/preview_image/Lato-Regular.png","name":"Lato","default_down":0,"id":8,"downloaded":0,"status":0}, {"zip_url":"http://106.75.196.252/uploads/fonts/Bebas.zip","preview_img_local":"/storage/emulated/0/wisape/com.wisape.android/data/font/Bebas/preview.jpg","hash_code":"b786c2cb5a0594769a5bc370c5ec0b56","preview_img":"http://106.75.196.252/uploads/fonts/preview_image/BEBAS.png","name":"Bebas","default_down":0,"id":9,"downloaded":0,"status":0}, {"zip_url":"http://106.75.196.252/uploads/fonts/ArchitectsDaughter.zip","preview_img_local":"/storage/emulated/0/wisape/com.wisape.android/data/font/ArchitectsDaughter/preview.jpg","hash_code":"7a57a34bc7a44bf9c532e6f0163056ce","preview_img":"http://106.75.196.252/uploads/fonts/preview_image/ArchitectsDaughter.png","name":"ArchitectsDaughter","default_down":0,"id":10,"downloaded":0,"status":0}, {"zip_url":"http://106.75.196.252/uploads/fonts/Helvetica.zip","preview_img_local":"/storage/emulated/0/wisape/com.wisape.android/data/font/Helvetica/preview.jpg","hash_code":"2e45b957c2c40acc9dd397461a262a25","preview_img":"http://106.75.196.252/uploads/fonts/preview_image/Helvetica.png","name":"Helvetica","default_down":0,"id":11,"downloaded":0,"status":0}]", source: file:///android_asset/www/public/js/app-main.js (152)
