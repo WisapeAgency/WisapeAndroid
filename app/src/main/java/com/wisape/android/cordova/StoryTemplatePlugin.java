@@ -39,12 +39,14 @@ import org.apache.commons.io.FileUtils;
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaWebView;
+import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -52,6 +54,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.net.MalformedURLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -105,11 +108,10 @@ public class StoryTemplatePlugin extends AbsPlugin {
     private static final String EXTRA_STORY_HTML = "extra_story_html";
     private static final String EXTRA_FILE_PATH = "extra_file_path";
 
-    private CallbackContext callbackContext;
     private CustomProgress customProgress;
     private StoryLogic logic = StoryLogic.instance();
     private WisapeApplication app = WisapeApplication.getInstance();
-
+    private CallbackContext callbackContext;
     /**
      * 显示进度对话框
      */
@@ -141,47 +143,137 @@ public class StoryTemplatePlugin extends AbsPlugin {
         super.initialize(cordova, webView);
     }
 
-    public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
+    private interface TemplateOp {
+        void run(Bundle bundle) throws Exception;
+    }
+
+
+    /* helper to execute functions async and handle the result codes
+     *
+     */
+    private void threadhelper(final TemplateOp f, final Bundle bundle, final CallbackContext callbackContext){
+        cordova.getThreadPool().execute(new Runnable() {
+            public void run() {
+                try {
+                    f.run(bundle);
+                } catch (Exception e) {
+                    callbackContext.error(e.getMessage());
+                }
+            }
+        });
+    }
+
+    public boolean execute(String action, final JSONArray args, final CallbackContext callbackContext) throws JSONException {
         if (null == action || 0 == action.length()) {
             return true;
         }
         this.callbackContext = callbackContext;
+        final Context context = getCurrentActivity().getApplicationContext();
         if (ACTION_GET_STAGE_CATEGORY.equals(action)) {//getStageCategory
-            System.out.println("getStageCategory");
-            startLoad(WHAT_GET_STAGE_CATEGORY, null);
+//            System.out.println("getStageCategory");
+//            startLoad(WHAT_GET_STAGE_CATEGORY, null);
+            threadhelper(new TemplateOp() {
+                public void run(Bundle bundle) {
+                    JSONArray jsonStr = logic.listStoryTemplateTypeLocal(context);
+                    LogUtil.d("模版分类信息:" + jsonStr);
+                    callbackContext.success(jsonStr);
+                    System.out.println(jsonStr.toString());
+                }
+            }, null, callbackContext);
         } else if (ACTION_GET_STAGE_LIST.equals(action)) {//getStageList
-            System.out.println("getStageList:" + args.getInt(0));
             Bundle bundle = new Bundle();
             if (null != args && args.length() != 0) {
                 bundle.putInt(EXTRA_CATEGORY_ID, args.getInt(0));//
             }
-            startLoad(WHAT_GET_STAGE_LIST, bundle);
+//            startLoad(WHAT_GET_STAGE_LIST, bundle);
+            threadhelper(new TemplateOp() {
+                public void run(Bundle bundle) {
+                    int type = bundle.getInt(EXTRA_CATEGORY_ID, 0);
+                    List<StoryTemplateInfo> entities = logic.listStoryTemplateLocalByType(context, type);
+                    LogUtil.d("story模版信息:" + entities.toString());
+                    callbackContext.success(new Gson().toJson(entities));
+                }
+            }, bundle, callbackContext);
         } else if (ACTION_START.equals(action)) {//start
             Bundle bundle = new Bundle();
             if (null != args && args.length() != 0) {
                 bundle.putInt(EXTRA_TEMPLATE_ID, args.getInt(0));
                 bundle.putInt(EXTRA_CATEGORY_ID, args.getInt(1));
             }
-            startLoad(WHAT_START, bundle);
+//            startLoad(WHAT_START, bundle);
+            threadhelper(new TemplateOp() {
+                public void run(Bundle bundle) {
+                    ApiStory.AttrTemplateInfo attr = new ApiStory.AttrTemplateInfo();
+                    attr.id = bundle.getInt(EXTRA_TEMPLATE_ID, 0);
+                    int categoryId = bundle.getInt(EXTRA_CATEGORY_ID, 1);
+                    Requester.ServerMessage message = logic.getStoryTemplateUrl(context, attr, null);
+                    if (!message.succeed()) {
+                        callbackContext.error(message.status);
+                        return;
+                    }
+                    if (cordova.getActivity() instanceof StoryTemplateActivity) {
+                        StoryTemplateActivity activity = (StoryTemplateActivity) cordova.getActivity();
+                        try {
+                            activity.downloadTemplate(message.data.toString(), attr.id, categoryId);
+                        } catch (JSONException e) {
+                            callbackContext.error(-1);
+                        }
+                    }
+                }
+            }, bundle, callbackContext);
         } else if (ACTION_READ.equals(action)) {//read
-            if (null != args && args.length() != 0) {
-                String path = args.getString(0);//
-                String content = readHtml(path);
-                callbackContext.success(content);
-            }
+//            if (null != args && args.length() != 0) {
+//                String path = args.getString(0);//
+//                String content = readHtml(path);
+//                callbackContext.success(content);
+//            }
+            threadhelper(new TemplateOp() {
+                public void run(Bundle bundle) {
+                    if (null != args && args.length() != 0) {
+                        String path = args.optString(0);//
+                        String content = readHtml(path);
+                        callbackContext.success(content);
+                    }
+                }
+            }, null, callbackContext);
         } else if (ACTION_MUSIC_PATH.equals(action)) {//getMusicPath
-            if (null != args && args.length() == 1) {
-                int id = args.getInt(0);
-                getMusicPath(id);
-            }
+//            if (null != args && args.length() == 1) {
+//                int id = args.getInt(0);
+//                getMusicPath(id);
+//            }
+            threadhelper(new TemplateOp() {
+                public void run(Bundle bundle) {
+                    if (null != args && args.length() == 1) {
+                        int id = args.optInt(0);
+                        getMusicPath(id);
+                    }
+                }
+            }, null, callbackContext);
         } else if (ACTION_GET_FONTS.equals(action)) {//getFonts
-            startLoad(WHAT_GET_FONTS, null);
+//            startLoad(WHAT_GET_FONTS, null);
+            threadhelper(new TemplateOp() {
+                public void run(Bundle bundle) {
+                    StoryFontInfo[] fonts = logic.listFont(context, "getFonts");
+                    List<StoryFontInfo> fontList = Arrays.asList(fonts);
+                    System.out.println(fontList);
+                    getFonts(fontList);
+                }
+            }, null, callbackContext);
         } else if (ACTION_DOWNLOAD_FONT.equals(action)) {
             Bundle bundle = new Bundle();
             if (null != args && args.length() != 0) {
                 bundle.putString(EXTRA_FONT_NAME, args.getString(0));
             }
-            startLoad(WHAT_DOWNLOAD_FONT, bundle);
+//            startLoad(WHAT_DOWNLOAD_FONT, bundle);
+            threadhelper(new TemplateOp() {
+                public void run(Bundle bundle) {
+                    String fontName = bundle.getString(EXTRA_FONT_NAME);
+                    if (cordova.getActivity() instanceof StoryTemplateActivity) {
+                        StoryTemplateActivity activity = (StoryTemplateActivity) cordova.getActivity();
+                        activity.downloadFont(fontName);
+                    }
+                }
+            }, bundle, callbackContext);
         } else if (ACTION_SAVE.equals(action)) {//save
             Bundle bundle = new Bundle();
             if (null != args && args.length() == 3) {
@@ -189,7 +281,36 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 bundle.putString(EXTRA_STORY_HTML, args.getString(1));
                 bundle.putString(EXTRA_FILE_PATH, args.getString(2));
             }
-            startLoad(WHAT_SAVE, bundle);
+//            startLoad(WHAT_SAVE, bundle);
+            threadhelper(new TemplateOp() {
+                public void run(Bundle bundle) {
+                    String storyThumb = bundle.getString(EXTRA_STORY_THUMB);
+                    String html = bundle.getString(EXTRA_STORY_HTML);
+                    String path = bundle.getString(EXTRA_FILE_PATH);
+                    com.alibaba.fastjson.JSONArray paths = JSON.parseArray(path);
+
+                    LogUtil.d("保存story前端返回的封面路径:" + storyThumb);
+                    LogUtil.d("保存story前端返回的需要替换路径:" + paths.toJSONString());
+
+                    StoryEntity story = StoryLogic.instance().getStoryEntityFromShare();
+                    story.status = ApiStory.AttrStoryInfo.STORY_STATUS_TEMPORARY;
+                    File myStory = new File(StoryManager.getStoryDirectory(), story.storyLocal);
+
+                    if (!myStory.exists()) {
+                        myStory.mkdirs();
+                    }
+
+                    if (!saveStory(myStory, story, storyThumb, html, paths)) {
+                        callbackContext.error(-1);
+                        return;
+                    }
+                    StoryEntity storyEntity = StoryLogic.instance().updateStory(WisapeApplication.getInstance(), story);
+                    StoryLogic.instance().saveStoryEntityToShare(storyEntity);
+                    sendBroadcastUpdateStory();
+                    MainActivity.launch(getCurrentActivity());
+                    cordova.getActivity().finish();
+                }
+            }, bundle, callbackContext);
         } else if (ACTION_PREVIEW.equals(action)) {//preview
             Bundle bundle = new Bundle();
             if (null != args && args.length() == 3) {
@@ -197,7 +318,40 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 bundle.putString(EXTRA_STORY_HTML, args.getString(1));
                 bundle.putString(EXTRA_FILE_PATH, args.getString(2));
             }
-            startLoad(WHAT_PREVIEW, bundle);
+//            startLoad(WHAT_PREVIEW, bundle);
+            threadhelper(new TemplateOp() {
+                public void run(Bundle bundle) {
+                    String storyThumb = bundle.getString(EXTRA_STORY_THUMB);
+                    String html = bundle.getString(EXTRA_STORY_HTML);
+                    String path = bundle.getString(EXTRA_FILE_PATH);
+                    com.alibaba.fastjson.JSONArray paths = JSON.parseArray(path);
+
+                    LogUtil.d("预览story前端返回的封面路径:" + storyThumb);
+                    LogUtil.d("预览story前端返回需要替换的路径:" + paths.toJSONString());
+
+                    StoryEntity story = StoryLogic.instance().getStoryEntityFromShare();
+                    story.status = ApiStory.AttrStoryInfo.STORY_STATUS_TEMPORARY;
+                    File myStory = new File(StoryManager.getStoryDirectory(), story.storyLocal);
+                    if (!myStory.exists()) {
+                        myStory.mkdirs();
+                    }
+
+                    if (!saveStory(myStory, story, storyThumb, html, paths)) {
+                        callbackContext.error(-1);
+                        return;
+                    }
+                    StoryEntity storyEntity = StoryLogic.instance().updateStory(getCurrentActivity(), StoryLogic.instance().getStoryEntityFromShare());
+                    LogUtil.d("预览保存story信息:" + storyEntity.storyThumbUri);
+                    StoryLogic.instance().saveStoryEntityToShare(storyEntity);
+//                sendBroadcastUpdateStory();
+                    File previewFile = new File(myStory, FILE_NAME_PREVIEW);
+                    if (saveStoryPreview(previewFile, html, story)) {
+                        StoryPreviewActivity.launch(cordova.getActivity(), previewFile.getAbsolutePath());
+                    } else {
+                        callbackContext.error(-1);
+                    }
+                }
+            }, bundle, callbackContext);
         } else if (ACTION_PUBLISH.equals(action)) {//publish
             Bundle bundle = new Bundle();
             if (null != args && args.length() == 3) {
@@ -206,7 +360,45 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 bundle.putString(EXTRA_FILE_PATH, args.getString(2));
             }
             showProgressDialog();
-            startLoad(WHAT_PUBLISH, bundle);
+//            startLoad(WHAT_PUBLISH, bundle);
+            threadhelper(new TemplateOp() {
+                public void run(Bundle bundle) {
+                    String storyThumb = bundle.getString(EXTRA_STORY_THUMB);
+                    String html = bundle.getString(EXTRA_STORY_HTML);
+                    String path = bundle.getString(EXTRA_FILE_PATH);
+                    com.alibaba.fastjson.JSONArray paths = JSON.parseArray(path);
+
+                    LogUtil.d("发布story前端返回的封面路径:" + storyThumb);
+                    LogUtil.d("发布story前端返回需要替换的路径:" + paths.toJSONString());
+
+                    StoryEntity story = StoryLogic.instance().getStoryEntityFromShare();
+                    ApiStory.AttrStoryInfo storyAttr = new ApiStory.AttrStoryInfo();
+                    storyAttr.story = Uri.fromFile(new File(StoryManager.getStoryDirectory(), story.storyLocal));
+                    storyAttr.storyName = story.storyName;
+                    if (Utils.isEmpty(story.storyMusicName)) {
+                        storyAttr.bgMusic = "";
+                    } else {
+                        storyAttr.bgMusic = story.storyMusicName;
+                    }
+                    storyAttr.storyDescription = story.storyDesc;
+                    storyAttr.userId = UserLogic.instance().getUserInfoFromLocal().user_id;
+                    storyAttr.storyStatus = ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE;
+                    storyAttr.imgPrefix = StoryManager.getStoryDirectory().getAbsolutePath() + "/" + story.storyLocal;
+                    storyAttr.story_local = story.storyLocal;
+                    storyAttr.attrStoryThumb = Uri.parse(storyThumb);
+
+                    if ("-1".equals(story.status)) {
+                        storyAttr.sid = -1;
+                    } else {
+                        storyAttr.sid = story.storyServerId;
+                    }
+
+                    logic.update(WisapeApplication.getInstance().getApplicationContext(), storyAttr, "release");
+                    sendBroadcastUpdateStory();
+                    StoryReleaseActivity.launch(cordova.getActivity());
+                    getCurrentActivity().finish();
+                }
+            }, bundle, callbackContext);
         } else if (ACTION_SETTING.equals(action)) {
             StoryMusicEntity musicEntity = new StoryMusicEntity();
             StoryEntity storyEntity = StoryLogic.instance().getStoryEntityFromShare();
@@ -231,12 +423,25 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 callbackContext.success(html);
             }
         } else if (ACTION_CHECK_DOWNLOAD.equals(action)) {
-//            if (!DataSynchronizer.getInstance().isDownloading()){
-//                ((StoryTemplateActivity)cordova.getActivity()).onInitCompleted();
-//            } else {
-//                startLoad(WHAT_EDIT_INIT, null);
-//            }
-            startLoad(WHAT_EDIT_INIT, null);
+//            startLoad(WHAT_EDIT_INIT, null);
+            threadhelper(new TemplateOp() {
+                public void run(Bundle bundle) {
+                    while (DataSynchronizer.getInstance().isDownloading()){
+                        try{
+                            Thread.sleep(300);
+                        }catch (InterruptedException e){
+
+                        }
+                    }
+                    StoryTemplateInfo templateInfo = DataSynchronizer.getInstance().getFirstTemplate();
+                    String content = "";
+                    if (templateInfo != null) {
+                        File path = new File(StoryManager.getStoryTemplateDirectory(), templateInfo.temp_name + "/" + "stage.html");
+                        content = readHtml(path.getAbsolutePath());
+                    }
+                    callbackContext.success(content);
+                }
+            }, null, callbackContext);
         } else if (ACTION_OPEN_LINK.equals(action)) {
             if (null != args && args.length() == 1) {
                 String url = args.getString(0);
@@ -260,192 +465,6 @@ public class StoryTemplatePlugin extends AbsPlugin {
 
     @Override
     protected Message onLoadBackgroundRunning(int what, Bundle args) throws AsyncLoaderError {
-        Context context = getCurrentActivity().getApplicationContext();
-        switch (what) {
-            default:
-                return null;
-            case WHAT_GET_STAGE_CATEGORY: {
-                JSONArray jsonStr = logic.listStoryTemplateTypeLocal(context);
-                LogUtil.d("模版分类信息:" + jsonStr);
-                callbackContext.success(jsonStr);
-                System.out.println(jsonStr.toString());
-                break;
-            }
-            case WHAT_GET_STAGE_LIST: {
-                int type = args.getInt(EXTRA_CATEGORY_ID, 0);
-                List<StoryTemplateInfo> entities = logic.listStoryTemplateLocalByType(context, type);
-                LogUtil.d("story模版信息:" + entities.toString());
-                callbackContext.success(new Gson().toJson(entities));
-                break;
-            }
-            case WHAT_START: {
-                ApiStory.AttrTemplateInfo attr = new ApiStory.AttrTemplateInfo();
-                attr.id = args.getInt(EXTRA_TEMPLATE_ID, 0);
-                int categoryId = args.getInt(EXTRA_CATEGORY_ID, 1);
-                Requester.ServerMessage message = logic.getStoryTemplateUrl(context, attr, null);
-                if (!message.succeed()) {
-                    callbackContext.error(message.status);
-                    return null;
-                }
-                if (cordova.getActivity() instanceof StoryTemplateActivity) {
-                    StoryTemplateActivity activity = (StoryTemplateActivity) cordova.getActivity();
-                    try {
-                        activity.downloadTemplate(message.data.toString(), attr.id, categoryId);
-                    } catch (JSONException e) {
-                        callbackContext.error(-1);
-                    }
-                }
-                break;
-            }
-            case WHAT_GET_FONTS: {
-                StoryFontInfo[] fonts = logic.listFont(context, "getFonts");
-                List<StoryFontInfo> fontList = Arrays.asList(fonts);
-                System.out.println(fontList);
-                getFonts(fontList);
-                break;
-            }
-            case WHAT_DOWNLOAD_FONT: {
-                String fontName = args.getString(EXTRA_FONT_NAME);
-                if (cordova.getActivity() instanceof StoryTemplateActivity) {
-                    StoryTemplateActivity activity = (StoryTemplateActivity) cordova.getActivity();
-                    activity.downloadFont(fontName);
-                }
-                break;
-            }
-            case WHAT_SAVE: {
-
-                String storyThumb = args.getString(EXTRA_STORY_THUMB);
-                String html = args.getString(EXTRA_STORY_HTML);
-                String path = args.getString(EXTRA_FILE_PATH);
-                com.alibaba.fastjson.JSONArray paths = JSON.parseArray(path);
-
-                LogUtil.d("保存story前端返回的封面路径:" + storyThumb);
-                LogUtil.d("保存story前端返回的需要替换路径:" + paths.toJSONString());
-
-                StoryEntity story = StoryLogic.instance().getStoryEntityFromShare();
-                story.status = ApiStory.AttrStoryInfo.STORY_STATUS_TEMPORARY;
-                File myStory = new File(StoryManager.getStoryDirectory(), story.storyLocal);
-
-                if (!myStory.exists()) {
-                    myStory.mkdirs();
-                }
-
-                if (!saveStory(myStory, story, storyThumb, html, paths)) {
-                    callbackContext.error(-1);
-                    return null;
-                }
-                StoryEntity storyEntity = StoryLogic.instance().updateStory(WisapeApplication.getInstance(), story);
-                StoryLogic.instance().saveStoryEntityToShare(storyEntity);
-                sendBroadcastUpdateStory();
-                MainActivity.launch(getCurrentActivity());
-                cordova.getActivity().finish();
-                break;
-            }
-            case WHAT_PREVIEW: {
-
-                String storyThumb = args.getString(EXTRA_STORY_THUMB);
-                String html = args.getString(EXTRA_STORY_HTML);
-                String path = args.getString(EXTRA_FILE_PATH);
-                com.alibaba.fastjson.JSONArray paths = JSON.parseArray(path);
-
-                LogUtil.d("预览story前端返回的封面路径:" + storyThumb);
-                LogUtil.d("预览story前端返回需要替换的路径:" + paths.toJSONString());
-
-                StoryEntity story = StoryLogic.instance().getStoryEntityFromShare();
-                story.status = ApiStory.AttrStoryInfo.STORY_STATUS_TEMPORARY;
-                File myStory = new File(StoryManager.getStoryDirectory(), story.storyLocal);
-                if (!myStory.exists()) {
-                    myStory.mkdirs();
-                }
-
-                if (!saveStory(myStory, story, storyThumb, html, paths)) {
-                    callbackContext.error(-1);
-                    return null;
-                }
-                StoryEntity storyEntity = StoryLogic.instance().updateStory(getCurrentActivity(), StoryLogic.instance().getStoryEntityFromShare());
-                LogUtil.d("预览保存story信息:" + storyEntity.storyThumbUri);
-                StoryLogic.instance().saveStoryEntityToShare(storyEntity);
-//                sendBroadcastUpdateStory();
-                File previewFile = new File(myStory, FILE_NAME_PREVIEW);
-                if (saveStoryPreview(previewFile, html, story)) {
-                    StoryPreviewActivity.launch(cordova.getActivity(), previewFile.getAbsolutePath());
-                } else {
-                    callbackContext.error(-1);
-                }
-                break;
-            }
-            case WHAT_PUBLISH: {
-
-                String storyThumb = args.getString(EXTRA_STORY_THUMB);
-                String html = args.getString(EXTRA_STORY_HTML);
-                String path = args.getString(EXTRA_FILE_PATH);
-                com.alibaba.fastjson.JSONArray paths = JSON.parseArray(path);
-
-                LogUtil.d("发布story前端返回的封面路径:" + storyThumb);
-                LogUtil.d("发布story前端返回需要替换的路径:" + paths.toJSONString());
-
-                StoryEntity story = StoryLogic.instance().getStoryEntityFromShare();
-//                File myStory = new File(StoryManager.getStoryDirectory(), story.storyLocal);
-//                if (!myStory.exists()) {
-//                    myStory.mkdirs();
-//                }
-//
-//                if (!saveStory(myStory, story, storyThumb, html, paths)) {
-//                    callbackContext.error(-1);
-//                    return null;
-//                }
-//                if (Utils.isEmpty(story.storyThumbUri) || !new File(story.storyThumbUri).exists()) {
-//                    com.wisape.android.util.FileUtils.copyAssetsFile(getCurrentActivity(), "www/public/img/photo_cover.png",
-//                            new File(StoryManager.getStoryDirectory(), story.storyLocal + "/thumb.jpg").getAbsolutePath());
-//                }
-//                if(story.localCover == 0){
-//                    story.storyThumbUri = storyThumb;
-//                }
-                ApiStory.AttrStoryInfo storyAttr = new ApiStory.AttrStoryInfo();
-                storyAttr.story = Uri.fromFile(new File(StoryManager.getStoryDirectory(), story.storyLocal));
-                storyAttr.storyName = story.storyName;
-                if (Utils.isEmpty(story.storyMusicName)) {
-                    storyAttr.bgMusic = "";
-                } else {
-                    storyAttr.bgMusic = story.storyMusicName;
-                }
-                storyAttr.storyDescription = story.storyDesc;
-                storyAttr.userId = UserLogic.instance().getUserInfoFromLocal().user_id;
-                storyAttr.storyStatus = ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE;
-                storyAttr.imgPrefix = StoryManager.getStoryDirectory().getAbsolutePath() + "/" + story.storyLocal;
-                storyAttr.story_local = story.storyLocal;
-                storyAttr.attrStoryThumb = Uri.parse(storyThumb);
-
-                if ("-1".equals(story.status)) {
-                    storyAttr.sid = -1;
-                } else {
-                    storyAttr.sid = story.storyServerId;
-                }
-
-                logic.update(WisapeApplication.getInstance().getApplicationContext(), storyAttr, "release");
-                sendBroadcastUpdateStory();
-                StoryReleaseActivity.launch(cordova.getActivity());
-                getCurrentActivity().finish();
-                break;
-            }
-            case WHAT_EDIT_INIT: {
-                while (DataSynchronizer.getInstance().isDownloading()){
-                    try{
-                        Thread.sleep(300);
-                    }catch (InterruptedException e){
-
-                    }
-                }
-                StoryTemplateInfo templateInfo = DataSynchronizer.getInstance().getFirstTemplate();
-                String content = "";
-                if (templateInfo != null) {
-                    File path = new File(StoryManager.getStoryTemplateDirectory(), templateInfo.temp_name + "/" + "stage.html");
-                    content = readHtml(path.getAbsolutePath());
-                }
-                callbackContext.success(content);
-                break;
-            }
-        }
         return Message.obtain();
     }
 
