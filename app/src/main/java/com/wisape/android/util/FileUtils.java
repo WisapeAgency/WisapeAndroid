@@ -375,7 +375,7 @@ public class FileUtils {
         BitmapFactory.decodeFile(filePath, options);
 
         // Calculate inSampleSize
-        options.inSampleSize = calculateInSampleSize(options, 480, 800);
+        options.inSampleSize = calculateInSampleSize(options, 360, 680);
 
         // Decode bitmap with inSampleSize set
         options.inJustDecodeBounds = false;
@@ -397,7 +397,7 @@ public class FileUtils {
             fileOutputStream.close();
             bitmap.recycle();
         } catch (IOException e) {
-            LogUtil.e("保存二维码失败!", e);
+            LogUtil.e("保存bitmap失败!", e);
         } finally {
             if (null != fileOutputStream) {
                 try {

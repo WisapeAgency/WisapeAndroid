@@ -179,7 +179,7 @@ public abstract class AbsFragment extends Fragment implements LoaderManager.Load
 
         if(!Utils.isNetworkAvailable(getActivity())){
             closeProgressDialog();
-            showToast("Network Error");
+            showToast("no internet connection");
             return;
         }
 

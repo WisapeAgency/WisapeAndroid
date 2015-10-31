@@ -24,6 +24,7 @@ import com.wisape.android.activity.UserProfileActivity;
 import com.wisape.android.api.ApiStory;
 import com.wisape.android.common.StoryManager;
 import com.wisape.android.content.BroadCastReciverListener;
+import com.wisape.android.content.ClearNumberReciver;
 import com.wisape.android.content.MessageCenterReceiver;
 import com.wisape.android.content.StoryBroadcastReciver;
 import com.wisape.android.content.StoryBroadcastReciverListener;
@@ -48,7 +49,8 @@ import butterknife.OnClick;
 /**
  * @author Duke
  */
-public class MainMenuFragment extends AbsFragment implements BroadCastReciverListener,UpdateUserInfoBroadcastReciver.UpdateUserInfoBoradcastReciverListener{
+public class MainMenuFragment extends AbsFragment implements BroadCastReciverListener,UpdateUserInfoBroadcastReciver.UpdateUserInfoBoradcastReciverListener,
+        ClearNumberReciver.ClearNumberListener{
 
     private static final int CLEAR_CACHE = 1;
 
@@ -65,6 +67,7 @@ public class MainMenuFragment extends AbsFragment implements BroadCastReciverLis
 
     private MessageCenterReceiver messageCenterReceiver;
     private UpdateUserInfoBroadcastReciver userInfoBoradcastReciver;
+    private ClearNumberReciver clearNumberReciver;
 
 
     @Override
@@ -87,6 +90,12 @@ public class MainMenuFragment extends AbsFragment implements BroadCastReciverLis
         IntentFilter filter = new IntentFilter();
         filter.addAction(UpdateUserInfoBroadcastReciver.ACTION);
         getActivity().registerReceiver(userInfoBoradcastReciver, filter);
+
+        clearNumberReciver = new ClearNumberReciver(this);
+        IntentFilter intentFilter1 = new IntentFilter();
+        intentFilter1.addAction(ClearNumberReciver.CLEAR_ACTION);
+        getActivity().registerReceiver(clearNumberReciver,intentFilter1);
+
     }
 
 
@@ -116,6 +125,14 @@ public class MainMenuFragment extends AbsFragment implements BroadCastReciverLis
         userInfoBoradcastReciver.destory();
         getActivity().unregisterReceiver(userInfoBoradcastReciver);
 
+        clearNumberReciver.destroy();
+        getActivity().unregisterReceiver(clearNumberReciver);
+
+    }
+
+    @Override
+    public void clearNumber() {
+        clearMsgCount();
     }
 
     @OnClick(R.id.help_center)

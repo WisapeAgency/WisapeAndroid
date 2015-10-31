@@ -162,6 +162,12 @@ public class StoryReleaseActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
+        if(!isStorySettingChange()){
+            Bundle args = new Bundle();
+            args.putString(EXTRAS_STORY_NAME, storyNameEdit.getText().toString());
+            args.putString(EXTRAS_STORY_DESC, storyDescEdit.getText().toString());
+            startLoadWithProgress(LOADER_UPDATE_INFO,args);
+        }
         MainActivity.launch(this);
         super.onBackPressed();
     }
@@ -220,6 +226,9 @@ public class StoryReleaseActivity extends BaseActivity {
 
                 break;
             case LOADER_UPDATE_INFO:
+                if(HttpUrlConstancts.STATUS_SUCCESS != data.arg1){
+                    showToast((String) data.obj);
+                }
                 MainActivity.launch(this);
                 break;
         }
