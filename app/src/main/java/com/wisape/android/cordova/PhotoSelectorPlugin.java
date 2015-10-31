@@ -87,7 +87,7 @@ public class PhotoSelectorPlugin extends AbsPlugin {
                         if(imgFile.exists()){
                             callbackContext.success(bgUri.getPath());
                         }else {
-                            callbackContext.error("crop cancle");
+                            callbackContext.success("");
                         }
                     }else {
                         callbackContext.error("crop error");

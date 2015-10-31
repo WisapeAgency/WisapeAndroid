@@ -171,6 +171,7 @@ public class StoryLogic {
         }
     }
 
+
     public boolean saveStoryLocal(Context context, StoryEntity story) {
         DatabaseHelper helper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
         try {
@@ -258,7 +259,7 @@ public class StoryLogic {
             });
             for (StoryMusicTypeEntity musicType : storyMusicTypeList) {
                 queryBuilder = musicDao.queryBuilder();
-                queryBuilder.where().eq("type", musicType.serverId);
+                queryBuilder.where().eq("type", musicType.serverId).and().eq("recStatus","A");
                 queryBuilder.orderBy("name", true);
                 musicList = queryBuilder.query();
                 storyMusicDataList.add(musicType);
@@ -361,6 +362,7 @@ public class StoryLogic {
                         if (!musicEntity.equals(storyMusic)) {
                             musicEntity.update(storyMusic);
                             musicEntity.updateAt = updateAt;
+                            musicEntity.status = storyMusic.status;
                             musicDao.update(musicEntity);
                             hasUpdate = true;
                         }
@@ -372,6 +374,7 @@ public class StoryLogic {
                     musicEntity = StoryMusicEntity.transform(storyMusic);
                     musicEntity.createAt = updateAt;
                     musicEntity.updateAt = updateAt;
+                    musicEntity.status = storyMusic.status;
                     musicDao.createIfNotExists(musicEntity);
                     hasUpdate = true;
                 }
