@@ -372,17 +372,20 @@ a {text-decoration: none;color:inherit;}
 
 .ui-dialog{
     overflow: hidden;
-    margin: 0 auto;
     z-index: 100002;
     position:fixed;
-    left: 0;
-    top: -10000px;
-    display: none;
     -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
     background-color: white;
     -webkit-transform: translateZ(0);
     -webkit-user-select: none;
     -webkit-user-drag: none;
+    padding:1.06rem 0 0.71rem 0;
+    width:12.44rem;
+    display: none;
+    left: 50%;
+    margin-left: -6.22rem;
+    top: 50%;
+    margin-top: -100px;
 }
 /** mask */
 .ui-mask{
@@ -402,9 +405,9 @@ a {text-decoration: none;color:inherit;}
 }
 .ui-dialog .ui-dialog-title {
     position: relative;
-    padding:30px 20px;
-    color:#666;
-    font-size:18px;
+    color:#243437;
+    font-size:0.888rem;
+    padding:0 1.06rem 0.88rem 1.06rem;
 }
 
 .ui-dialog .ui-dialog-close{
@@ -415,12 +418,12 @@ a {text-decoration: none;color:inherit;}
 }
 .ui-dialog-content {
     position: relative;
-    padding:0 20px 30px 20px;
-    color:#999;
-    font-size: 16px;
+    padding:0 1.06rem 1.33rem 1.06rem;
+    color:#2d3437;
+    font-size: 0.71rem;
 }
 .ui-dialog-btns {float:right;width:100%;overflow:hidden;text-align: right}
-.ui-dialog-btns a {display:inline-block;padding:10px 20px;color:#999;font-size:16px;}
+.ui-dialog-btns a {display:inline-block;padding:0.5rem 1.06rem;color:#999;font-size:16px;}
 .ui-dialog-btns a.btn-submit {color:green;}
 .input-href {width:100%;padding:10px 0;border-bottom:1px solid green;}
 .input-href input {border:none;}

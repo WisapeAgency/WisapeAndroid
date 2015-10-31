@@ -312,7 +312,7 @@ WisapeEditer = {
         var catClickTimmer = true;
         catScroll.delegate("li", "click", function () {
 
-            if(!pageClickTimmer) return;
+            if(!catClickTimmer) return;
             catClickTimmer = false;
             setTimeout(function(){
                 catClickTimmer = true;
@@ -329,6 +329,7 @@ WisapeEditer = {
                 console.info(".download-progress-bar:visible " + _me.find(".download-progress-bar:visible").length);
                 console.info("down");
                 WisapeEditer.GetNativeData("start", [parseInt(_me.data("id")), parseInt(_me.data("type"))], function (data) {
+                    _me.hasClass("tpl-exist");
                 });
             } else {
                 console.info("read:");
@@ -363,11 +364,15 @@ WisapeEditer = {
             pageScroll.find("li.active .pages-txt").addClass("edit-area-active");
         });
 
+
+        var pagesImgTimmer = true;
         pageScroll.delegate("li.active .pages-img", "click", function (event) {
-            if(!pageClickTimmer) return;
+            if(!pageClickTimmer || !pagesImgTimmer) return;
             pageClickTimmer = false;
+            pagesImgTimmer = false;
             setTimeout(function(){
                 pageClickTimmer = true;
+                pagesImgTimmer = true;
             },500);
 
             var _me = $(this),wh = [];
@@ -401,7 +406,6 @@ WisapeEditer = {
 
                 console.info("WisapeEditer.storyData:");
                 console.info(WisapeEditer.storyData);
-
             }, function (e) {
                 //alert("Error: " + e);
             }, "PhotoSelector", "execute", wh);
@@ -965,30 +969,26 @@ function rgb2hex(rgb) {
 
 function setPagesScroll() {
     set_wrap_width($("#pages-scroll"));
-    if(!WisapeEditer.pagesIScroll) {
-        console.info("new");
-        var liWidth = parseInt($("#pages-scroll li ").eq(0).width());
-        WisapeEditer.pagesIScroll = new iScroll('pages-scroll',{
-            scrollX: true,
-            scrollY: false,
-            click : true,
-            hScrollbar :false,
-            lockDirection:true,
-            //onScrollMove : function(){
-            //    console.info("scrollMove");
-            //    console.info(WisapeEditer.pagesIScroll.x);
-            //    console.info(parseInt(Math.abs(WisapeEditer.pagesIScroll.x/200)) + 1);
-            //    //if(len / myScroll.x * 200 )
-            //    $("#pages-scroll li ").removeClass("active").eq(parseInt(Math.abs(WisapeEditer.pagesIScroll.x/liWidth)) + 1).addClass("active");
-            //},
-            //onScrollEnd : function(){
-            //    console.info("scrollEnd");
-            //    $("#pages-scroll li ").removeClass("active").eq(parseInt(Math.abs(WisapeEditer.pagesIScroll.x/liWidth)) + 1).addClass("active");
-            //}
-        });
-    } else {
-        WisapeEditer.pagesIScroll.refresh();
-    }
+
+    if(WisapeEditer.pagesIScroll) WisapeEditer.pagesIScroll.destroy();
+    WisapeEditer.pagesIScroll = new iScroll('pages-scroll',{
+        scrollX: true,
+        scrollY: false,
+        click : true,
+        hScrollbar :false,
+        lockDirection:true,
+        //onScrollMove : function(){
+        //    console.info("scrollMove");
+        //    console.info(WisapeEditer.pagesIScroll.x);
+        //    console.info(parseInt(Math.abs(WisapeEditer.pagesIScroll.x/200)) + 1);
+        //    //if(len / myScroll.x * 200 )
+        //    $("#pages-scroll li ").removeClass("active").eq(parseInt(Math.abs(WisapeEditer.pagesIScroll.x/liWidth)) + 1).addClass("active");
+        //},
+        //onScrollEnd : function(){
+        //    console.info("scrollEnd");
+        //    $("#pages-scroll li ").removeClass("active").eq(parseInt(Math.abs(WisapeEditer.pagesIScroll.x/liWidth)) + 1).addClass("active");
+        //}
+    });
 }
 
 var Dialog = {

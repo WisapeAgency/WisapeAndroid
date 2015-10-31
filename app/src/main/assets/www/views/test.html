@@ -20,7 +20,7 @@
         <div class="pull-right">
             <ul class="list-inline">
                 <li><a class="icon-play" id="storyPreview"></a></li>
-                <li><a class="icon-layout" id="toggleCat" ></a></li>
+                <li><a class="icon-layout active" id="toggleCat" ></a></li>
                 <li><a class="icon-list" id="manageStageList"></a></li>
                 <li><a class="icon-music" onclick="setting(1);"></a></li>
             </ul>
@@ -214,7 +214,7 @@
         <a class="ui-btn btn-submit">Confirm</a>
     </div>
 </div>
-<div class="ui-dialog tip-dialog" style="width: 300px; height: 220px; display: none; left: 50%; margin-left: -150px; top: 50%; margin-top: -100px;">
+<div class="ui-dialog tip-dialog">
     <div class="ui-dialog-title"></div>
     <div class="ui-dialog-content">
         This story should not exceed 15 pages.
@@ -223,7 +223,7 @@
         <a class="ui-btn btn-cancle">Close</a>
     </div>
 </div>
-<div class="ui-dialog del-dialog" style="width: 300px; height: 220px; display: none; left: 50%; margin-left: -150px; top: 50%; margin-top: -110px;">
+<div class="ui-dialog del-dialog" >
     <div class="ui-dialog-title">Delete Page</div>
     <div class="ui-dialog-content">
         Pages will be deleted from the device and cannot be recovered.
@@ -234,7 +234,7 @@
     </div>
     <div class="clearfix"></div>
 </div>
-<div class="ui-dialog save-dialog" style="width: 300px; height: 190px; display: none; left: 50%; margin-left: -150px; top: 50%; margin-top: -95px;">
+<div class="ui-dialog save-dialog" >
     <div class="ui-dialog-title">Save Stroy</div>
     <div class="ui-dialog-content">
         Comfirm to save stroy ？
@@ -245,7 +245,7 @@
     </div>
     <div class="clearfix"></div>
 </div>
-<div class="ui-dialog del-tip-dialog" style="width: 300px; height: 200px; display: none; left: 50%; margin-left: -150px; top: 50%; margin-top: -100px;">
+<div class="ui-dialog del-tip-dialog" >
     <div class="ui-dialog-title">Delete Page</div>
     <div class="ui-dialog-content">
         You have to keep one page.
@@ -319,16 +319,16 @@
     function start(id,categoryId){
         WisapeEditer.logger("onTplDownloadStart:","categoryId:" + id + " categoryId:" + categoryId);
         cordova.exec(function(retval) {
-            showMessage("start?:" +retval);
+            //showMessage("start?:" +retval);
         }, function(e) {
-            alert("Error: "+e);
+            //alert("Error: "+e);
         }, "StoryTemplate", "start", [id,categoryId]);
     }
     function read(tempName){
         cordova.exec(function(retval) {
-            showMessage(retval);
+            //showMessage(retval);
         }, function(e) {
-            alert("Error: "+e);
+            //alert("Error: "+e);
         }, "StoryTemplate", "read", [tempName]);
     }
     function setting(id){
@@ -349,7 +349,6 @@
         target.find(".icon-download").hide();
         target.find(".download-progress-bar").show().find(".download-progress-percent").css({"width":progress.progress*100 + "%"});
     }
-    var firstTplDown = false;
     function onCompleted(path){
         var target = $("[data-id=" + path.id + "]");
         WisapeEditer.logger("onTplCompleted:",path.id);
@@ -360,7 +359,6 @@
 //        setTimeout(function(){
 //            target.click();
 //        },300)
-        firstTplDown = true;
     }
     function onError(){
         alert("download error!");
