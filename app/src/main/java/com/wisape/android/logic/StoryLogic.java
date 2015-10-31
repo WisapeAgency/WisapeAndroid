@@ -469,6 +469,25 @@ public class StoryLogic {
         return storyTemplateInfoList;
     }
 
+    public StoryTemplateInfo getStoryTemplateLocalByName(Context context, String name) {
+        DatabaseHelper helper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
+        Dao<StoryTemplateEntity, Long> dao;
+        try {
+            dao = helper.getDao(StoryTemplateEntity.class);
+            QueryBuilder<StoryTemplateEntity, Long> builder = dao.queryBuilder();
+            List<StoryTemplateEntity> storyTemplateList = builder.where().eq("name", name).query();
+            if (storyTemplateList == null || storyTemplateList.size() == 0) {
+                return null;
+            }
+            return StoryTemplateEntity.convert(storyTemplateList.get(0));
+        } catch (SQLException e) {
+            Log.e(TAG, "", e);
+            throw new IllegalStateException(e);
+        } finally {
+            OpenHelperManager.releaseHelper();
+        }
+    }
+
 
     public StoryTemplateEntity[] listStoryTemplate(Context context, ApiStory.AttrTemplateInfo attrInfo, Object tag) {
         ApiStory api = ApiStory.instance();

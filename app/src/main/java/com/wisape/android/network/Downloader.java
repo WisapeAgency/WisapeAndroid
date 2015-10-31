@@ -11,6 +11,7 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 import com.wisape.android.util.EnvironmentUtils;
+import com.wisape.android.util.LogUtil;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -173,11 +174,10 @@ public class Downloader{
                     callback.onDownloading(progress);
                 }
             }
-            if(preProgress * 10 < 100){
-                callback.onDownloading(1);
-            }
-            Log.d(TAG, "#download end !!!");
+            callback.onCompleted(dest);
+            LogUtil.d("download end!");
         }catch (IOException e){
+            LogUtil.d("download error!" + e.getMessage());
             callback.onError(source);
         } finally {
             if (null != input) {
@@ -195,7 +195,6 @@ public class Downloader{
                 }
             }
         }
-        callback.onCompleted(dest);
         removeDownloader(source);
     }
 }

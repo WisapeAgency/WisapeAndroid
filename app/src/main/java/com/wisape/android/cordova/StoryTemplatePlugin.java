@@ -11,6 +11,7 @@ import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.google.gson.Gson;
+import com.parse.codec.digest.DigestUtils;
 import com.wisape.android.R;
 import com.wisape.android.WisapeApplication;
 import com.wisape.android.activity.MainActivity;
@@ -33,6 +34,7 @@ import com.wisape.android.network.DataSynchronizer;
 import com.wisape.android.network.Requester;
 import com.wisape.android.util.LogUtil;
 import com.wisape.android.util.Utils;
+import com.wisape.android.util.ZipUtils;
 import com.wisape.android.widget.CustomProgress;
 
 import org.apache.commons.io.FileUtils;
@@ -46,6 +48,7 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -681,7 +684,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
 
     private String readHtml(String path) {
         String parent = new File(path).getParent();
-        StringBuffer content = new StringBuffer();
+        StringBuilder content = new StringBuilder();
         BufferedReader reader = null;
         try {
             reader = new BufferedReader(new FileReader(new File(path)));
@@ -700,7 +703,19 @@ public class StoryTemplatePlugin extends AbsPlugin {
             return content.toString();
         } catch (IOException e) {
             LogUtil.e("读取html文件内容出错:" + path, e);
-            return "";
+            File parentFile = new File(path).getParentFile();
+            try {
+                if (parentFile.isFile()) {
+                    FileUtils.forceDelete(parentFile);
+                } else {
+                    FileUtils.deleteDirectory(parentFile);
+                }
+                File zipFile = new File(parentFile.getAbsolutePath() + ".zip");
+                ZipUtils.unzip(Uri.fromFile(zipFile), parentFile);
+            } catch (IOException e1) {
+
+            }
+            return readHtml(path);
         } finally {
             if (reader != null) {
                 try {
