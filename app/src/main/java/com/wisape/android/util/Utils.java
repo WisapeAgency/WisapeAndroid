@@ -188,7 +188,7 @@ public class Utils {
 
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         Notification notify = new Notification.Builder(context)
-                .setSmallIcon(R.mipmap.logo)
+                .setSmallIcon(R.mipmap.app_logo)
                 .setTicker(msgTile)
                 .setContentTitle(msgTile)
                 .setContentText(msgSubject)

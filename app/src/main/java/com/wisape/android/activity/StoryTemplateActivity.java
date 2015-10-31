@@ -10,6 +10,7 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
+import com.parse.codec.digest.DigestUtils;
 import com.wisape.android.R;
 import com.wisape.android.WisapeApplication;
 import com.wisape.android.api.ApiStory;
@@ -32,9 +33,11 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.HashSet;
 import java.util.Set;
@@ -479,7 +482,25 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
             ZipUtils.unzip(downUri, template);
         } catch (IOException e) {
             LogUtil.e("解压模版失败", e);
-//            startLoad(WHAT_DOWNLOAD_TEMPLATE, args);
+            e.printStackTrace();
+            File destFile = new File(template + ".zip");
+            if (destFile.exists()){
+                try{
+                    InputStream is = new FileInputStream(destFile);
+                    String md5 = DigestUtils.md5Hex(is);
+                    StoryTemplateInfo templateInfo = StoryLogic.instance()
+                            .getStoryTemplateLocalByName(this, template.getName());
+                    if (md5.equals(templateInfo.hash_code)){
+                        unzipTemplate(downUri, template, args);
+                    } else {
+                        startLoad(WHAT_DOWNLOAD_TEMPLATE, args);
+                    }
+                }catch (IOException e1){
+                    e1.printStackTrace();
+                }
+            } else {
+                startLoad(WHAT_DOWNLOAD_TEMPLATE, args);
+            }
         }
     }
 

@@ -171,6 +171,7 @@ public class StoryLogic {
         }
     }
 
+
     public boolean saveStoryLocal(Context context, StoryEntity story) {
         DatabaseHelper helper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
         try {
@@ -258,7 +259,7 @@ public class StoryLogic {
             });
             for (StoryMusicTypeEntity musicType : storyMusicTypeList) {
                 queryBuilder = musicDao.queryBuilder();
-                queryBuilder.where().eq("type", musicType.serverId);
+                queryBuilder.where().eq("type", musicType.serverId).and().eq("recStatus","A");
                 queryBuilder.orderBy("name", true);
                 musicList = queryBuilder.query();
                 storyMusicDataList.add(musicType);
@@ -361,6 +362,7 @@ public class StoryLogic {
                         if (!musicEntity.equals(storyMusic)) {
                             musicEntity.update(storyMusic);
                             musicEntity.updateAt = updateAt;
+                            musicEntity.status = storyMusic.status;
                             musicDao.update(musicEntity);
                             hasUpdate = true;
                         }
@@ -372,6 +374,7 @@ public class StoryLogic {
                     musicEntity = StoryMusicEntity.transform(storyMusic);
                     musicEntity.createAt = updateAt;
                     musicEntity.updateAt = updateAt;
+                    musicEntity.status = storyMusic.status;
                     musicDao.createIfNotExists(musicEntity);
                     hasUpdate = true;
                 }
@@ -467,6 +470,25 @@ public class StoryLogic {
             OpenHelperManager.releaseHelper();
         }
         return storyTemplateInfoList;
+    }
+
+    public StoryTemplateInfo getStoryTemplateLocalByName(Context context, String name) {
+        DatabaseHelper helper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
+        Dao<StoryTemplateEntity, Long> dao;
+        try {
+            dao = helper.getDao(StoryTemplateEntity.class);
+            QueryBuilder<StoryTemplateEntity, Long> builder = dao.queryBuilder();
+            List<StoryTemplateEntity> storyTemplateList = builder.where().eq("name", name).query();
+            if (storyTemplateList == null || storyTemplateList.size() == 0) {
+                return null;
+            }
+            return StoryTemplateEntity.convert(storyTemplateList.get(0));
+        } catch (SQLException e) {
+            Log.e(TAG, "", e);
+            throw new IllegalStateException(e);
+        } finally {
+            OpenHelperManager.releaseHelper();
+        }
     }
 
 

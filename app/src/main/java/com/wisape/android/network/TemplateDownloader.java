@@ -140,7 +140,23 @@ public class TemplateDownloader implements Runnable {
             }
             ZipUtils.unzip(downUri, template);
         } catch (IOException e) {
-//            restartDownload(downUri, template, templateInfo);
+            e.printStackTrace();
+            File destFile = new File(StoryManager.getStoryTemplateDirectory(), templateInfo.temp_name + ".zip");
+            if (destFile.exists()){
+                try{
+                    InputStream is = new FileInputStream(destFile);
+                    String md5 = DigestUtils.md5Hex(is);
+                    if (md5.equals(templateInfo.hash_code)){
+                        unzipTemplate(downUri, template, templateInfo);
+                    } else {
+                        restartDownload(downUri, template, templateInfo);
+                    }
+                }catch (IOException e1){
+                    e1.printStackTrace();
+                }
+            } else {
+                restartDownload(downUri, template, templateInfo);
+            }
         }
     }
 
