@@ -432,7 +432,9 @@ WisapeEditer = {
             console.info("index:" + _me.parents(".stage-content").find(".edit-area.active"));
             WisapeEditer.UpdateSelectedStage(WisapeEditer.selectedStagetIndex);
             WisapeEditer.ShowView('main', 'editorText');
-            $("#editorText .pages-txt.active").click();
+            setTimeout(function(){
+                $("#editorText .pages-txt.active").click();
+            },10)
             event.stopPropagation();
         });
 
@@ -508,6 +510,9 @@ WisapeEditer = {
             var me = $(this);
             var parent = $("#editorText");
             var target = $("#editorText .pop-editer-opt");
+            cordova.exec(function(retval) {
+            }, function(e) {
+            }, "Keyboard", "hide", []);
             if (me.hasClass("active")) {
                 me.removeClass("active");
                 parent.removeClass("pop-active");
@@ -518,6 +523,7 @@ WisapeEditer = {
                 parent.addClass("pop-active");
                 target.show();
             }
+
         });
 
         $("#setFontWeight").click(function () {
@@ -552,8 +558,11 @@ WisapeEditer = {
             console.info("#editorText .pages-txt.active click");
             if($("#TextEditerOpt").hasClass("active"))  $("#TextEditerOpt").click();
             $(".pop-editer-text").show();
-            $(".J-textarea-word").val($.trim($(this).text())).focus();
-            $(".J-textarea-word")[0].focus().select()
+            $(".J-textarea-word").val($.trim($(this).text()));
+            $(".J-textarea-word")[0].select();
+            cordova.exec(function(retval) {
+            }, function(e) {
+            }, "Keyboard", "show", []);
             wordEditResize();
 
         })
@@ -582,13 +591,12 @@ WisapeEditer = {
             }
 
 
+
             observe(text, 'change',  wordEditResize);
             observe(text, 'cut',     delayedResize);
             observe(text, 'paste',   delayedResize);
             observe(text, 'drop',    delayedResize);
             observe(text, 'keydown', delayedResize);
-            text.focus();
-            text.select();
             wordEditResize();
         };
         function wordEditResize(){

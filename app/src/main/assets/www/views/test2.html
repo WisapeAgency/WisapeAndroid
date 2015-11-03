@@ -14,7 +14,7 @@
 <body>
 <div class="loading" style="display:none;position: fixed;left:0;top:0;bottom:0;right:0;background-image:url(../public/img/loading.gif);background-position:50% 50%;background-size:cover;z-index: 10000">
 </div>
-<div id="main" class="page" style="display: block">
+<div id="main" class="page" style="display: none">
     <div class="header">
         <div class="pull-left">
             <a class="icon-arrow-left" id="storySave"></a>
@@ -318,8 +318,17 @@
                     </div>
                 </div>
                 <div class="symbol" style="z-index: 3;">
-                    <div class="pages-txt edit-area" style="display: inline-block;margin-top:0.5rem;font-family: 'bebas';font-size:3.5rem;line-height: 3.5rem;color:#000;">
-                        WISAPE
+                    <div class="pages-txt edit-area active" style="display: inline-block;margin-top:0.5rem;font-family: 'bebas';font-size:0.5rem;line-height:100%;color:#000;">
+                        is Coming Something Wonderful is Coming <br/>
+                        is Coming Something Wonderful is Coming <br/>
+                        is Coming Something Wonderful is Coming <br/>
+                        is Coming Something Wonderful is Coming <br/>
+                        is Coming Something Wonderful is Coming <br/>
+                        is Coming Something Wonderful is Coming <br/>
+                        is Coming Something Wonderful is Coming <br/>
+                        is Coming Something Wonderful is Coming <br/>
+                        is Coming Something Wonderful is Coming <br/>
+                        is Coming Something Wonderful is Coming <br/>
                     </div>
                 </div>
             </div>
@@ -329,7 +338,7 @@
                         <img data-name="img1" style="width:4.44rem;height:1.03rem;" src="img/logo.png"></div>
                 </div>
                 <div class="symbol" style="z-index: 3;">
-                    <div class="pages-txt edit-area active" style="font-size:0.53rem;color:#000;font-family: 'Lato';margin-top:0.3rem;">
+                    <div class="pages-txt edit-area " style="font-size:0.53rem;color:#000;font-family: 'Lato';margin-top:0.3rem;">
                         Something Wonderful is Coming
                     </div>
                 </div>
@@ -338,7 +347,7 @@
         </div>
     </div>
 
-    <div class="pop-layer pop-editer-opt" style="display: block">
+    <div class="pop-layer pop-editer-opt" style="display: none">
         <div class="hd">
             <i class="icon-bold" id="setFontWeight" ></i>
             <i class="icon-italic" id="setFontStyle"></i>
@@ -355,7 +364,7 @@
 
 
     <div class="pop-layer pop-editer-text" style="display: none">
-        <textarea class="textarea-word J-textarea-word" name="" id="textarea" rows="1" >asdfasdfa</textarea>
+        <textarea class="textarea-word J-textarea-word" name="" id="textarea" rows="1" > Something Wonderful Something Wonderful is Coming Something Wonderful is Coming Something Wonderful is Coming Something Wonderful is Coming is Coming Something Wonderful is Coming</textarea>
         <span class="btn-text-done J-btn-text-done">Done</span>
     </div>
     <script>
@@ -363,6 +372,8 @@
             $(".J-btn-text-done").click(function(){
                 $("#editorText .pages-txt.active").html($(".textarea-word").val());
             });
+
+
 
             var observe;
             if (window.attachEvent) {
@@ -379,6 +390,8 @@
            // init();
             function init () {
                 var text = $('.J-textarea-word')[0];
+                $(".J-textarea-word").val($("#editorText .pages-txt.active").html());
+                $(".J-textarea-word").height(100);
                 function resize () {
                     text.style.height = 'auto';
                     text.style.height = text.scrollHeight+'px';
@@ -402,7 +415,7 @@
         })
     </script>
 
-    <div class="pop-layer pop-editer-font" style="display: none">
+    <div class="pop-layer pop-editer-font" style="display: block">
         <div class="hd">
             <i class="icon-arrow-left backPopLayerOpt"></i>
             <span class="tit">Font Selection</span>
