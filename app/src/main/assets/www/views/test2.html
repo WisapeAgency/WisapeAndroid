@@ -318,18 +318,7 @@
                     </div>
                 </div>
                 <div class="symbol" style="z-index: 3;">
-                    <div class="pages-txt edit-area active" style="display: inline-block;margin-top:0.5rem;font-family: 'bebas';font-size:0.5rem;line-height:100%;color:#000;">
-                        is Coming Something Wonderful is Coming <br/>
-                        is Coming Something Wonderful is Coming <br/>
-                        is Coming Something Wonderful is Coming <br/>
-                        is Coming Something Wonderful is Coming <br/>
-                        is Coming Something Wonderful is Coming <br/>
-                        is Coming Something Wonderful is Coming <br/>
-                        is Coming Something Wonderful is Coming <br/>
-                        is Coming Something Wonderful is Coming <br/>
-                        is Coming Something Wonderful is Coming <br/>
-                        is Coming Something Wonderful is Coming <br/>
-                    </div>
+                    <div class="pages-txt edit-area active" style="text-align:left;display: inline-block;margin-top:0.5rem;font-family: 'bebas';font-size:0.5rem;line-height:100%;color:#000;">Wonderful is Coming<br/>Wonderful is Coming<br/>Wonderful is Coming<br/>Wonderful is Coming<br/>Wonderful is Coming<br/>Wonderful is Coming<br/>Wonderful is Coming<br/>Wonderful is Coming<br/>Wonderful is Coming<br/></div>
                 </div>
             </div>
             <div class="stage-content-box" style="position: absolute;bottom:2rem;text-align: center;width:16rem;-webkit-transform-origin:0 0;">
@@ -363,14 +352,14 @@
     </div>
 
 
-    <div class="pop-layer pop-editer-text" style="display: none">
-        <textarea class="textarea-word J-textarea-word" name="" id="textarea" rows="1" > Something Wonderful Something Wonderful is Coming Something Wonderful is Coming Something Wonderful is Coming Something Wonderful is Coming is Coming Something Wonderful is Coming</textarea>
+    <div class="pop-layer pop-editer-text" style="display: block">
+        <textarea class="textarea-word J-textarea-word" name="" id="textarea" rows="1" ></textarea>
         <span class="btn-text-done J-btn-text-done">Done</span>
     </div>
     <script>
         $(function(){
             $(".J-btn-text-done").click(function(){
-                $("#editorText .pages-txt.active").html($(".textarea-word").val());
+                $("#editorText .pages-txt.active").html($(".textarea-word").val().replace(" ","&nbsp;&nbsp;").replace(/\n/g,'<br>'));
             });
 
 
@@ -387,10 +376,10 @@
                 };
             }
 
-           // init();
+           init();
             function init () {
                 var text = $('.J-textarea-word')[0];
-                $(".J-textarea-word").val($("#editorText .pages-txt.active").html());
+                $(".J-textarea-word").val($("#editorText .pages-txt.active").html().replace(/<br>/g,'\n'));
                 $(".J-textarea-word").height(100);
                 function resize () {
                     text.style.height = 'auto';
@@ -415,7 +404,7 @@
         })
     </script>
 
-    <div class="pop-layer pop-editer-font" style="display: block">
+    <div class="pop-layer pop-editer-font" style="display: none">
         <div class="hd">
             <i class="icon-arrow-left backPopLayerOpt"></i>
             <span class="tit">Font Selection</span>

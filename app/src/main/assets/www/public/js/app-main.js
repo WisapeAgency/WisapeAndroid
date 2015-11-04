@@ -499,6 +499,11 @@ WisapeEditer = {
             pagesScroll.html(ret);
 
             WisapeEditer.storyData[WisapeEditer.selectedStagetIndex - 1] = ret;
+            $('.J-textarea-word').blur();
+            cordova.exec(function(retval) {
+                console.info("hide keyboard");
+            }, function(e) {
+            }, "Keyboard", "hide", []);
             WisapeEditer.ShowView('editorText', 'main');
             pageScroll.find(".pages-txt").removeClass("edit-area-active");
             pageScroll.find("li.active .pages-txt").addClass("edit-area-active");
@@ -510,7 +515,9 @@ WisapeEditer = {
             var me = $(this);
             var parent = $("#editorText");
             var target = $("#editorText .pop-editer-opt");
+            $('.J-textarea-word').blur();
             cordova.exec(function(retval) {
+                console.info("hide keyboard");
             }, function(e) {
             }, "Keyboard", "hide", []);
             if (me.hasClass("active")) {
@@ -558,16 +565,17 @@ WisapeEditer = {
             console.info("#editorText .pages-txt.active click");
             if($("#TextEditerOpt").hasClass("active"))  $("#TextEditerOpt").click();
             $(".pop-editer-text").show();
-            $(".J-textarea-word").val($.trim($(this).text()));
+            $(".J-textarea-word").val($.trim($(this).html().replace(/<br>/g,'\n')));
             $(".J-textarea-word")[0].select();
             cordova.exec(function(retval) {
+                console.info("open keyboard");
             }, function(e) {
             }, "Keyboard", "show", []);
             wordEditResize();
 
         })
         $(".J-btn-text-done").click(function(){
-            $("#editorText .pages-txt.active").html($(".textarea-word").val().replace(" ","&nbsp;&nbsp;").replace(/\n/g,'<br/>'));
+            $("#editorText .pages-txt.active").html($.trim($(".textarea-word").val().replace(/\n/g,'<br>')));
         });
 
         var observe;

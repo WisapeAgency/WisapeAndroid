@@ -360,8 +360,18 @@
 //            target.click();
 //        },300)
     }
-    function onError(){
-        alert("download error!");
+    //模板下载error
+    function onError(id){
+        alert("tpl download error!");
+    }
+
+    //字体下载error
+    function onFontError(name){
+        var target = $("[data-fontname=" + name + "]");
+        target.addClass("download");
+        target.find(".icon-download").show();
+        target.find(".download-progress-bar").hide().find(".download-progress-percent").css({"width":0});
+        alert("font download error!");
     }
     function showMessage(message){
         jQuery("#message").text(message);
