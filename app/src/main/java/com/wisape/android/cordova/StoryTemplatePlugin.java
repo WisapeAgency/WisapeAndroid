@@ -180,7 +180,6 @@ public class StoryTemplatePlugin extends AbsPlugin {
                     JSONArray jsonStr = logic.listStoryTemplateTypeLocal(context);
                     LogUtil.d("模版分类信息:" + jsonStr);
                     callbackContext.success(jsonStr);
-                    System.out.println(jsonStr.toString());
                 }
             }, null, callbackContext);
         } else if (ACTION_GET_STAGE_LIST.equals(action)) {//getStageList
@@ -344,9 +343,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
                         return;
                     }
                     StoryEntity storyEntity = StoryLogic.instance().updateStory(getCurrentActivity(), StoryLogic.instance().getStoryEntityFromShare());
-                    LogUtil.d("预览保存story信息:" + storyEntity.storyThumbUri);
                     StoryLogic.instance().saveStoryEntityToShare(storyEntity);
-//                sendBroadcastUpdateStory();
                     File previewFile = new File(myStory, FILE_NAME_PREVIEW);
                     if (saveStoryPreview(previewFile, html, story)) {
                         StoryPreviewActivity.launch(cordova.getActivity(), previewFile.getAbsolutePath());
@@ -366,13 +363,13 @@ public class StoryTemplatePlugin extends AbsPlugin {
 //            startLoad(WHAT_PUBLISH, bundle);
             threadhelper(new TemplateOp() {
                 public void run(Bundle bundle) {
-                    String storyThumb = bundle.getString(EXTRA_STORY_THUMB);
-                    String html = bundle.getString(EXTRA_STORY_HTML);
-                    String path = bundle.getString(EXTRA_FILE_PATH);
-                    com.alibaba.fastjson.JSONArray paths = JSON.parseArray(path);
-
-                    LogUtil.d("发布story前端返回的封面路径:" + storyThumb);
-                    LogUtil.d("发布story前端返回需要替换的路径:" + paths.toJSONString());
+//                    String storyThumb = bundle.getString(EXTRA_STORY_THUMB);
+//                    String html = bundle.getString(EXTRA_STORY_HTML);
+//                    String path = bundle.getString(EXTRA_FILE_PATH);
+//                    com.alibaba.fastjson.JSONArray paths = JSON.parseArray(path);
+//
+//                    LogUtil.d("发布story前端返回的封面路径:" + storyThumb);
+//                    LogUtil.d("发布story前端返回需要替换的路径:" + paths.toJSONString());
 
                     StoryEntity story = StoryLogic.instance().getStoryEntityFromShare();
                     ApiStory.AttrStoryInfo storyAttr = new ApiStory.AttrStoryInfo();
@@ -388,7 +385,9 @@ public class StoryTemplatePlugin extends AbsPlugin {
                     storyAttr.storyStatus = ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE;
                     storyAttr.imgPrefix = StoryManager.getStoryDirectory().getAbsolutePath() + "/" + story.storyLocal;
                     storyAttr.story_local = story.storyLocal;
-                    storyAttr.attrStoryThumb = Uri.parse(storyThumb);
+                    if(story.localCover == 0){
+                        storyAttr.attrStoryThumb = Uri.parse(StoryManager.getStoryDirectory().getAbsolutePath() + "/" + story.storyLocal+"/thumb.jpg");
+                    }
 
                     if ("-1".equals(story.status)) {
                         storyAttr.sid = -1;

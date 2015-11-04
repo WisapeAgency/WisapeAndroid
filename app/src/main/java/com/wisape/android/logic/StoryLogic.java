@@ -113,13 +113,18 @@ public class StoryLogic {
             } catch (IOException e) {
                 LogUtil.e("生成story压缩包出错!", e);
             }
-            File thumbFile = new File(attr.attrStoryThumb.toString());
-            if (thumbFile != null && thumbFile.exists()) {
-                String thumb = Utils.base64ForImage(attr.attrStoryThumb);
-                attr.storyThumb = thumb;
-            } else {
+            if(null == attr.attrStoryThumb ){
                 attr.storyThumb = "";
+            }else{
+                File thumbFile = new File(attr.attrStoryThumb.toString());
+                if (thumbFile != null && thumbFile.exists()) {
+                    String thumb = Utils.base64ForImage(attr.attrStoryThumb);
+                    attr.storyThumb = thumb;
+                } else {
+                    attr.storyThumb = "";
+                }
             }
+
             if (attr.bgMusic == null || attr.bgMusic.equals("null")) {
                 attr.bgMusic = "";
             }

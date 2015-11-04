@@ -102,7 +102,7 @@ public class StoryReleaseActivity extends BaseActivity {
             thumbImage = storyEntity.storyThumbUri;
         }
         Utils.loadImg(this, thumbImage, storyCoverView);
-        LogUtil.d("storylocalCover:" + storyEntity.localCover + "封面地址:" + storyEntity.storyThumbUri + ":story地址:" + storyEntity.storyUri);
+        LogUtil.d("storylocalCover:" + storyEntity.localCover + "封面地址:" + storyEntity.storyThumbUri + " :story地址:" + storyEntity.storyUri);
     }
 
     @OnClick(R.id.linear_picture)
