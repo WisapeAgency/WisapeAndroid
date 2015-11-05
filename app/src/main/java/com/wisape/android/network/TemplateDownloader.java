@@ -17,20 +17,30 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 /**
  * Created by William on 2015/9/24.
  */
 public class TemplateDownloader implements Runnable {
+    private static final String TEMPLATE_NAME = "stage.html";
+    private static final String FONT_FAMILY = "font-family";
+
     private BlockingQueue<StoryTemplateInfo> downloadQueue;
 
     public TemplateDownloader(BlockingQueue<StoryTemplateInfo> downloadQueue) {
@@ -120,6 +130,7 @@ public class TemplateDownloader implements Runnable {
         String path = destFile.getAbsolutePath();
         File template = getTemplateUnzipDirectory(name);
         unzipTemplate(Uri.fromFile(new File(path)), template,templateInfo);
+        downloadFont(template);
     }
 
     private File getTemplateUnzipDirectory(String name) {
@@ -172,5 +183,59 @@ public class TemplateDownloader implements Runnable {
 
         }
         download(templateInfo);
+    }
+
+    public void downloadFont(File template){
+        BlockingQueue<String> fontQueue = new LinkedBlockingQueue<>();
+        Set<String> fontSet = parseFont(template);
+        if (fontSet.size() == 0){
+            return;
+        }
+        File fontDirectory = StoryManager.getStoryFontDirectory();
+        for(String fontName : fontSet){
+            File font = new File(fontDirectory, fontName);
+            if(!font.exists() || font.list().length <= 1){
+//                Bundle args = new Bundle();
+//                args.putString(EXTRA_FONT_NAME, fontName);
+//                startLoad(WHAT_DOWNLOAD_FONT, args);
+                fontQueue.offer(fontName);
+            }
+        }
+        ExecutorService service = Executors.newCachedThreadPool();
+        service.execute(new FontDownloader(fontQueue));
+        service.shutdown();
+    }
+
+    private Set<String> parseFont(File template) {
+        Set<String> fontSet = new HashSet<>();
+        File file = new File(template, TEMPLATE_NAME);
+        if (!file.exists()) {
+            return fontSet;
+        }
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new FileReader(file));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.contains(FONT_FAMILY)) {
+                    line = line.substring(line.indexOf(FONT_FAMILY));
+                    line = line.substring(0, line.indexOf(";"));
+                    String font = line.split(":")[1].trim().replace("'","");
+                    fontSet.add(font);
+                }
+            }
+            reader.close();
+        } catch (IOException e) {
+            Log.d("StoryTemplate", "Error", e);
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+
+                }
+            }
+        }
+        return fontSet;
     }
 }

@@ -14,8 +14,10 @@ import android.webkit.CookieSyncManager;
 import android.widget.TextView;
 
 import com.wisape.android.R;
+import com.wisape.android.WisapeApplication;
 import com.wisape.android.logic.UserLogic;
 import com.wisape.android.model.UserInfo;
+import com.wisape.android.network.DataSynchronizer;
 import com.wisape.android.util.LogUtil;
 import com.wisape.android.util.Utils;
 import com.wisape.android.widget.SignUpEditText;
@@ -245,8 +247,17 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
         super.onLoadCompleted(data);
         if (STATUS_SUCCESS == data.arg1) {
             UserInfo user = (UserInfo) data.obj;
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try{
+                        DataSynchronizer.getInstance().synchronous(WisapeApplication.getInstance().getApplicationContext());//
+                    }catch (Exception e){
+                        LogUtil.e("数据同步失败:",e);
+                    }
+                }
+            }).start();
             MainActivity.launch(this);
-
         } else {
             if(data.obj instanceof  com.alibaba.fastjson.JSONException){
                 com.alibaba.fastjson.JSONException exception =(com.alibaba.fastjson.JSONException) data.obj;

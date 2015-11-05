@@ -18,9 +18,14 @@ import com.wisape.android.common.StoryManager;
 import com.wisape.android.database.StoryEntity;
 import com.wisape.android.logic.StoryLogic;
 import com.wisape.android.logic.UserLogic;
+import com.wisape.android.model.StoryFontInfo;
 import com.wisape.android.model.StoryTemplateInfo;
 import com.wisape.android.network.DataSynchronizer;
 import com.wisape.android.network.Downloader;
+import com.wisape.android.network.FontDownloader;
+import com.wisape.android.network.FontPreviewDownloader;
+import com.wisape.android.network.TemplateDownloader;
+import com.wisape.android.network.ThumbDownloader;
 import com.wisape.android.network.WWWConfig;
 import com.wisape.android.util.EnvironmentUtils;
 import com.wisape.android.util.LogUtil;
@@ -41,6 +46,10 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -118,17 +127,18 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
                         json.put("id", id);
                         json.put("category_id", categoryId);
                         json.put("path", template);
-                        System.out.println("Path:" + template);
+                        LogUtil.d("下载模板完成:" + template);
                         loadUrl("javascript:onCompleted(" + json.toString() + ")");
                     } catch (JSONException e) {
 
                     }
                     unzipTemplate(Uri.fromFile(new File(path)), template,msg.getData());
-//                    downloadFont(template);
+                    downloadFont(template);
                     break;
                 }
                 case WHAT_DOWNLOAD_ERROR: {
                     int id = msg.getData().getInt(EXTRA_TEMPLATE_ID, 0);
+                    LogUtil.d("下载模板出错：" + id);
                     loadUrl("javascript:onError(" + id + ")");
                     break;
                 }
@@ -160,7 +170,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
                     try {
                         JSONObject json = new JSONObject();
                         json.put("fontName", name);
-                        System.out.println("downloaded font:" + name);
+                        LogUtil.d("字体下载完成:" + name);
                         loadUrl("javascript:onFontCompleted(" + json.toString() + ")");
                     } catch (JSONException e) {
 
@@ -169,6 +179,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
                 }
                 case WHAT_DOWNLOAD_ERROR: {
                     String name = msg.getData().getString(EXTRA_FONT_NAME);
+                    LogUtil.d("下载字体出错：" + name);
                     loadUrl("javascript:onFontError(" + name + ")");
                     break;
                 }
@@ -218,6 +229,27 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
         startLoad(WHAT_DOWNLOAD_FONT, args);
     }
 
+    public void downloadFont(File template){
+        BlockingQueue<String> fontQueue = new LinkedBlockingQueue<>();
+        Set<String> fontSet = parseFont(template);
+        if (fontSet.size() == 0){
+            return;
+        }
+        File fontDirectory = StoryManager.getStoryFontDirectory();
+        for(String fontName : fontSet){
+            File font = new File(fontDirectory, fontName);
+            if(!font.exists() || font.list().length <= 1){
+//                Bundle args = new Bundle();
+//                args.putString(EXTRA_FONT_NAME, fontName);
+//                startLoad(WHAT_DOWNLOAD_FONT, args);
+                fontQueue.offer(fontName);
+            }
+        }
+        ExecutorService service = Executors.newCachedThreadPool();
+        service.execute(new FontDownloader(fontQueue));
+        service.shutdown();
+    }
+
     private Set<String> parseFont(File template) {
         Set<String> fontSet = new HashSet<>();
         File file = new File(template, TEMPLATE_NAME);
@@ -232,7 +264,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
                 if (line.contains(FONT_FAMILY)) {
                     line = line.substring(line.indexOf(FONT_FAMILY));
                     line = line.substring(0, line.indexOf(";"));
-                    String font = line.split(":")[1].trim();
+                    String font = line.split(":")[1].trim().replace("'","");
                     fontSet.add(font);
                 }
             }

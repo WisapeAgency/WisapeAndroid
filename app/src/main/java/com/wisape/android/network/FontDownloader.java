@@ -28,9 +28,9 @@ import java.util.concurrent.TimeUnit;
  * Created by William on 2015/8/16.
  */
 public class FontDownloader implements Runnable {
-    private BlockingQueue<StoryFontInfo> downloadQueue;
+    private BlockingQueue<?> downloadQueue;
 
-    public FontDownloader(BlockingQueue<StoryFontInfo> downloadQueue) {
+    public FontDownloader(BlockingQueue<?> downloadQueue) {
         this.downloadQueue = downloadQueue;
     }
 
@@ -39,11 +39,15 @@ public class FontDownloader implements Runnable {
         boolean isRunning = true;
         try {
             while (isRunning) {
-                StoryFontInfo fontInfo = downloadQueue.poll(30, TimeUnit.SECONDS);
-                if (null != fontInfo) {
-                    download(fontInfo);
-                } else {
+                Object object = downloadQueue.poll(30, TimeUnit.SECONDS);
+                if (object == null){
                     isRunning = false;
+                }else{
+                    if (object instanceof StoryFontInfo){
+                        download((StoryFontInfo) object);//字体数据同步
+                    } else {
+                        download((String) object);//下载字体
+                    }
                 }
             }
         } catch (InterruptedException e) {
@@ -71,6 +75,52 @@ public class FontDownloader implements Runnable {
         }catch (IOException e){
             e.printStackTrace();
         }
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder().url(fontUrl)
+                .addHeader("Content-Type", "application/octet-stream")
+                .addHeader("Accept-Encoding", "identity").build();
+        InputStream input = null;
+        OutputStream output = null;
+        try {
+            destFile.createNewFile();
+            Response response = client.newCall(request).execute();
+            input = response.body().byteStream();
+            output = new BufferedOutputStream(new FileOutputStream(destFile));
+
+            int count;
+            byte[] buffer = new byte[1024 * 5];
+            while (0 < (count = input.read(buffer))) {
+                output.write(buffer, 0, count);
+            }
+        } catch (IOException e) {
+            Log.e("DataSynchronizer", "", e);
+        } finally {
+            if (null != input) {
+                try {
+                    input.close();
+                } catch (Exception e) {
+
+                }
+            }
+            if (null != output) {
+                try {
+                    output.close();
+                } catch (Exception e) {
+
+                }
+            }
+        }
+        File font = StoryManager.getStoryFontDirectory();
+        unzipFont(Uri.fromFile(destFile), font);
+    }
+
+    private void download(String fontName) {
+        if (!EnvironmentUtils.isMounted()) {
+            return;
+        }
+        Uri uri = WWWConfig.acquireUri(WisapeApplication.getInstance().getString(R.string.uri_font_download));
+        String fontUrl = String.format("%s?name=%s", uri.toString(), fontName);
+        File destFile = new File(StoryManager.getStoryFontDirectory(), fontName + ".zip");
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder().url(fontUrl)
                 .addHeader("Content-Type", "application/octet-stream")

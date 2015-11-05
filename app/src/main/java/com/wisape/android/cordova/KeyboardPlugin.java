@@ -21,23 +21,13 @@ public class KeyboardPlugin extends AbsPlugin{
         public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
             this.callbackContext = callbackContext;
             Activity activity =  cordova.getActivity();
+            InputMethodManager imm = (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
             if (action.equals("show")) {
-                InputMethodManager imm = (InputMethodManager)
-                        activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-                if (imm.isActive()) {
-                    imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT,
-                            InputMethodManager.HIDE_NOT_ALWAYS);
-                }
+                imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_NOT_ALWAYS);
                 callbackContext.success();
                 return true;
             }else if (action.equals("hide")){
-                InputMethodManager imm = (InputMethodManager)
-                        activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-                if (!imm.isActive()) {
-                    ((InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE))
-                            .hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(),
-                                    InputMethodManager.HIDE_NOT_ALWAYS);
-                }
+                imm.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
                 callbackContext.success();
                 return true;
             }
