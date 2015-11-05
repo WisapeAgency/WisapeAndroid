@@ -15,11 +15,8 @@ import org.json.JSONException;
  * 软键盘打开与关闭
  */
 public class KeyboardPlugin extends AbsPlugin{
-        private CallbackContext callbackContext;
-
         @Override
         public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
-            this.callbackContext = callbackContext;
             Activity activity =  cordova.getActivity();
             InputMethodManager imm = (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
             if (action.equals("show")) {
