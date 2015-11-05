@@ -164,8 +164,8 @@ public class ZipUtils{
                 }
             }
         }catch (IOException e) {
-            LogUtil.e("zipUtils解压缩失败",e);
-            throw e;
+//            LogUtil.e("zipUtils解压缩失败",e);
+//            throw e;
         }finally {
             if(null != zipInput){
                 try {
