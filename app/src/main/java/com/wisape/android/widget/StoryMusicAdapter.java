@@ -16,6 +16,7 @@ import com.wisape.android.R;
 import com.wisape.android.activity.StoryMusicActivity;
 import com.wisape.android.common.StoryManager;
 import com.wisape.android.database.StoryMusicEntity;
+import com.wisape.android.util.LogUtil;
 
 /**
  * Created by tony on 2015/7/22.
@@ -75,7 +76,7 @@ public class StoryMusicAdapter extends RecyclerView.Adapter<RecyclerHolder> impl
     @Override
     public void onBindViewHolder(RecyclerHolder holder, int position) {
         StoryMusicDataInfo info = dataArray[position];
-        Log.d(TAG, "#onBindViewHolder [" + info.toString() + "], position:" + position);
+        LogUtil.d("#onBindViewHolder [" + info.toString() + "], position:" + position);
         View view = holder.itemView;
         view.setTag(position);
         TextView titleTxtv = (TextView)view.findViewById(R.id.story_music_title_txtv);
@@ -106,9 +107,9 @@ public class StoryMusicAdapter extends RecyclerView.Adapter<RecyclerHolder> impl
                     flagImgVisibility = View.VISIBLE;
                     flagImgv.setEnabled(false);
                     flagImgv.setImageResource(R.drawable.icon_selected_flag);
-                    Log.d(TAG, "#onBindViewHolder FlagImageView VISIBLE, position:" + position);
+                    LogUtil.d("#onBindViewHolder FlagImageView VISIBLE, position:" + position);
                 }else if(View.VISIBLE == flagImgv.getVisibility()){
-                    Log.d(TAG, "#onBindViewHolder FlagImageView GONE, position:" + position);
+                    LogUtil.d("#onBindViewHolder FlagImageView GONE, position:" + position);
                     flagImgv.setEnabled(true);
                     flagImgVisibility = View.GONE;
                 }
@@ -159,7 +160,7 @@ public class StoryMusicAdapter extends RecyclerView.Adapter<RecyclerHolder> impl
                         if(0 > preSelectedPosition){
                             preSelectedPosition = findData(preSelectedId, 0);
                         }
-                        Log.d(TAG, "#onClick preSelectedPosition:" + preSelectedPosition + ", position:" + position);
+                        LogUtil.d("#onClick preSelectedPosition:" + preSelectedPosition + ", position:" + position);
                         notifyItemChanged(preSelectedPosition);
                         notifyItemChanged(position);
                     }
@@ -221,7 +222,7 @@ public class StoryMusicAdapter extends RecyclerView.Adapter<RecyclerHolder> impl
         }
 
         StoryMusicDataInfo data = dataArray[position];
-        if(StoryMusicEntity.STATUS_DOWNLOADING == data.getStatus()){
+//        if(StoryMusicEntity.STATUS_DOWNLOADING == data.getStatus()){
             data.setProgress(progress);
             View view = layoutManager.getChildAt(position);
             if(null != view){
@@ -230,7 +231,7 @@ public class StoryMusicAdapter extends RecyclerView.Adapter<RecyclerHolder> impl
                     downloadProgress.setProgress(progress);
                 }
             }
-        }
+//        }
     }
 
     public StoryMusicEntity getSelectedStoryMusic(){

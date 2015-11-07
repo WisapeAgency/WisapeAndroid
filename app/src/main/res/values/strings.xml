@@ -79,7 +79,7 @@
     <string name="story_settings_gesture_title">翻页手势</string>
     <string name="story_music_label">背景音乐</string>
     <string name="story_music_download_toast">downloading music</string>
-    <string name="story_music_download_error">音乐下载失败</string>
+    <string name="story_music_download_error">music download error</string>
     <string name="story_release_label">故事发布</string>
     <string name="story_release_share_title">分享到</string>
 

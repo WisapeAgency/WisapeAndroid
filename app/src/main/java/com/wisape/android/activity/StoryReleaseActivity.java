@@ -372,7 +372,7 @@ public class StoryReleaseActivity extends BaseActivity {
     @SuppressWarnings("unused")
     protected void doShare2QR() {
         QrDialogFragment qrDialogFragment = QrDialogFragment.instance(storyEntity.storyUri
-                , (StoryManager.getStoryDirectory() + "/" + storyNameEdit.getText().toString()));
+                , (StoryManager.getStoryDirectory() + "/" + storyEntity.storyLocal));
         qrDialogFragment.show(getSupportFragmentManager(), "qr");
     }
 

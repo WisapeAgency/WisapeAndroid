@@ -8,6 +8,7 @@ import android.util.Base64;
 import android.util.Log;
 
 import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
@@ -24,6 +25,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.util.Hashtable;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -391,7 +393,7 @@ public class FileUtils {
             if (file.exists()) {
                 file.delete();
             }
-            fileOutputStream = new FileOutputStream(file);
+           fileOutputStream = new FileOutputStream(file);
             bitmap.compress(Bitmap.CompressFormat.JPEG, 40, fileOutputStream);
             fileOutputStream.flush();
             fileOutputStream.close();
@@ -428,7 +430,7 @@ public class FileUtils {
     public static Bitmap Create2DCode(String str) throws WriterException {
         // 生成二维矩阵,编码时指定大小,不要生成了图片以后再进行缩放,这样会模糊导致识别失败
         BitMatrix matrix = new MultiFormatWriter().encode(str,
-                BarcodeFormat.QR_CODE, 600, 600);
+                BarcodeFormat.QR_CODE, 800, 800);
         int width = matrix.getWidth();
         int height = matrix.getHeight();
         // 二维矩阵转为一维像素数组,也就是一直横着排了
@@ -437,8 +439,9 @@ public class FileUtils {
             for (int x = 0; x < width; x++) {
                 if (matrix.get(x, y)) {
                     pixels[y * width + x] = 0xff000000;
+                }else {
+                    pixels[y * width + x] = 0xffffffff;
                 }
-
             }
         }
 

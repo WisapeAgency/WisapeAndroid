@@ -10,6 +10,7 @@ import android.os.Message;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
 import com.wisape.android.R;
 import com.wisape.android.common.StoryManager;
@@ -18,6 +19,7 @@ import com.wisape.android.database.StoryEntity;
 import com.wisape.android.database.StoryMusicEntity;
 import com.wisape.android.logic.StoryLogic;
 import com.wisape.android.network.Downloader;
+import com.wisape.android.util.LogUtil;
 import com.wisape.android.widget.LinearDividerItemDecoration;
 import com.wisape.android.widget.StoryMusicAdapter;
 
@@ -79,6 +81,7 @@ public class StoryMusicActivity extends BaseActivity implements StoryMusicAdapte
 
     @Override
     public void onReceiveBroadcast(Context context, Intent intent) {
+        LogUtil.d("收到更新音乐下载进度消息");
         if(isDestroyed() || null == intent){
             return;
         }
@@ -94,7 +97,7 @@ public class StoryMusicActivity extends BaseActivity implements StoryMusicAdapte
             int position = tag.getInt(EXTRA_POSITION);
             int progress = (int)(100 * intent.getDoubleExtra(Downloader.EXTRA_PROGRESS, 0));
             intent.getExtras().clear();
-            //Log.d(TAG, "#onReceiveBroadcast progress:" + progress + ", downloadBytes:" + intent.getLongExtra(Downloader.EXTRA_TRANSFERRED_BYTES, 0));
+            LogUtil.d("#onReceiveBroadcast progress:" + progress + ", downloadBytes:" + intent.getLongExtra(Downloader.EXTRA_TRANSFERRED_BYTES, 0));
             adapter.notifyMusicDownloadProgress(position, music.getId(), progress, recyclerView.getLayoutManager());
         }
     }

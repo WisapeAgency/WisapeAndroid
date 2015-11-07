@@ -889,6 +889,7 @@ public class StoryLogic {
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
         db.beginTransaction();
         try {
+            LogUtil.d("删除本地数据库story信息:" + storyEntity.storyLocal);
             dao = databaseHelper.getDao(StoryEntity.class);
             dao.delete(storyEntity);
             db.setTransactionSuccessful();
