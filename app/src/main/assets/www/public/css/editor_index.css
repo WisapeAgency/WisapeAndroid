@@ -312,6 +312,7 @@ a {text-decoration: none;color:inherit;}
     overflow: hidden;
 
 }
+.story-page-list .ico-acitve {display: none!important;}
 .story-page-list .tpl-page-item img {width:100%;height:auto;}
 
 /*editor-text*/
@@ -380,10 +381,10 @@ a {text-decoration: none;color:inherit;}
     -webkit-user-select: none;
     -webkit-user-drag: none;
     padding:1.06rem 0 0.71rem 0;
-    width:12.44rem;
+    width:13.8rem;
     display: none;
     left: 50%;
-    margin-left: -6.22rem;
+    margin-left: -6.9rem;
     top: 50%;
     margin-top: -100px;
 }
