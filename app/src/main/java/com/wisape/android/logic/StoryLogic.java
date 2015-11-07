@@ -445,17 +445,19 @@ public class StoryLogic {
             QueryBuilder<StoryTemplateEntity, Long> builder = dao.queryBuilder();
             List<StoryTemplateEntity> storyTemplateList = null;
             if (typeId == -1){//all
-//                storyTemplateList = builder.query();
-                List<StoryTemplateInfo> templateList = DataSynchronizer.getInstance().getAllTemplate();
-                for (StoryTemplateInfo template : templateList) {
-                    File file = new File(StoryManager.getStoryTemplateDirectory(), template.temp_name + "/thumb.jpg");
-                    template.temp_img_local = file.getAbsolutePath();
-                    File zipFile = new File(StoryManager.getStoryTemplateDirectory(), template.temp_name + ".zip");
+                storyTemplateList = builder.orderBy("order",true).query();
+//                List<StoryTemplateInfo> templateList = DataSynchronizer.getInstance().getAllTemplate();
+                List<StoryTemplateInfo> templateList = new ArrayList<>();
+                for (StoryTemplateEntity entity : storyTemplateList) {
+                    File file = new File(StoryManager.getStoryTemplateDirectory(), entity.name + "/thumb.jpg");
+                    entity.thumbLocal = file.getAbsolutePath();
+                    File zipFile = new File(StoryManager.getStoryTemplateDirectory(), entity.name + ".zip");
                     if (zipFile.exists()) {
-                        template.rec_status = "1";
+                        entity.recStatus = "1";
                     } else {
-                        template.rec_status = "0";
+                        entity.recStatus = "0";
                     }
+                    templateList.add(StoryTemplateEntity.convert(entity));
                 }
                 return templateList;
             }else{
