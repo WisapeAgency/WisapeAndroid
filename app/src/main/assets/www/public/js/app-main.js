@@ -987,7 +987,7 @@ function set_wrap_width(dom){
     li.each(function(){
         wid += $(this).outerWidth(true);
     });
-    ul.css('width',wid+1);
+    ul.css('width',wid+20);
     console.info("scroll width:" + (wid+1));
     console.info("scroll length:" + li.length);
 }
@@ -1009,10 +1009,8 @@ function rgb2hex(rgb) {
     return "#" + zero_fill_hex(decimal, 6);
 }
 
-
 function setPagesScroll() {
     set_wrap_width($("#pages-scroll"));
-
     if(WisapeEditer.pagesIScroll) WisapeEditer.pagesIScroll.destroy();
     WisapeEditer.pagesIScroll = new iScroll('pages-scroll',{
         scrollX: true,
