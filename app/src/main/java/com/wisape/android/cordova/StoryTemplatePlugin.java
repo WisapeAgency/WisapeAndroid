@@ -309,7 +309,6 @@ public class StoryTemplatePlugin extends AbsPlugin {
                     StoryEntity storyEntity = StoryLogic.instance().updateStory(WisapeApplication.getInstance(), story);
                     StoryLogic.instance().saveStoryEntityToShare(storyEntity);
                     sendBroadcastUpdateStory();
-                    callbackContext.success();
                     MainActivity.launch(getCurrentActivity());
                     cordova.getActivity().finish();
                 }
@@ -347,6 +346,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
                     StoryLogic.instance().saveStoryEntityToShare(storyEntity);
                     File previewFile = new File(myStory, FILE_NAME_PREVIEW);
                     if (saveStoryPreview(previewFile, html, story)) {
+                        callbackContext.success();
                         StoryPreviewActivity.launch(cordova.getActivity(), previewFile.getAbsolutePath());
                     } else {
                         callbackContext.error(-1);
