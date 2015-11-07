@@ -55,6 +55,7 @@
                 android:text="@string/story_settings_cover" />
 
             <ImageView
+                android:layout_marginTop="16dp"
                 android:id="@+id/story_settings_cover_sdv"
                 android:layout_width="80dp"
                 android:layout_height="80dp" />

@@ -10,8 +10,10 @@ import com.bugtags.library.BugtagsOptions;
 import com.flurry.android.FlurryAgent;
 import com.google.code.microlog4android.config.PropertyConfigurator;
 import com.parse.Parse;
+import com.parse.ParseException;
 import com.parse.ParseInstallation;
 import com.parse.PushService;
+import com.parse.SaveCallback;
 import com.wisape.android.activity.MainActivity;
 import com.wisape.android.content.DataSynchronizerReceiver;
 import com.wisape.android.content.MessageCenterReceiver;
@@ -88,8 +90,9 @@ public class WisapeApplication extends Application {
      */
     private void initParse(){
 
-        Parse.initialize(this, "L3WrrhBJmbPhRoJ4GYIUDMIErlR8IlvkJuQQJ0Px", "yfC5kFI4jLLeeDaKlepK1hgAGiYJJEHjXfnpaCks");
 
+        Parse.initialize(this, "L3WrrhBJmbPhRoJ4GYIUDMIErlR8IlvkJuQQJ0Px", "yfC5kFI4jLLeeDaKlepK1hgAGiYJJEHjXfnpaCks");
+        Parse.setLogLevel(Parse.LOG_LEVEL_WARNING);
         PushService.subscribe(this, "abcde", MainActivity.class);
         PushService.setDefaultPushCallback(this, MainActivity.class);
         ParseInstallation.getCurrentInstallation().put("localeIdentifier", Utils.getCountry(this).toUpperCase());

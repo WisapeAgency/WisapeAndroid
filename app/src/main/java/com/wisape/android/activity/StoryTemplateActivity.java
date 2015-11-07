@@ -10,7 +10,7 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
-import com.parse.codec.digest.DigestUtils;
+//import com.parse.codec.digest.DigestUtils;
 import com.wisape.android.R;
 import com.wisape.android.WisapeApplication;
 import com.wisape.android.api.ApiStory;
@@ -519,14 +519,14 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
             if (destFile.exists()){
                 try{
                     InputStream is = new FileInputStream(destFile);
-                    String md5 = DigestUtils.md5Hex(is);
+//                    String md5 = DigestUtils.md5Hex(is);
                     StoryTemplateInfo templateInfo = StoryLogic.instance()
                             .getStoryTemplateLocalByName(this, template.getName());
-                    if (md5.equals(templateInfo.hash_code)){
-                        unzipTemplate(downUri, template, args);
-                    } else {
-                        startLoad(WHAT_DOWNLOAD_TEMPLATE, args);
-                    }
+//                    if (md5.equals(templateInfo.hash_code)){
+//                        unzipTemplate(downUri, template, args);
+//                    } else {
+//                        startLoad(WHAT_DOWNLOAD_TEMPLATE, args);
+//                    }
                 }catch (IOException e1){
                     e1.printStackTrace();
                 }

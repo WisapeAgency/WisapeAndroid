@@ -24,7 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawablePadding="20dp"
-            android:gravity="start"
+            android:gravity="center"
             android:padding="16dp"
             android:text="@string/password_reset_email_account_text"
             android:textColor="@color/app_fourth"

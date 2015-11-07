@@ -115,11 +115,11 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
             outRect.set(0, 0, 0, mDivider.getIntrinsicHeight());
         } else {
             if (itemPosition == 0) {
-                outRect.set(60, 0, 25, 0);
+                outRect.set(30, 0, 15, 0);
             } else if (itemPosition == (childCount - 1)) {
-                outRect.set(25, 0, 60, 0);
+                outRect.set(15, 0, 30, 0);
             } else {
-                outRect.set(25, 0, 55, 0);
+                outRect.set(15, 0, 35, 0);
             }
         }
     }
