@@ -3,7 +3,7 @@ package com.wisape.android.network;
 import android.net.Uri;
 import android.util.Log;
 
-import com.parse.codec.digest.DigestUtils;
+//import com.parse.codec.digest.DigestUtils;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -68,10 +68,10 @@ public class FontDownloader implements Runnable {
         }
         try{
             InputStream is = new FileInputStream(destFile);
-            String md5 = DigestUtils.md5Hex(is);
-            if (md5.equals(fontInfo.hash_code)){
-                return;
-            }
+//            String md5 = DigestUtils.md5Hex(is);
+//            if (md5.equals(fontInfo.hash_code)){
+//                return;
+//            }
         }catch (IOException e){
             e.printStackTrace();
         }

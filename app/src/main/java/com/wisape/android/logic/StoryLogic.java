@@ -687,10 +687,12 @@ public class StoryLogic {
         List<StoryEntity> storyLocalEntityList = getUserStoryFromLocal(WisapeApplication.getInstance().getApplicationContext());
         LogUtil.d("总共story的数量:" + storyLocalEntityList.size());
         if (storyLocalEntityList != null) {
+
             LogUtil.d("获取默认story并且转换时间:" + Utils.acquireUTCTimestamp());
             getDefaultStoryEntity(storyLocalEntityList);
             LogUtil.d("获取默认story并且转换后时间:" + Utils.acquireUTCTimestamp());
-            LogUtil.d("本地story数据时间:" + Utils.acquireUTCTimestamp());
+
+            LogUtil.d("获取本地本地前story数据时间:" + Utils.acquireUTCTimestamp());
             int size = storyLocalEntityList.size();
             for (int i = 0; i < size; i++) {
                 final StoryEntity entity = storyLocalEntityList.get(i);

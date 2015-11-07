@@ -20,8 +20,8 @@
 
 
     <!-- Photo Selector -->
-    <string name="photo_bucket_all">全部照片</string>
-    <string name="photo_bucket_list">相册列表</string>
+    <string name="photo_bucket_all">All Photos</string>
+    <string name="photo_bucket_list">Album</string>
     <string name="photo_to_buckets">切换到相册</string>
     <string name="photo_menu_buckets">Travel</string>
 
@@ -66,22 +66,22 @@
     <string name="about_content">Content Specification</string>
     <string name="about_version_text">version:</string>
 
-    <string name="crop_activity_label">图片剪切</string>
+    <string name="crop_activity_label">crop</string>
 
     <!-- Story-->
     <string name="story_settings_label">故事设置</string>
     <string name="story_settings_primary_title">故事基本设置</string>
     <string name="story_settings_other_title">其他</string>
-    <string name="story_settings_name_hint">故事默认名字</string>
-    <string name="story_settings_desc_hint">故事默认描述</string>
-    <string name="story_settings_cover">故事默认封面</string>
-    <string name="story_settings_music_title">故事背景音乐</string>
+    <string name="story_settings_name_hint">Story Name</string>
+    <string name="story_settings_desc_hint">Description</string>
+    <string name="story_settings_cover">Share Cover</string>
+    <string name="story_settings_music_title">Story Music</string>
     <string name="story_settings_gesture_title">翻页手势</string>
-    <string name="story_music_label">背景音乐</string>
+    <string name="story_music_label">Story Music</string>
     <string name="story_music_download_toast">downloading music</string>
     <string name="story_music_download_error">music download error</string>
-    <string name="story_release_label">故事发布</string>
-    <string name="story_release_share_title">分享到</string>
+    <string name="story_release_label">Publish Story</string>
+    <string name="story_release_share_title">Share to</string>
 
     <string name="title_facebook">Facebook</string>
     <string name="title_twitter">Twitter</string>
