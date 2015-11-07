@@ -543,6 +543,7 @@ WisapeEditer = {
 
         });
 
+
         $("#setFontWeight").click(function () {
             var me = $(this);
             var target = $("#editorText .pages-txt.active");
@@ -678,7 +679,6 @@ WisapeEditer = {
                 me.removeClass("active");
                 hrefDialog.find(".input-href input").val("http://");
                 target.removeAttr("data-href").removeClass("font-link");
-
             } else {
                 Dialog.show(hrefDialog);
                 hrefDialog.find(".btn-cancle").click(function () {

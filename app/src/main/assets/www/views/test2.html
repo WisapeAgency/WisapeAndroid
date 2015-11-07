@@ -452,8 +452,6 @@
                 $("#editorText .pages-txt.active").html($(".textarea-word").val().replace(" ","&nbsp;&nbsp;").replace(/\n/g,'<br>'));
             });
 
-
-
             var observe;
             if (window.attachEvent) {
                 observe = function (element, event, handler) {
@@ -464,33 +462,36 @@
                 observe = function (element, event, handler) {
                     element.addEventListener(event, handler, false);
                 };
-            }
-
-           init();
-            function init () {
+            };
+            wordEditInit();
+            var minWordHeight = 20 * (document.documentElement.clientWidth / 320)*1.8 + 6;
+            function wordEditInit () {
+                console.info("wordEditInit");
                 var text = $('.J-textarea-word')[0];
-                $(".J-textarea-word").val($("#editorText .pages-txt.active").html().replace(/<br>/g,'\n'));
-                $(".J-textarea-word").height(100);
-                function resize () {
-                    text.style.height = 'auto';
-                    text.style.height = text.scrollHeight+'px';
-
-                }
                 /* 0-timeout to get the already changed text */
                 function delayedResize () {
-                    window.setTimeout(resize, 0);
+                    window.setTimeout(wordEditResize, 0);
                 }
 
 
-                observe(text, 'change',  resize);
+
+                observe(text, 'change',  wordEditResize);
                 observe(text, 'cut',     delayedResize);
                 observe(text, 'paste',   delayedResize);
                 observe(text, 'drop',    delayedResize);
                 observe(text, 'keydown', delayedResize);
-                text.focus();
-                text.select();
-                resize();
+                wordEditResize();
             };
+
+            function wordEditResize(){
+                var text = $('.J-textarea-word')[0];
+                console.info("wordEditResize()");
+                console.info(minWordHeight);
+                console.info(parseInt(text.style.height));
+                if(minWordHeight >=  parseInt(text.style.height)) return;
+                text.style.height = 'auto';
+                text.style.height = text.scrollHeight+'px';
+            }
         })
     </script>
 
@@ -973,6 +974,43 @@
 </script>
 <script>
     $(function(){
+        var observe;
+        if (window.attachEvent) {
+            observe = function (element, event, handler) {
+                element.attachEvent('on'+event, handler);
+            };
+        }
+        else {
+            observe = function (element, event, handler) {
+                element.addEventListener(event, handler, false);
+            };
+        };
+        wordEditInit();
+        function wordEditInit () {
+            console.info("wordEditInit");
+            var text = $('.J-textarea-word')[0];
+            /* 0-timeout to get the already changed text */
+            function delayedResize () {
+                window.setTimeout(wordEditResize, 0);
+            }
+
+
+
+            observe(text, 'change',  wordEditResize);
+            observe(text, 'cut',     delayedResize);
+            observe(text, 'paste',   delayedResize);
+            observe(text, 'drop',    delayedResize);
+            observe(text, 'keydown', delayedResize);
+            wordEditResize();
+        };
+        var minWordHeight = parseInt($('html').css("font-size"))*1.8 + 6;
+        function wordEditResize(){
+            var text = $('.J-textarea-word')[0];
+            console.info("wordEditResize()");
+            if(minWordHeight >=  text.style.height) return;
+            text.style.height = 'auto';
+            text.style.height = text.scrollHeight+'px';
+        }
 
         //FastClick.attach(document.body);
 
