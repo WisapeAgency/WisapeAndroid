@@ -342,8 +342,8 @@ public class StoryTemplatePlugin extends AbsPlugin {
                         callbackContext.error(-1);
                         return;
                     }
-                    StoryEntity storyEntity = StoryLogic.instance().updateStory(getCurrentActivity(), StoryLogic.instance().getStoryEntityFromShare());
-                    StoryLogic.instance().saveStoryEntityToShare(storyEntity);
+//                    StoryEntity storyEntity = StoryLogic.instance().updateStory(getCurrentActivity(), StoryLogic.instance().getStoryEntityFromShare());
+                    StoryLogic.instance().saveStoryEntityToShare(story);
                     File previewFile = new File(myStory, FILE_NAME_PREVIEW);
                     if (saveStoryPreview(previewFile, html, story)) {
                         callbackContext.success();
@@ -354,54 +354,30 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 }
             }, bundle, callbackContext);
         } else if (ACTION_PUBLISH.equals(action)) {//publish
-            Bundle bundle = new Bundle();
-            if (null != args && args.length() == 3) {
-                bundle.putString(EXTRA_STORY_THUMB, args.getString(0));
-                bundle.putString(EXTRA_STORY_HTML, args.getString(1));
-                bundle.putString(EXTRA_FILE_PATH, args.getString(2));
-            }
-            showProgressDialog();
-//            startLoad(WHAT_PUBLISH, bundle);
-            threadhelper(new TemplateOp() {
-                public void run(Bundle bundle) {
-//                    String storyThumb = bundle.getString(EXTRA_STORY_THUMB);
-//                    String html = bundle.getString(EXTRA_STORY_HTML);
-//                    String path = bundle.getString(EXTRA_FILE_PATH);
-//                    com.alibaba.fastjson.JSONArray paths = JSON.parseArray(path);
+            StoryReleaseActivity.launch(cordova.getActivity());
+            getCurrentActivity().finish();
+//            Bundle bundle = new Bundle();
+//            if (null != args && args.length() == 3) {
+//                bundle.putString(EXTRA_STORY_THUMB, args.getString(0));
+//                bundle.putString(EXTRA_STORY_HTML, args.getString(1));
+//                bundle.putString(EXTRA_FILE_PATH, args.getString(2));
+//            }
+//            showProgressDialog();
+////            startLoad(WHAT_PUBLISH, bundle);
+//            threadhelper(new TemplateOp() {
+//                public void run(Bundle bundle) {
+////                    String storyThumb = bundle.getString(EXTRA_STORY_THUMB);
+////                    String html = bundle.getString(EXTRA_STORY_HTML);
+////                    String path = bundle.getString(EXTRA_FILE_PATH);
+////                    com.alibaba.fastjson.JSONArray paths = JSON.parseArray(path);
+////
+////                    LogUtil.d("发布story前端返回的封面路径:" + storyThumb);
+////                    LogUtil.d("发布story前端返回需要替换的路径:" + paths.toJSONString());
 //
-//                    LogUtil.d("发布story前端返回的封面路径:" + storyThumb);
-//                    LogUtil.d("发布story前端返回需要替换的路径:" + paths.toJSONString());
-
-                    StoryEntity story = StoryLogic.instance().getStoryEntityFromShare();
-                    ApiStory.AttrStoryInfo storyAttr = new ApiStory.AttrStoryInfo();
-                    storyAttr.story = Uri.fromFile(new File(StoryManager.getStoryDirectory(), story.storyLocal));
-                    storyAttr.storyName = story.storyName;
-                    if (Utils.isEmpty(story.storyMusicName)) {
-                        storyAttr.bgMusic = "";
-                    } else {
-                        storyAttr.bgMusic = story.storyMusicName;
-                    }
-                    storyAttr.storyDescription = story.storyDesc;
-                    storyAttr.userId = UserLogic.instance().getUserInfoFromLocal().user_id;
-                    storyAttr.storyStatus = ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE;
-                    storyAttr.imgPrefix = StoryManager.getStoryDirectory().getAbsolutePath() + "/" + story.storyLocal;
-                    storyAttr.story_local = story.storyLocal;
-                    if(story.localCover == 0){
-                        storyAttr.attrStoryThumb = Uri.parse(StoryManager.getStoryDirectory().getAbsolutePath() + "/" + story.storyLocal+"/thumb.jpg");
-                    }
-
-                    if ("-1".equals(story.status)) {
-                        storyAttr.sid = -1;
-                    } else {
-                        storyAttr.sid = story.storyServerId;
-                    }
-
-                    logic.update(WisapeApplication.getInstance().getApplicationContext(), storyAttr, "release");
-                    sendBroadcastUpdateStory();
-                    StoryReleaseActivity.launch(cordova.getActivity());
-                    getCurrentActivity().finish();
-                }
-            }, bundle, callbackContext);
+//
+//
+//                }
+//            }, bundle, callbackContext);
         } else if (ACTION_SETTING.equals(action)) {
             StoryMusicEntity musicEntity = new StoryMusicEntity();
             StoryEntity storyEntity = StoryLogic.instance().getStoryEntityFromShare();

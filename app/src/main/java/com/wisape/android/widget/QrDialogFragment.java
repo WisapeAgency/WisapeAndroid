@@ -4,12 +4,14 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.zxing.WriterException;
@@ -38,6 +40,8 @@ public class QrDialogFragment extends DialogFragment {
     private String url;
     private String savePath;
     private Bitmap bitmap;
+    public DisplayMetrics mDisplayMetrics;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,6 +59,10 @@ public class QrDialogFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
         View veiw = inflater.inflate(R.layout.fragment_qr, container, false);
+        mDisplayMetrics = getResources().getDisplayMetrics();
+        int width =(int)(mDisplayMetrics.widthPixels * 0.6);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(width,width);
+        veiw.setLayoutParams(params);
         initView(veiw);
         return veiw;
     }

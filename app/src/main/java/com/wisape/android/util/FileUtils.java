@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.util.Base64;
+import android.util.DisplayMetrics;
 import android.util.Log;
 
 import com.google.zxing.BarcodeFormat;
@@ -12,6 +13,7 @@ import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
+import com.wisape.android.WisapeApplication;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -429,8 +431,10 @@ public class FileUtils {
      */
     public static Bitmap Create2DCode(String str) throws WriterException {
         // 生成二维矩阵,编码时指定大小,不要生成了图片以后再进行缩放,这样会模糊导致识别失败
+        DisplayMetrics mDisplayMetrics = WisapeApplication.getInstance().getResources().getDisplayMetrics();
+
         BitMatrix matrix = new MultiFormatWriter().encode(str,
-                BarcodeFormat.QR_CODE, 800, 800);
+                BarcodeFormat.QR_CODE, 400,400);
         int width = matrix.getWidth();
         int height = matrix.getHeight();
         // 二维矩阵转为一维像素数组,也就是一直横着排了

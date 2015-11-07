@@ -96,10 +96,10 @@ public class StoryLogic {
     private StoryLogic() {
     }
 
-    public void update(Context context, ApiStory.AttrStoryInfo attr, Object tag) {
+    public boolean update(Context context, ApiStory.AttrStoryInfo attr, Object tag) {
         final String storyStatus = attr.storyStatus;
         if (null == storyStatus || 0 == storyStatus.length() || STORY_STATUS_DELETE.equals(storyStatus)) {
-            return;
+            return false;
         }
         Uri storyUri = attr.story;
         LogUtil.d("#update story' uri:" + storyUri);
@@ -112,6 +112,7 @@ public class StoryLogic {
                 attr.story = storyZip;
             } catch (IOException e) {
                 LogUtil.e("生成story压缩包出错!", e);
+                return false;
             }
             if(null == attr.attrStoryThumb ){
                 attr.storyThumb = "";
@@ -165,15 +166,23 @@ public class StoryLogic {
                     storyEntity.id = result.id;
                 }
                 StoryLogic.instance().saveStoryEntityToShare(storyEntity);
+                LogUtil.d("上传story成功");
             }
             db.setTransactionSuccessful();
+            Intent intent = new Intent();
+            intent.setAction(StoryBroadcastReciver.STORY_ACTION);
+            intent.putExtra(StoryBroadcastReciver.EXTRAS_TYPE, StoryBroadcastReciverListener.TYPE_ADD_STORY);
+            WisapeApplication.getInstance().getApplicationContext().sendBroadcast(intent);
+            WisapeApplication.getInstance().sendBroadcast(intent);
         } catch (SQLException e) {
             LogUtil.e("发布时更新到本地数据库失败:", e);
-            throw new IllegalStateException(e);
+            return false;
+//            throw new IllegalStateException(e);
         } finally {
             db.endTransaction();
             OpenHelperManager.releaseHelper();
         }
+        return true;
     }
 
 
@@ -666,16 +675,22 @@ public class StoryLogic {
         /*返回的所有的story集合*/
         List<StoryEntity> storyEntitYList = new ArrayList<>();
 
+        LogUtil.d("获取前服务器时间:" + Utils.acquireUTCTimestamp());
         /*服务器端story*/
         List<StoryInfo> serverStoryList = getUserStoryFromServer(access_token);
         if (null != serverStoryList && serverStoryList.size() > 0) {
             serverStoryToLocalStory(serverStoryList);
         }
+        LogUtil.d("获取后进行转化时间:" + Utils.acquireUTCTimestamp());
+
         /*获取本地草稿story并且进行实体转换*/
         List<StoryEntity> storyLocalEntityList = getUserStoryFromLocal(WisapeApplication.getInstance().getApplicationContext());
         LogUtil.d("总共story的数量:" + storyLocalEntityList.size());
         if (storyLocalEntityList != null) {
+            LogUtil.d("获取默认story并且转换时间:" + Utils.acquireUTCTimestamp());
             getDefaultStoryEntity(storyLocalEntityList);
+            LogUtil.d("获取默认story并且转换后时间:" + Utils.acquireUTCTimestamp());
+            LogUtil.d("本地story数据时间:" + Utils.acquireUTCTimestamp());
             int size = storyLocalEntityList.size();
             for (int i = 0; i < size; i++) {
                 final StoryEntity entity = storyLocalEntityList.get(i);
@@ -716,7 +731,7 @@ public class StoryLogic {
         Message message = Message.obtain();
         message.arg1 = HttpUrlConstancts.STATUS_SUCCESS;
         message.obj = storyEntitYList;
-
+        LogUtil.d("本地后story数据时间:" + Utils.acquireUTCTimestamp());
         return message;
     }
 

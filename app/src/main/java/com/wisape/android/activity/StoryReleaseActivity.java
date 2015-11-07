@@ -12,6 +12,8 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.wisape.android.R;
+import com.wisape.android.WisapeApplication;
+import com.wisape.android.api.ApiStory;
 import com.wisape.android.common.StoryManager;
 import com.wisape.android.content.StoryBroadcastReciver;
 import com.wisape.android.content.StoryBroadcastReciverListener;
@@ -49,17 +51,19 @@ import cn.sharesdk.wechat.moments.WechatMoments;
  */
 public class StoryReleaseActivity extends BaseActivity {
 
-    private static final String TAG = StoryReleaseActivity.class.getSimpleName();
-
     public static final int REQUEST_CODE_STORY_RELEASE = 110;
     public static final int REQEUST_CODE_CROP_IMG = 0x01;
     private static final int LOADER_UPDATE_STORYSETTING = 1;
     private static final int LOADER_UPDATE_INFO = 2;
+    private static final int LOADER_UPLOAD_STORY = 3;
     private static final String EXTRAS_STORY_NAME = "stroy_name";
     private static final String EXTRAS_STORY_DESC = "story_desc";
-    private static final int WIDTH = 600;
-    private static final int HEIGHT = 800;
+//    private static final int WIDTH = 600;
+//    private static final int HEIGHT = 800;
     private Uri bgUri;
+    private boolean isUpload = false;
+    private boolean isSucess = false;
+    private int uploadCount = 1;
 
 
     public static void launch(Activity activity) {
@@ -83,7 +87,13 @@ public class StoryReleaseActivity extends BaseActivity {
         ButterKnife.inject(this);
         ShareSDK.initSDK(this);
         setStoryInfo();
+//        updateStoryInfo();
 
+    }
+
+    private void updateStoryInfo() {
+
+        startLoad(LOADER_UPLOAD_STORY, null);
     }
 
     private void setStoryInfo() {
@@ -103,6 +113,12 @@ public class StoryReleaseActivity extends BaseActivity {
         }
         Utils.loadImg(this, thumbImage, storyCoverView);
         LogUtil.d("storylocalCover:" + storyEntity.localCover + "封面地址:" + storyEntity.storyThumbUri + " :story地址:" + storyEntity.storyUri);
+        if (ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE.equals(StoryLogic.instance().getStoryEntityFromShare().status)) {
+            isUpload = true;
+            isSucess = true;
+        } else {
+            updateStoryInfo();
+        }
     }
 
     @OnClick(R.id.linear_picture)
@@ -162,11 +178,22 @@ public class StoryReleaseActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        if(!isStorySettingChange()){
+
+        if(!isSucess && !isUpload){
+            StoryEntity storyEntity = StoryLogic.instance().updateStory(this, StoryLogic.instance().getStoryEntityFromShare());
+            StoryLogic.instance().saveStoryEntityToShare(storyEntity);
+            Intent intent = new Intent();
+            intent.setAction(StoryBroadcastReciver.STORY_ACTION);
+            intent.putExtra(StoryBroadcastReciver.EXTRAS_TYPE, StoryBroadcastReciverListener.TYPE_ADD_STORY);
+            WisapeApplication.getInstance().getApplicationContext().sendBroadcast(intent);
+        }
+
+        if (!isStorySettingChange()) {
             Bundle args = new Bundle();
             args.putString(EXTRAS_STORY_NAME, storyNameEdit.getText().toString());
             args.putString(EXTRAS_STORY_DESC, storyDescEdit.getText().toString());
-            startLoadWithProgress(LOADER_UPDATE_INFO,args);
+            startLoadWithProgress(LOADER_UPDATE_INFO, args);
+            return;
         }
         MainActivity.launch(this);
         super.onBackPressed();
@@ -194,6 +221,41 @@ public class StoryReleaseActivity extends BaseActivity {
                         args.getString(EXTRAS_STORY_NAME), bgUri.getPath(),
                         args.getString(EXTRAS_STORY_DESC));
                 break;
+            case LOADER_UPLOAD_STORY:
+                StoryEntity story = StoryLogic.instance().getStoryEntityFromShare();
+                ApiStory.AttrStoryInfo storyAttr = new ApiStory.AttrStoryInfo();
+                storyAttr.story = Uri.fromFile(new File(StoryManager.getStoryDirectory(), story.storyLocal));
+                storyAttr.storyName = story.storyName;
+                if (Utils.isEmpty(story.storyMusicName)) {
+                    storyAttr.bgMusic = "";
+                } else {
+                    storyAttr.bgMusic = story.storyMusicName;
+                }
+                storyAttr.storyDescription = story.storyDesc;
+                storyAttr.userId = UserLogic.instance().getUserInfoFromLocal().user_id;
+                storyAttr.storyStatus = ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE;
+                storyAttr.imgPrefix = StoryManager.getStoryDirectory().getAbsolutePath() + "/" + story.storyLocal;
+                storyAttr.story_local = story.storyLocal;
+                if (story.localCover == 0) {
+                    storyAttr.attrStoryThumb = Uri.parse(StoryManager.getStoryDirectory().getAbsolutePath() + "/" + story.storyLocal + "/thumb.jpg");
+                }
+
+                if ("-1".equals(story.status)) {
+                    storyAttr.sid = -1;
+                } else {
+                    storyAttr.sid = story.storyServerId;
+                }
+
+                boolean upload = StoryLogic.instance().update(WisapeApplication.getInstance().getApplicationContext(), storyAttr, "release");
+                if (upload) {
+                    message.arg1 = HttpUrlConstancts.STATUS_SUCCESS;
+                    message.what = LOADER_UPLOAD_STORY;
+                } else {
+                    message.arg1 = HttpUrlConstancts.STATUS_EXCEPTION;
+                    message.what = LOADER_UPLOAD_STORY;
+                }
+
+                break;
         }
 
         return message;
@@ -202,7 +264,7 @@ public class StoryReleaseActivity extends BaseActivity {
     @Override
     protected void onLoadCompleted(Message data) {
         closeProgressDialog();
-        switch (data.arg1) {
+        switch (data.what) {
             case LOADER_UPDATE_STORYSETTING:
 
                 if (HttpUrlConstancts.STATUS_SUCCESS == data.arg1) {
@@ -226,10 +288,24 @@ public class StoryReleaseActivity extends BaseActivity {
 
                 break;
             case LOADER_UPDATE_INFO:
-                if(HttpUrlConstancts.STATUS_SUCCESS != data.arg1){
+                if (HttpUrlConstancts.STATUS_SUCCESS != data.arg1) {
                     showToast((String) data.obj);
                 }
                 MainActivity.launch(this);
+                break;
+            case LOADER_UPLOAD_STORY:
+                if(HttpUrlConstancts.STATUS_SUCCESS == data.arg1){
+                    setStoryInfo();
+                    isUpload = true;
+                    isSucess = true;
+                }else{
+                    isUpload = false;
+                    isSucess = false;
+                    if(uploadCount != 3){
+                        updateStoryInfo();
+                    }
+                    uploadCount++;
+                }
                 break;
         }
     }
@@ -371,6 +447,14 @@ public class StoryReleaseActivity extends BaseActivity {
     @OnClick(R.id.story_release_qr)
     @SuppressWarnings("unused")
     protected void doShare2QR() {
+        if (!isUpload) {
+            showToast("Uploading story ......");
+            return;
+        }
+        if (!isSucess) {
+            showToast("Failed！Please check network settings.");
+            return;
+        }
         QrDialogFragment qrDialogFragment = QrDialogFragment.instance(storyEntity.storyUri
                 , (StoryManager.getStoryDirectory() + "/" + storyEntity.storyLocal));
         qrDialogFragment.show(getSupportFragmentManager(), "qr");
@@ -379,6 +463,14 @@ public class StoryReleaseActivity extends BaseActivity {
     @OnClick(R.id.story_release_more)
     @SuppressWarnings("unused")
     protected void doShare2More() {
+        if (!isUpload) {
+            showToast("Uploading story ......");
+            return;
+        }
+        if (!isSucess) {
+            showToast("Failed！Please check network settings.");
+            return;
+        }
         Intent intent = new Intent(Intent.ACTION_SEND); // 启动分享发送的属性
         intent.setType("text/plain"); // 分享发送的数据类型
         String msg = storyNameEdit.getText().toString() + storyEntity.storyUri;
@@ -387,6 +479,15 @@ public class StoryReleaseActivity extends BaseActivity {
     }
 
     private void startShare(final String platName, Platform.ShareParams shareParams) {
+        if (!isUpload) {
+            showToast("Uploading story ......");
+            return;
+        }
+
+        if (!isSucess) {
+            showToast("Failed！Please check network settings.");
+            return;
+        }
         Platform platform = ShareSDK.getPlatform(this, platName);
         platform.setPlatformActionListener(new PlatformActionListener() {
             @Override

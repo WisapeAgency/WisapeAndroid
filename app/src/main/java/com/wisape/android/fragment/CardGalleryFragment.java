@@ -160,31 +160,31 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
                     message.obj = data;
                 }
                 break;
-            case LOADER_PUBLISH_STORY:
-                StoryEntity story = StoryLogic.instance().getStoryEntityFromShare();
-
-                ApiStory.AttrStoryInfo storyAttr = new ApiStory.AttrStoryInfo();
-                storyAttr.attrStoryThumb = Uri.parse((new File(StoryManager.getStoryDirectory(), story.storyLocal + "/thumb.jpg")).getAbsolutePath());
-                storyAttr.storyStatus = ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE;
-                storyAttr.story = Uri.fromFile(new File(StoryManager.getStoryDirectory(), story.storyLocal));
-                storyAttr.storyName = story.storyName;
-                storyAttr.bgMusic = story.storyMusicName;
-                storyAttr.storyDescription = story.storyDesc;
-                storyAttr.imgPrefix = StoryManager.getStoryDirectory().getAbsolutePath() + "/" + story.storyLocal;
-                storyAttr.userId = UserLogic.instance().getUserInfoFromLocal().user_id;
-                storyAttr.story_local = story.storyLocal;
-                storyAttr.storyThumb = story.storyThumbUri;
-
-                if ("-1".equals(story.status)) {
-                    storyAttr.sid = -1;
-                } else {
-                    storyAttr.sid = story.storyServerId;
-                }
-
-                StoryLogic.instance().update(getActivity().getApplicationContext(),
-                        storyAttr, "release");
-
-                break;
+//            case LOADER_PUBLISH_STORY:
+//                StoryEntity story = StoryLogic.instance().getStoryEntityFromShare();
+//
+//                ApiStory.AttrStoryInfo storyAttr = new ApiStory.AttrStoryInfo();
+//                storyAttr.attrStoryThumb = Uri.parse((new File(StoryManager.getStoryDirectory(), story.storyLocal + "/thumb.jpg")).getAbsolutePath());
+//                storyAttr.storyStatus = ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE;
+//                storyAttr.story = Uri.fromFile(new File(StoryManager.getStoryDirectory(), story.storyLocal));
+//                storyAttr.storyName = story.storyName;
+//                storyAttr.bgMusic = story.storyMusicName;
+//                storyAttr.storyDescription = story.storyDesc;
+//                storyAttr.imgPrefix = StoryManager.getStoryDirectory().getAbsolutePath() + "/" + story.storyLocal;
+//                storyAttr.userId = UserLogic.instance().getUserInfoFromLocal().user_id;
+//                storyAttr.story_local = story.storyLocal;
+//                storyAttr.storyThumb = story.storyThumbUri;
+//
+//                if ("-1".equals(story.status)) {
+//                    storyAttr.sid = -1;
+//                } else {
+//                    storyAttr.sid = story.storyServerId;
+//                }
+//
+//                StoryLogic.instance().update(getActivity().getApplicationContext(),
+//                        storyAttr, "release");
+//
+//                break;
             case LOADER_GET_STORY_LOCAL:
                 List<StoryEntity> storyEntities = StoryLogic.instance().getUserStoryFromLocal(getActivity());
                 if(null != storyEntities){
@@ -233,13 +233,13 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
                     showToast("Get StoryInfo Failure");
                 }
                 break;
-            case LOADER_PUBLISH_STORY:
-                Intent intent = new Intent();
-                intent.setAction(StoryBroadcastReciver.STORY_ACTION);
-                intent.putExtra(StoryBroadcastReciver.EXTRAS_TYPE, StoryBroadcastReciverListener.TYPE_ADD_STORY);
-                getActivity().sendBroadcast(intent);
-                StoryReleaseActivity.launch(getActivity());
-                break;
+//            case LOADER_PUBLISH_STORY:
+//                Intent intent = new Intent();
+//                intent.setAction(StoryBroadcastReciver.STORY_ACTION);
+//                intent.putExtra(StoryBroadcastReciver.EXTRAS_TYPE, StoryBroadcastReciverListener.TYPE_ADD_STORY);
+//                getActivity().sendBroadcast(intent);
+//                StoryReleaseActivity.launch(getActivity());
+//                break;
 
             case LOADER_EDIT_STORY:
                 if (HttpUrlConstancts.STATUS_SUCCESS == data.arg1) {
@@ -386,13 +386,9 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
 
     @Override
     public void onPublishClick() {
-        if (ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE.equals(StoryLogic.instance().getStoryEntityFromShare().status)) {
-            StoryReleaseActivity.launch(getActivity());
-        } else {
-            Bundle args = new Bundle();
-            args.putParcelable(EXTRAS_STORY_ENTITY, StoryLogic.instance().getStoryEntityFromShare());
-            startLoadWithProgress(LOADER_PUBLISH_STORY, args);
-        }
+        StoryReleaseActivity.launch(getActivity());
+
+
     }
 
     @Override

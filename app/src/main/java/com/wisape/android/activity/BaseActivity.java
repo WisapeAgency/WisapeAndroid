@@ -30,7 +30,7 @@ public abstract class BaseActivity extends VolleyActivity {
     @Override
     protected void onStart() {
         super.onStart();
-//        FlurryAgent.onStartSession(this);
+        FlurryAgent.onStartSession(this);
     }
 
     @Override
@@ -54,7 +54,7 @@ public abstract class BaseActivity extends VolleyActivity {
     @Override
     protected void onStop() {
         super.onStop();
-//        FlurryAgent.onEndSession(this);
+        FlurryAgent.onEndSession(this);
     }
 
     @Override
