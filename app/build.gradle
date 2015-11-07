@@ -9,7 +9,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 22
         versionCode 1
-        versionName "0.08"
+        versionName "0.09"
         multiDexEnabled true
     }
     dexOptions {

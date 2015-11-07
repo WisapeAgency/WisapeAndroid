@@ -220,16 +220,17 @@ public class StoryMusicAdapter extends RecyclerView.Adapter<RecyclerHolder> impl
         if(0 > position){
             return;
         }
-
         StoryMusicDataInfo data = dataArray[position];
 //        if(StoryMusicEntity.STATUS_DOWNLOADING == data.getStatus()){
             data.setProgress(progress);
-            View view = layoutManager.getChildAt(position);
+            View view = layoutManager.findViewByPosition(position);
             if(null != view){
                 ProgressBar downloadProgress = (ProgressBar) view.findViewById(R.id.story_music_download_progress);
                 if(null != downloadProgress && View.VISIBLE == downloadProgress.getVisibility()){
                     downloadProgress.setProgress(progress);
                 }
+            } else {
+                notifyDataSetChanged();
             }
 //        }
     }

@@ -307,6 +307,10 @@ public class StoryTemplatePlugin extends AbsPlugin {
                         return;
                     }
                     StoryEntity storyEntity = StoryLogic.instance().updateStory(WisapeApplication.getInstance(), story);
+                    if(null == storyEntity){
+                        callbackContext.error(-1);
+                        return;
+                    }
                     StoryLogic.instance().saveStoryEntityToShare(storyEntity);
                     sendBroadcastUpdateStory();
                     MainActivity.launch(getCurrentActivity());
@@ -463,12 +467,13 @@ public class StoryTemplatePlugin extends AbsPlugin {
      * @return
      */
     private boolean saveStory(File myStory, StoryEntity story, String storyThumb, String html, com.alibaba.fastjson.JSONArray paths) {
-        if (paths == null) {
-            return true;
+        if (paths == null || paths.size() == 0) {
+            return false;
         }
 
         //生成story字符串
         for (int i = 0; i < paths.size(); i++) {
+            LogUtil.d("生成本地story文件");
             String path = paths.getString(i);
             File imagePath = new File(path).getParentFile().getParentFile();
             if (imagePath.getParentFile().getName().equals(StoryManager.TEMPLATE_DIRECTORY)) {
@@ -488,6 +493,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
             writer = new PrintWriter(storyHTML);
             writer.write(html);
             writer.close();
+            LogUtil.d("生成story.html文件成功");
         } catch (IOException e) {
             LogUtil.e("保存story文件出错", e);
             return false;
@@ -502,6 +508,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
             try {
                 FileUtils.copyFile(new File(storyThumb),
                         new File(StoryManager.getStoryDirectory(), story.storyLocal + "/thumb.jpg"));
+                LogUtil.d("复制封面成功");
             } catch (IOException e) {
                 LogUtil.e("生成封面出错", e);
             }
@@ -535,6 +542,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 }
             } catch (IOException e) {
                 LogUtil.e("保存story需要资源文件出错", e);
+                return false;
             }
         }
         return true;

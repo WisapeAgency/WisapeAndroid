@@ -205,7 +205,6 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
         super.onLoadComplete(data);
         switch (data.what) {
             case LOADER_STORY:
-                LogUtil.d("获取story完成:" + data.arg1);
                 if (HttpUrlConstancts.STATUS_SUCCESS == data.arg1) {
                     storyEntityList = (List<StoryEntity>) data.obj;
                     if (0 == storyEntityList.size()) {
@@ -221,7 +220,7 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
             case LOADER_DELETE_STORY:
                 if (data.arg1 == HttpUrlConstancts.STATUS_SUCCESS) {
                     deleteData();
-                    showToast("Delete Story success");
+                    showToast("detele story success");
                 } else {
                     showToast("Delete Story Failure");
                 }

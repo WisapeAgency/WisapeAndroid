@@ -92,7 +92,7 @@ public class WisapeApplication extends Application {
 
 
         Parse.initialize(this, "L3WrrhBJmbPhRoJ4GYIUDMIErlR8IlvkJuQQJ0Px", "yfC5kFI4jLLeeDaKlepK1hgAGiYJJEHjXfnpaCks");
-        Parse.setLogLevel(Parse.LOG_LEVEL_WARNING);
+        Parse.setLogLevel(Parse.LOG_LEVEL_VERBOSE);
         PushService.subscribe(this, "abcde", MainActivity.class);
         PushService.setDefaultPushCallback(this, MainActivity.class);
         ParseInstallation.getCurrentInstallation().put("localeIdentifier", Utils.getCountry(this).toUpperCase());
