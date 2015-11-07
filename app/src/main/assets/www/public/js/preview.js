@@ -15,6 +15,7 @@ $(function(){
     });
     $("#publish").click(function(){
         console.info("#publish");
+        $(".loading").show();
         var retHtml = '',retImg = [], $con= $("#con");
         $con.find(".pages-item").each(function(i,v){
             retHtml += '<section class="m-page hide" >' + $(this).html().replace("file://","") + "</section>";
@@ -30,6 +31,7 @@ $(function(){
         console.info(retHtml);
         console.info(retImg);
         cordova.exec(function(retval) {
+            $(".loading").hide();
         }, function(e) {
         }, "StoryTemplate", "publish", [retImg[0],retHtml,retImg]);
     })

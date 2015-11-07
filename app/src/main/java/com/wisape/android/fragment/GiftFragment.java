@@ -150,14 +150,15 @@ public class GiftFragment extends AbsFragment {
 
             LinearLayout.LayoutParams params;
 
-            int width = (int)(mDisplayMetrics.heightPixels * 0.43);
-            params = new LinearLayout.LayoutParams(width,width);
+            int width = (int)(mDisplayMetrics.heightPixels * 0.48);
+            params = new LinearLayout.LayoutParams(width, ViewGroup.LayoutParams.MATCH_PARENT);
 
             holder.linearGif.setLayoutParams(params);
             Picasso.with(mContext).load(activeInfo.getBg_img())
                     .placeholder(R.mipmap.icon_camera)
                     .error(R.mipmap.app_logo)
                     .into(holder.imgContent);
+            holder.imgContent.setAlpha(1.0f);
             holder.imgContent.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

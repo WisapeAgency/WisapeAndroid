@@ -3,7 +3,7 @@ package com.wisape.android.network;
 import android.content.Context;
 import android.util.Log;
 
-import com.parse.codec.digest.DigestUtils;
+//import com.parse.codec.digest.DigestUtils;
 import com.wisape.android.WisapeApplication;
 import com.wisape.android.api.ApiStory;
 import com.wisape.android.common.StoryManager;
@@ -124,11 +124,11 @@ public class DataSynchronizer {
             if (templateFile.exists()){
                 try{
                     InputStream is = new FileInputStream(templateFile);
-                    String md5 = DigestUtils.md5Hex(is);
+//                    String md5 = DigestUtils.md5Hex(is);
                     //服务器文件与本地文件的md5不相同需要重新下载
-                    if (!md5.equals(template.hashCode)){
-                        downloadTempQueue.offer(templateInfo);
-                    }
+//                    if (!md5.equals(template.hashCode)){
+//                        downloadTempQueue.offer(templateInfo);
+//                    }
                 }catch (IOException e){
                     e.printStackTrace();
                 }

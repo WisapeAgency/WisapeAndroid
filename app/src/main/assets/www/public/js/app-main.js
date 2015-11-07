@@ -543,6 +543,7 @@ WisapeEditer = {
 
         });
 
+
         $("#setFontWeight").click(function () {
             var me = $(this);
             var target = $("#editorText .pages-txt.active");
@@ -678,7 +679,6 @@ WisapeEditer = {
                 me.removeClass("active");
                 hrefDialog.find(".input-href input").val("http://");
                 target.removeAttr("data-href").removeClass("font-link");
-
             } else {
                 Dialog.show(hrefDialog);
                 hrefDialog.find(".btn-cancle").click(function () {
@@ -761,10 +761,13 @@ WisapeEditer = {
         var retHtml = '', retImg = [];
         Dialog.show(saveDialog);
         saveDialog.find(".btn-cancle").click(function () {
+            Dialog.hide(saveDialog);
+        });
+        saveDialog.find(".btn-saveno").click(function () {
             WisapeEditer.GetNativeData("back", [], null);
             Dialog.hide(saveDialog);
         });
-        saveDialog.find(".btn-submit").click(function () {
+        saveDialog.find(".btn-save").click(function () {
             mask.hide();
             Dialog.hide(saveDialog);
             $(".loading").show();
@@ -818,7 +821,7 @@ WisapeEditer = {
                 scrollY: false,
                 click : false,
                 hScrollbar :false,
-                lockDirection:true,
+                lockDirection:true
             });
             catScroll.find("li").eq(0).addClass("active");
             if (cb !== null)cb();
@@ -1016,7 +1019,7 @@ function setPagesScroll() {
         scrollY: false,
         click : true,
         hScrollbar :false,
-        lockDirection:true,
+        lockDirection:true
         //onScrollMove : function(){
         //    console.info("scrollMove");
         //    console.info(WisapeEditer.pagesIScroll.x);

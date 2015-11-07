@@ -17,7 +17,7 @@
     <!--常规正文-->
     <color name="app_sixth">#2D3437</color>
     <color name="app_sixth_transparent_50p">#802D3437</color>
-    <color name="app_sixth_transparent_80p">#802D3437</color>
+    <color name="app_sixth_transparent_80p">#F0000000</color>
     <color name="app_about_text_color">#354147</color>
 
     <color name="app_password_reset_email_edit_text_color">#000000</color>

@@ -312,6 +312,7 @@ a {text-decoration: none;color:inherit;}
     overflow: hidden;
 
 }
+.story-page-list .ico-acitve {display: none!important;}
 .story-page-list .tpl-page-item img {width:100%;height:auto;}
 
 /*editor-text*/
@@ -331,7 +332,7 @@ a {text-decoration: none;color:inherit;}
 .pop-editer-opt .opt-animation-val i {margin-top: 0.3rem;float:left;display: inline-block;width:0.88rem;height:0.88rem;background-size: 100% 100%;border-radius: 0.88rem;border:1px solid #52b502;}
 .pop-editer-opt .opt-font-val {margin-top: 0.5rem;float:left;font-size:0.622rem;}
 .pop-editer-text {background: #f2f2f2;padding:0.44rem 0.59rem;}
-.pop-editer-text .textarea-word {position:relative;height:1.18rem;width:12.6rem;color:#2d3437;font-size:0.71rem;resize: none;overflow-y:visible;border-radius: 0.15rem;border:1px solid #d6d7d8;background: #fff;-webkit-appearance:none;outline:none;max-height: 3rem;line-height: 0.9rem}
+.pop-editer-text .textarea-word {position:relative;height:1.8rem;width:12.6rem;color:#2d3437;font-size:0.71rem;resize: none;overflow-y:visible;border-radius: 0.15rem;border:1px solid #d6d7d8;background: #fff;-webkit-appearance:none;outline:none;max-height: 3rem;line-height: 0.9rem}
 .btn-text-done {color:#2d3437;font-size:0.71rem;}
 .btn-text-del {position: absolute;left:0;top:0;}
 
@@ -349,9 +350,13 @@ a {text-decoration: none;color:inherit;}
 .pop-editer-font .opt-right {}
 .pop-editer-color .bd {padding:0.74rem;}
 .color-main, .color-sub {width: 100%;overflow: hidden}
-.color-main .color-main-item {float:left;width:10%;height:0.88rem;}
+.color-main .color-main-item {float:left;width:10%;height:0.88rem;border-left: 1px solid #eaeaeb;border-top: 1px solid #eaeaeb;border-bottom: 1px solid #eaeaeb;  box-sizing: border-box;}
+.color-main .color-main-item:last-child {border-right: 1px solid #eaeaeb;}
 .color-sub {margin-top:1.04rem;}
-.color-sub .color-sub-item {float:left;width:25%;height:1.777rem;position: relative;text-align:center;}
+.color-sub .color-sub-item {float:left;width:25%;height:1.777rem;position: relative;text-align:center;border-left: 1px solid #eaeaeb;border-top: 1px solid #eaeaeb;border-bottom: 1px solid #eaeaeb;  box-sizing: border-box;}
+.color-sub .color-sub-item:nth-last-child(4),.color-sub .color-sub-item:nth-last-child(3),.color-sub .color-sub-item:nth-last-child(2),.color-sub .color-sub-item:nth-last-child(1) {border-bottom: 1px solid #eaeaeb;}
+.color-sub .color-sub-item:nth-last-child(5),.color-sub .color-sub-item:nth-last-child(6),.color-sub .color-sub-item:nth-last-child(7),.color-sub .color-sub-item:nth-last-child(8) {border-bottom: 0;}
+.color-sub .color-sub-item:nth-last-child(5),.color-sub .color-sub-item:last-child {border-right: 1px solid #eaeaeb}
 .color-sub .color-sub-item i{
     width:1.777rem;height:1.777rem;
     vertical-align: middle;
@@ -380,10 +385,10 @@ a {text-decoration: none;color:inherit;}
     -webkit-user-select: none;
     -webkit-user-drag: none;
     padding:1.06rem 0 0.71rem 0;
-    width:12.44rem;
+    width:13.8rem;
     display: none;
     left: 50%;
-    margin-left: -6.22rem;
+    margin-left: -6.9rem;
     top: 50%;
     margin-top: -100px;
 }
@@ -431,14 +436,14 @@ a {text-decoration: none;color:inherit;}
 
 .stage { border-radius: 5px;overflow: hidden;}
 #editorText {text-align: center;}
-#editorText .pages {width:11.2rem;height:15.34rem;margin:2.87rem 2.4rem 0.5rem 2.4rem;}
+#editorText .pages {width:14rem;height:22.35rem;margin:2.87rem 1rem 0.5rem 1rem;}
 #editorText .pages .count {display: none}
 .stage-content .stage-content-box {
     -moz-transform:scale(0.61);
     -webkit-transform:scale(0.61);
     -o-transform:scale(0.61);
 }
-.pages-big .stage-content .stage-content-box {
+.pages-big .stage-content .stage-content-box,#editorText .stage-content-box  {
     -moz-transform:scale(0.875);
     -webkit-transform:scale(0.875);
     -o-transform:scale(0.875);
@@ -447,11 +452,6 @@ a {text-decoration: none;color:inherit;}
     -moz-transform:scale(0.3);
     -webkit-transform:scale(0.3);
     -o-transform:scale(0.3);
-}
-#editorText .stage-content-box  {
-    -moz-transform:scale(0.7);
-    -webkit-transform:scale(0.7);
-    -o-transform:scale(0.7);
 }
 
 .stage-content .edit-area {display:inline-block;position: relative;}
