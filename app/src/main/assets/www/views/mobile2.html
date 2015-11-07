@@ -29,76 +29,49 @@
     <!--上下滚动 start-->
     <section class="m-page hide" >
         <div class="m-img" >
-            <!--jobs-->
-            <div class="stage-content edit-area pages-img pages-img-bg"
-                 style=" text-align:center;word-break:break-all;background: url(img/bg.jpg);background-size: cover;background-position:50% 50%;width:100%;height:100%;position: relative;">
-                <div class="stage-content-box" style="text-align: center;width:16rem;-webkit-transform-origin:0 0;">
-                    <div class="symbol"  style="padding-top:2.96rem;">
-                        <div class="pages-txt edit-area" data-animation="animated slideInDown" style="display: inline-block;font-family: 'bebas';font-size:4.41rem;line-height: 4.41rem;color:#cc0001;">
-                            JOBS
+            <!--mt1-->
+            <div class="stage-content"
+                 style=" width:100%;height:100%;position: relative;background:#f8fbff;overflow: hidden">
+
+                <div class="stage-content-box" style="position: absolute;bottom:0;left:0;width:16rem;-webkit-transform-origin:0 100%;">
+                    <div class="symbol" style="">
+                        <div class="pages-img"  data-animation="animated slideInDown" >
+                            <img src="img/pic4.jpg"  style="width:16rem;height:10.66rem;" alt=""/>
                         </div>
                     </div>
-                    <div class="symbol" style="z-index: 3;">
-                        <div class="pages-txt edit-area"  data-animation="animated slideInLeft" style="display: inline-block;margin-top:0.8rem;font-family: 'Lato';font-size:0.8rem;line-height:0.8rem;color:#444;">
-                            FOR WISAPE
+                    <div class="symbol" style="position: absolute;right:1.37rem;bottom:8.48rem;z-index: 1;">
+                        <div class="pages-img"  data-animation="animated slideInDown" >
+                            <img src="img/pic1.jpg"  style="width:7.40rem;height:9.62rem;border:0.14rem solid #fff;" alt=""/>
                         </div>
                     </div>
-                    <div class="stage-content-box" style="padding-top:1.62rem;text-align: left;">
-                        <div style="margin:0 2rem;overflow: hidden">
-                            <div style="display: inline-block;width: 50%;float:left;">
-                                <div class="symbol" >
-                                    <div class="pages-txt edit-area"  data-animation="animated flash" style="font-weight:bold;text-align:left;font-family: 'Lato';font-size:0.71rem;line-height: 0.71rem;color:#444;">
-                                        Global Partner
-                                    </div>
-                                </div>
-                                <div class="symbol" >
-                                    <div class="pages-txt edit-area" data-animation="animated flash"  style="font-weight:bold;text-align:left;font-family: 'Lato';font-size:0.62rem;line-height: 0.62rem;color:#444;">
-                                        Indonesia
-                                    </div>
-                                </div>
-                            </div>
-                            <div style="display: inline-block;width: 50%;float:left;">
-                                <div class="symbol" >
-                                    <div class="pages-txt edit-area"  data-animation="animated flash" style="font-weight:bold;text-align:left;font-family: 'Lato';font-size:0.71rem;line-height: 0.71rem;color:#444;">
-                                        Global Partner
-                                    </div>
-                                </div>
-                                <div class="symbol" >
-                                    <div class="pages-txt edit-area" data-animation="animated flash"  style="font-weight:bold;text-align:left;font-family: 'Lato';font-size:0.62rem;line-height: 0.62rem;color:#444;">
-                                        Indonesia
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="symbol" style="position: absolute;left:0;bottom:13.33rem;z-index: 2;transform:rotate(-13deg); -ms-transform:rotate(-13deg); -moz-transform:rotate(-13deg); -webkit-transform:rotate(-13deg);-o-transform:rotate(-13deg);">
+                        <div class="pages-img"  data-animation="animated slideInDown" >
+                            <img src="img/pic3.jpg"  style="width:7.40rem;height:9.62rem;border:0.14rem solid #fff;" alt=""/>
                         </div>
-                        <div style="margin:1rem 2rem;overflow: hidden">
-                            <div style="display: inline-block;width: 50%;float:left;">
-                                <div class="symbol" >
-                                    <div class="pages-txt edit-area" data-animation="animated flash"  style="text-align:left;font-family: 'Lato';font-size:0.71rem;line-height: 0.71rem;color:#444;">
-                                        Global Partner
-                                    </div>
-                                </div>
-                                <div class="symbol" >
-                                    <div class="pages-txt edit-area" data-animation="animated flash"  style="text-align:left;font-family: 'Lato';font-size:0.62rem;line-height: 0.62rem;color:#444;">
-                                        Indonesia
-                                    </div>
-                                </div>
-                            </div>
-                            <div style="display: inline-block;width: 50%;float:left;">
-                                <div class="symbol" >
-                                    <div class="pages-txt edit-area"  data-animation="animated flash" style="text-align:left;font-family: 'Lato';font-size:0.71rem;line-height: 0.71rem;color:#444;">
-                                        Global Partner
-                                    </div>
-                                </div>
-                                <div class="symbol" >
-                                    <div class="pages-txt edit-area" data-animation="animated flash"  style="text-align:left;font-family: 'Lato';font-size:0.62rem;line-height: 0.62rem;color:#444;">
-                                        Indonesia
-                                    </div>
-                                </div>
-                            </div>
+                    </div>
+                    <div class="symbol" style="position: absolute;right:0;bottom:16rem;z-index: 2;transform:rotate(13deg); -ms-transform:rotate(13deg); -moz-transform:rotate(13deg);-webkit-transform:rotate(13deg);-o-transform:rotate(13deg);">
+                        <div class="pages-img"  data-animation="animated slideInDown" >
+                            <img src="img/pic3.jpg"  style="width:4.7rem;height:6.9rem;border:0.14rem solid #fff;" alt=""/>
                         </div>
                     </div>
                 </div>
             </div>
+            <script>
+                $(function(){
+                    //setTimeout(function(){
+
+                        $(".j-vmiddle").each(function(){
+                            var _this = $(this),
+                                    parent = _this.parents(".stage-content");
+                            console.info(_this.parents(".stage-content").height());
+                            console.info(_this.height());
+                            _this.css({
+                                "padding-top": (parent.height() - _this.height())/2
+                            })
+                        })
+                    //},1000)
+                })
+            </script>
         </div>
     </section>
     <section class="m-page hide" >

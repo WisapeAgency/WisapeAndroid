@@ -16,7 +16,10 @@ WisapeEditer = {
     loggerStr : "",
 
     pagesIScroll : null,
+
     catIScroll : null,
+
+    saveTimmer : true,
 
     logger : function(name,str){
         var ret = "\n" + CurentTime() + "WisapeEditer.logger " + name + " :" + str  + "\n";
@@ -199,6 +202,7 @@ WisapeEditer = {
         //预览
         $("#storyPreview").click(function () {
             WisapeEditer.logger("预览",WisapeEditer.storyData);
+            $(".loading").show();
             var retHtml = '<div class="p-index main" id="con">', retImg = [];
             for (var i = 0; i < WisapeEditer.storyData.length; i++) {
                 retHtml += '<section class="m-page hide pages-item" > <div class="m-img" >' + WisapeEditer.storyData[i].replace("file://","") + '</div> </section>';
@@ -213,6 +217,8 @@ WisapeEditer = {
                 }
             });
             WisapeEditer.GetNativeData("preview", [retImg[0],retHtml, retImg], function () {
+                console.info("preview done!!!");
+                $(".loading").hide();
             })
         });
 
@@ -368,12 +374,10 @@ WisapeEditer = {
 
         var pagesImgTimmer = true;
         pageScroll.delegate("li.active .pages-img", "click", function (event) {
-            if(!pageClickTimmer || !pagesImgTimmer) return;
+            if(!pageClickTimmer) return;
             pageClickTimmer = false;
-            pagesImgTimmer = false;
             setTimeout(function(){
                 pageClickTimmer = true;
-                pagesImgTimmer = true;
             },500);
 
             var _me = $(this),wh = [];
@@ -390,7 +394,13 @@ WisapeEditer = {
             } else {
                 wh = [parseInt(_me.find("img").width()),parseInt(_me.find("img").height())];
             }
+            if(!pagesImgTimmer) return;
+            pagesImgTimmer = false;
+            setTimeout(function(){
+                pagesImgTimmer = true;
+            },500);
             console.info("wh:" + wh);
+            WisapeEditer.logger("调用图片接口","");
             cordova.exec(function (retval) {
                 console.info("PhotoSelector:" + retval);
                 console.info("_me:" + _me.html());
@@ -402,7 +412,7 @@ WisapeEditer = {
                 } else {
                     _me.find("img").attr({"src": imgurl})
                 }
-
+                WisapeEditer.logger("调用图片接口返回",imgurl);
                 WisapeEditer.storyData[WisapeEditer.selectedStagetIndex - 1] = pageScroll.find("li.active").html();
 
                 console.info("WisapeEditer.storyData:");
@@ -434,7 +444,7 @@ WisapeEditer = {
             WisapeEditer.ShowView('main', 'editorText');
             setTimeout(function(){
                 $("#editorText .pages-txt.active").click();
-            },10)
+            },10);
             event.stopPropagation();
         });
 
@@ -473,6 +483,7 @@ WisapeEditer = {
             pageScroll.find("li").removeClass("active").find(".pages-img,.pages-txt").removeClass("active");
             target.after('<li class="active"><span class="count">' + WisapeEditer.selectedStagetIndex++ + '/' + WisapeEditer.storyData.length + '</span>' + WisapeEditer.currentTplData + '</li>');
             setPagesScroll();
+            WisapeEditer.pagesIScroll.scrollToElement('li.active', 1000);
             pageScroll.find("li").each(function (i) {
                 var me = $(this);
                 me.find(".count").html((i + 1) + "/" + WisapeEditer.storyData.length);
@@ -499,7 +510,7 @@ WisapeEditer = {
             pagesScroll.html(ret);
 
             WisapeEditer.storyData[WisapeEditer.selectedStagetIndex - 1] = ret;
-            $('.J-textarea-word').blur();
+            $('.J-textarea-word').focus();
             cordova.exec(function(retval) {
                 console.info("hide keyboard");
             }, function(e) {
@@ -508,14 +519,13 @@ WisapeEditer = {
             pageScroll.find(".pages-txt").removeClass("edit-area-active");
             pageScroll.find("li.active .pages-txt").addClass("edit-area-active");
             setPagesScroll();
-
         })
 
         $("#TextEditerOpt").click(function () {
             var me = $(this);
             var parent = $("#editorText");
             var target = $("#editorText .pop-editer-opt");
-            $('.J-textarea-word').blur();
+            $('.J-textarea-word').focus();
             cordova.exec(function(retval) {
                 console.info("hide keyboard");
             }, function(e) {
@@ -567,15 +577,23 @@ WisapeEditer = {
             $(".pop-editer-text").show();
             $(".J-textarea-word").val($.trim($(this).html().replace(/<br>/g,'\n')));
             $(".J-textarea-word")[0].select();
+            $(".J-textarea-word")[0].focus();
             cordova.exec(function(retval) {
                 console.info("open keyboard");
+
             }, function(e) {
             }, "Keyboard", "show", []);
+
             wordEditResize();
 
         })
         $(".J-btn-text-done").click(function(){
             $("#editorText .pages-txt.active").html($.trim($(".textarea-word").val().replace(/\n/g,'<br>')));
+            cordova.exec(function(retval) {
+                console.info("open keyboard");
+
+            }, function(e) {
+            }, "Keyboard", "show", []);
         });
 
         var observe;
@@ -729,11 +747,14 @@ WisapeEditer = {
             console.info(selected.length);
             console.info(selected.hasClass(animtionClassName));
         })
-
-
     },
 
     SaveStory : function(){
+        if(!WisapeEditer.saveTimmer) return;
+        WisapeEditer.saveTimmer = false;
+        setTimeout(function(){
+            WisapeEditer.saveTimmer = true;
+        },500);
         var mask = $(".mask");
         var saveDialog = $(".save-dialog");
         var pageScroll = $("#pages-scroll");

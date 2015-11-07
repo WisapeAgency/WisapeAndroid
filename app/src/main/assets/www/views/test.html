@@ -12,6 +12,7 @@
 <body>
 <div class="loading" style="display:block;position: fixed;left:0;top:0;bottom:0;right:0;background-image:url(../public/img/loading.gif);background-position:50% 50%;background-size:cover;z-index: 10000">
 </div>
+
 <div id="main" class="page" style="display: block">
     <div class="header">
         <div class="pull-left">
@@ -255,6 +256,16 @@
     </div>
     <div class="clearfix"></div>
 </div>
+<div class="ui-dialog download-dialog" >
+    <div class="ui-dialog-title">Save Story</div>
+    <div class="ui-dialog-content">
+        Download errow!
+    </div>
+    <div class="ui-dialog-btns">
+        <a class="ui-btn btn-submit">Confirm</a>
+    </div>
+    <div class="clearfix"></div>
+</div>
 
 <script src="../public/js/cordova.js"></script>
 <script type="text/javascript" charset="utf-8" src="cordova.file.js"></script>
@@ -362,7 +373,11 @@
     }
     //模板下载error
     function onError(id){
-        alert("tpl download error!");
+        var downDialog = $(".download-dialog");
+        Dialog.show(downDialog);
+        downDialog.find(".btn-submit").click(function () {
+            Dialog.hide(downDialog);
+        });
     }
 
     //字体下载error
@@ -371,7 +386,11 @@
         target.addClass("download");
         target.find(".icon-download").show();
         target.find(".download-progress-bar").hide().find(".download-progress-percent").css({"width":0});
-        alert("font download error!");
+        var downDialog = $(".download-dialog");
+        Dialog.show(downDialog);
+        downDialog.find(".btn-submit").click(function () {
+            Dialog.hide(downDialog);
+        });
     }
     function showMessage(message){
         jQuery("#message").text(message);

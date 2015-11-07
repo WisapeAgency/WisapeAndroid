@@ -272,7 +272,7 @@ a {text-decoration: none;color:inherit;}
     color:#52b502;
     border-bottom:2px solid #52b502;
 }
-.tpl-page-cat .bd {padding:0.35rem 0rem 0.35rem 0.62rem;height:4.29rem;width:15.38rem;position:relative;box-sizing: content-box;}
+.tpl-page-cat .bd {padding:0.35rem 0rem 0.35rem 0.62rem;height:5.05rem;width:15.38rem;position:relative;box-sizing:border-box;}
 .tpl-page-item {width:2.81rem;height:4.29rem;display:inline-block;position: relative;margin-right:0.62rem;overflow: hidden;}
 .tpl-page-item .icon-tags-hot,.tpl-page-item .icon-tags-new {display:none;width:18px;height:28px;position: absolute;left:0;top:0;}
 .tpl-page-item .stage-thumb {width:100%;height:100%;}

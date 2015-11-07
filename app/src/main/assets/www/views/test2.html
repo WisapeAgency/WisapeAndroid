@@ -14,7 +14,7 @@
 <body>
 <div class="loading" style="display:none;position: fixed;left:0;top:0;bottom:0;right:0;background-image:url(../public/img/loading.gif);background-position:50% 50%;background-size:cover;z-index: 10000">
 </div>
-<div id="main" class="page" style="display: none">
+<div id="main" class="page" style="display: block">
     <div class="header">
         <div class="pull-left">
             <a class="icon-arrow-left" id="storySave"></a>
@@ -138,8 +138,98 @@
         </div>
 
     </div>
-    <div class="pages pages-big" id="pages-scroll" style="" >
+    <div class="pages " id="pages-scroll" style="" >
         <ul>
+            <li>
+                <!--mt6-->
+                <div class="stage-content"
+                     style=" width:100%;height:100%;position: relative;background:#f8fbff;overflow: hidden">
+
+                    <div class="stage-content-box" style="position: absolute;bottom:0;left:0;width:16rem;-webkit-transform-origin:0 100%;">
+                        <div class="symbol" style="">
+                            <div class="pages-img"  data-animation="animated slideInDown" >
+                                <img src="img/pic4.jpg"  style="width:16rem;height:10.66rem;" alt=""/>
+                            </div>
+                        </div>
+                        <div class="symbol" style="position: absolute;right:1.37rem;bottom:8.48rem;z-index: 1;">
+                            <div class="pages-img"  data-animation="animated slideInDown" >
+                                <img src="img/pic1.jpg"  style="width:7.40rem;height:9.62rem;border:0.14rem solid #fff;" alt=""/>
+                            </div>
+                        </div>
+                        <div class="symbol" style="position: absolute;left:0;bottom:13.33rem;z-index: 2;transform:rotate(-13deg); -ms-transform:rotate(-13deg); -moz-transform:rotate(-13deg); -webkit-transform:rotate(-13deg);-o-transform:rotate(-13deg);">
+                            <div class="pages-img"  data-animation="animated slideInDown" >
+                                <img src="img/pic3.jpg"  style="width:7.40rem;height:9.62rem;border:0.14rem solid #fff;" alt=""/>
+                            </div>
+                        </div>
+                        <div class="symbol" style="position: absolute;right:0;bottom:16rem;z-index: 2;transform:rotate(13deg); -ms-transform:rotate(13deg); -moz-transform:rotate(13deg);-webkit-transform:rotate(13deg);-o-transform:rotate(13deg);">
+                            <div class="pages-img"  data-animation="animated slideInDown" >
+                                <img src="img/pic3.jpg"  style="width:4.7rem;height:6.9rem;border:0.14rem solid #fff;" alt=""/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <!--mt5-->
+                <div class="stage-content edit-area pages-img pages-img-bg"
+                     style=" text-align:center;word-break:break-all;background: url(img/bg.jpg);background-size: cover;background-position:50% 50%;width:100%;height:100%;position: relative;">
+
+                    <div class="stage-content-box j-vmiddle" style="position: absolute;text-align: center;width:16rem;-webkit-transform-origin:0 0%;">
+                        <div class="symbol" >
+                            <div class="pages-txt edit-area" style="text-align:center;word-break:break-all;display: box;display: -webkit-box;display: -moz-box;-webkit-box-pack:center;-moz-box-pack:center;-webkit-box-align:center;-moz-box-align:center;font-size:1.06rem;color:#000;font-family: 'Lato';width:9.62rem;height:9.62rem;margin:0 auto;-webkit-border-radius: 9999px;background-color:rgba(255,255,255,0.5);text-transform: uppercase;">
+                                SPrecious<br/>classmate<br/>affection
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <!--mt1-->
+                <div class="stage-content"
+                     style=" word-break:break-all;width:100%;height:100%;position: relative;background: red">
+
+                    <div class="stage-content-box j-vmiddle" style="-webkit-transform-origin:0% 0%;text-align:center;width:16rem;position: absolute;z-index: 1">
+                        <div  style="margin-top:-1rem;margin-left:1rem;z-index: 2;position: absolute">
+                            <div class="symbol" style="">
+                                <div class="pages-img"  data-animation="animated slideInDown" >
+                                    <img src="img/pic2.jpg"  style="border:0.14rem solid #fff;width:9.48rem;height:3.55rem;" alt=""/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="symbol" style="position: relative;z-index: 1;width:16rem;">
+                            <div class="pages-img"  data-animation="animated wobble" >
+                                <img src="img/pic1.jpg"  style="border:0.14rem solid #fff;width:10.81rem;height:17.24rem;" alt=""/>
+                            </div>
+                        </div>
+                        <div style="z-index: 2;text-align: right;position: absolute;bottom:-1.5rem;right:1rem;">
+                            <div class="symbol" style="">
+                                <div class="pages-img"  data-animation="animated slideInDown" >
+                                    <img src="img/pic2.jpg"  style="border:0.14rem solid #fff;width:5.92rem;height:5.92rem;" alt=""/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+
+            </li>
+            <script>
+                $(function(){
+                    //setTimeout(function(){
+                    $(".j-vmiddle").each(function(){
+                        var _this = $(this),
+                                parent = _this.parents(".stage-content"),
+                                scale = parseFloat(_this.css("transform").split("matrix(")[1].split(",")[0]);
+                        console.info(_this.parents(".stage-content").height());
+                        console.info(_this.height());
+                        _this.css({
+                            "margin-top": (parent.height() - _this.height()*scale)/2
+                        })
+                    })
+                    //},1000)
+                })
+            </script>
             <!--cover-->
             <li class="active">
                 <div class="count">about</div>
@@ -308,35 +398,35 @@
         </div>
     </div>
     <div class="pages editable">
-        <div class="stage-content edit-area pages-img pages-img-bg"
-             style=" text-align:center;word-break:break-all;background: url(img/bg.jpg);background-size: cover;background-position:50% 50%;width:100%;height:100%;position: relative;">
-            <!--<div class="stage-content-box" style="">-->
-            <div class="stage-content-box" style="position: absolute;text-align: center;top:3.65rem;width:16rem;-webkit-transform-origin:0 0;">
-                <div class="symbol" >
-                    <div class="pages-txt edit-area" style="display: inline-block;font-family: 'bebas';font-size:3.5rem;line-height: 3.5rem;color:#cc0001;">
-                        JOITN
+        <div class="stage-content"
+             style=" width:100%;height:100%;position: relative;background:#f8fbff;overflow: hidden">
+
+            <div class="stage-content-box" style="position: absolute;bottom:0;left:0;width:16rem;-webkit-transform-origin:0 100%;">
+                <div class="symbol" style="">
+                    <div class="pages-img"  data-animation="animated slideInDown" >
+                        <img src="img/pic4.jpg"  style="width:16rem;height:10.66rem;" alt=""/>
                     </div>
                 </div>
-                <div class="symbol" style="z-index: 3;">
-                    <div class="pages-txt edit-area active" style="text-align:left;display: inline-block;margin-top:0.5rem;font-family: 'bebas';font-size:0.5rem;line-height:100%;color:#000;">Wonderful is Coming<br/>Wonderful is Coming<br/>Wonderful is Coming<br/>Wonderful is Coming<br/>Wonderful is Coming<br/>Wonderful is Coming<br/>Wonderful is Coming<br/>Wonderful is Coming<br/>Wonderful is Coming<br/></div>
+                <div class="symbol" style="position: absolute;right:1.37rem;bottom:8.48rem;z-index: 1;">
+                    <div class="pages-img"  data-animation="animated slideInDown" >
+                        <img src="img/pic1.jpg"  style="width:7.40rem;height:9.62rem;border:0.14rem solid #fff;" alt=""/>
+                    </div>
                 </div>
-            </div>
-            <div class="stage-content-box" style="position: absolute;bottom:2rem;text-align: center;width:16rem;-webkit-transform-origin:0 0;">
-                <div class="symbol" style="z-index: 999; ">
-                    <div class="pages-img edit-area">
-                        <img data-name="img1" style="width:4.44rem;height:1.03rem;" src="img/logo.png"></div>
+                <div class="symbol" style="position: absolute;left:0;bottom:13.33rem;z-index: 2;transform:rotate(-13deg); -ms-transform:rotate(-13deg); -moz-transform:rotate(-13deg); -webkit-transform:rotate(-13deg);-o-transform:rotate(-13deg);">
+                    <div class="pages-img"  data-animation="animated slideInDown" >
+                        <img src="img/pic3.jpg"  style="width:7.40rem;height:9.62rem;border:0.14rem solid #fff;" alt=""/>
+                    </div>
                 </div>
-                <div class="symbol" style="z-index: 3;">
-                    <div class="pages-txt edit-area " style="font-size:0.53rem;color:#000;font-family: 'Lato';margin-top:0.3rem;">
-                        Something Wonderful is Coming
+                <div class="symbol" style="position: absolute;right:0;bottom:16rem;z-index: 2;transform:rotate(13deg); -ms-transform:rotate(13deg); -moz-transform:rotate(13deg);-webkit-transform:rotate(13deg);-o-transform:rotate(13deg);">
+                    <div class="pages-img"  data-animation="animated slideInDown" >
+                        <img src="img/pic3.jpg"  style="width:4.7rem;height:6.9rem;border:0.14rem solid #fff;" alt=""/>
                     </div>
                 </div>
             </div>
-            <!--</div>-->
         </div>
     </div>
 
-    <div class="pop-layer pop-editer-opt" style="display: none">
+    <div class="pop-layer pop-editer-opt" style="display: block">
         <div class="hd">
             <i class="icon-bold" id="setFontWeight" ></i>
             <i class="icon-italic" id="setFontStyle"></i>
@@ -475,7 +565,7 @@
     </div>
 </div>
 
-<div id="storyStageList" style="display: none">
+<div id="storyStageList" style="display: block">
     <div class="header">
         <div class="pull-left">
             <a class="icon-arrow-left"></a>
@@ -494,33 +584,31 @@
         <ul id="storyDragBox">
             <li class="tpl-page-item" draggable="false">
                 <span class="drag-handle">☰</span>
-                <div class="stage-content edit-area pages-img pages-img-bg"
-                     style=" text-align:center;word-break:break-all;background: url(img/bg.jpg);background-size: cover;background-position:50% 50%;width:100%;height:100%;position: relative;">
-                    <!--<div class="stage-content-box" style="">-->
-                    <div class="stage-content-box" style="position: absolute;text-align: center;top:3.65rem;width:16rem;-webkit-transform-origin:0 0;">
-                        <div class="symbol" >
-                            <div class="pages-txt edit-area" style="display: inline-block;font-family: 'bebas';font-size:3.5rem;line-height: 3.5rem;color:#cc0001;">
-                                JOITN
+                <div class="stage-content"
+                     style=" width:100%;height:100%;position: relative;background:#f8fbff;overflow: hidden">
+
+                    <div class="stage-content-box" style="position: absolute;bottom:0;left:0;width:16rem;-webkit-transform-origin:0 100%;">
+                        <div class="symbol" style="">
+                            <div class="pages-img"  data-animation="animated slideInDown" >
+                                <img src="img/pic4.jpg"  style="width:16rem;height:10.66rem;" alt=""/>
                             </div>
                         </div>
-                        <div class="symbol" style="z-index: 3;">
-                            <div class="pages-txt edit-area" style="display: inline-block;margin-top:0.5rem;font-family: 'bebas';font-size:3.5rem;line-height: 3.5rem;color:#000;">
-                                WISAPE
+                        <div class="symbol" style="position: absolute;right:1.37rem;bottom:8.48rem;z-index: 1;">
+                            <div class="pages-img"  data-animation="animated slideInDown" >
+                                <img src="img/pic1.jpg"  style="width:7.40rem;height:9.62rem;border:0.14rem solid #fff;" alt=""/>
+                            </div>
+                        </div>
+                        <div class="symbol" style="position: absolute;left:0;bottom:13.33rem;z-index: 2;transform:rotate(-13deg); -ms-transform:rotate(-13deg); -moz-transform:rotate(-13deg); -webkit-transform:rotate(-13deg);-o-transform:rotate(-13deg);">
+                            <div class="pages-img"  data-animation="animated slideInDown" >
+                                <img src="img/pic3.jpg"  style="width:7.40rem;height:9.62rem;border:0.14rem solid #fff;" alt=""/>
+                            </div>
+                        </div>
+                        <div class="symbol" style="position: absolute;right:0;bottom:16rem;z-index: 2;transform:rotate(13deg); -ms-transform:rotate(13deg); -moz-transform:rotate(13deg);-webkit-transform:rotate(13deg);-o-transform:rotate(13deg);">
+                            <div class="pages-img"  data-animation="animated slideInDown" >
+                                <img src="img/pic3.jpg"  style="width:4.7rem;height:6.9rem;border:0.14rem solid #fff;" alt=""/>
                             </div>
                         </div>
                     </div>
-                    <div class="stage-content-box" style="position: absolute;bottom:1rem;text-align: center;width:16rem;-webkit-transform-origin:0 0;">
-                        <div class="symbol" style="z-index: 999; ">
-                            <div class="pages-img edit-area">
-                                <img data-name="img1" style="width:4.44rem;height:1.03rem;" src="img/logo.png"></div>
-                        </div>
-                        <div class="symbol" style="z-index: 3;">
-                            <div class="pages-txt edit-area" style="font-size:0.53rem;color:#000;font-family: 'Lato';margin-top:0.3rem;">
-                                Something Wonderful is Coming
-                            </div>
-                        </div>
-                    </div>
-                    <!--</div>-->
                 </div>
                 <i class="icon-correct" style="display: block"></i>
             </li>
