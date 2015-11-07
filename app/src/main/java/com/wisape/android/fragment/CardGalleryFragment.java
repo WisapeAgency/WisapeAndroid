@@ -220,7 +220,7 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
             case LOADER_DELETE_STORY:
                 if (data.arg1 == HttpUrlConstancts.STATUS_SUCCESS) {
                     deleteData();
-                    showToast("detele story success");
+                    showToast("delete story success");
                 } else {
                     showToast("Delete Story Failure");
                 }
