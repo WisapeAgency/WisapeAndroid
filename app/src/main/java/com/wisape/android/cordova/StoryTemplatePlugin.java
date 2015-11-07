@@ -309,6 +309,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
                     StoryEntity storyEntity = StoryLogic.instance().updateStory(WisapeApplication.getInstance(), story);
                     StoryLogic.instance().saveStoryEntityToShare(storyEntity);
                     sendBroadcastUpdateStory();
+                    callbackContext.success();
                     MainActivity.launch(getCurrentActivity());
                     cordova.getActivity().finish();
                 }
