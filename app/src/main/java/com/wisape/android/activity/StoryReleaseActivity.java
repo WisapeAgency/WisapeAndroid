@@ -180,6 +180,7 @@ public class StoryReleaseActivity extends BaseActivity {
     public void onBackPressed() {
 
         if(!isSucess && !isUpload){
+            LogUtil.d("产生草稿story");
             StoryEntity storyEntity = StoryLogic.instance().updateStory(this, StoryLogic.instance().getStoryEntityFromShare());
             StoryLogic.instance().saveStoryEntityToShare(storyEntity);
             Intent intent = new Intent();

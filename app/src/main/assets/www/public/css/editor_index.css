@@ -281,15 +281,16 @@ a {text-decoration: none;color:inherit;}
 .tpl-page-item .download-progress-bar { position: absolute; left: 0.1rem; bottom: .2rem;width:2.41rem;}
 .tpl-page-item.active {border:2px solid #52b502;}
 
+#pages-scroll {height:15.24px;}
 .pages {width:100%;margin:0.444rem 0;position:relative;overflow: hidden;}
 .pages li {width:9.71rem;height:15.24rem;float:left;position: relative;margin-left:1.06rem;opacity: 0.5;-webkit-transform:translate3d(0,0,0);}
 .pages li.active  {opacity: 1}
 .pages li .count {z-index:999;position: absolute;left:0;bottom:0;background:rgba(82,181,2,0.5);color:#fff;font-size:14px;padding:2px 6px;}
 .pages-item .pages-item-thumb {width:100%;}
 .pages .stage-content {border-radius: 0.2rem;}
-.pages-big {margin-top:3.37rem;}
+.pages-big {margin-top:3.37rem;height:15.24rem;}
 .pages-big li {width:14rem;height:22.35rem;margin-left:2rem;}
-
+#pages-scroll {height:15.24rem;}
 .story-page-list {width:100%;overflow: hidden}
 .story-page-list .icon-correct {
     display: none;
@@ -471,6 +472,7 @@ a {text-decoration: none;color:inherit;}
 .drag-handle {display:none;position: absolute; top: 0px; right: 0px; bottom:0;left:0;background: #000; width:100%;height:100%;opacity: 0;z-index: 10000;}
 li.selected .drag-handle {display: block;}
 .story-page-list .count {display: none}
+
 
 
 @keyframes activeAnimation

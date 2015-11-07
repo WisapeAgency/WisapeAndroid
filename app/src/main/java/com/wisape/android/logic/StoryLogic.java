@@ -943,6 +943,7 @@ public class StoryLogic {
         database.beginTransaction();
         StoryEntity resultEntity = null;
         try {
+            storyEntity.status = ApiStory.AttrStoryInfo.STORY_STATUS_TEMPORARY;
             dao = databaseHelper.getDao(StoryEntity.class);
             StoryEntity localStoryEntity = dao.queryBuilder().where().eq("id", storyEntity.id).queryForFirst();
             if (null != localStoryEntity) {
