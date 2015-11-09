@@ -11,7 +11,7 @@ import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.google.gson.Gson;
-//import com.parse.codec.digest.DigestUtils;
+import com.parse.codec.digest.DigestUtils;
 import com.wisape.android.R;
 import com.wisape.android.WisapeApplication;
 import com.wisape.android.activity.MainActivity;

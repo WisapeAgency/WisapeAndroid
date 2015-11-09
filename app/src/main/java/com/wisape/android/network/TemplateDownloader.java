@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.util.Log;
 
 //import com.parse.codec.digest.DigestUtils;
+import com.parse.codec.digest.DigestUtils;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -156,12 +157,12 @@ public class TemplateDownloader implements Runnable {
             if (destFile.exists()){
                 try{
                     InputStream is = new FileInputStream(destFile);
-//                    String md5 = DigestUtils.md5Hex(is);
-//                    if (md5.equals(templateInfo.hash_code)){
-//                        unzipTemplate(downUri, template, templateInfo);
-//                    } else {
-//                        restartDownload(downUri, template, templateInfo);
-//                    }
+                    String md5 = DigestUtils.md5Hex(is);
+                    if (md5.equals(templateInfo.hash_code)){
+                        unzipTemplate(downUri, template, templateInfo);
+                    } else {
+                        restartDownload(downUri, template, templateInfo);
+                    }
                 }catch (IOException e1){
                     e1.printStackTrace();
                 }
