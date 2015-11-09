@@ -687,19 +687,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
             return content.toString();
         } catch (IOException e) {
             LogUtil.e("读取html文件内容出错:" + path, e);
-            File parentFile = new File(path).getParentFile();
-            try {
-                if (parentFile.isFile()) {
-                    FileUtils.forceDelete(parentFile);
-                } else {
-                    FileUtils.deleteDirectory(parentFile);
-                }
-                File zipFile = new File(parentFile.getAbsolutePath() + ".zip");
-                ZipUtils.unzip(Uri.fromFile(zipFile), parentFile);
-            } catch (IOException e1) {
-
-            }
-            return readHtml(path);
+            return null;
         } finally {
             if (reader != null) {
                 try {
