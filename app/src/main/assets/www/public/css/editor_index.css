@@ -281,16 +281,17 @@ a {text-decoration: none;color:inherit;}
 .tpl-page-item .download-progress-bar { position: absolute; left: 0.1rem; bottom: .2rem;width:2.41rem;}
 .tpl-page-item.active {border:2px solid #52b502;}
 
-#pages-scroll {height:15.24px;}
 .pages {width:100%;margin:0.444rem 0;position:relative;overflow: hidden;}
-.pages li {width:9.71rem;height:15.24rem;float:left;position: relative;margin-left:1.06rem;opacity: 0.5;-webkit-transform:translate3d(0,0,0);}
+.pages li {width:9.71rem;height:15.24rem;float:left;position: relative;margin-left:1.06rem;opacity: 0.5;-webkit-transform:translate3d(0,0,0);border-radius: 0.2rem;}
 .pages li.active  {opacity: 1}
-.pages li .count {z-index:999;position: absolute;left:0;bottom:0;background:rgba(82,181,2,0.5);color:#fff;font-size:14px;padding:2px 6px;}
+.pages li .count {z-index:999;position: absolute;left:0;bottom:0;background:rgba(82,181,2,0.5);color:#fff;font-size:14px;padding:2px 6px;border-bottom-left-radius: 0.2rem;}
 .pages-item .pages-item-thumb {width:100%;}
-.pages .stage-content {border-radius: 0.2rem;}
+.pages .stage-content {}
 .pages-big {margin-top:3.37rem;height:15.24rem;}
-.pages-big li {width:14rem;height:22.35rem;margin-left:2rem;}
-#pages-scroll {height:15.24rem;}
+.pages-big li {width:14rem;height:22.35rem;margin-left:2rem;background: green}
+#pages-scroll {height:15.84rem;}
+#pages-scroll.pages-big {height:23.84rem;}
+#pages-scroll li {border:#d9d9d9 1px solid;box-shadow: 0 0.08rem 0.4rem rgba(0,0,0,0.15)}
 .story-page-list {width:100%;overflow: hidden}
 .story-page-list .icon-correct {
     display: none;
@@ -302,6 +303,7 @@ a {text-decoration: none;color:inherit;}
     right:-0.007rem;
     z-index: 999;
 }
+.story-page-list .tpl-page-item.selected {opacity: 1;}
 .story-page-list .selected  .icon-correct {display: block}
 .story-page-list {padding:0 0.41rem;margin-top:2.37rem;}
 .story-page-list .tpl-page-item {
@@ -311,13 +313,16 @@ a {text-decoration: none;color:inherit;}
     display: inline-block;
     border-radius: 0.2rem;
     overflow: hidden;
+    border:#d9d9d9 1px solid;
+    opacity: 0.5;
+    box-shadow: 0 0.04rem 0.2rem rgba(0,0,0,0.15)
 
 }
 .story-page-list .ico-acitve {display: none!important;}
 .story-page-list .tpl-page-item img {width:100%;height:auto;}
 
 /*editor-text*/
-.pop-active {padding-bottom:12.32rem;}
+.pop-active {padding-bottom:13.32rem;}
 .font-resize span.opt-right span {width:2.51rem;height:1.48rem;}
 .pop-editer-opt,.pop-editer-font,.pop-editer-color,.pop-editer-animation,.pop-editer-text  {position: fixed;bottom:0;left:0;width:100%;background:#fff;text-align: left;}
 .pop-editer-opt .hd,.pop-editer-font .hd,.pop-editer-color .hd,.pop-editer-animation .hd  {height:2.51rem;background:#f2f2f2;border-top:1px solid #d5d6d7;border-bottom:1px solid #d5d6d7;line-height: 2.51rem;}
@@ -333,7 +338,7 @@ a {text-decoration: none;color:inherit;}
 .pop-editer-opt .opt-animation-val i {margin-top: 0.3rem;float:left;display: inline-block;width:0.88rem;height:0.88rem;background-size: 100% 100%;border-radius: 0.88rem;border:1px solid #52b502;}
 .pop-editer-opt .opt-font-val {margin-top: 0.5rem;float:left;font-size:0.622rem;}
 .pop-editer-text {background: #f2f2f2;padding:0.44rem 0.59rem;}
-.pop-editer-text .textarea-word {position:relative;height:1.8rem;width:12.6rem;color:#2d3437;font-size:0.71rem;resize: none;overflow-y:visible;border-radius: 0.15rem;border:1px solid #d6d7d8;background: #fff;-webkit-appearance:none;outline:none;max-height: 3rem;line-height: 0.9rem}
+.pop-editer-text .textarea-word {position:relative;width:12.6rem;color:#2d3437;font-size:0.71rem;resize: none;overflow-y:visible;border-radius: 0.15rem;border:1px solid #d6d7d8;background: #fff;-webkit-appearance:none;outline:none;min-height: 1.87rem;max-height:2.7rem;line-height: 0.9rem}
 .btn-text-done {color:#2d3437;font-size:0.71rem;}
 .btn-text-del {position: absolute;left:0;top:0;}
 
@@ -400,8 +405,8 @@ a {text-decoration: none;color:inherit;}
     left: 0;
     bottom:0;
     right:0;
-    background: #888;
-    opacity: 0.5;
+    background: #000;
+    opacity: 0.7;
     display: none;
     z-index: 100001;
     -webkit-transform: translateZ(0);
@@ -437,7 +442,7 @@ a {text-decoration: none;color:inherit;}
 
 .stage { border-radius: 5px;overflow: hidden;}
 #editorText {text-align: center;}
-#editorText .pages {width:14rem;height:22.35rem;margin:2.87rem 1rem 0.5rem 1rem;}
+#editorText .pages {width:14rem;height:22.35rem;margin:2.87rem 1rem 0.5rem 1rem;border-radius:0.2rem;border:#d9d9d9 1px solid;box-shadow: 0 0.08rem 0.4rem rgba(0,0,0,0.15)}
 #editorText .pages .count {display: none}
 .stage-content .stage-content-box {
     -moz-transform:scale(0.61);

@@ -376,7 +376,7 @@
     function onError(id){
         var downDialog = $(".download-dialog");
         Dialog.show(downDialog);
-        downDialog.find(".btn-submit").click(function () {
+        downDialog.find(".btn-submit").unbind("click").bind("click",function () {
             Dialog.hide(downDialog);
         });
     }
@@ -389,7 +389,7 @@
         target.find(".download-progress-bar").hide().find(".download-progress-percent").css({"width":0});
         var downDialog = $(".download-dialog");
         Dialog.show(downDialog);
-        downDialog.find(".btn-submit").click(function () {
+        downDialog.find(".btn-submit").unbind("click").bind("click",function () {
             Dialog.hide(downDialog);
         });
     }
@@ -498,7 +498,7 @@
             var delTipDialog = $(".del-tip-dialog");
             if($dragBoxLi.length == $dragBoxLi.filter(".selected").length) {
                 Dialog.show(delTipDialog);
-                delTipDialog.find(".btn-cancle").click(function () {
+                delTipDialog.find(".btn-cancle").unbind("click").bind("click",function () {
                     Dialog.hide(delTipDialog);
                 });
                 return;
@@ -507,10 +507,10 @@
             if($dragBoxLi.filter(".selected").length == 0) return;
 
             Dialog.show(delDialog);
-            delDialog.find(".btn-cancle").click(function () {
+            delDialog.find(".btn-cancle").unbind("click").bind("click",function () {
                 Dialog.hide(delDialog);
             });
-            delDialog.find(".btn-submit").click(function () {
+            delDialog.find(".btn-submit").unbind("click").bind("click",function () {
                 mask.hide();
                 Dialog.hide(delDialog);
                 $dragBoxLi.filter(".selected").remove();

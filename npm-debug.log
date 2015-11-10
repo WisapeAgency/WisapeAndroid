@@ -1,200 +1,591 @@
 0 info it worked if it ends with ok
-1 verbose cli [ 'node',
-1 verbose cli   '/usr/local/bin/npm',
-1 verbose cli   'install',
-1 verbose cli   '-g',
-1 verbose cli   'ripple-emulator' ]
-2 info using npm@2.11.3
+1 verbose cli [ 'node', '/usr/local/bin/npm', 'install', '-g', 'webpack' ]
+2 info using npm@2.14.6
 3 info using node@v0.12.7
 4 verbose install initial load of /usr/local/lib/package.json
 5 verbose readDependencies loading dependencies from /usr/local/lib/package.json
-6 silly cache add args [ 'ripple-emulator', null ]
-7 verbose cache add spec ripple-emulator
-8 silly cache add parsed spec { raw: 'ripple-emulator',
+6 silly cache add args [ 'webpack', null ]
+7 verbose cache add spec webpack
+8 silly cache add parsed spec { raw: 'webpack',
 8 silly cache add   scope: null,
-8 silly cache add   name: 'ripple-emulator',
+8 silly cache add   name: 'webpack',
 8 silly cache add   rawSpec: '',
 8 silly cache add   spec: '*',
 8 silly cache add   type: 'range' }
-9 silly addNamed ripple-emulator@*
-10 verbose addNamed "*" is a valid semver range for ripple-emulator
-11 silly addNameRange { name: 'ripple-emulator', range: '*', hasData: false }
-12 silly mapToRegistry name ripple-emulator
+9 silly addNamed webpack@*
+10 verbose addNamed "*" is a valid semver range for webpack
+11 silly addNameRange { name: 'webpack', range: '*', hasData: false }
+12 silly mapToRegistry name webpack
 13 silly mapToRegistry using default registry
 14 silly mapToRegistry registry https://registry.npmjs.org/
-15 silly mapToRegistry uri https://registry.npmjs.org/ripple-emulator
-16 verbose addNameRange registry:https://registry.npmjs.org/ripple-emulator not in flight; fetching
-17 verbose request uri https://registry.npmjs.org/ripple-emulator
+15 silly mapToRegistry uri https://registry.npmjs.org/webpack
+16 verbose addNameRange registry:https://registry.npmjs.org/webpack not in flight; fetching
+17 verbose request uri https://registry.npmjs.org/webpack
 18 verbose request no auth needed
-19 info attempt registry request try #1 at 21:43:08
-20 verbose request id 1691c04886efe44d
-21 http request GET https://registry.npmjs.org/ripple-emulator
-22 http 200 https://registry.npmjs.org/ripple-emulator
-23 silly get cb [ 200,
-23 silly get   { server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
-23 silly get     etag: '"6PK344INPAZQBTNXYHAYZ5U5T"',
-23 silly get     'content-type': 'application/json',
-23 silly get     'cache-control': 'max-age=60',
-23 silly get     'content-length': '31423',
-23 silly get     'accept-ranges': 'bytes',
-23 silly get     date: 'Mon, 21 Sep 2015 13:43:09 GMT',
-23 silly get     via: '1.1 varnish',
-23 silly get     age: '0',
-23 silly get     connection: 'keep-alive',
-23 silly get     'x-served-by': 'cache-nrt6131-NRT',
-23 silly get     'x-cache': 'MISS',
-23 silly get     'x-cache-hits': '0',
-23 silly get     'x-timer': 'S1442842988.875439,VS0,VE739',
-23 silly get     vary: 'Accept' } ]
-24 verbose get saving ripple-emulator to /Users/apple/.npm/registry.npmjs.org/ripple-emulator/.cache.json
-25 silly addNameRange number 2 { name: 'ripple-emulator', range: '*', hasData: true }
-26 silly addNameRange versions [ 'ripple-emulator',
-26 silly addNameRange   [ '0.9.15',
-26 silly addNameRange     '0.9.16',
-26 silly addNameRange     '0.9.17',
-26 silly addNameRange     '0.9.18',
-26 silly addNameRange     '0.9.19',
-26 silly addNameRange     '0.9.20',
-26 silly addNameRange     '0.9.21',
-26 silly addNameRange     '0.9.22',
-26 silly addNameRange     '0.9.23',
-26 silly addNameRange     '0.9.24',
-26 silly addNameRange     '0.9.28',
-26 silly addNameRange     '0.9.29',
-26 silly addNameRange     '0.9.30',
-26 silly addNameRange     '0.9.31',
-26 silly addNameRange     '0.9.32' ] ]
-27 silly addNamed ripple-emulator@0.9.32
-28 verbose addNamed "0.9.32" is a plain semver version for ripple-emulator
-29 silly mapToRegistry name ripple-emulator
-30 silly mapToRegistry using default registry
-31 silly mapToRegistry registry https://registry.npmjs.org/
-32 silly mapToRegistry uri https://registry.npmjs.org/ripple-emulator
-33 verbose addRemoteTarball https://registry.npmjs.org/ripple-emulator/-/ripple-emulator-0.9.32.tgz not in flight; adding
-34 verbose addRemoteTarball [ 'https://registry.npmjs.org/ripple-emulator/-/ripple-emulator-0.9.32.tgz',
-34 verbose addRemoteTarball   '9e8c6041ac467a4f508dfd9cb84dbdb73ed3d6af' ]
-35 info retry fetch attempt 1 at 21:43:09
-36 info attempt registry request try #1 at 21:43:09
-37 http fetch GET https://registry.npmjs.org/ripple-emulator/-/ripple-emulator-0.9.32.tgz
-38 http fetch 200 https://registry.npmjs.org/ripple-emulator/-/ripple-emulator-0.9.32.tgz
-39 silly fetchAndShaCheck shasum 9e8c6041ac467a4f508dfd9cb84dbdb73ed3d6af
-40 verbose addTmpTarball /var/folders/sb/tz3mm3wd3w551__2myzdqbrw0000gn/T/npm-1950-cb5aef3b/registry.npmjs.org/ripple-emulator/-/ripple-emulator-0.9.32.tgz not in flight; adding
-41 verbose addTmpTarball already have metadata; skipping unpack for ripple-emulator@0.9.32
-42 silly cache afterAdd ripple-emulator@0.9.32
-43 verbose afterAdd /Users/apple/.npm/ripple-emulator/0.9.32/package/package.json not in flight; writing
-44 verbose afterAdd /Users/apple/.npm/ripple-emulator/0.9.32/package/package.json written
-45 silly install resolved [ { name: 'ripple-emulator',
-45 silly install resolved     version: '0.9.32',
-45 silly install resolved     description: 'A browser based html5 mobile application development and testing tool',
-45 silly install resolved     homepage: 'http://ripple.incubator.apache.org/',
-45 silly install resolved     author:
-45 silly install resolved      { name: 'Apache Ripple Community',
-45 silly install resolved        url: 'http://ripple.incubator.apache.org/' },
-45 silly install resolved     licenses: [ [Object] ],
-45 silly install resolved     repository:
-45 silly install resolved      { type: 'git',
-45 silly install resolved        url: 'https://git-wip-us.apache.org/repos/asf/incubator-ripple.git' },
-45 silly install resolved     keywords:
-45 silly install resolved      [ 'cordova',
-45 silly install resolved        'phonegap',
-45 silly install resolved        'ripple',
-45 silly install resolved        'mobile',
-45 silly install resolved        'testing',
-45 silly install resolved        'test',
-45 silly install resolved        'emulator' ],
-45 silly install resolved     bin: { ripple: './bin/ripple' },
-45 silly install resolved     main: './lib/index',
-45 silly install resolved     dependencies:
-45 silly install resolved      { accounting: '0.x.x',
-45 silly install resolved        colors: '0.6.0-1',
-45 silly install resolved        'connect-xcors': '0.5.2',
-45 silly install resolved        express: '3.1.0',
-45 silly install resolved        moment: '1.x.x',
-45 silly install resolved        open: '0.0.3',
-45 silly install resolved        request: '2.12.0' },
-45 silly install resolved     devDependencies:
-45 silly install resolved      { bower: '1.3.12',
-45 silly install resolved        connect: '2.3.6',
-45 silly install resolved        coverjs: '0.0.14',
-45 silly install resolved        cssmin: '0.3.1',
-45 silly install resolved        'html-minifier': '0.4.5',
-45 silly install resolved        jsdom: '3.1.0',
-45 silly install resolved        jWorkflow: '0.x.x',
-45 silly install resolved        semver: '^4.3.1',
-45 silly install resolved        xmlhttprequest: '1.4.2',
-45 silly install resolved        shelljs: '^0.4.0' },
-45 silly install resolved     files:
-45 silly install resolved      [ 'README.md',
-45 silly install resolved        'DISCLAIMER',
-45 silly install resolved        'LICENSE',
-45 silly install resolved        'NOTICE',
-45 silly install resolved        'lib/index.js',
-45 silly install resolved        'lib/server',
-45 silly install resolved        'lib/cli',
-45 silly install resolved        'assets/server',
-45 silly install resolved        'pkg/hosted',
-45 silly install resolved        'doc',
-45 silly install resolved        'bin' ],
-45 silly install resolved     engines: { node: '>= 0.12.0', npm: '>= 2.5.1' },
-45 silly install resolved     _id: 'ripple-emulator@0.9.32',
-45 silly install resolved     _shasum: '9e8c6041ac467a4f508dfd9cb84dbdb73ed3d6af',
-45 silly install resolved     _resolved: 'https://registry.npmjs.org/ripple-emulator/-/ripple-emulator-0.9.32.tgz',
-45 silly install resolved     _from: 'ripple-emulator@*',
-45 silly install resolved     scripts: {},
-45 silly install resolved     _npmVersion: '2.11.2',
-45 silly install resolved     _nodeVersion: '0.12.6',
-45 silly install resolved     _npmUser: { name: 'timbarham', email: 'npmjs@barhams.info' },
-45 silly install resolved     dist:
-45 silly install resolved      { shasum: '9e8c6041ac467a4f508dfd9cb84dbdb73ed3d6af',
-45 silly install resolved        tarball: 'http://registry.npmjs.org/ripple-emulator/-/ripple-emulator-0.9.32.tgz' },
-45 silly install resolved     maintainers: [ [Object], [Object], [Object], [Object], [Object], [Object] ],
-45 silly install resolved     directories: {} } ]
-46 info install ripple-emulator@0.9.32 into /usr/local/lib
-47 info installOne ripple-emulator@0.9.32
-48 verbose installOne of ripple-emulator to /usr/local/lib not in flight; installing
-49 verbose lock using /Users/apple/.npm/_locks/ripple-emulator-7fde78f973912142.lock for /usr/local/lib/node_modules/ripple-emulator
-50 silly install write writing ripple-emulator 0.9.32 to /usr/local/lib/node_modules/ripple-emulator
-51 verbose unbuild lib/node_modules/ripple-emulator
-52 silly gentlyRm /usr/local/lib/node_modules/ripple-emulator is being purged from base /usr/local
-53 verbose gentlyRm don't care about contents; nuking /usr/local/lib/node_modules/ripple-emulator
-54 verbose tar unpack /Users/apple/.npm/ripple-emulator/0.9.32/package.tgz
-55 verbose tar unpacking to /usr/local/lib/node_modules/ripple-emulator
-56 silly gentlyRm /usr/local/lib/node_modules/ripple-emulator is being purged
-57 verbose gentlyRm don't care about contents; nuking /usr/local/lib/node_modules/ripple-emulator
-58 silly gunzTarPerm modes [ '755', '644' ]
-59 error tar.unpack untar error /Users/apple/.npm/ripple-emulator/0.9.32/package.tgz
-60 verbose unlock done using /Users/apple/.npm/_locks/ripple-emulator-7fde78f973912142.lock for /usr/local/lib/node_modules/ripple-emulator
-61 verbose fstream_path /usr/local/lib/node_modules/ripple-emulator
-62 verbose fstream_type Directory
-63 verbose fstream_class DirWriter
-64 verbose stack Error: EACCES, mkdir '/usr/local/lib/node_modules/ripple-emulator'
-64 verbose stack     at Error (native)
-65 verbose fstream_stack /usr/local/lib/node_modules/npm/node_modules/fstream/lib/dir-writer.js:35:25
-65 verbose fstream_stack /usr/local/lib/node_modules/npm/node_modules/mkdirp/index.js:47:53
-65 verbose fstream_stack FSReqWrap.oncomplete (fs.js:95:15)
-66 verbose cwd /Users/apple/Desktop/workspace/Alex/WisapeAndroid
-67 error Darwin 14.5.0
-68 error argv "node" "/usr/local/bin/npm" "install" "-g" "ripple-emulator"
-69 error node v0.12.7
-70 error npm  v2.11.3
-71 error path /usr/local/lib/node_modules/ripple-emulator
-72 error code EACCES
-73 error errno -13
-74 error Error: EACCES, mkdir '/usr/local/lib/node_modules/ripple-emulator'
-74 error     at Error (native)
-74 error  { [Error: EACCES, mkdir '/usr/local/lib/node_modules/ripple-emulator']
-74 error   errno: -13,
-74 error   code: 'EACCES',
-74 error   path: '/usr/local/lib/node_modules/ripple-emulator',
-74 error   fstream_type: 'Directory',
-74 error   fstream_path: '/usr/local/lib/node_modules/ripple-emulator',
-74 error   fstream_class: 'DirWriter',
-74 error   fstream_stack:
-74 error    [ '/usr/local/lib/node_modules/npm/node_modules/fstream/lib/dir-writer.js:35:25',
-74 error      '/usr/local/lib/node_modules/npm/node_modules/mkdirp/index.js:47:53',
-74 error      'FSReqWrap.oncomplete (fs.js:95:15)' ] }
-75 error Please try running this command again as root/Administrator.
-76 verbose exit [ -13, true ]
-77 verbose unbuild lib/node_modules/ripple-emulator
-78 silly gentlyRm /usr/local/lib/node_modules/ripple-emulator is being purged from base /usr/local
-79 verbose gentlyRm don't care about contents; nuking /usr/local/lib/node_modules/ripple-emulator
+19 info attempt registry request try #1 at 16:44:50
+20 verbose request id 9b294f86a5863f04
+21 verbose etag "CGOG4PIV1VU1LOF0F6L57GXR7"
+22 http request GET https://registry.npmjs.org/webpack
+23 http 200 https://registry.npmjs.org/webpack
+24 verbose headers { server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+24 verbose headers   etag: '"CWQD6MGQ971NUB14NADUJ4K2A"',
+24 verbose headers   'content-type': 'application/json',
+24 verbose headers   'cache-control': 'max-age=60',
+24 verbose headers   'content-length': '698683',
+24 verbose headers   'accept-ranges': 'bytes',
+24 verbose headers   date: 'Tue, 10 Nov 2015 08:44:52 GMT',
+24 verbose headers   via: '1.1 varnish',
+24 verbose headers   age: '10',
+24 verbose headers   connection: 'keep-alive',
+24 verbose headers   'x-served-by': 'cache-ams4132-AMS',
+24 verbose headers   'x-cache': 'HIT',
+24 verbose headers   'x-cache-hits': '1',
+24 verbose headers   'x-timer': 'S1447145092.881930,VS0,VE3',
+24 verbose headers   vary: 'Accept' }
+25 silly get cb [ 200,
+25 silly get   { server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+25 silly get     etag: '"CWQD6MGQ971NUB14NADUJ4K2A"',
+25 silly get     'content-type': 'application/json',
+25 silly get     'cache-control': 'max-age=60',
+25 silly get     'content-length': '698683',
+25 silly get     'accept-ranges': 'bytes',
+25 silly get     date: 'Tue, 10 Nov 2015 08:44:52 GMT',
+25 silly get     via: '1.1 varnish',
+25 silly get     age: '10',
+25 silly get     connection: 'keep-alive',
+25 silly get     'x-served-by': 'cache-ams4132-AMS',
+25 silly get     'x-cache': 'HIT',
+25 silly get     'x-cache-hits': '1',
+25 silly get     'x-timer': 'S1447145092.881930,VS0,VE3',
+25 silly get     vary: 'Accept' } ]
+26 verbose get saving webpack to /Users/apple/.npm/registry.npmjs.org/webpack/.cache.json
+27 silly addNameRange number 2 { name: 'webpack', range: '*', hasData: true }
+28 silly addNameRange versions [ 'webpack',
+28 silly addNameRange   [ '0.1.0',
+28 silly addNameRange     '0.1.1',
+28 silly addNameRange     '0.1.2',
+28 silly addNameRange     '0.1.3',
+28 silly addNameRange     '0.1.4',
+28 silly addNameRange     '0.1.5',
+28 silly addNameRange     '0.1.6',
+28 silly addNameRange     '0.2.0',
+28 silly addNameRange     '0.2.1',
+28 silly addNameRange     '0.2.2',
+28 silly addNameRange     '0.2.3',
+28 silly addNameRange     '0.2.4',
+28 silly addNameRange     '0.2.6',
+28 silly addNameRange     '0.2.7',
+28 silly addNameRange     '0.2.8',
+28 silly addNameRange     '0.3.0',
+28 silly addNameRange     '0.3.1',
+28 silly addNameRange     '0.3.2',
+28 silly addNameRange     '0.3.3',
+28 silly addNameRange     '0.3.4',
+28 silly addNameRange     '0.3.6',
+28 silly addNameRange     '0.3.7',
+28 silly addNameRange     '0.3.8',
+28 silly addNameRange     '0.3.9',
+28 silly addNameRange     '0.3.10',
+28 silly addNameRange     '0.3.11',
+28 silly addNameRange     '0.3.12',
+28 silly addNameRange     '0.3.13',
+28 silly addNameRange     '0.3.14',
+28 silly addNameRange     '0.3.15',
+28 silly addNameRange     '0.3.16',
+28 silly addNameRange     '0.3.17',
+28 silly addNameRange     '0.3.18',
+28 silly addNameRange     '0.3.19',
+28 silly addNameRange     '0.3.20',
+28 silly addNameRange     '0.4.0',
+28 silly addNameRange     '0.4.1',
+28 silly addNameRange     '0.4.2',
+28 silly addNameRange     '0.4.3',
+28 silly addNameRange     '0.4.4',
+28 silly addNameRange     '0.4.5',
+28 silly addNameRange     '0.4.6',
+28 silly addNameRange     '0.4.7',
+28 silly addNameRange     '0.4.8',
+28 silly addNameRange     '0.4.9',
+28 silly addNameRange     '0.4.10',
+28 silly addNameRange     '0.4.11',
+28 silly addNameRange     '0.4.12',
+28 silly addNameRange     '0.4.13',
+28 silly addNameRange     '0.4.14',
+28 silly addNameRange     '0.4.15',
+28 silly addNameRange     '0.4.16',
+28 silly addNameRange     '0.4.17',
+28 silly addNameRange     '0.4.18',
+28 silly addNameRange     '0.4.19',
+28 silly addNameRange     '0.4.20',
+28 silly addNameRange     '0.4.21',
+28 silly addNameRange     '0.4.23',
+28 silly addNameRange     '0.4.24',
+28 silly addNameRange     '0.4.25',
+28 silly addNameRange     '0.5.0',
+28 silly addNameRange     '0.5.1',
+28 silly addNameRange     '0.5.2',
+28 silly addNameRange     '0.5.3',
+28 silly addNameRange     '0.5.4',
+28 silly addNameRange     '0.5.5',
+28 silly addNameRange     '0.5.6',
+28 silly addNameRange     '0.5.7',
+28 silly addNameRange     '0.5.8',
+28 silly addNameRange     '0.5.10',
+28 silly addNameRange     '0.6.0',
+28 silly addNameRange     '0.6.1',
+28 silly addNameRange     '0.6.2',
+28 silly addNameRange     '0.7.0-beta',
+28 silly addNameRange     '0.7.0-beta2',
+28 silly addNameRange     '0.7.0-beta3',
+28 silly addNameRange     '0.7.0-beta4',
+28 silly addNameRange     '0.7.0-beta5',
+28 silly addNameRange     '0.7.0-beta6',
+28 silly addNameRange     '0.7.0-beta7',
+28 silly addNameRange     '0.7.0-beta8',
+28 silly addNameRange     '0.7.0',
+28 silly addNameRange     '0.7.1',
+28 silly addNameRange     '0.7.2',
+28 silly addNameRange     '0.7.3',
+28 silly addNameRange     '0.7.4',
+28 silly addNameRange     '0.7.5',
+28 silly addNameRange     '0.7.6',
+28 silly addNameRange     '0.7.7',
+28 silly addNameRange     '0.7.8',
+28 silly addNameRange     '0.7.9',
+28 silly addNameRange     '0.7.11',
+28 silly addNameRange     '0.7.12',
+28 silly addNameRange     '0.7.13',
+28 silly addNameRange     '0.7.14',
+28 silly addNameRange     '0.7.15',
+28 silly addNameRange     '0.7.16',
+28 silly addNameRange     '0.7.17',
+28 silly addNameRange     '0.8.0-beta1',
+28 silly addNameRange     '0.8.0-beta2',
+28 silly addNameRange     '0.8.0-beta3',
+28 silly addNameRange     '0.8.0-beta4',
+28 silly addNameRange     '0.8.0',
+28 silly addNameRange     '0.8.2',
+28 silly addNameRange     '0.8.3',
+28 silly addNameRange     '0.9.0-beta1',
+28 silly addNameRange     '0.9.0-beta2',
+28 silly addNameRange     '0.9.0-beta4',
+28 silly addNameRange     '0.9.0-beta5',
+28 silly addNameRange     '0.9.0-beta6',
+28 silly addNameRange     '0.9.0-beta7',
+28 silly addNameRange     '0.9.0-beta8',
+28 silly addNameRange     '0.9.0-beta9',
+28 silly addNameRange     '0.9.0-beta10',
+28 silly addNameRange     '0.9.0-beta11',
+28 silly addNameRange     '0.9.0-beta12',
+28 silly addNameRange     '0.9.0-beta13',
+28 silly addNameRange     '0.9.0-beta14',
+28 silly addNameRange     '0.9.0-beta15',
+28 silly addNameRange     '0.9.0-beta16',
+28 silly addNameRange     '0.9.0-beta17',
+28 silly addNameRange     '0.9.0-beta18',
+28 silly addNameRange     '0.9.0-beta19',
+28 silly addNameRange     '0.9.0-beta20',
+28 silly addNameRange     '0.9.0-beta21',
+28 silly addNameRange     '0.9.0-beta22',
+28 silly addNameRange     '0.9.0-beta23',
+28 silly addNameRange     '0.9.0-beta24',
+28 silly addNameRange     '0.9.0-beta25',
+28 silly addNameRange     '0.9.0-beta26',
+28 silly addNameRange     '0.9.0-beta27',
+28 silly addNameRange     '0.9.0-beta28',
+28 silly addNameRange     '0.9.0-beta29',
+28 silly addNameRange     '0.9.0-beta30',
+28 silly addNameRange     '0.9.0-beta31',
+28 silly addNameRange     '0.9.0-beta32',
+28 silly addNameRange     '0.9.0-beta33',
+28 silly addNameRange     '0.9.0-beta34',
+28 silly addNameRange     '0.9.0-beta35',
+28 silly addNameRange     '0.9.0-beta36',
+28 silly addNameRange     '0.9.0-beta37',
+28 silly addNameRange     '0.9.0-beta38',
+28 silly addNameRange     '0.9.0',
+28 silly addNameRange     '0.9.1',
+28 silly addNameRange     '0.9.2',
+28 silly addNameRange     '0.9.3',
+28 silly addNameRange     '0.10.0-beta2',
+28 silly addNameRange     '0.10.0-beta3',
+28 silly addNameRange     '0.10.0-beta5',
+28 silly addNameRange     '0.10.0-beta6',
+28 silly addNameRange     '0.10.0-beta7',
+28 silly addNameRange     '0.10.0-beta8',
+28 silly addNameRange     '0.10.0-beta9',
+28 silly addNameRange     '0.10.0-beta10',
+28 silly addNameRange     '0.10.0-beta11',
+28 silly addNameRange     '0.10.0-beta12',
+28 silly addNameRange     '0.10.0-beta13',
+28 silly addNameRange     '0.10.0-beta14',
+28 silly addNameRange     '0.10.0-beta15',
+28 silly addNameRange     '0.10.0-beta16',
+28 silly addNameRange     '0.10.0-beta17',
+28 silly addNameRange     '0.10.0-beta18',
+28 silly addNameRange     '0.10.0-beta19',
+28 silly addNameRange     '0.10.0-beta20',
+28 silly addNameRange     '0.10.0-beta21',
+28 silly addNameRange     '0.10.0-beta22',
+28 silly addNameRange     '0.10.0-beta23',
+28 silly addNameRange     '0.10.0-beta24',
+28 silly addNameRange     '0.10.0-beta25',
+28 silly addNameRange     '0.10.0',
+28 silly addNameRange     '0.11.0-beta1',
+28 silly addNameRange     '0.11.0-beta2',
+28 silly addNameRange     '0.11.0-beta3',
+28 silly addNameRange     '0.11.0-beta4',
+28 silly addNameRange     '0.11.0-beta5',
+28 silly addNameRange     '0.11.0-beta6',
+28 silly addNameRange     '0.11.0-beta7',
+28 silly addNameRange     '0.11.0-beta8',
+28 silly addNameRange     '0.11.0-beta9',
+28 silly addNameRange     '0.11.0-beta10',
+28 silly addNameRange     '0.11.0-beta11',
+28 silly addNameRange     '0.11.0-beta12',
+28 silly addNameRange     '0.11.0-beta13',
+28 silly addNameRange     '0.11.0-beta14',
+28 silly addNameRange     '0.11.0-beta15',
+28 silly addNameRange     '0.11.0-beta16',
+28 silly addNameRange     '0.11.0-beta17',
+28 silly addNameRange     '0.11.0-beta18',
+28 silly addNameRange     '0.11.0-beta19',
+28 silly addNameRange     '0.11.0-beta20',
+28 silly addNameRange     '0.11.0-beta21',
+28 silly addNameRange     '0.11.0-beta22',
+28 silly addNameRange     '0.11.0-beta23',
+28 silly addNameRange     '0.11.0-beta24',
+28 silly addNameRange     '0.11.0-beta25',
+28 silly addNameRange     '0.11.0-beta26',
+28 silly addNameRange     '0.11.0-beta27',
+28 silly addNameRange     '0.11.0-beta28',
+28 silly addNameRange     '0.11.0-beta29',
+28 silly addNameRange     '0.11.0',
+28 silly addNameRange     '0.11.1',
+28 silly addNameRange     '0.11.2',
+28 silly addNameRange     '0.11.3',
+28 silly addNameRange     '0.11.4',
+28 silly addNameRange     '0.11.5',
+28 silly addNameRange     '0.11.6',
+28 silly addNameRange     '0.11.7',
+28 silly addNameRange     '0.11.8',
+28 silly addNameRange     '0.11.9',
+28 silly addNameRange     '0.11.10',
+28 silly addNameRange     '0.11.11',
+28 silly addNameRange     '0.11.12',
+28 silly addNameRange     '0.11.13',
+28 silly addNameRange     '0.11.14',
+28 silly addNameRange     '0.11.15',
+28 silly addNameRange     '1.0.0-beta1',
+28 silly addNameRange     '1.0.0-beta2',
+28 silly addNameRange     '1.0.0-beta3',
+28 silly addNameRange     '1.0.0-beta4',
+28 silly addNameRange     '0.11.16',
+28 silly addNameRange     '0.11.17',
+28 silly addNameRange     '0.11.18',
+28 silly addNameRange     '1.0.0-beta5',
+28 silly addNameRange     '1.0.0-beta6',
+28 silly addNameRange     '1.0.0-beta7',
+28 silly addNameRange     '1.0.0-beta8',
+28 silly addNameRange     '1.0.0-beta9',
+28 silly addNameRange     '1.0.0-rc1',
+28 silly addNameRange     '1.0.0-rc2',
+28 silly addNameRange     '1.0.0-rc3',
+28 silly addNameRange     '1.0.0-rc4',
+28 silly addNameRange     '1.0.0-rc5',
+28 silly addNameRange     '1.0.0-rc7',
+28 silly addNameRange     '1.0.0-rc8',
+28 silly addNameRange     '1.0.0-rc9',
+28 silly addNameRange     '1.0.0-rc11',
+28 silly addNameRange     '1.0.0-rc12',
+28 silly addNameRange     '1.0.0',
+28 silly addNameRange     '1.0.1',
+28 silly addNameRange     '1.0.3',
+28 silly addNameRange     '1.0.4',
+28 silly addNameRange     '1.0.5',
+28 silly addNameRange     '1.1.0-beta1',
+28 silly addNameRange     '1.1.0-beta2',
+28 silly addNameRange     '1.1.0-beta3',
+28 silly addNameRange     '1.1.0-beta4',
+28 silly addNameRange     '1.1.0-beta5',
+28 silly addNameRange     '1.1.0-beta6',
+28 silly addNameRange     '1.1.0-beta7',
+28 silly addNameRange     '1.1.0-beta8',
+28 silly addNameRange     '1.1.0-beta9',
+28 silly addNameRange     '1.1.0-beta10',
+28 silly addNameRange     '1.1.0-beta12',
+28 silly addNameRange     '1.1.0',
+28 silly addNameRange     '1.1.1',
+28 silly addNameRange     '1.1.2',
+28 silly addNameRange     '1.1.3',
+28 silly addNameRange     '1.1.4',
+28 silly addNameRange     '1.1.5',
+28 silly addNameRange     '1.1.6',
+28 silly addNameRange     '1.1.7',
+28 silly addNameRange     '1.1.8',
+28 silly addNameRange     '1.1.9',
+28 silly addNameRange     '1.1.10',
+28 silly addNameRange     '1.1.11',
+28 silly addNameRange     '1.2.0-beta1',
+28 silly addNameRange     '1.2.0-beta2',
+28 silly addNameRange     '1.2.0-beta4',
+28 silly addNameRange     '1.2.0-beta5',
+28 silly addNameRange     '1.2.0-beta6',
+28 silly addNameRange     '1.3.0-beta1',
+28 silly addNameRange     '1.3.0-beta2',
+28 silly addNameRange     '1.3.0-beta3',
+28 silly addNameRange     '1.3.0-beta4',
+28 silly addNameRange     '1.3.0-beta5',
+28 silly addNameRange     '1.3.0-beta6',
+28 silly addNameRange     '1.3.0-beta7',
+28 silly addNameRange     '1.3.0-beta8',
+28 silly addNameRange     '1.3.0-beta9',
+28 silly addNameRange     '1.3.1-beta1',
+28 silly addNameRange     '1.3.1-beta2',
+28 silly addNameRange     '1.3.1-beta3',
+28 silly addNameRange     '1.3.1-beta4',
+28 silly addNameRange     '1.3.1-beta5',
+28 silly addNameRange     '1.3.1-beta6',
+28 silly addNameRange     '1.3.1-beta7',
+28 silly addNameRange     '1.3.1-beta8',
+28 silly addNameRange     '1.3.1-beta9',
+28 silly addNameRange     '1.3.2-beta1',
+28 silly addNameRange     '1.3.2-beta2',
+28 silly addNameRange     '1.3.2-beta3',
+28 silly addNameRange     '1.3.2-beta4',
+28 silly addNameRange     '1.3.2-beta5',
+28 silly addNameRange     '1.3.2-beta6',
+28 silly addNameRange     '1.3.2-beta7',
+28 silly addNameRange     '1.3.2-beta8',
+28 silly addNameRange     '1.3.2-beta9',
+28 silly addNameRange     '1.3.3-beta1',
+28 silly addNameRange     '1.3.3-beta2',
+28 silly addNameRange     '1.3.4',
+28 silly addNameRange     '1.3.5',
+28 silly addNameRange     '1.3.6',
+28 silly addNameRange     '1.3.7',
+28 silly addNameRange     '1.4.0-beta1',
+28 silly addNameRange     '1.4.0-beta2',
+28 silly addNameRange     '1.4.0-beta3',
+28 silly addNameRange     '1.4.0-beta4',
+28 silly addNameRange     '1.4.0-beta5',
+28 silly addNameRange     '1.4.0-beta6',
+28 silly addNameRange     '1.4.0-beta7',
+28 silly addNameRange     '1.4.0-beta8',
+28 silly addNameRange     '1.4.0-beta9',
+28 silly addNameRange     '1.4.0-beta10',
+28 silly addNameRange     '1.4.1-beta1',
+28 silly addNameRange     '1.4.2',
+28 silly addNameRange     '1.4.3',
+28 silly addNameRange     '1.4.4',
+28 silly addNameRange     '1.4.5',
+28 silly addNameRange     '1.4.6',
+28 silly addNameRange     '1.4.7',
+28 silly addNameRange     '1.4.8',
+28 silly addNameRange     '1.4.9',
+28 silly addNameRange     '1.4.10',
+28 silly addNameRange     '1.4.11',
+28 silly addNameRange     '1.4.12',
+28 silly addNameRange     '1.4.13',
+28 silly addNameRange     '1.4.14',
+28 silly addNameRange     '1.4.15',
+28 silly addNameRange     '1.5.0',
+28 silly addNameRange     '1.5.1',
+28 silly addNameRange     '1.5.2',
+28 silly addNameRange     '1.5.3',
+28 silly addNameRange     '1.6.0',
+28 silly addNameRange     '1.7.0',
+28 silly addNameRange     '1.7.1',
+28 silly addNameRange     '1.7.2',
+28 silly addNameRange     '1.7.3',
+28 silly addNameRange     '1.8.0',
+28 silly addNameRange     '1.8.1',
+28 silly addNameRange     '1.8.2',
+28 silly addNameRange     '1.8.3',
+28 silly addNameRange     '1.8.4',
+28 silly addNameRange     '1.8.5',
+28 silly addNameRange     '1.8.6',
+28 silly addNameRange     '1.8.7',
+28 silly addNameRange     '1.8.8',
+28 silly addNameRange     '1.8.9',
+28 silly addNameRange     '1.8.10',
+28 silly addNameRange     '1.8.11',
+28 silly addNameRange     '1.9.0',
+28 silly addNameRange     '1.9.1',
+28 silly addNameRange     '1.9.2',
+28 silly addNameRange     '1.9.3',
+28 silly addNameRange     '1.9.4',
+28 silly addNameRange     '1.9.5',
+28 silly addNameRange     '1.9.6',
+28 silly addNameRange     '1.9.7',
+28 silly addNameRange     '1.9.8',
+28 silly addNameRange     '1.9.9',
+28 silly addNameRange     '1.9.10',
+28 silly addNameRange     '1.9.11',
+28 silly addNameRange     '1.9.12',
+28 silly addNameRange     '1.9.13',
+28 silly addNameRange     '1.10.0',
+28 silly addNameRange     '1.10.1',
+28 silly addNameRange     '1.10.2',
+28 silly addNameRange     '1.10.3',
+28 silly addNameRange     '1.10.4',
+28 silly addNameRange     '1.10.5',
+28 silly addNameRange     '1.11.0',
+28 silly addNameRange     '1.12.0',
+28 silly addNameRange     '1.12.1',
+28 silly addNameRange     '1.12.2',
+28 silly addNameRange     '2.0.0-beta',
+28 silly addNameRange     '1.12.3' ] ]
+29 silly addNamed webpack@1.12.3
+30 verbose addNamed "1.12.3" is a plain semver version for webpack
+31 silly cache afterAdd webpack@1.12.3
+32 verbose afterAdd /Users/apple/.npm/webpack/1.12.3/package/package.json not in flight; writing
+33 verbose afterAdd /Users/apple/.npm/webpack/1.12.3/package/package.json written
+34 silly install resolved [ { name: 'webpack',
+34 silly install resolved     version: '1.12.3',
+34 silly install resolved     author: { name: 'Tobias Koppers @sokra' },
+34 silly install resolved     description: 'Packs CommonJs/AMD modules for the browser. Allows to split your codebase into multiple bundles, which can be loaded on demand. Support loaders to preprocess files, i.e. json, jade, coffee, css, less, ... and your custom stuff.',
+34 silly install resolved     dependencies:
+34 silly install resolved      { async: '^1.3.0',
+34 silly install resolved        clone: '^1.0.2',
+34 silly install resolved        'enhanced-resolve': '~0.9.0',
+34 silly install resolved        esprima: '^2.5.0',
+34 silly install resolved        interpret: '^0.6.4',
+34 silly install resolved        'loader-utils': '^0.2.11',
+34 silly install resolved        'memory-fs': '~0.2.0',
+34 silly install resolved        mkdirp: '~0.5.0',
+34 silly install resolved        'node-libs-browser': '>= 0.4.0 <=0.6.0',
+34 silly install resolved        optimist: '~0.6.0',
+34 silly install resolved        'supports-color': '^3.1.0',
+34 silly install resolved        tapable: '~0.1.8',
+34 silly install resolved        'uglify-js': '~2.5.0',
+34 silly install resolved        watchpack: '^0.2.1',
+34 silly install resolved        'webpack-core': '~0.6.0' },
+34 silly install resolved     license: 'MIT',
+34 silly install resolved     devDependencies:
+34 silly install resolved      { benchmark: '^1.0.0',
+34 silly install resolved        'bundle-loader': '~0.5.0',
+34 silly install resolved        'codecov.io': '^0.1.2',
+34 silly install resolved        'coffee-loader': '~0.7.1',
+34 silly install resolved        'coffee-script': '^1.10.0',
+34 silly install resolved        'component-webpack-plugin': '~0.2.0',
+34 silly install resolved        coveralls: '^2.11.2',
+34 silly install resolved        'css-loader': '~0.15.0',
+34 silly install resolved        diff: '^2.0.2',
+34 silly install resolved        eslint: '^1.1.0',
+34 silly install resolved        'eslint-plugin-nodeca': '^1.0.3',
+34 silly install resolved        express: '~4.13.1',
+34 silly install resolved        'extract-text-webpack-plugin': '~0.8.0',
+34 silly install resolved        'file-loader': '~0.8.0',
+34 silly install resolved        glob: '^5.0.14',
+34 silly install resolved        'i18n-webpack-plugin': '~0.2.0',
+34 silly install resolved        istanbul: '^0.3.13',
+34 silly install resolved        jade: '^1.11.0',
+34 silly install resolved        'jade-loader': '~0.7.0',
+34 silly install resolved        'js-beautify': '^1.5.10',
+34 silly install resolved        'json-loader': '~0.5.1',
+34 silly install resolved        less: '^2.5.1',
+34 silly install resolved        'less-loader': '^2.0.0',
+34 silly install resolved        mocha: '~2.2.0',
+34 silly install resolved        'mocha-lcov-reporter': '0.0.2',
+34 silly install resolved        'raw-loader': '~0.5.0',
+34 silly install resolved        'script-loader': '~0.6.0',
+34 silly install resolved        should: '^7.0.2',
+34 silly install resolved        'style-loader': '~0.12.0',
+34 silly install resolved        'url-loader': '~0.5.0',
+34 silly install resolved        'val-loader': '~0.5.0',
+34 silly install resolved        'vm-browserify': '~0.0.0',
+34 silly install resolved        'webpack-dev-middleware': '^1.0.0',
+34 silly install resolved        'worker-loader': '~0.6.0' },
+34 silly install resolved     engines: { node: '>=0.6' },
+34 silly install resolved     repository:
+34 silly install resolved      { type: 'git',
+34 silly install resolved        url: 'git+https://github.com/webpack/webpack.git' },
+34 silly install resolved     homepage: 'https://github.com/webpack/webpack',
+34 silly install resolved     main: 'lib/webpack.js',
+34 silly install resolved     web: 'lib/webpack.web.js',
+34 silly install resolved     bin: { webpack: './bin/webpack.js' },
+34 silly install resolved     files: [ 'lib/', 'bin/', 'buildin/', 'hot/', 'web_modules/' ],
+34 silly install resolved     scripts:
+34 silly install resolved      { pretest: 'npm run lint && npm run beautify-lint',
+34 silly install resolved        test: 'mocha',
+34 silly install resolved        travis: 'npm run cover -- --report lcovonly',
+34 silly install resolved        lint: 'eslint lib bin hot scripts',
+34 silly install resolved        'beautify-lint': 'node ./scripts/beautify-check',
+34 silly install resolved        beautify: 'node ./scripts/beautify-rewrite',
+34 silly install resolved        precover: 'npm run lint && npm run beautify-lint',
+34 silly install resolved        cover: 'istanbul cover -x *.runtime.js node_modules/mocha/bin/_mocha',
+34 silly install resolved        'publish-patch': 'mocha && npm version patch && git push && git push --tags && npm publish' },
+34 silly install resolved     gitHead: 'f3d65ef1b5a6ebba85083536e3a705fe96d31220',
+34 silly install resolved     bugs: { url: 'https://github.com/webpack/webpack/issues' },
+34 silly install resolved     _id: 'webpack@1.12.3',
+34 silly install resolved     _shasum: '93a31cdec1a7089c68e520a83c7e3b75cd8f934c',
+34 silly install resolved     _from: 'webpack@*',
+34 silly install resolved     _npmVersion: '3.3.3',
+34 silly install resolved     _nodeVersion: '4.0.0',
+34 silly install resolved     _npmUser: { name: 'sokra', email: 'tobias.koppers@googlemail.com' },
+34 silly install resolved     dist:
+34 silly install resolved      { shasum: '93a31cdec1a7089c68e520a83c7e3b75cd8f934c',
+34 silly install resolved        tarball: 'http://registry.npmjs.org/webpack/-/webpack-1.12.3.tgz' },
+34 silly install resolved     maintainers: [ [Object] ],
+34 silly install resolved     directories: {},
+34 silly install resolved     _resolved: 'https://registry.npmjs.org/webpack/-/webpack-1.12.3.tgz',
+34 silly install resolved     readme: 'ERROR: No README data found!' } ]
+35 info install webpack@1.12.3 into /usr/local/lib
+36 info installOne webpack@1.12.3
+37 verbose installOne of webpack to /usr/local/lib not in flight; installing
+38 verbose lock using /Users/apple/.npm/_locks/webpack-865c90cad072eb35.lock for /usr/local/lib/node_modules/webpack
+39 silly install write writing webpack 1.12.3 to /usr/local/lib/node_modules/webpack
+40 verbose unbuild lib/node_modules/webpack
+41 info preuninstall webpack@1.12.3
+42 info uninstall webpack@1.12.3
+43 verbose unbuild rmStuff webpack@1.12.3 from /usr/local/lib/node_modules
+44 silly gentlyRm /usr/local/bin/webpack is being gently removed
+45 silly gentlyRm verifying /usr/local is an npm working directory
+46 silly gentlyRm containing path /usr/local is under npm's control, in /usr/local
+47 silly gentlyRm deletion target /usr/local/bin/webpack is under /usr/local
+48 verbose gentlyRm vacuuming from /usr/local/bin/webpack up to /usr/local
+49 silly vacuum-fs removing /usr/local/bin/webpack
+50 silly vacuum-fs quitting because other entries in /usr/local/bin
+51 info postuninstall webpack@1.12.3
+52 silly gentlyRm /usr/local/lib/node_modules/webpack is being purged from base /usr/local
+53 verbose gentlyRm don't care about contents; nuking /usr/local/lib/node_modules/webpack
+54 silly vacuum-fs purging /usr/local/lib/node_modules/webpack
+55 verbose unlock done using /Users/apple/.npm/_locks/webpack-865c90cad072eb35.lock for /usr/local/lib/node_modules/webpack
+56 verbose stack Error: EACCES, rmdir '/usr/local/lib/node_modules/webpack'
+56 verbose stack     at Error (native)
+57 verbose cwd /Users/apple/Desktop/workspace/WisapeAndroid
+58 error Darwin 14.5.0
+59 error argv "node" "/usr/local/bin/npm" "install" "-g" "webpack"
+60 error node v0.12.7
+61 error npm  v2.14.6
+62 error path /usr/local/lib/node_modules/webpack
+63 error code EACCES
+64 error errno -13
+65 error Error: EACCES, rmdir '/usr/local/lib/node_modules/webpack'
+65 error     at Error (native)
+65 error  { [Error: EACCES, rmdir '/usr/local/lib/node_modules/webpack']
+65 error   errno: -13,
+65 error   code: 'EACCES',
+65 error   path: '/usr/local/lib/node_modules/webpack' }
+66 error Please try running this command again as root/Administrator.
+67 verbose exit [ -13, true ]
+68 verbose unbuild lib/node_modules/webpack
+69 info preuninstall webpack@1.12.3
+70 info uninstall webpack@1.12.3
+71 verbose unbuild rmStuff webpack@1.12.3 from /usr/local/lib/node_modules
+72 silly gentlyRm /usr/local/bin/webpack is being gently removed
+73 silly gentlyRm verifying /usr/local is an npm working directory
+74 silly gentlyRm containing path /usr/local is under npm's control, in /usr/local
+75 silly gentlyRm deletion target /usr/local/bin/webpack is under /usr/local
+76 verbose gentlyRm vacuuming from /usr/local/bin/webpack up to /usr/local
+77 info postuninstall webpack@1.12.3
+78 silly gentlyRm /usr/local/lib/node_modules/webpack is being purged from base /usr/local
+79 verbose gentlyRm don't care about contents; nuking /usr/local/lib/node_modules/webpack
+80 silly vacuum-fs purging /usr/local/lib/node_modules/webpack
+81 error error rolling back Error: EACCES, rmdir '/usr/local/lib/node_modules/webpack'
+81 error error rolling back     at Error (native)
+81 error error rolling back  { [Error: EACCES, rmdir '/usr/local/lib/node_modules/webpack']
+81 error error rolling back   errno: -13,
+81 error error rolling back   code: 'EACCES',
+81 error error rolling back   path: '/usr/local/lib/node_modules/webpack' }

@@ -426,7 +426,7 @@
         </div>
     </div>
 
-    <div class="pop-layer pop-editer-opt" style="display: block">
+    <div class="pop-layer pop-editer-opt" id="pop-editer-opt" style="display: block">
         <div class="hd">
             <i class="icon-bold" id="setFontWeight" ></i>
             <i class="icon-italic" id="setFontStyle"></i>
@@ -442,7 +442,7 @@
     </div>
 
 
-    <div class="pop-layer pop-editer-text" style="display: block">
+    <div class="pop-layer pop-editer-text" style="display: none">
         <textarea class="textarea-word J-textarea-word" name="" id="textarea" rows="1" ></textarea>
         <span class="btn-text-done J-btn-text-done">Done</span>
     </div>
@@ -1000,13 +1000,27 @@
             observe(text, 'keydown', delayedResize);
             wordEditResize();
         };
-        var minWordHeight = parseInt($('html').css("font-size"))*1.8 + 6;
+
         function wordEditResize(){
             var text = $('.J-textarea-word')[0];
+            var linH = parseInt($('html').css("font-size"))*0.8 + 3;
+            var minWordHeight = linH*2;
+            var maxWordHeight = linH*3;
+            var textH = parseInt(text.style.height);
+
             console.info("wordEditResize()");
-            if(minWordHeight >=  text.style.height) return;
+            console.info("min:" +minWordHeight);
+            console.info("max:" +maxWordHeight);
+            console.info("min:" +textH);
             text.style.height = 'auto';
             text.style.height = text.scrollHeight+'px';
+            if(textH >= maxWordHeight) {
+
+            }
+            if(textH <= minWordHeight) {
+
+            }
+
         }
 
         //FastClick.attach(document.body);
@@ -1015,6 +1029,15 @@
 
         var target = $("#editorText .pages-txt.active");
         var fontSizeLim = [14,30];
+
+        $(".pop-editer-opt").on("touchstart", function(){
+            console.info("move start");
+            $("body").css({"overflow":"hidden","background":"red"});
+        });
+        $(".pop-editer-opt").on("touchend", function(){
+            console.info("move end");
+            $("body").css({"overflow":"auto"})
+        });
 
 
 

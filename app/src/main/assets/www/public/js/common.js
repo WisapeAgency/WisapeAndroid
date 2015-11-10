@@ -37,14 +37,9 @@
         });
     };
 
-
-
-
     //document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
     document.addEventListener("deviceready", function(){
         console.log('Device is Ready!');
-
-
         //设置日志定时器
         var loggerTimer = setInterval(function(){
             //调用接口

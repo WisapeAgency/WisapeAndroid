@@ -134,8 +134,6 @@ WisapeEditer = {
             setTimeout(function () {
                 $("#tpmHtml").remove();
             }, 2000);
-
-
         });
     },
 
@@ -343,6 +341,7 @@ WisapeEditer = {
                 WisapeEditer.GetNativeData("read", [localTplPath], function (data) {
                     console.info("read data:");
                     console.info(data);
+                    if(data == null || data.length == 0) return;
                     WisapeEditer.currentTplData = data;
                     pageScroll.find("ul li.active").html('<span class="count">' + WisapeEditer.selectedStagetIndex + '/' + WisapeEditer.storyData.length + '</span>' + data);
                     WisapeEditer.storyData[WisapeEditer.selectedStagetIndex - 1] = data;
@@ -457,7 +456,7 @@ WisapeEditer = {
 
             if(WisapeEditer.storyData.length == 15 ) {
                 Dialog.show(tipDialog);
-                tipDialog.find(".btn-cancle").click(function () {
+                tipDialog.find(".btn-cancle").unbind("click").bind("click",function () {
                     Dialog.hide(tipDialog);
                 });
                 return ;
@@ -616,9 +615,6 @@ WisapeEditer = {
             function delayedResize () {
                 window.setTimeout(wordEditResize, 0);
             }
-
-
-
             observe(text, 'change',  wordEditResize);
             observe(text, 'cut',     delayedResize);
             observe(text, 'paste',   delayedResize);
@@ -681,10 +677,10 @@ WisapeEditer = {
                 target.removeAttr("data-href").removeClass("font-link");
             } else {
                 Dialog.show(hrefDialog);
-                hrefDialog.find(".btn-cancle").click(function () {
+                hrefDialog.find(".btn-cancle").unbind("click").bind("click",function () {
                     Dialog.hide(hrefDialog);
                 });
-                hrefDialog.find(".btn-submit").click(function () {
+                hrefDialog.find(".btn-submit").unbind("click").bind("click",function () {
                     link = hrefDialog.find(".input-href input").val();
                     console.info(link);
                     mask.hide();
@@ -760,14 +756,14 @@ WisapeEditer = {
         var pageScroll = $("#pages-scroll");
         var retHtml = '', retImg = [];
         Dialog.show(saveDialog);
-        saveDialog.find(".btn-cancle").click(function () {
+        saveDialog.find(".btn-cancle").unbind("click").bind("click",function () {
             Dialog.hide(saveDialog);
         });
-        saveDialog.find(".btn-saveno").click(function () {
+        saveDialog.find(".btn-saveno").unbind("click").bind("click",function () {
             WisapeEditer.GetNativeData("back", [], null);
             Dialog.hide(saveDialog);
         });
-        saveDialog.find(".btn-save").click(function () {
+        saveDialog.find(".btn-save").unbind("click").bind("click",function () {
             mask.hide();
             Dialog.hide(saveDialog);
             $(".loading").show();
