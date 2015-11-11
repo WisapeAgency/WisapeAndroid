@@ -113,8 +113,6 @@ public class StoryTemplatePlugin extends AbsPlugin {
 
     private CustomProgress customProgress;
     private StoryLogic logic = StoryLogic.instance();
-    private WisapeApplication app = WisapeApplication.getInstance();
-    private CallbackContext callbackContext;
     /**
      * 显示进度对话框
      */
@@ -170,11 +168,8 @@ public class StoryTemplatePlugin extends AbsPlugin {
         if (null == action || 0 == action.length()) {
             return true;
         }
-        this.callbackContext = callbackContext;
         final Context context = getCurrentActivity().getApplicationContext();
         if (ACTION_GET_STAGE_CATEGORY.equals(action)) {//getStageCategory
-//            System.out.println("getStageCategory");
-//            startLoad(WHAT_GET_STAGE_CATEGORY, null);
             threadhelper(new TemplateOp() {
                 public void run(Bundle bundle) {
                     JSONArray jsonStr = logic.listStoryTemplateTypeLocal(context);
@@ -187,7 +182,6 @@ public class StoryTemplatePlugin extends AbsPlugin {
             if (null != args && args.length() != 0) {
                 bundle.putInt(EXTRA_CATEGORY_ID, args.getInt(0));//
             }
-//            startLoad(WHAT_GET_STAGE_LIST, bundle);
             threadhelper(new TemplateOp() {
                 public void run(Bundle bundle) {
                     int type = bundle.getInt(EXTRA_CATEGORY_ID, 0);
@@ -202,7 +196,6 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 bundle.putInt(EXTRA_TEMPLATE_ID, args.getInt(0));
                 bundle.putInt(EXTRA_CATEGORY_ID, args.getInt(1));
             }
-//            startLoad(WHAT_START, bundle);
             threadhelper(new TemplateOp() {
                 public void run(Bundle bundle) {
                     ApiStory.AttrTemplateInfo attr = new ApiStory.AttrTemplateInfo();
@@ -221,14 +214,10 @@ public class StoryTemplatePlugin extends AbsPlugin {
                             callbackContext.error(-1);
                         }
                     }
+                    callbackContext.success();
                 }
             }, bundle, callbackContext);
         } else if (ACTION_READ.equals(action)) {//read
-//            if (null != args && args.length() != 0) {
-//                String path = args.getString(0);//
-//                String content = readHtml(path);
-//                callbackContext.success(content);
-//            }
             threadhelper(new TemplateOp() {
                 public void run(Bundle bundle) {
                     if (null != args && args.length() != 0) {
@@ -239,26 +228,21 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 }
             }, null, callbackContext);
         } else if (ACTION_MUSIC_PATH.equals(action)) {//getMusicPath
-//            if (null != args && args.length() == 1) {
-//                int id = args.getInt(0);
-//                getMusicPath(id);
-//            }
             threadhelper(new TemplateOp() {
                 public void run(Bundle bundle) {
                     if (null != args && args.length() == 1) {
                         int id = args.optInt(0);
-                        getMusicPath(id);
+                        getMusicPath(callbackContext, id);
                     }
                 }
             }, null, callbackContext);
         } else if (ACTION_GET_FONTS.equals(action)) {//getFonts
-//            startLoad(WHAT_GET_FONTS, null);
             threadhelper(new TemplateOp() {
                 public void run(Bundle bundle) {
                     StoryFontInfo[] fonts = logic.listFont(context, "getFonts");
                     List<StoryFontInfo> fontList = Arrays.asList(fonts);
                     System.out.println(fontList);
-                    getFonts(fontList);
+                    getFonts(callbackContext, fontList);
                 }
             }, null, callbackContext);
         } else if (ACTION_DOWNLOAD_FONT.equals(action)) {
@@ -266,7 +250,6 @@ public class StoryTemplatePlugin extends AbsPlugin {
             if (null != args && args.length() != 0) {
                 bundle.putString(EXTRA_FONT_NAME, args.getString(0));
             }
-//            startLoad(WHAT_DOWNLOAD_FONT, bundle);
             threadhelper(new TemplateOp() {
                 public void run(Bundle bundle) {
                     String fontName = bundle.getString(EXTRA_FONT_NAME);
@@ -274,6 +257,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
                         StoryTemplateActivity activity = (StoryTemplateActivity) cordova.getActivity();
                         activity.downloadFont(fontName);
                     }
+                    callbackContext.success();
                 }
             }, bundle, callbackContext);
         } else if (ACTION_SAVE.equals(action)) {//save
@@ -283,7 +267,6 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 bundle.putString(EXTRA_STORY_HTML, args.getString(1));
                 bundle.putString(EXTRA_FILE_PATH, args.getString(2));
             }
-//            startLoad(WHAT_SAVE, bundle);
             threadhelper(new TemplateOp() {
                 public void run(Bundle bundle) {
                     String storyThumb = bundle.getString(EXTRA_STORY_THUMB);
@@ -311,6 +294,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
                         callbackContext.error(-1);
                         return;
                     }
+                    callbackContext.success();
                     StoryLogic.instance().saveStoryEntityToShare(storyEntity);
                     sendBroadcastUpdateStory();
                     MainActivity.launch(getCurrentActivity());
@@ -324,7 +308,6 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 bundle.putString(EXTRA_STORY_HTML, args.getString(1));
                 bundle.putString(EXTRA_FILE_PATH, args.getString(2));
             }
-//            startLoad(WHAT_PREVIEW, bundle);
             threadhelper(new TemplateOp() {
                 public void run(Bundle bundle) {
                     String storyThumb = bundle.getString(EXTRA_STORY_THUMB);
@@ -358,6 +341,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 }
             }, bundle, callbackContext);
         } else if (ACTION_PUBLISH.equals(action)) {//publish
+            callbackContext.success();
             StoryReleaseActivity.launch(cordova.getActivity());
             getCurrentActivity().finish();
 //            Bundle bundle = new Bundle();
@@ -389,15 +373,18 @@ public class StoryTemplatePlugin extends AbsPlugin {
             musicEntity.musicLocal = storyEntity.storyMusicLocal;
             musicEntity.name = storyEntity.storyMusicName;
             musicEntity.serverId = storyEntity.musicServerId;
+            callbackContext.success();
             StoryMusicActivity.launch(getCurrentActivity(),musicEntity,0);
 //            StorySettingsActivity.launch(getCurrentActivity(), 0);
         } else if (ACTION_BACK.equals(action)) {
+            callbackContext.success();
             cordova.getActivity().finish();
         } else if (ACTION_EDIT.equals(action)) {
             StoryEntity storyEntity = StoryLogic.instance().getStoryEntityFromShare();
             if (storyEntity != null) {
                 doEditStory(storyEntity);
             }
+            callbackContext.success();
             cordova.getActivity().finish();
         } else if (ACTION_GET_CONTENT.equals(action)) {
             if (cordova.getActivity() instanceof StoryTemplateActivity) {
@@ -406,7 +393,6 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 callbackContext.success(html);
             }
         } else if (ACTION_CHECK_DOWNLOAD.equals(action)) {
-//            startLoad(WHAT_EDIT_INIT, null);
             threadhelper(new TemplateOp() {
                 public void run(Bundle bundle) {
                     while (DataSynchronizer.getInstance().isDownloading()){
@@ -700,7 +686,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
         }
     }
 
-    private void getFonts(List<StoryFontInfo> fontList) {
+    private void getFonts(CallbackContext callbackContext, List<StoryFontInfo> fontList) {
         JSONObject json = new JSONObject();
         try {
             File fontDirectory = StoryManager.getStoryFontDirectory();
@@ -725,7 +711,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
         callbackContext.success(json);
     }
 
-    private void getMusicPath(int id) {
+    private void getMusicPath(CallbackContext callbackContext, int id) {
         Context context = getCurrentActivity().getApplicationContext();
         StoryMusicEntity music = logic.getStoryMusicLocalById(context, id);
         if (music != null) {
