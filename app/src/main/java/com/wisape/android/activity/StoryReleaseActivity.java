@@ -21,6 +21,7 @@ import com.wisape.android.database.StoryEntity;
 import com.wisape.android.http.HttpUrlConstancts;
 import com.wisape.android.logic.StoryLogic;
 import com.wisape.android.logic.UserLogic;
+import com.wisape.android.util.EnvironmentUtils;
 import com.wisape.android.util.FileUtils;
 import com.wisape.android.util.LogUtil;
 import com.wisape.android.util.Utils;
@@ -50,7 +51,7 @@ import cn.sharesdk.wechat.moments.WechatMoments;
  * Created by tony on 2015/7/24.
  */
 public class StoryReleaseActivity extends BaseActivity {
-
+    private static final String WISAPE_SD_CARD_LOCATION = "/WISAPE_SD_CARD_LOCATION/";
     public static final int REQUEST_CODE_STORY_RELEASE = 110;
     public static final int REQEUST_CODE_CROP_IMG = 0x01;
     private static final int LOADER_UPDATE_STORYSETTING = 1;
@@ -235,7 +236,8 @@ public class StoryReleaseActivity extends BaseActivity {
                 storyAttr.storyDescription = story.storyDesc;
                 storyAttr.userId = UserLogic.instance().getUserInfoFromLocal().user_id;
                 storyAttr.storyStatus = ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE;
-                storyAttr.imgPrefix = StoryManager.getStoryDirectory().getAbsolutePath() + "/" + story.storyLocal;
+//                storyAttr.imgPrefix = StoryManager.getStoryDirectory().getAbsolutePath() + "/" + story.storyLocal;
+                storyAttr.imgPrefix = WISAPE_SD_CARD_LOCATION + "/story/" + story.storyLocal;
                 storyAttr.story_local = story.storyLocal;
                 if (story.localCover == 0) {
                     storyAttr.attrStoryThumb = Uri.parse(StoryManager.getStoryDirectory().getAbsolutePath() + "/" + story.storyLocal + "/thumb.jpg");

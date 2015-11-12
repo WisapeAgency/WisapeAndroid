@@ -38,6 +38,7 @@ import com.wisape.android.database.StoryEntity;
 import com.wisape.android.http.HttpUrlConstancts;
 import com.wisape.android.logic.StoryLogic;
 import com.wisape.android.logic.UserLogic;
+import com.wisape.android.util.EnvironmentUtils;
 import com.wisape.android.util.FileUtils;
 import com.wisape.android.util.LogUtil;
 import com.wisape.android.util.Utils;
@@ -67,6 +68,7 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
 
     private static final String PREVIEW_HEADER = "www/views/header.html";
     private static final String PREVIEW_FOOTER = "www/views/footer.html";
+    private static final String WISAPE_SD_CARD_LOCATION = "/WISAPE_SD_CARD_LOCATION/";
 
     private static final int LOADER_STORY = 1;
     private static final int LOADER_DELETE_STORY = 2;
@@ -150,14 +152,16 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
                 break;
             case LOADER_EDIT_STORY:
                 File editFile = new File(StoryManager.getStoryDirectory(), StoryLogic.instance().getStoryEntityFromShare().storyLocal + "/story.html");
-                String data = FileUtils.readFileToString(editFile);
+                String html = FileUtils.readFileToString(editFile);
+                File dataFile = EnvironmentUtils.getAppDataDirectory();
+                html = html.replace(WISAPE_SD_CARD_LOCATION, dataFile.getAbsolutePath());
                 LogUtil.d("首页编辑story:" + editFile.getAbsolutePath());
-                if (Utils.isEmpty(data)) {
+                if (Utils.isEmpty(html)) {
                     message.arg1 = HttpUrlConstancts.STATUS_EXCEPTION;
                     message.obj = "Get StoryInfo Failure";
                 } else {
                     message.arg1 = HttpUrlConstancts.STATUS_SUCCESS;
-                    message.obj = data;
+                    message.obj = html;
                 }
                 break;
 //            case LOADER_PUBLISH_STORY:
@@ -477,6 +481,8 @@ public class CardGalleryFragment extends AbsFragment implements BroadCastReciver
         String header = getFromAssets(PREVIEW_HEADER);
         String footer = getFromAssets(PREVIEW_FOOTER);
         PrintWriter writer = null;
+        File dataFile = EnvironmentUtils.getAppDataDirectory();
+        html = html.replace(WISAPE_SD_CARD_LOCATION, dataFile.getAbsolutePath());
         try {
             writer = new PrintWriter(previewFile, "utf-8");
             writer.println(header);

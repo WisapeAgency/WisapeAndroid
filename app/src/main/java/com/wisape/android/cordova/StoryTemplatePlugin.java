@@ -32,6 +32,7 @@ import com.wisape.android.model.StoryFontInfo;
 import com.wisape.android.model.StoryTemplateInfo;
 import com.wisape.android.network.DataSynchronizer;
 import com.wisape.android.network.Requester;
+import com.wisape.android.util.EnvironmentUtils;
 import com.wisape.android.util.LogUtil;
 import com.wisape.android.util.Utils;
 import com.wisape.android.util.ZipUtils;
@@ -76,6 +77,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
     private static final String PREVIEW_HEADER = "www/views/header.html";
     private static final String PREVIEW_FOOTER = "www/views/footer.html";
     private static final String PLACE_HODLER_FONT_CSS = "FONT_STYLE_FILE_LOCATION";
+    private static final String WISAPE_SD_CARD_LOCATION = "/WISAPE_SD_CARD_LOCATION/";
 
     public static final String ACTION_GET_STAGE_CATEGORY = "getStageCategory";
     public static final String ACTION_GET_STAGE_LIST = "getStageList";
@@ -93,16 +95,6 @@ public class StoryTemplatePlugin extends AbsPlugin {
     public static final String ACTION_GET_CONTENT = "getContent";
     public static final String ACTION_CHECK_DOWNLOAD = "checkInitState";//onInitCompleted
     public static final String ACTION_OPEN_LINK = "openLink";
-
-    private static final int WHAT_GET_STAGE_CATEGORY = 0x01;
-    private static final int WHAT_GET_STAGE_LIST = 0x02;
-    private static final int WHAT_START = 0x03;
-    private static final int WHAT_SAVE = 0x04;
-    private static final int WHAT_PREVIEW = 0x05;
-    private static final int WHAT_PUBLISH = 0x06;
-    private static final int WHAT_GET_FONTS = 0x07;
-    private static final int WHAT_DOWNLOAD_FONT = 0x08;
-    private static final int WHAT_EDIT_INIT = 0x09;
 
     private static final String EXTRA_CATEGORY_ID = "extra_category_id";
     private static final String EXTRA_TEMPLATE_ID = "extra_template_id";
@@ -428,6 +420,8 @@ public class StoryTemplatePlugin extends AbsPlugin {
     private void doEditStory(StoryEntity storyEntity) {
         File file = new File(StoryManager.getStoryDirectory(), storyEntity.storyLocal + "/story.html");
         String html = readFile(file.getAbsolutePath());
+        File dataFile = EnvironmentUtils.getAppDataDirectory();
+        html = html.replace(WISAPE_SD_CARD_LOCATION, dataFile.getAbsolutePath());
         StoryTemplateActivity.launch(getCurrentActivity(), html, 0);
 //        callbackContext.success(html);
     }
@@ -469,6 +463,8 @@ public class StoryTemplatePlugin extends AbsPlugin {
             }
         }
 
+        File dataFile = EnvironmentUtils.getAppDataDirectory();
+        html = html.replace(dataFile.getAbsolutePath(), WISAPE_SD_CARD_LOCATION);
 
         File storyHTML = new File(myStory, FILE_NAME_STORY);
         if(storyHTML.exists()){
