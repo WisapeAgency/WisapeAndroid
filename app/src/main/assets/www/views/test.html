@@ -429,6 +429,10 @@
             $("#editorText .backToMain").click();
             return false;
         }
+        if($("#pages-scroll").hasClass("pages-big")  && $("#main").css("display") == "block") {
+            $("#toggleCat").click();
+            return false;
+        }
         WisapeEditer.SaveStory();
     }
 </script>

@@ -14,12 +14,15 @@ $(function(){
         }, "StoryTemplate", "edit",[]);
     });
     $("#publish").click(function(){
+        var me = $(this);
+        if(me.hasClass("disable")) return;
+        me.addClass("disable");
         console.info("#publish");
         $(".loading").show();
         var retHtml = '',retImg = [], $con= $("#con");
         $con.find(".pages-item").each(function(i,v){
             retHtml += '<section class="m-page hide" >' + $(this).html().replace("file://","") + "</section>";
-        })
+        });
         $con.find(".pages-img").each(function(){
             var me = $(this);
             if(me.hasClass("pages-img-bg")) {
@@ -31,6 +34,9 @@ $(function(){
         console.info(retHtml);
         console.info(retImg);
         cordova.exec(function(retval) {
+            setTimeout(function(){
+                me.removeClass("disable");
+            },1000);
             $(".loading").hide();
         }, function(e) {
         }, "StoryTemplate", "publish", [retImg[0],retHtml,retImg]);

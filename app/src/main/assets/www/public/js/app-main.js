@@ -146,7 +146,11 @@ WisapeEditer = {
 
         //获取字体接口数据
         $("#pop-editer-font").click(function () {
+            var me = $(this);
+            if(me.hasClass("disable")) return;
+            me.addClass("disable");
             WisapeEditer.GetNativeData("getFonts", [], function (data) {
+                me.removeClass("disable");
                 var curFamily = $("#editorText").find(".edit-area.active").css("font-family").split(",")[0];
                 console.info("fonts:");
                 console.info(JSON.stringify(data.filePath));
@@ -199,6 +203,9 @@ WisapeEditer = {
 
         //预览
         $("#storyPreview").click(function () {
+            var me = $(this);
+            if(me.hasClass("disable")) return;
+            me.addClass("disable");
             WisapeEditer.logger("预览",WisapeEditer.storyData);
             $(".loading").show();
             var retHtml = '<div class="p-index main" id="con">', retImg = [];
@@ -215,6 +222,9 @@ WisapeEditer = {
                 }
             });
             WisapeEditer.GetNativeData("preview", [retImg[0],retHtml, retImg], function () {
+                setTimeout(function(){
+                    me.removeClass("disable");
+                },1000);
                 console.info("preview done!!!");
                 $(".loading").hide();
             })
@@ -222,6 +232,12 @@ WisapeEditer = {
 
         //保存
         $("#storySave").click(function () {
+
+            if($("#pages-scroll").hasClass("pages-big")  && $("#main").css("display") == "block") {
+                $("#toggleCat").click();
+                return false;
+            }
+
             WisapeEditer.SaveStory();
         });
 
