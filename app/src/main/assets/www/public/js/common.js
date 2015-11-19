@@ -77,7 +77,7 @@
 
         WisapeEditer.GetNativeData("checkInitState",[],function(data){
             console.info(data);
-            WisapeEditer.LoadDefaultData(data);
+            WisapeEditer.LoadDefaultData(data,0);
         });
     }, false);
 

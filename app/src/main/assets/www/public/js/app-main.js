@@ -800,6 +800,25 @@ WisapeEditer = {
         });
     },
 
+    ImSave : function(){
+        var pageScroll = $("#pages-scroll");
+        var retHtml = '', retImg = [];
+        for (var i = 0; i < WisapeEditer.storyData.length; i++) {
+            retHtml += '<section class="m-page hide pages-item" > <div class="m-img" >' + WisapeEditer.storyData[i].replace("file://","") + '</div> </section>';
+        }
+        pageScroll.find(".pages-img").each(function () {
+            var me = $(this);
+            if (me.hasClass("pages-img-bg")) {
+                retImg.push((me.css("background-image").split("url(")[1].split(")")[0]+"").replace("file://",""));
+            } else {
+                retImg.push(me.find("img").attr("src").replace("file://",""));
+            }
+        });
+        WisapeEditer.logger("销毁保存",WisapeEditer.storyData);
+        WisapeEditer.GetNativeData("save", [retImg[0],retHtml, retImg], function () {
+        })
+    },
+
     //通过接口加载模板列表
     LoadTplList: function (id, cb) {
         WisapeEditer.GetNativeData("getStageList", [id], function (data) {
