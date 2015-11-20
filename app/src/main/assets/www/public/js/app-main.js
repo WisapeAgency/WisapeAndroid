@@ -218,6 +218,7 @@ WisapeEditer = {
                 if (me.hasClass("pages-img-bg")) {
                     retImg.push((me.css("background-image").split("url(")[1].split(")")[0]+"").replace("file://",""));
                 } else {
+                    console.info(me.find("img").attr("src"));
                     retImg.push(me.find("img").attr("src").replace("file://",""));
                 }
             });
@@ -815,7 +816,7 @@ WisapeEditer = {
             }
         });
         WisapeEditer.logger("销毁保存",WisapeEditer.storyData);
-        WisapeEditer.GetNativeData("save", [retImg[0],retHtml, retImg], function () {
+        WisapeEiter.GetNativeData("isave", [retImg[0],retHtml, retImg], function () {
         })
     },
 

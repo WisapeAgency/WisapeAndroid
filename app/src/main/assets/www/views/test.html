@@ -434,7 +434,27 @@
             return false;
         }
         WisapeEditer.SaveStory();
+    };
+
+    function ImSave(){
+        var pageScroll = $("#pages-scroll");
+        var retHtml = '', retImg = [];
+        for (var i = 0; i < WisapeEditer.storyData.length; i++) {
+            retHtml += '<section class="m-page hide pages-item" > <div class="m-img" >' + WisapeEditer.storyData[i].replace("file://","") + '</div> </section>';
+        }
+        pageScroll.find(".pages-img").each(function () {
+            var me = $(this);
+            if (me.hasClass("pages-img-bg")) {
+                retImg.push((me.css("background-image").split("url(")[1].split(")")[0]+"").replace("file://",""));
+            } else {
+                retImg.push(me.find("img").attr("src").replace("file://",""));
+            }
+        });
+        WisapeEditer.logger("销毁保存",WisapeEditer.storyData);
+        WisapeEiter.GetNativeData("isave", [retImg[0],retHtml, retImg], function () {
+        })
     }
+
 </script>
 <script>
     $(function(){
