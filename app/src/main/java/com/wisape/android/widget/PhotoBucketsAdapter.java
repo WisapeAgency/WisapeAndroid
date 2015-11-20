@@ -10,8 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
 import com.wisape.android.R;
 import com.wisape.android.model.AppPhotoBucketInfo;
 import com.wisape.android.content.PhotoProvider;
@@ -70,9 +69,9 @@ public class PhotoBucketsAdapter extends RecyclerView.Adapter<RecyclerHolder> im
         final int itemWidth = layoutParams.width;
         final int itemHeight = layoutParams.height;
         Uri uri = PhotoProvider.getBucketThumbUri(bucket.id);
-        Picasso.with(context).load(uri)
+        Glide.with(context).load(uri)
                 .error(R.mipmap.icon_camera)
-                .centerCrop().resize(itemWidth,itemHeight).into(thumb);
+                .centerCrop().override(itemWidth,itemHeight).into(thumb);
     }
 
     @Override

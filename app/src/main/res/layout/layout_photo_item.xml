@@ -12,10 +12,5 @@
         android:scaleType="centerCrop"
         android:src="@mipmap/ic_launcher"/>
 
-    <ImageView
-        android:id="@+id/photo_selected_flag"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right|end"
-        android:scaleType="center"/>
+
 </FrameLayout>

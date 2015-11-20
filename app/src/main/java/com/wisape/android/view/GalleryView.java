@@ -26,6 +26,7 @@ public class GalleryView extends RecyclerView{
     DisplayMetrics mDisplayMetrics;
     int mSpace;
     ArrayList<CardGalleryEvent> mCardGalleryEventList;
+    GalleryLayoutManager layoutManager;
 
     public GalleryView(Context context) {
         super(context);
@@ -46,26 +47,30 @@ public class GalleryView extends RecyclerView{
         this.addItemDecoration(new ItemDecoration() {
             @Override
             public void getItemOffsets(Rect outRect, View view, RecyclerView parent, State state) {
-                    int padding = ( parent.getWidth()-cardWidth)/2;
+                int padding = (parent.getWidth() - cardWidth) / 2;
 
-                    if (parent.getChildAdapterPosition(view) == 0)
-                        outRect.left = padding;
-                    else if(parent.getChildAdapterPosition(view) == (parent.getAdapter().getItemCount()-1)){
-                        outRect.left = mSpace;
-                        outRect.right = padding;
-                    }else{
-                        outRect.left = mSpace;
-                    }
+                if (parent.getChildAdapterPosition(view) == 0)
+                    outRect.left = padding;
+                else if (parent.getChildAdapterPosition(view) == (parent.getAdapter().getItemCount() - 1)) {
+                    outRect.left = mSpace;
+                    outRect.right = padding;
+                } else {
+                    outRect.left = mSpace;
+                }
 
             }
         });
 
 
-        GalleryLayoutManager layoutManager = new GalleryLayoutManager(getContext());
+        layoutManager = new GalleryLayoutManager(getContext());
         layoutManager.setOrientation(GalleryLayoutManager.HORIZONTAL);
         this.setLayoutManager(layoutManager);
 
         addOnScrollListener(new GalleryScrollListener());
+    }
+
+    public void setVisiblePostion(int postion){
+        layoutManager.scrollToPosition(postion);
     }
 
     public void setSpace(int space) {

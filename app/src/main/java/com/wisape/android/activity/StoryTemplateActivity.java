@@ -133,7 +133,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
                     } catch (JSONException e) {
 
                     }
-                    unzipTemplate(Uri.fromFile(new File(path)), template,msg.getData());
+                    unzipTemplate(Uri.fromFile(new File(path)), template, msg.getData());
                     downloadFont(template);
                     break;
                 }
@@ -196,7 +196,10 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        html = getIntent().getStringExtra(EXTRA_EDIT_CONTENT);
+        LogUtil.d("建立界面");
+        if(Utils.isEmpty(html)){
+            html = getIntent().getStringExtra(EXTRA_EDIT_CONTENT);
+        }
         loadUrl(START_URL);
         startLoad(WHAT_INIT, null);
     }
@@ -230,16 +233,16 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
         startLoad(WHAT_DOWNLOAD_FONT, args);
     }
 
-    public void downloadFont(File template){
+    public void downloadFont(File template) {
         BlockingQueue<String> fontQueue = new LinkedBlockingQueue<>();
         Set<String> fontSet = parseFont(template);
-        if (fontSet.size() == 0){
+        if (fontSet.size() == 0) {
             return;
         }
         File fontDirectory = StoryManager.getStoryFontDirectory();
-        for(String fontName : fontSet){
+        for (String fontName : fontSet) {
             File font = new File(fontDirectory, fontName);
-            if(!font.exists() || font.list().length <= 1){
+            if (!font.exists() || font.list().length <= 1) {
 //                Bundle args = new Bundle();
 //                args.putString(EXTRA_FONT_NAME, fontName);
 //                startLoad(WHAT_DOWNLOAD_FONT, args);
@@ -265,7 +268,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
                 if (line.contains(FONT_FAMILY)) {
                     line = line.substring(line.indexOf(FONT_FAMILY));
                     line = line.substring(0, line.indexOf(";"));
-                    String font = line.split(":")[1].trim().replace("'","");
+                    String font = line.split(":")[1].trim().replace("'", "");
                     fontSet.add(font);
                 }
             }
@@ -302,21 +305,21 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
                     story.userId = UserLogic.instance().getUserInfoFromLocal().user_id;
                     story.storyDesc = "Something wonderful is coming";
                     story.storyLocal = Utils.acquireUTCTimestamp();
-                    try{
-                        File file = new File(StoryManager.getStoryDirectory(),story.storyLocal);
-                        if(!file.exists()){
+                    try {
+                        File file = new File(StoryManager.getStoryDirectory(), story.storyLocal);
+                        if (!file.exists()) {
                             file.mkdirs();
                         }
-                    }catch (Exception e){
-                        Log.e(TAG,e.getMessage());
+                    } catch (Exception e) {
+                        Log.e(TAG, e.getMessage());
                     }
-                    try{
-                        File file = new File(StoryManager.getStoryDirectory(),story.storyLocal + "/img");
-                        if(!file.exists()){
+                    try {
+                        File file = new File(StoryManager.getStoryDirectory(), story.storyLocal + "/img");
+                        if (!file.exists()) {
                             file.mkdirs();
                         }
-                    }catch (Exception e){
-                        Log.e(TAG,e.getMessage());
+                    } catch (Exception e) {
+                        LogUtil.e("初始化失败", e);
                     }
                     StoryLogic.instance().saveStoryEntityToShare(story);
                 }
@@ -347,7 +350,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
                         bundle.putInt(EXTRA_CATEGORY_ID, categoryId);
                         bundle.putString(EXTRA_TEMPLATE_NAME, name);
                         bundle.putString(EXTRA_TEMPLATE_PATH, downUri.getPath());
-                        bundle.putString(EXTRA_TEMPLATE_URL,url);
+                        bundle.putString(EXTRA_TEMPLATE_URL, url);
                         msg.setData(bundle);
                         downloadTemplateHandler.sendMessage(msg);
                     }
@@ -405,22 +408,21 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
                 });
                 break;
             }
-            case WHAT_INIT_COMPLETED:{
-                System.out.println("javascript:onInitCompleted()");
+            case WHAT_INIT_COMPLETED: {
                 initHandler.sendMessage(Message.obtain());
             }
         }
         return msg;
     }
 
-    private Handler initHandler = new Handler(){
+    private Handler initHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             StoryTemplateInfo templateInfo = DataSynchronizer.getInstance().getFirstTemplate();
             String content = "";
-            if (templateInfo != null){
-                File path = new File(StoryManager.getStoryTemplateDirectory(),templateInfo.temp_name + "/" + "stage.html");
+            if (templateInfo != null) {
+                File path = new File(StoryManager.getStoryTemplateDirectory(), templateInfo.temp_name + "/" + "stage.html");
                 content = readHtml(path.getAbsolutePath());
             }
 //            loadUrl("javascript:onInitCompleted(" + content + ")");
@@ -517,18 +519,18 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
             LogUtil.e("解压模版失败", e);
             e.printStackTrace();
             File destFile = new File(template + ".zip");
-            if (destFile.exists()){
-                try{
+            if (destFile.exists()) {
+                try {
                     InputStream is = new FileInputStream(destFile);
                     String md5 = DigestUtils.md5Hex(is);
                     StoryTemplateInfo templateInfo = StoryLogic.instance()
                             .getStoryTemplateLocalByName(this, template.getName());
-                    if (md5.equals(templateInfo.hash_code)){
+                    if (md5.equals(templateInfo.hash_code)) {
                         unzipTemplate(downUri, template, args);
                     } else {
                         startLoad(WHAT_DOWNLOAD_TEMPLATE, args);
                     }
-                }catch (IOException e1){
+                } catch (IOException e1) {
                     e1.printStackTrace();
                 }
             } else {
@@ -541,7 +543,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
         try {
             ZipUtils.unzip(downUri, font);
         } catch (IOException e) {
-            Log.e(TAG, "", e);
+            LogUtil.e("解压字体出错:", e);
             loadUrl("javascript:onError('unzip error!')");
         }
     }
@@ -558,4 +560,24 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
             }
         }
     }
+
+//    @Override
+//    protected void onSaveInstanceState(Bundle outState) {
+//        super.onSaveInstanceState(outState);
+////        appView.loadUrl("javascript:ImSave()");
+//        StoryLogic.instance().saveTempHtml("<div class=\"stage-content edit-area pages-img pages-img-bg\"     style=\" text-align:center;word-break:break-all;background: url(/storage/sdcard0/wisape/com.wisape.android/data/template/cover/img/bg.jpg);background-size: cover;background-position:50% 50%;width:100%;height:100%;position: relative;\">    <div class=\"stage-content-box\" style=\"position: absolute;text-align: center;top:3.65rem;width:16rem;-webkit-transform-origin:0 0;\">        <div class=\"symbol\">            <div class=\"pages-txt edit-area\" data-animation=\"animated flash\"  style=\"display: inline-block;font-family: 'bebas';font-size:3.5rem;line-height: 3.5rem;min-height: 3.5rem;min-width:14rem;color:#cc0001;\">                JOITN            </div>        </div>        <div class=\"symbol\" style=\"z-index: 3;\">            <div class=\"pages-txt edit-area\" data-animation=\"animated flash\" style=\"display: inline-block;margin-top:0.5rem;font-family: 'bebas';font-size:3.5rem;line-height: 3.5rem;min-height: 3.5rem;min-width:14rem;color:#000;\">                WISAPE            </div>        </div>    </div>    <div class=\"stage-content-box\" style=\"position: absolute;bottom:1rem;text-align: center;width:16rem;-webkit-transform-origin:0 100%;\">        <div class=\"symbol\" style=\"z-index: 999; \">            <div class=\"pages-img edit-area\"  data-animation=\"animated fadeInUp\">                <img style=\"width:4.44rem;height:1.03rem;\" src=\"/storage/sdcard0/wisape/com.wisape.android/data/template/cover/img/logo.png\"></div>        </div>        <div class=\"symbol\" style=\"z-index: 3;\">            <div class=\"pages-txt edit-area\" data-animation=\"animated fadeInUp\" style=\"font-size:0.53rem;color:#000;font-family: 'Lato';margin-top:0.3rem;min-height: 0.53rem;min-width:14rem;\">                Something Wonderful is Coming            </div>        </div>    </div></div>\";");
+//        LogUtil.d("保存数据");
+//        appView = null;
+//    }
+//
+//    @Override
+//    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+//        super.onRestoreInstanceState(savedInstanceState);
+//        String tempHtml = StoryLogic.instance().getTempHtml();
+//        LogUtil.d("重新创建获取到的数据:" + tempHtml);
+//        if(!Utils.isEmpty(tempHtml)){
+//            html = tempHtml;
+//        }
+//        StoryLogic.instance().clearTempHtml();
+//    }
 }

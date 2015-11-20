@@ -1,8 +1,6 @@
 package com.wisape.android.fragment;
 
-import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Message;
 import android.view.LayoutInflater;
@@ -11,36 +9,25 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bugtags.library.ui.rounded.CircleImageView;
+import com.bumptech.glide.Glide;
 import com.freshdesk.mobihelp.Mobihelp;
-import com.squareup.picasso.Picasso;
 import com.wisape.android.R;
 import com.wisape.android.activity.AboutActivity;
 import com.wisape.android.activity.MessageCenterActivity;
 import com.wisape.android.activity.SignUpActivity;
-import com.wisape.android.activity.StoryPreviewActivity;
-import com.wisape.android.activity.StoryReleaseActivity;
-import com.wisape.android.activity.StoryTemplateActivity;
 import com.wisape.android.activity.UserProfileActivity;
-import com.wisape.android.api.ApiStory;
-import com.wisape.android.common.StoryManager;
 import com.wisape.android.content.BroadCastReciverListener;
 import com.wisape.android.content.ClearNumberReciver;
 import com.wisape.android.content.MessageCenterReceiver;
-import com.wisape.android.content.StoryBroadcastReciver;
-import com.wisape.android.content.StoryBroadcastReciverListener;
 import com.wisape.android.content.UpdateUserInfoBroadcastReciver;
-import com.wisape.android.database.StoryEntity;
-import com.wisape.android.http.HttpUrlConstancts;
-import com.wisape.android.logic.StoryLogic;
 import com.wisape.android.logic.UserLogic;
 import com.wisape.android.util.EnvironmentUtils;
 import com.wisape.android.util.FileUtils;
-import com.wisape.android.util.Utils;
 import com.wisape.android.view.CircleTransform;
 import com.wisape.android.widget.ComfirmDialog;
 
 import java.io.File;
-import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -55,7 +42,7 @@ public class MainMenuFragment extends AbsFragment implements BroadCastReciverLis
     private static final int CLEAR_CACHE = 1;
 
     @InjectView(R.id.sdv_user_head_image)
-    ImageView userHeadImage;
+    CircleImageView userHeadImage;
     @InjectView(R.id.tv_name)
     TextView tvName;
     @InjectView(R.id.tv_mail)
@@ -107,10 +94,10 @@ public class MainMenuFragment extends AbsFragment implements BroadCastReciverLis
         tvMail.setText(UserLogic.instance().getUserInfoFromLocal().user_email);
         String iconUrl = UserLogic.instance().getUserInfoFromLocal().user_ico_n;
         if (null != iconUrl && 0 < iconUrl.length()) {
-            Picasso.with(getActivity()).load(iconUrl)
-                    .resize(150, 150)
-                    .transform(new CircleTransform())
+            Glide.with(getActivity()).load(iconUrl)
+                    .override(150, 150)
                     .centerCrop()
+                    .crossFade()
                     .into(userHeadImage);
         }
     }
@@ -241,9 +228,14 @@ public class MainMenuFragment extends AbsFragment implements BroadCastReciverLis
     protected void onLoadComplete(Message data) {
         closeProgressDialog();
         super.onLoadComplete(data);
+        int size = (int)totleSize;
         switch (data.what) {
             case CLEAR_CACHE:
-                showToast("Clear cache successful,total size :" + totleSize + "MB");
+                if(size > 0){
+                    showToast("Clear cache successful,total size :" + size + "MB");
+                }else{
+                    showToast("Clear cache successful,total size :" + totleSize*1024 + "KB");
+                }
                 break;
         }
     }
@@ -259,7 +251,7 @@ public class MainMenuFragment extends AbsFragment implements BroadCastReciverLis
                     size += getDirSize(f);
                 return size;
             } else {//如果是文件则直接返回其大小,以“兆”为单位
-                return (double) file.length() / 1024 / 1024;
+                return (float) file.length() / 1024 / 1024;
             }
         }
         return 0.0;

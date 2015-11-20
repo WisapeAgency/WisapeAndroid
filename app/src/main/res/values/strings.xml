@@ -18,6 +18,9 @@
        Logout will not delete any data.You\ncan still login with this account.</string>
     <string name="my_stores">My Story</string>
 
+    <string name="upload_failure_title">update story failure</string>
+    <string name="upload_failure">upload story failure,try again?</string>
+
 
     <!-- Photo Selector -->
     <string name="photo_bucket_all">All Photos</string>

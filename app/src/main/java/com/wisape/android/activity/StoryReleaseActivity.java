@@ -10,7 +10,7 @@ import android.support.v7.widget.AppCompatEditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
 import com.wisape.android.R;
 import com.wisape.android.WisapeApplication;
 import com.wisape.android.api.ApiStory;
@@ -21,10 +21,10 @@ import com.wisape.android.database.StoryEntity;
 import com.wisape.android.http.HttpUrlConstancts;
 import com.wisape.android.logic.StoryLogic;
 import com.wisape.android.logic.UserLogic;
-import com.wisape.android.util.EnvironmentUtils;
 import com.wisape.android.util.FileUtils;
 import com.wisape.android.util.LogUtil;
 import com.wisape.android.util.Utils;
+import com.wisape.android.widget.ComfirmDialog;
 import com.wisape.android.widget.QrDialogFragment;
 
 import java.io.File;
@@ -59,12 +59,9 @@ public class StoryReleaseActivity extends BaseActivity {
     private static final int LOADER_UPLOAD_STORY = 3;
     private static final String EXTRAS_STORY_NAME = "stroy_name";
     private static final String EXTRAS_STORY_DESC = "story_desc";
-//    private static final int WIDTH = 600;
-//    private static final int HEIGHT = 800;
     private Uri bgUri;
     private boolean isUpload = false;
-    private boolean isSucess = false;
-    private int uploadCount = 1;
+    private boolean isSuccess = false;
 
 
     public static void launch(Activity activity) {
@@ -87,14 +84,17 @@ public class StoryReleaseActivity extends BaseActivity {
         setContentView(R.layout.activity_story_release);
         ButterKnife.inject(this);
         ShareSDK.initSDK(this);
+        updateStoryInfo();
         setStoryInfo();
-//        updateStoryInfo();
-
     }
 
     private void updateStoryInfo() {
-
-        startLoad(LOADER_UPLOAD_STORY, null);
+        if (ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE.equals(StoryLogic.instance().getStoryEntityFromShare().status)) {
+            isUpload = true;
+            isSuccess = true;
+        } else {
+            startLoad(LOADER_UPLOAD_STORY, null);
+        }
     }
 
     private void setStoryInfo() {
@@ -114,17 +114,19 @@ public class StoryReleaseActivity extends BaseActivity {
         }
         Utils.loadImg(this, thumbImage, storyCoverView);
         LogUtil.d("storylocalCover:" + storyEntity.localCover + "封面地址:" + storyEntity.storyThumbUri + " :story地址:" + storyEntity.storyUri);
-        if (ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE.equals(StoryLogic.instance().getStoryEntityFromShare().status)) {
-            isUpload = true;
-            isSucess = true;
-        } else {
-            updateStoryInfo();
-        }
     }
 
     @OnClick(R.id.linear_picture)
     @SuppressWarnings("unused")
     public void onPictureClick() {
+        if (!isUpload) {
+            if(!isSuccess){
+                showToast("upload story failure");
+            }else{
+                showProgressDialog(R.string.progress_loading_data);
+            }
+            return;
+        }
         PhotoSelectorActivity.launch(this, PhotoSelectorActivity.REQUEST_CODE_PHOTO);
     }
 
@@ -153,8 +155,8 @@ public class StoryReleaseActivity extends BaseActivity {
                     intent.putExtra("scale", false);
 
                     // outputX outputY 是裁剪图片宽高
-//                    intent.putExtra("outputX", WIDTH);
-//                    intent.putExtra("outputY", HEIGHT);
+                    intent.putExtra("outputX", 600);
+                    intent.putExtra("outputY", 800);
                     intent.putExtra("return-data", false);
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, bgUri);
                     intent.putExtra("noFaceDetection", true); // no face detection
@@ -180,9 +182,11 @@ public class StoryReleaseActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
 
-        if(!isSucess && !isUpload){
+        if(!isUpload){
             LogUtil.d("产生草稿story");
-            StoryEntity storyEntity = StoryLogic.instance().updateStory(this, StoryLogic.instance().getStoryEntityFromShare());
+            StoryEntity story = StoryLogic.instance().getStoryEntityFromShare();
+            story.status = ApiStory.AttrStoryInfo.STORY_STATUS_TEMPORARY;
+            StoryEntity storyEntity = StoryLogic.instance().updateStory(this, story);
             StoryLogic.instance().saveStoryEntityToShare(storyEntity);
             Intent intent = new Intent();
             intent.setAction(StoryBroadcastReciver.STORY_ACTION);
@@ -219,6 +223,7 @@ public class StoryReleaseActivity extends BaseActivity {
                 break;
             case LOADER_UPDATE_STORYSETTING:
                 FileUtils.saveBitmap(bgUri.getPath(), FileUtils.getSmallBitmap(bgUri.getPath()));
+                storyEntity.localCover = 1;
                 message = StoryLogic.instance().updateStorySetting(storyEntity,
                         args.getString(EXTRAS_STORY_NAME), bgUri.getPath(),
                         args.getString(EXTRAS_STORY_DESC));
@@ -271,16 +276,7 @@ public class StoryReleaseActivity extends BaseActivity {
             case LOADER_UPDATE_STORYSETTING:
 
                 if (HttpUrlConstancts.STATUS_SUCCESS == data.arg1) {
-                    String imgPath = storyEntity.storyThumbUri;
-                    storyEntity.localCover = 1;
-
-                    Picasso.with(this).load(Utils.isEmpty(storyEntity.storyThumbUri) ? "" : storyEntity.storyThumbUri)
-                            .placeholder(R.mipmap.icon_camera)
-                            .error(R.mipmap.icon_login_email)
-                            .fit()
-                            .centerCrop()
-                            .into(storyCoverView);
-
+                    setStoryInfo();
                     Intent intent = new Intent();
                     intent.setAction(StoryBroadcastReciver.STORY_ACTION);
                     intent.putExtra(StoryBroadcastReciver.EXTRAS_TYPE, StoryBroadcastReciverListener.UPDATE_STORY_SETTING);
@@ -300,14 +296,20 @@ public class StoryReleaseActivity extends BaseActivity {
                 if(HttpUrlConstancts.STATUS_SUCCESS == data.arg1){
                     setStoryInfo();
                     isUpload = true;
-                    isSucess = true;
+                    isSuccess = true;
                 }else{
+                    LogUtil.d("上传story失败");
                     isUpload = false;
-                    isSucess = false;
-                    if(uploadCount != 3){
-                        updateStoryInfo();
-                    }
-                    uploadCount++;
+                    isSuccess = false;
+                    ComfirmDialog comfirmDialog = ComfirmDialog.getInstance(getString(R.string.upload_failure_title), getString(R.string.upload_failure));
+                    comfirmDialog.show(getSupportFragmentManager(), "reply");
+                    comfirmDialog.setOnConfirmClickListener(new ComfirmDialog.OnComfirmClickListener() {
+                        @Override
+                        public void onConfirmClicked() {
+                            startLoadWithProgress(LOADER_UPLOAD_STORY, null);
+                        }
+                    });
+
                 }
                 break;
         }
@@ -342,6 +344,10 @@ public class StoryReleaseActivity extends BaseActivity {
     @OnClick(R.id.story_release_link)
     @SuppressWarnings("unused")
     protected void doShare2CopyUrl() {
+        if (!isUpload) {
+            showProgressDialog(R.string.progress_loading_data);
+            return;
+        }
         Utils.clipText(this, storyEntity.storyUri);
         Toast.makeText(this, "copy url", Toast.LENGTH_SHORT).show();
     }
@@ -388,9 +394,11 @@ public class StoryReleaseActivity extends BaseActivity {
 //            }
 //        });
 
-
+        String html = "<a href=http://ww.baidu.com>" + "<img src=" + storyEntity.storyUri+"/></a>";
         Facebook.ShareParams shareParams = new Facebook.ShareParams();
         shareParams.setImageUrl(storyEntity.storyThumbUri);
+        shareParams.setUrl(storyEntity.storyUri);
+        shareParams.setTitle(storyEntity.storyUri);
         shareParams.setText(storyEntity.storyUri);
         startShare(Facebook.NAME, shareParams);
     }
@@ -418,9 +426,10 @@ public class StoryReleaseActivity extends BaseActivity {
     @OnClick(R.id.story_release_twitter)
     @SuppressWarnings("unused")
     protected void doShare2Twitter() {
+        String html = storyEntity.storyUri.replace("http://","");
         Twitter.ShareParams shareParams = new Twitter.ShareParams();
         shareParams.setImageUrl(storyEntity.storyThumbUri);
-        shareParams.setText(storyEntity.storyUri);
+        shareParams.setText(html);
         startShare(Twitter.NAME, shareParams);
     }
 
@@ -451,11 +460,7 @@ public class StoryReleaseActivity extends BaseActivity {
     @SuppressWarnings("unused")
     protected void doShare2QR() {
         if (!isUpload) {
-            showToast("Uploading story ......");
-            return;
-        }
-        if (!isSucess) {
-            showToast("Failed！Please check network settings.");
+            showProgressDialog(R.string.progress_loading_data);
             return;
         }
         QrDialogFragment qrDialogFragment = QrDialogFragment.instance(storyEntity.storyUri
@@ -467,30 +472,22 @@ public class StoryReleaseActivity extends BaseActivity {
     @SuppressWarnings("unused")
     protected void doShare2More() {
         if (!isUpload) {
-            showToast("Uploading story ......");
-            return;
-        }
-        if (!isSucess) {
-            showToast("Failed！Please check network settings.");
+            showProgressDialog(R.string.progress_loading_data);
             return;
         }
         Intent intent = new Intent(Intent.ACTION_SEND); // 启动分享发送的属性
         intent.setType("text/plain"); // 分享发送的数据类型
-        String msg = storyNameEdit.getText().toString() + storyEntity.storyUri;
+        String msg = storyEntity.storyUri;
         intent.putExtra(Intent.EXTRA_TEXT, msg); // 分享的内容
         startActivity(Intent.createChooser(intent, "选择分享"));// 目标应用选择对话框的标题
     }
 
     private void startShare(final String platName, Platform.ShareParams shareParams) {
         if (!isUpload) {
-            showToast("Uploading story ......");
+            showProgressDialog(R.string.progress_loading_data);
             return;
         }
 
-        if (!isSucess) {
-            showToast("Failed！Please check network settings.");
-            return;
-        }
         Platform platform = ShareSDK.getPlatform(this, platName);
         platform.setPlatformActionListener(new PlatformActionListener() {
             @Override

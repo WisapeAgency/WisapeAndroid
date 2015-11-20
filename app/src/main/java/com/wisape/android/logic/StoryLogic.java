@@ -10,6 +10,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.widget.LinearLayout;
 
+import com.bumptech.glide.util.Util;
 import com.google.gson.Gson;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
@@ -102,12 +103,12 @@ public class StoryLogic {
             return false;
         }
         Uri storyUri = attr.story;
-        LogUtil.d("#update story' uri:" + storyUri);
+        LogUtil.d("#即将上传的story的本地地址:" + storyUri);
         StoryInfo story;
         if (STORY_STATUS_RELEASE.equals(storyStatus)) {
             try {
                 String zipName = String.format(Locale.US, "%1$s.%2$s", storyUri.getLastPathSegment(), SUFFIX_STORY_COMPRESS);
-                LogUtil.d("#update zipName:" + zipName);
+                LogUtil.d("#即将上传的story的压缩包名称:" + zipName);
                 Uri storyZip = ZipUtils.zip(storyUri, EnvironmentUtils.getAppTemporaryDirectory(), zipName);
                 attr.story = storyZip;
             } catch (IOException e) {
@@ -172,7 +173,6 @@ public class StoryLogic {
             Intent intent = new Intent();
             intent.setAction(StoryBroadcastReciver.STORY_ACTION);
             intent.putExtra(StoryBroadcastReciver.EXTRAS_TYPE, StoryBroadcastReciverListener.TYPE_ADD_STORY);
-            WisapeApplication.getInstance().getApplicationContext().sendBroadcast(intent);
             WisapeApplication.getInstance().sendBroadcast(intent);
         } catch (SQLException e) {
             LogUtil.e("发布时更新到本地数据库失败:", e);
@@ -1019,6 +1019,20 @@ public class StoryLogic {
     }
 
     public void clear() {
-        WisapeApplication.getInstance().getSharePrefrence().edit().remove(EXTARAS_STORY_ENTITY).apply();
+        WisapeApplication.getInstance().getSharePrefrence().edit().remove(EXTARAS_STORY_ENTITY).commit();
+    }
+
+    public void saveTempHtml(String html){
+        if(!Utils.isEmpty(html)){
+            WisapeApplication.getInstance().getSharePrefrence().edit().putString("out",html).commit();
+        }
+    }
+
+    public String getTempHtml(){
+        return WisapeApplication.getInstance().getSharePrefrence().getString("out","");
+    }
+
+    public void clearTempHtml(){
+        WisapeApplication.getInstance().getSharePrefrence().edit().remove("out").commit();
     }
 }

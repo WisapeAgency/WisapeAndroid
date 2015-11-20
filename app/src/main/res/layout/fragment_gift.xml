@@ -25,7 +25,7 @@
             android:background="@mipmap/iconc_close" />
     </RelativeLayout>
 
-    <android.support.v7.widget.RecyclerView
+    <com.wisape.android.view.GalleryView
         android:id="@+id/gift_gallery"
         android:layout_width="match_parent"
         android:layout_height="0dp"

@@ -12,7 +12,6 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
 
 
     <uses-feature android:name="android.hardware.camera" />
@@ -25,7 +24,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
 
-        <!--<meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/face_book_id"/>-->
+        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/face_book_id"/>
         <meta-data android:name="com.parse.push.notification_icon" android:resource="@mipmap/logo"/>
 
         <meta-data
@@ -100,16 +99,15 @@
             android:name="ccom.wisape.android.permission.C2D_MESSAGE" />
         <uses-permission android:name="com.wisape.android.permission.C2D_MESSAGE" />
         
-        <!--facebook需要的activity-->
-        <!--<activity android:name="com.facebook.FacebookActivity"-->
-            <!--android:configChanges=-->
-                <!--"keyboard|keyboardHidden|screenLayout|screenSize|orientation"-->
-            <!--android:theme="@android:style/Theme.Translucent.NoTitleBar"-->
-            <!--android:label="@string/app_name" />-->
+        <activity android:name="com.facebook.FacebookActivity"
+            android:configChanges=
+                "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:label="@string/app_name" />
 
-        <!--<provider android:authorities="com.facebook.app.FacebookContentProvider305010149669435"-->
-            <!--android:name="com.facebook.FacebookContentProvider"-->
-            <!--android:exported="true"/>-->
+        <provider android:authorities="com.facebook.app.FacebookContentProvider900883746624807"
+            android:name="com.facebook.FacebookContentProvider"
+            android:exported="true"/>
 
         <activity
             android:name="com.mob.tools.MobUIShell"
