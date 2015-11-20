@@ -19,6 +19,7 @@ import com.wisape.android.model.StoryTemplateInfo;
 import com.wisape.android.model.StoryTemplateTypeInfo;
 import com.wisape.android.network.Requester;
 import com.wisape.android.network.WWWConfig;
+import com.wisape.android.util.LogUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -46,12 +47,13 @@ public class ApiStory extends ApiBase{
 
     public StoryInfo update(Context context, AttrStoryInfo attr, Object tag){
         Uri uri = WWWConfig.acquireUri(context.getString(R.string.uri_story_create));
-        Log.d(TAG, "#updateStory uri:" + uri.toString());
+        LogUtil.d("#updateStory uri:" + uri.toString());
 
         Requester requester = Requester.instance();
         setAccessToken(context, attr);
         Requester.MultiPartFile multiPartFile[] = {new Requester.MultiPartFile(AttrStoryInfo.ATTR_STORY, attr.story)};
         Requester.ServerMessage message = requester.postMultiPart(uri, attr.convert(), multiPartFile, tag);
+        LogUtil.d("＃上传story返回信息:"+message.toString());
         return convert(message);
     }
 

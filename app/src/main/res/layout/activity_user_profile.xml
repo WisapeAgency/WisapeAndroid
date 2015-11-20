@@ -23,7 +23,7 @@
             android:text="@string/user_profile_icon_title"
             android:textColor="@android:color/black" />
 
-        <ImageView
+        <com.bugtags.library.ui.rounded.CircleImageView
             android:id="@+id/user_profile_icon"
             android:layout_width="48dp"
             android:layout_height="48dp"

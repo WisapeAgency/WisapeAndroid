@@ -9,7 +9,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 22
         versionCode 1
-        versionName "0.09"
+        versionName "0.1"
         multiDexEnabled true
     }
     dexOptions {
@@ -101,8 +101,9 @@ dependencies {
     compile 'com.google.zxing:core:3.2.0'
     compile 'com.j256.ormlite:ormlite-core:4.48'
     compile 'com.j256.ormlite:ormlite-android:4.48'
-    compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.bugtags.library:bugtags-lib:1.0.6'
     compile 'com.android.support:percent:22.2.0'
     compile 'com.facebook.android:facebook-android-sdk:4.7.0'
+    compile 'com.github.bumptech.glide:glide:3.6.1'
+
 }

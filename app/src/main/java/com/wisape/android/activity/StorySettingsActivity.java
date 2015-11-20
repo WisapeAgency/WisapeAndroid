@@ -4,22 +4,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatTextView;
-import android.widget.ImageView;
 
-import com.squareup.picasso.Picasso;
 import com.wisape.android.R;
-import com.wisape.android.common.StoryManager;
 import com.wisape.android.database.StoryEntity;
 import com.wisape.android.database.StoryMusicEntity;
 import com.wisape.android.logic.StoryLogic;
-import com.wisape.android.model.StoryGestureInfo;
-import com.wisape.android.util.LogUtil;
 import com.wisape.android.util.Utils;
-
-import java.io.File;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;

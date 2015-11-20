@@ -119,6 +119,7 @@ public class SignUpEditText extends LinearLayout implements View.OnFocusChangeLi
     public void onFocusChange(View view, boolean hasFocus) {
         if(R.id.edit_text == view.getId() && !hasFocus){
             cleanWarning();
+
         }
     }
 

@@ -9,8 +9,6 @@ import android.os.Message;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +16,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
 import com.wisape.android.R;
 import com.wisape.android.activity.AboutWebViewActivity;
 import com.wisape.android.http.HttpUrlConstancts;
@@ -47,7 +45,7 @@ public class GiftFragment extends AbsFragment {
     private static final String EXTRAS_COUNTRY_CODE = "country_code";
 
     @InjectView(R.id.gift_gallery)
-    RecyclerView giftGallery;
+    GalleryView giftGallery;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -125,7 +123,12 @@ public class GiftFragment extends AbsFragment {
     public void gotoActive(String url,String title){
         Intent it = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
         it.setClassName("com.android.browser", "com.android.browser.BrowserActivity");
-        getActivity().startActivity(it);
+
+        if (it.resolveActivity(getActivity().getPackageManager()) == null){
+            AboutWebViewActivity.launch(getActivity(),url,title);
+        }else{
+            getActivity().startActivity(it);
+        }
     }
 
     public class GalleryAdapter extends RecyclerView.Adapter<GHolder> {
@@ -146,18 +149,20 @@ public class GiftFragment extends AbsFragment {
 
         @Override
         public void onBindViewHolder(final GHolder holder, int position) {
+
             final ActiveInfo activeInfo = activeInfoList.get(position);
-
             LinearLayout.LayoutParams params;
-
             int width = (int)(mDisplayMetrics.heightPixels * 0.48);
             params = new LinearLayout.LayoutParams(width, ViewGroup.LayoutParams.MATCH_PARENT);
-
             holder.linearGif.setLayoutParams(params);
-            Picasso.with(mContext).load(activeInfo.getBg_img())
-                    .placeholder(R.mipmap.icon_camera)
-                    .error(R.mipmap.app_logo)
+
+            Glide.with(GiftFragment.this).load(activeInfo.getBg_img())
+                    .placeholder(R.mipmap.loading)
+                    .error(R.mipmap.loading)
+                    .centerCrop()
+                    .crossFade()
                     .into(holder.imgContent);
+
             holder.imgContent.setAlpha(1.0f);
             holder.imgContent.setOnClickListener(new View.OnClickListener() {
                 @Override

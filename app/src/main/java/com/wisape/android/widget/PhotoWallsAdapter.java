@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
 import com.wisape.android.R;
 import com.wisape.android.model.AppPhotoInfo;
 import com.wisape.android.util.FrescoUriUtils;
@@ -68,12 +68,10 @@ public class PhotoWallsAdapter extends RecyclerView.Adapter<RecyclerHolder> impl
             AppPhotoInfo photo = (AppPhotoInfo) data;
             String path = photo.data;
             Uri uri = FrescoUriUtils.fromFilePath(path);
-
             final ViewGroup.LayoutParams layoutParams = itemView.getLayoutParams();
             final int itemWidth = layoutParams.width;
             final int itemHeight = layoutParams.height;
-
-            Picasso.with(context).load(uri).resize(itemWidth,itemHeight).centerCrop().into(thumbView);
+            Glide.with(context).load(uri).override(itemWidth,itemHeight).centerCrop().into(thumbView);
         }
     }
 

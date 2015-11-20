@@ -95,6 +95,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
     public static final String ACTION_GET_CONTENT = "getContent";
     public static final String ACTION_CHECK_DOWNLOAD = "checkInitState";//onInitCompleted
     public static final String ACTION_OPEN_LINK = "openLink";
+    public static final String ACTION_IM_SAVE="isave";
 
     private static final String EXTRA_CATEGORY_ID = "extra_category_id";
     private static final String EXTRA_TEMPLATE_ID = "extra_template_id";
@@ -367,11 +368,11 @@ public class StoryTemplatePlugin extends AbsPlugin {
             musicEntity.serverId = storyEntity.musicServerId;
             callbackContext.success();
             StoryMusicActivity.launch(getCurrentActivity(),musicEntity,0);
-//            StorySettingsActivity.launch(getCurrentActivity(), 0);
         } else if (ACTION_BACK.equals(action)) {
             callbackContext.success();
             cordova.getActivity().finish();
         } else if (ACTION_EDIT.equals(action)) {
+            LogUtil.d("编辑动作");
             StoryEntity storyEntity = StoryLogic.instance().getStoryEntityFromShare();
             if (storyEntity != null) {
                 doEditStory(storyEntity);
@@ -382,20 +383,26 @@ public class StoryTemplatePlugin extends AbsPlugin {
             if (cordova.getActivity() instanceof StoryTemplateActivity) {
                 StoryTemplateActivity activity = (StoryTemplateActivity) cordova.getActivity();
                 String html = activity.getContent();
+                LogUtil.d("获取内容数据的内容:" + html);
                 callbackContext.success(html);
             }
         } else if (ACTION_CHECK_DOWNLOAD.equals(action)) {
+            LogUtil.d("检测是否下载");
             threadhelper(new TemplateOp() {
                 public void run(Bundle bundle) {
-                    while (DataSynchronizer.getInstance().isDownloading()){
-                        try{
+                    while (DataSynchronizer.getInstance().isDownloading()) {
+                        try {
                             Thread.sleep(300);
-                        }catch (InterruptedException e){
+                        } catch (InterruptedException e) {
 
                         }
                     }
                     StoryTemplateInfo templateInfo = DataSynchronizer.getInstance().getFirstTemplate();
-                    String content = "";
+                    StoryManager.getStoryTemplateDirectory().getAbsolutePath();
+                    String content = "<div class=\"stage-content edit-area pages-img pages-img-bg\"     style=\" text-align:center;word-break:break-all;background: url(/storage/sdcard0/wisape/com.wisape.android/data/template/cover/img/bg.jpg);background-size: cover;background-position:50% 50%;width:100%;height:100%;position: relative;\">    <div class=\"stage-content-box\" style=\"position: absolute;text-align: center;top:3.65rem;width:16rem;-webkit-transform-origin:0 0;\">        <div class=\"symbol\">            <div class=\"pages-txt edit-area\" data-animation=\"animated flash\"  style=\"display: inline-block;font-family: 'bebas';font-size:3.5rem;line-height: 3.5rem;min-height: 3.5rem;min-width:14rem;color:#cc0001;\">                JOITN            </div>        </div>        <div class=\"symbol\" style=\"z-index: 3;\">            <div class=\"pages-txt edit-area\" data-animation=\"animated flash\" style=\"display: inline-block;margin-top:0.5rem;font-family: 'bebas';font-size:3.5rem;line-height: 3.5rem;min-height: 3.5rem;min-width:14rem;color:#000;\">                WISAPE            </div>        </div>    </div>    <div class=\"stage-content-box\" style=\"position: absolute;bottom:1rem;text-align: center;width:16rem;-webkit-transform-origin:0 100%;\">        <div class=\"symbol\" style=\"z-index: 999; \">            <div class=\"pages-img edit-area\"  data-animation=\"animated fadeInUp\">                <img style=\"width:4.44rem;height:1.03rem;\" src=\"123/cover/img/logo.png\"></div>        </div>        <div class=\"symbol\" style=\"z-index: 3;\">            <div class=\"pages-txt edit-area\" data-animation=\"animated fadeInUp\" style=\"font-size:0.53rem;color:#000;font-family: 'Lato';margin-top:0.3rem;min-height: 0.53rem;min-width:14rem;\">                Something Wonderful is Coming            </div>        </div>    </div></div>";
+                    content =  content.replaceAll("123", StoryManager.getStoryTemplateDirectory().getAbsolutePath());
+                    LogUtil.d("当前content:"+content);
+                    LogUtil.d("检测是否下载是否是空文件夹" + (templateInfo == null));
                     if (templateInfo != null) {
                         File path = new File(StoryManager.getStoryTemplateDirectory(), templateInfo.temp_name + "/" + "stage.html");
                         content = readHtml(path.getAbsolutePath());
@@ -413,9 +420,15 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 cordova.getActivity().startActivity(intent);
             }
             callbackContext.success();
+        }else if(ACTION_IM_SAVE.equals(action)){
+            LogUtil.d("保存临时数据");
+            if (null != args && args.length() == 3) {
+                StoryLogic.instance().saveTempHtml(args.getString(1));
+            }
         }
         return true;
     }
+
 
     private void doEditStory(StoryEntity storyEntity) {
         File file = new File(StoryManager.getStoryDirectory(), storyEntity.storyLocal + "/story.html");
@@ -453,7 +466,6 @@ public class StoryTemplatePlugin extends AbsPlugin {
 
         //生成story字符串
         for (int i = 0; i < paths.size(); i++) {
-            LogUtil.d("生成本地story文件");
             String path = paths.getString(i);
             File imagePath = new File(path).getParentFile().getParentFile();
             if (imagePath.getParentFile().getName().equals(StoryManager.TEMPLATE_DIRECTORY)) {
@@ -726,4 +738,6 @@ public class StoryTemplatePlugin extends AbsPlugin {
         intent.putExtra(StoryBroadcastReciver.EXTRAS_TYPE, StoryBroadcastReciverListener.TYPE_ADD_STORY);
         WisapeApplication.getInstance().getApplicationContext().sendBroadcast(intent);
     }
+
+
 }

@@ -133,7 +133,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
                     } catch (JSONException e) {
 
                     }
-                    unzipTemplate(Uri.fromFile(new File(path)), template,msg.getData());
+                    unzipTemplate(Uri.fromFile(new File(path)), template, msg.getData());
                     downloadFont(template);
                     break;
                 }
@@ -196,7 +196,20 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        html = getIntent().getStringExtra(EXTRA_EDIT_CONTENT);
+        if (savedInstanceState != null) {
+            LogUtil.d("重新建立界面");
+            String tempHtml = StoryLogic.instance().getTempHtml();
+            LogUtil.d("重新创建获取到的数据:" + tempHtml);
+            if (!Utils.isEmpty(tempHtml)) {
+                html = tempHtml;
+            }else{
+                html = getIntent().getStringExtra(EXTRA_EDIT_CONTENT);
+            }
+            StoryLogic.instance().clearTempHtml();
+
+        }else{
+            html = getIntent().getStringExtra(EXTRA_EDIT_CONTENT);
+        }
         loadUrl(START_URL);
         startLoad(WHAT_INIT, null);
     }
@@ -230,16 +243,16 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
         startLoad(WHAT_DOWNLOAD_FONT, args);
     }
 
-    public void downloadFont(File template){
+    public void downloadFont(File template) {
         BlockingQueue<String> fontQueue = new LinkedBlockingQueue<>();
         Set<String> fontSet = parseFont(template);
-        if (fontSet.size() == 0){
+        if (fontSet.size() == 0) {
             return;
         }
         File fontDirectory = StoryManager.getStoryFontDirectory();
-        for(String fontName : fontSet){
+        for (String fontName : fontSet) {
             File font = new File(fontDirectory, fontName);
-            if(!font.exists() || font.list().length <= 1){
+            if (!font.exists() || font.list().length <= 1) {
 //                Bundle args = new Bundle();
 //                args.putString(EXTRA_FONT_NAME, fontName);
 //                startLoad(WHAT_DOWNLOAD_FONT, args);
@@ -265,7 +278,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
                 if (line.contains(FONT_FAMILY)) {
                     line = line.substring(line.indexOf(FONT_FAMILY));
                     line = line.substring(0, line.indexOf(";"));
-                    String font = line.split(":")[1].trim().replace("'","");
+                    String font = line.split(":")[1].trim().replace("'", "");
                     fontSet.add(font);
                 }
             }
@@ -302,21 +315,21 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
                     story.userId = UserLogic.instance().getUserInfoFromLocal().user_id;
                     story.storyDesc = "Something wonderful is coming";
                     story.storyLocal = Utils.acquireUTCTimestamp();
-                    try{
-                        File file = new File(StoryManager.getStoryDirectory(),story.storyLocal);
-                        if(!file.exists()){
+                    try {
+                        File file = new File(StoryManager.getStoryDirectory(), story.storyLocal);
+                        if (!file.exists()) {
                             file.mkdirs();
                         }
-                    }catch (Exception e){
-                        Log.e(TAG,e.getMessage());
+                    } catch (Exception e) {
+                        Log.e(TAG, e.getMessage());
                     }
-                    try{
-                        File file = new File(StoryManager.getStoryDirectory(),story.storyLocal + "/img");
-                        if(!file.exists()){
+                    try {
+                        File file = new File(StoryManager.getStoryDirectory(), story.storyLocal + "/img");
+                        if (!file.exists()) {
                             file.mkdirs();
                         }
-                    }catch (Exception e){
-                        Log.e(TAG,e.getMessage());
+                    } catch (Exception e) {
+                        LogUtil.e("初始化失败", e);
                     }
                     StoryLogic.instance().saveStoryEntityToShare(story);
                 }
@@ -347,7 +360,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
                         bundle.putInt(EXTRA_CATEGORY_ID, categoryId);
                         bundle.putString(EXTRA_TEMPLATE_NAME, name);
                         bundle.putString(EXTRA_TEMPLATE_PATH, downUri.getPath());
-                        bundle.putString(EXTRA_TEMPLATE_URL,url);
+                        bundle.putString(EXTRA_TEMPLATE_URL, url);
                         msg.setData(bundle);
                         downloadTemplateHandler.sendMessage(msg);
                     }
@@ -405,22 +418,21 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
                 });
                 break;
             }
-            case WHAT_INIT_COMPLETED:{
-                System.out.println("javascript:onInitCompleted()");
+            case WHAT_INIT_COMPLETED: {
                 initHandler.sendMessage(Message.obtain());
             }
         }
         return msg;
     }
 
-    private Handler initHandler = new Handler(){
+    private Handler initHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             StoryTemplateInfo templateInfo = DataSynchronizer.getInstance().getFirstTemplate();
             String content = "";
-            if (templateInfo != null){
-                File path = new File(StoryManager.getStoryTemplateDirectory(),templateInfo.temp_name + "/" + "stage.html");
+            if (templateInfo != null) {
+                File path = new File(StoryManager.getStoryTemplateDirectory(), templateInfo.temp_name + "/" + "stage.html");
                 content = readHtml(path.getAbsolutePath());
             }
 //            loadUrl("javascript:onInitCompleted(" + content + ")");
@@ -517,18 +529,18 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
             LogUtil.e("解压模版失败", e);
             e.printStackTrace();
             File destFile = new File(template + ".zip");
-            if (destFile.exists()){
-                try{
+            if (destFile.exists()) {
+                try {
                     InputStream is = new FileInputStream(destFile);
                     String md5 = DigestUtils.md5Hex(is);
                     StoryTemplateInfo templateInfo = StoryLogic.instance()
                             .getStoryTemplateLocalByName(this, template.getName());
-                    if (md5.equals(templateInfo.hash_code)){
+                    if (md5.equals(templateInfo.hash_code)) {
                         unzipTemplate(downUri, template, args);
                     } else {
                         startLoad(WHAT_DOWNLOAD_TEMPLATE, args);
                     }
-                }catch (IOException e1){
+                } catch (IOException e1) {
                     e1.printStackTrace();
                 }
             } else {
@@ -541,7 +553,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
         try {
             ZipUtils.unzip(downUri, font);
         } catch (IOException e) {
-            Log.e(TAG, "", e);
+            LogUtil.e("解压字体出错:", e);
             loadUrl("javascript:onError('unzip error!')");
         }
     }
@@ -557,5 +569,31 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
                 break;
             }
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        loadUrl("javascript:ImSave()");
+//        StoryLogic.instance().saveTempHtml("<section class=\"m-page hide pages-item\" > <div class=\"m-img\" > <div class=\"stage-content edit-area pages-img pages-img-bg\" style=\" text-align:center;word-break:break-all;display: box;display: -webkit-box;display: -moz-box;-webkit-box-pack:center;-moz-box-pack:center;-webkit-box-align:center;-moz-box-align:center;background: url(/storage/sdcard0/wisape/com.wisape.android/data/story/20151120165115/tpl5/img/bg.jpg);background-size: cover;background-position:50% 50%;width:100%;height:100%;position: relative;\">                    <div class=\"stage-content-box\" style=\"-webkit-transform-origin:0 0;\">                                                <div style=\"float:left;width:12.14rem;margin:3.5rem 1.929rem;padding:5.18rem 0 1.18rem 0;background-color: rgba(255,255,255,0.5);border-radius: 0.5rem;position:relative;\">                        \t<div class=\"symbol\" style=\"z-index: 999; display: inline-block;top: -2rem; position: absolute; left:50%;margin-left: -3rem;\">\t                            <div class=\"pages-img edit-area\">\t                                <img data-name=\"img1\" style=\"width:5.4rem;height:5.4rem;border-radius: 2.7rem;border:0.3rem solid #fff;\" src=\"/storage/sdcard0/wisape/com.wisape.android/data/story/20151120165115/tpl5/img/t.jpg\"></div>\t                        </div>                            <div class=\"symbol\" style=\"z-index: 3;\">                                <div class=\"pages-txt edit-area\" style=\"font-size:0.78rem;color:#000;font-weight: bold\">                                    JackeyWisape                                </div>                            </div>                            <div class=\"symbol\" style=\"z-index: 3;\">                                <div class=\"pages-txt edit-area\" style=\"font-size:0.533rem;color:#000;\">                                    Co-founder                                </div>                            </div>                            <div class=\"symbol\" style=\"z-index: 3;\">                                <div class=\"pages-txt edit-area\" style=\"margin-top:1rem;font-size:0.444rem;line-height:0.888rem;color:#448aff;text-decoration:underline;\">                                    Email: support@wisape.com<br>                                    Tel:(702) 825-1558<br>                                    Tel:(702) 825-1558<br>                                    Site:www.wisape.com<br>                                    Adress:Room 8001 California, Mountain View,<br>                                    Amphitheatre Pkwy                                </div>                            </div>                        </div>                    </div>                </div>            </div> </section> ");
+        LogUtil.d("保存数据");
+        appView = null;
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        String tempHtml = StoryLogic.instance().getTempHtml();
+        LogUtil.d("重新创建获取到的数据:" + tempHtml);
+        if(!Utils.isEmpty(tempHtml)){
+            html = tempHtml;
+        }
+        StoryLogic.instance().clearTempHtml();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        appView = null;
     }
 }

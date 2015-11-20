@@ -10,7 +10,8 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
+import com.bugtags.library.ui.rounded.CircleImageView;
+import com.bumptech.glide.Glide;
 import com.wisape.android.R;
 import com.wisape.android.content.UpdateUserInfoBroadcastReciver;
 import com.wisape.android.logic.UserLogic;
@@ -52,7 +53,7 @@ public class UserProfileActivity extends BaseActivity {
 
 
     @InjectView(R.id.user_profile_icon)
-    protected ImageView iconView;
+    protected CircleImageView iconView;
 
     @InjectView(R.id.user_profile_name_edit)
     protected android.widget.EditText nameEdit;
@@ -74,10 +75,9 @@ public class UserProfileActivity extends BaseActivity {
             emailEdit.setText(userInfo.user_email);
             String iconUrl = userInfo.user_ico_n;
             if (null != iconUrl && 0 < iconUrl.length()) {
-                Picasso.with(this)
+                Glide.with(this)
                         .load(iconUrl)
-                        .transform(new CircleTransform())
-                        .fit()
+                        .transform(new CircleTransform(this))
                         .centerCrop()
                         .into(iconView);
             }
@@ -228,11 +228,9 @@ public class UserProfileActivity extends BaseActivity {
                     break;
                 case REQEUST_CODE_CROP_IMG:
                     if(null != userIconUri){
-                        Utils.loadImg(this,userIconUri.getPath(),iconView);
-                        Picasso.with(this).invalidate(new File(userIconUri.getPath()));
-                        Picasso.with(this).load(new File(userIconUri.getPath()))
-                                .transform(new CircleTransform())
-                                .fit()
+                        Utils.loadImg(this, userIconUri.getPath(), iconView);
+                        Glide.with(this).load(new File(userIconUri.getPath()))
+                                .transform(new CircleTransform(this))
                                 .centerCrop()
                                 .into(iconView);
                     }
