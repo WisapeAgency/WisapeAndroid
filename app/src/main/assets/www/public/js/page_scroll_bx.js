@@ -279,7 +279,7 @@ $(function(){
 
 	$(".j-vmiddle").each(function(){
 		var _this = $(this),
-				parent = _this.parents(".stage-content");
+				parent = _this.parents("div[symbol=top]");
 		scale = 1;
 		if(_this.css("transform").split("matrix(")[1]) {
 			scale = parseFloat(_this.css("transform").split("matrix(")[1].split(",")[0])

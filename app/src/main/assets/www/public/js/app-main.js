@@ -83,7 +83,6 @@ WisapeEditer = {
             });
         });
 
-
     },
 
     LoadDefaultData : function(data){
@@ -816,7 +815,7 @@ WisapeEditer = {
             }
         });
         WisapeEditer.logger("销毁保存",WisapeEditer.storyData);
-        WisapeEiter.GetNativeData("isave", [retImg[0],retHtml, retImg], function () {
+        WisapeEditer.GetNativeData("isave", [retImg[0],retHtml, retImg], function () {
         })
     },
 

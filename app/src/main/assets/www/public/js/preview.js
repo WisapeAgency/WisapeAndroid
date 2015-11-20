@@ -51,6 +51,21 @@ $(function(){
         }, function(e) {
         }, "StoryTemplate", "openLink", [url]);
     })
+
+    $(".j-vmiddle").each(function(){
+        var _this = $(this),
+            parent = _this.parents("div[symbol=top]");
+        scale = 1;
+        if(_this.css("transform").split("matrix(")[1]) {
+            scale = parseFloat(_this.css("transform").split("matrix(")[1].split(",")[0])
+        }
+        console.info(_this.css("transform"));
+        console.info(_this.parents(".stage-content").height());
+        console.info(_this.height());
+        _this.css({
+            "margin-top": (parent.height() - _this.height()*scale)/2
+        })
+    })
 })
 
 //播放音乐
