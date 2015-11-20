@@ -9,6 +9,8 @@ import android.os.Bundle;
  */
 public class StoryPreviewActivity extends AbsCordovaActivity{
 
+    private String url;
+
     public static void launch(Activity activity,String url){
         Intent intent = new Intent(activity, StoryPreviewActivity.class);
         intent.putExtra("url",url);
@@ -18,14 +20,23 @@ public class StoryPreviewActivity extends AbsCordovaActivity{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        String url = getIntent().getStringExtra("url");
+        if(savedInstanceState != null){
+            url = savedInstanceState.getString("url");
+        }else{
+            url = getIntent().getStringExtra("url");
+        }
         loadUrl("file://"+url);
     }
 
-
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("url",url);
+    }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        appView = null;
     }
 }

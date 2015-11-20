@@ -196,8 +196,18 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        LogUtil.d("建立界面");
-        if(Utils.isEmpty(html)){
+        if (savedInstanceState != null) {
+            LogUtil.d("重新建立界面");
+            String tempHtml = StoryLogic.instance().getTempHtml();
+            LogUtil.d("重新创建获取到的数据:" + tempHtml);
+            if (!Utils.isEmpty(tempHtml)) {
+                html = tempHtml;
+            }else{
+                html = getIntent().getStringExtra(EXTRA_EDIT_CONTENT);
+            }
+            StoryLogic.instance().clearTempHtml();
+
+        }else{
             html = getIntent().getStringExtra(EXTRA_EDIT_CONTENT);
         }
         loadUrl(START_URL);
@@ -561,23 +571,29 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
         }
     }
 
-//    @Override
-//    protected void onSaveInstanceState(Bundle outState) {
-//        super.onSaveInstanceState(outState);
-////        appView.loadUrl("javascript:ImSave()");
-//        StoryLogic.instance().saveTempHtml("<div class=\"stage-content edit-area pages-img pages-img-bg\"     style=\" text-align:center;word-break:break-all;background: url(/storage/sdcard0/wisape/com.wisape.android/data/template/cover/img/bg.jpg);background-size: cover;background-position:50% 50%;width:100%;height:100%;position: relative;\">    <div class=\"stage-content-box\" style=\"position: absolute;text-align: center;top:3.65rem;width:16rem;-webkit-transform-origin:0 0;\">        <div class=\"symbol\">            <div class=\"pages-txt edit-area\" data-animation=\"animated flash\"  style=\"display: inline-block;font-family: 'bebas';font-size:3.5rem;line-height: 3.5rem;min-height: 3.5rem;min-width:14rem;color:#cc0001;\">                JOITN            </div>        </div>        <div class=\"symbol\" style=\"z-index: 3;\">            <div class=\"pages-txt edit-area\" data-animation=\"animated flash\" style=\"display: inline-block;margin-top:0.5rem;font-family: 'bebas';font-size:3.5rem;line-height: 3.5rem;min-height: 3.5rem;min-width:14rem;color:#000;\">                WISAPE            </div>        </div>    </div>    <div class=\"stage-content-box\" style=\"position: absolute;bottom:1rem;text-align: center;width:16rem;-webkit-transform-origin:0 100%;\">        <div class=\"symbol\" style=\"z-index: 999; \">            <div class=\"pages-img edit-area\"  data-animation=\"animated fadeInUp\">                <img style=\"width:4.44rem;height:1.03rem;\" src=\"/storage/sdcard0/wisape/com.wisape.android/data/template/cover/img/logo.png\"></div>        </div>        <div class=\"symbol\" style=\"z-index: 3;\">            <div class=\"pages-txt edit-area\" data-animation=\"animated fadeInUp\" style=\"font-size:0.53rem;color:#000;font-family: 'Lato';margin-top:0.3rem;min-height: 0.53rem;min-width:14rem;\">                Something Wonderful is Coming            </div>        </div>    </div></div>\";");
-//        LogUtil.d("保存数据");
-//        appView = null;
-//    }
-//
-//    @Override
-//    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-//        super.onRestoreInstanceState(savedInstanceState);
-//        String tempHtml = StoryLogic.instance().getTempHtml();
-//        LogUtil.d("重新创建获取到的数据:" + tempHtml);
-//        if(!Utils.isEmpty(tempHtml)){
-//            html = tempHtml;
-//        }
-//        StoryLogic.instance().clearTempHtml();
-//    }
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        loadUrl("javascript:ImSave()");
+//        StoryLogic.instance().saveTempHtml("<section class=\"m-page hide pages-item\" > <div class=\"m-img\" > <div class=\"stage-content edit-area pages-img pages-img-bg\" style=\" text-align:center;word-break:break-all;display: box;display: -webkit-box;display: -moz-box;-webkit-box-pack:center;-moz-box-pack:center;-webkit-box-align:center;-moz-box-align:center;background: url(/storage/sdcard0/wisape/com.wisape.android/data/story/20151120165115/tpl5/img/bg.jpg);background-size: cover;background-position:50% 50%;width:100%;height:100%;position: relative;\">                    <div class=\"stage-content-box\" style=\"-webkit-transform-origin:0 0;\">                                                <div style=\"float:left;width:12.14rem;margin:3.5rem 1.929rem;padding:5.18rem 0 1.18rem 0;background-color: rgba(255,255,255,0.5);border-radius: 0.5rem;position:relative;\">                        \t<div class=\"symbol\" style=\"z-index: 999; display: inline-block;top: -2rem; position: absolute; left:50%;margin-left: -3rem;\">\t                            <div class=\"pages-img edit-area\">\t                                <img data-name=\"img1\" style=\"width:5.4rem;height:5.4rem;border-radius: 2.7rem;border:0.3rem solid #fff;\" src=\"/storage/sdcard0/wisape/com.wisape.android/data/story/20151120165115/tpl5/img/t.jpg\"></div>\t                        </div>                            <div class=\"symbol\" style=\"z-index: 3;\">                                <div class=\"pages-txt edit-area\" style=\"font-size:0.78rem;color:#000;font-weight: bold\">                                    JackeyWisape                                </div>                            </div>                            <div class=\"symbol\" style=\"z-index: 3;\">                                <div class=\"pages-txt edit-area\" style=\"font-size:0.533rem;color:#000;\">                                    Co-founder                                </div>                            </div>                            <div class=\"symbol\" style=\"z-index: 3;\">                                <div class=\"pages-txt edit-area\" style=\"margin-top:1rem;font-size:0.444rem;line-height:0.888rem;color:#448aff;text-decoration:underline;\">                                    Email: support@wisape.com<br>                                    Tel:(702) 825-1558<br>                                    Tel:(702) 825-1558<br>                                    Site:www.wisape.com<br>                                    Adress:Room 8001 California, Mountain View,<br>                                    Amphitheatre Pkwy                                </div>                            </div>                        </div>                    </div>                </div>            </div> </section> ");
+        LogUtil.d("保存数据");
+        appView = null;
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        String tempHtml = StoryLogic.instance().getTempHtml();
+        LogUtil.d("重新创建获取到的数据:" + tempHtml);
+        if(!Utils.isEmpty(tempHtml)){
+            html = tempHtml;
+        }
+        StoryLogic.instance().clearTempHtml();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        appView = null;
+    }
 }
