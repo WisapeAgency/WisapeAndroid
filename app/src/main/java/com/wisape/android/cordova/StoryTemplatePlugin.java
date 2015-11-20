@@ -161,6 +161,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
         if (null == action || 0 == action.length()) {
             return true;
         }
+        LogUtil.d("调用接口动作:" + action);
         final Context context = getCurrentActivity().getApplicationContext();
         if (ACTION_GET_STAGE_CATEGORY.equals(action)) {//getStageCategory
             threadhelper(new TemplateOp() {
@@ -398,11 +399,13 @@ public class StoryTemplatePlugin extends AbsPlugin {
                         }
                     }
                     StoryTemplateInfo templateInfo = DataSynchronizer.getInstance().getFirstTemplate();
-                    StoryManager.getStoryTemplateDirectory().getAbsolutePath();
-                    String content = "<div class=\"stage-content edit-area pages-img pages-img-bg\"     style=\" text-align:center;word-break:break-all;background: url(/storage/sdcard0/wisape/com.wisape.android/data/template/cover/img/bg.jpg);background-size: cover;background-position:50% 50%;width:100%;height:100%;position: relative;\">    <div class=\"stage-content-box\" style=\"position: absolute;text-align: center;top:3.65rem;width:16rem;-webkit-transform-origin:0 0;\">        <div class=\"symbol\">            <div class=\"pages-txt edit-area\" data-animation=\"animated flash\"  style=\"display: inline-block;font-family: 'bebas';font-size:3.5rem;line-height: 3.5rem;min-height: 3.5rem;min-width:14rem;color:#cc0001;\">                JOITN            </div>        </div>        <div class=\"symbol\" style=\"z-index: 3;\">            <div class=\"pages-txt edit-area\" data-animation=\"animated flash\" style=\"display: inline-block;margin-top:0.5rem;font-family: 'bebas';font-size:3.5rem;line-height: 3.5rem;min-height: 3.5rem;min-width:14rem;color:#000;\">                WISAPE            </div>        </div>    </div>    <div class=\"stage-content-box\" style=\"position: absolute;bottom:1rem;text-align: center;width:16rem;-webkit-transform-origin:0 100%;\">        <div class=\"symbol\" style=\"z-index: 999; \">            <div class=\"pages-img edit-area\"  data-animation=\"animated fadeInUp\">                <img style=\"width:4.44rem;height:1.03rem;\" src=\"123/cover/img/logo.png\"></div>        </div>        <div class=\"symbol\" style=\"z-index: 3;\">            <div class=\"pages-txt edit-area\" data-animation=\"animated fadeInUp\" style=\"font-size:0.53rem;color:#000;font-family: 'Lato';margin-top:0.3rem;min-height: 0.53rem;min-width:14rem;\">                Something Wonderful is Coming            </div>        </div>    </div></div>";
-                    content =  content.replaceAll("123", StoryManager.getStoryTemplateDirectory().getAbsolutePath());
-                    LogUtil.d("当前content:"+content);
-                    LogUtil.d("检测是否下载是否是空文件夹" + (templateInfo == null));
+//                    StoryManager.getStoryTemplateDirectory().getAbsolutePath();
+//                    String content = "<div class=\"stage-content edit-area pages-img pages-img-bg\"     style=\" text-align:center;word-break:break-all;background: url(/storage/sdcard0/wisape/com.wisape.android/data/template/cover/img/bg.jpg);background-size: cover;background-position:50% 50%;width:100%;height:100%;position: relative;\">    <div class=\"stage-content-box\" style=\"position: absolute;text-align: center;top:3.65rem;width:16rem;-webkit-transform-origin:0 0;\">        <div class=\"symbol\">            <div class=\"pages-txt edit-area\" data-animation=\"animated flash\"  style=\"display: inline-block;font-family: 'bebas';font-size:3.5rem;line-height: 3.5rem;min-height: 3.5rem;min-width:14rem;color:#cc0001;\">                JOITN            </div>        </div>        <div class=\"symbol\" style=\"z-index: 3;\">            <div class=\"pages-txt edit-area\" data-animation=\"animated flash\" style=\"display: inline-block;margin-top:0.5rem;font-family: 'bebas';font-size:3.5rem;line-height: 3.5rem;min-height: 3.5rem;min-width:14rem;color:#000;\">                WISAPE            </div>        </div>    </div>    <div class=\"stage-content-box\" style=\"position: absolute;bottom:1rem;text-align: center;width:16rem;-webkit-transform-origin:0 100%;\">        <div class=\"symbol\" style=\"z-index: 999; \">            <div class=\"pages-img edit-area\"  data-animation=\"animated fadeInUp\">                <img style=\"width:4.44rem;height:1.03rem;\" src=\"123/cover/img/logo.png\"></div>        </div>        <div class=\"symbol\" style=\"z-index: 3;\">            <div class=\"pages-txt edit-area\" data-animation=\"animated fadeInUp\" style=\"font-size:0.53rem;color:#000;font-family: 'Lato';margin-top:0.3rem;min-height: 0.53rem;min-width:14rem;\">                Something Wonderful is Coming            </div>        </div>    </div></div>";
+//                    content =  content.replaceAll("123", StoryManager.getStoryTemplateDirectory().getAbsolutePath());
+//                    LogUtil.d("当前content:"+content);
+//                    LogUtil.d("检测是否下载是否是空文件夹" + (templateInfo == null));
+
+                    String content = "";
                     if (templateInfo != null) {
                         File path = new File(StoryManager.getStoryTemplateDirectory(), templateInfo.temp_name + "/" + "stage.html");
                         content = readHtml(path.getAbsolutePath());
@@ -422,9 +425,21 @@ public class StoryTemplatePlugin extends AbsPlugin {
             callbackContext.success();
         }else if(ACTION_IM_SAVE.equals(action)){
             LogUtil.d("保存临时数据");
+            Bundle bundle = new Bundle();
             if (null != args && args.length() == 3) {
-                StoryLogic.instance().saveTempHtml(args.getString(1));
+                bundle.putString(EXTRA_STORY_THUMB, args.getString(0));
+                bundle.putString(EXTRA_STORY_HTML, args.getString(1));
+                bundle.putString(EXTRA_FILE_PATH, args.getString(2));
             }
+            threadhelper(new TemplateOp() {
+                public void run(Bundle bundle) {
+                    String storyThumb = bundle.getString(EXTRA_STORY_THUMB);
+                    String html = bundle.getString(EXTRA_STORY_HTML);
+                    String path = bundle.getString(EXTRA_FILE_PATH);
+                    com.alibaba.fastjson.JSONArray paths = JSON.parseArray(path);
+                    StoryLogic.instance().saveTempHtml(html);
+                }
+            }, bundle, callbackContext);
         }
         return true;
     }
