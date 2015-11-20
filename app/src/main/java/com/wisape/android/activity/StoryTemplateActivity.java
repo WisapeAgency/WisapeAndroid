@@ -575,8 +575,12 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        loadUrl("javascript:ImSave()");
-        LogUtil.d("在activit中保存数据");
+        try{
+            loadUrl("javascript:ImSave()");
+            LogUtil.d("在activit中保存数据");
+        }catch (Exception e){
+            LogUtil.d("调用保存临时数据出错");
+        }
     }
 
 
@@ -595,5 +599,6 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
     public void onDestroy() {
         super.onDestroy();
         appView = null;
+        StoryLogic.instance().clearTempHtml();
     }
 }
