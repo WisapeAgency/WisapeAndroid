@@ -8,9 +8,7 @@ import android.net.Uri;
 import android.os.Message;
 import android.util.Base64;
 import android.util.Log;
-import android.widget.LinearLayout;
 
-import com.bumptech.glide.util.Util;
 import com.google.gson.Gson;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
@@ -39,11 +37,8 @@ import com.wisape.android.model.StoryInfo;
 import com.wisape.android.model.StoryMusicInfo;
 import com.wisape.android.model.StoryMusicTypeInfo;
 import com.wisape.android.model.StoryTemplateInfo;
-import com.wisape.android.model.UserInfo;
-import com.wisape.android.network.DataSynchronizer;
 import com.wisape.android.network.Downloader;
 import com.wisape.android.network.Requester;
-import com.wisape.android.network.StoryDownloader;
 import com.wisape.android.util.EnvironmentUtils;
 import com.wisape.android.util.FileUtils;
 import com.wisape.android.util.LogUtil;
@@ -65,8 +60,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import static com.wisape.android.api.ApiStory.AttrStoryInfo.STORY_STATUS_DELETE;
 import static com.wisape.android.api.ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE;
@@ -115,9 +108,9 @@ public class StoryLogic {
                 LogUtil.e("生成story压缩包出错!", e);
                 return false;
             }
-            if(null == attr.attrStoryThumb ){
+            if (null == attr.attrStoryThumb) {
                 attr.storyThumb = "";
-            }else{
+            } else {
                 File thumbFile = new File(attr.attrStoryThumb.toString());
                 if (thumbFile != null && thumbFile.exists()) {
                     String thumb = Utils.base64ForImage(attr.attrStoryThumb);
@@ -177,7 +170,6 @@ public class StoryLogic {
         } catch (SQLException e) {
             LogUtil.e("发布时更新到本地数据库失败:", e);
             return false;
-//            throw new IllegalStateException(e);
         } finally {
             db.endTransaction();
             OpenHelperManager.releaseHelper();
@@ -273,7 +265,7 @@ public class StoryLogic {
             });
             for (StoryMusicTypeEntity musicType : storyMusicTypeList) {
                 queryBuilder = musicDao.queryBuilder();
-                queryBuilder.where().eq("type", musicType.serverId).and().eq("recStatus","A");
+                queryBuilder.where().eq("type", musicType.serverId).and().eq("recStatus", "A");
                 queryBuilder.orderBy("name", true);
                 musicList = queryBuilder.query();
                 storyMusicDataList.add(musicType);
@@ -444,8 +436,8 @@ public class StoryLogic {
             dao = helper.getDao(StoryTemplateEntity.class);
             QueryBuilder<StoryTemplateEntity, Long> builder = dao.queryBuilder();
             List<StoryTemplateEntity> storyTemplateList = null;
-            if (typeId == -1){//all
-                storyTemplateList = builder.orderBy("order",true).query();
+            if (typeId == -1) {//all
+                storyTemplateList = builder.orderBy("order", true).query();
 //                List<StoryTemplateInfo> templateList = DataSynchronizer.getInstance().getAllTemplate();
                 List<StoryTemplateInfo> templateList = new ArrayList<>();
                 for (StoryTemplateEntity entity : storyTemplateList) {
@@ -460,7 +452,7 @@ public class StoryLogic {
                     templateList.add(StoryTemplateEntity.convert(entity));
                 }
                 return templateList;
-            }else{
+            } else {
                 storyTemplateList = builder.where().eq("type", typeId).query();
             }
             if (storyTemplateList == null || storyTemplateList.size() == 0) {
@@ -631,24 +623,24 @@ public class StoryLogic {
         ApiStory api = ApiStory.instance();
         JSONArray templateTypeJson = api.listStoryTemplateTypeJson(context, tag);
         if (null == templateTypeJson) {
-            templateTypeJson =  new JSONArray();
+            templateTypeJson = new JSONArray();
         }
         JSONArray categoryArray = new JSONArray();
         JSONObject objectAll = new JSONObject();
-        try{
-            objectAll.put("id",-1);
-            objectAll.put("name",context.getString(R.string.category_name_all));
-            objectAll.put("order",-1);
+        try {
+            objectAll.put("id", -1);
+            objectAll.put("name", context.getString(R.string.category_name_all));
+            objectAll.put("order", -1);
             categoryArray.put(objectAll);
-            for (int i=0; i<templateTypeJson.length(); i++){
-                JSONObject temp = (JSONObject)templateTypeJson.get(i);
+            for (int i = 0; i < templateTypeJson.length(); i++) {
+                JSONObject temp = (JSONObject) templateTypeJson.get(i);
                 JSONObject object = new JSONObject();
-                object.put("id",temp.optInt("id"));
-                object.put("name",temp.optString("name"));
-                object.put("order",temp.optInt("order"));
+                object.put("id", temp.optInt("id"));
+                object.put("name", temp.optString("name"));
+                object.put("order", temp.optInt("order"));
                 categoryArray.put(object);
             }
-        }catch (JSONException e){
+        } catch (JSONException e) {
             e.printStackTrace();
         }
         //save to local
@@ -676,57 +668,23 @@ public class StoryLogic {
     public Message getUserStory(String access_token) {
         /*返回的所有的story集合*/
         List<StoryEntity> storyEntitYList = new ArrayList<>();
-
-        LogUtil.d("获取前服务器时间:" + Utils.acquireUTCTimestamp());
         /*服务器端story*/
         List<StoryInfo> serverStoryList = getUserStoryFromServer(access_token);
         if (null != serverStoryList && serverStoryList.size() > 0) {
             serverStoryToLocalStory(serverStoryList);
         }
-        LogUtil.d("获取后进行转化时间:" + Utils.acquireUTCTimestamp());
-
         /*获取本地草稿story并且进行实体转换*/
         List<StoryEntity> storyLocalEntityList = getUserStoryFromLocal(WisapeApplication.getInstance().getApplicationContext());
         LogUtil.d("总共story的数量:" + storyLocalEntityList.size());
         if (storyLocalEntityList != null) {
-
-            LogUtil.d("获取默认story并且转换时间:" + Utils.acquireUTCTimestamp());
             getDefaultStoryEntity(storyLocalEntityList);
-            LogUtil.d("获取默认story并且转换后时间:" + Utils.acquireUTCTimestamp());
-
-            LogUtil.d("获取本地本地前story数据时间:" + Utils.acquireUTCTimestamp());
             int size = storyLocalEntityList.size();
             for (int i = 0; i < size; i++) {
                 final StoryEntity entity = storyLocalEntityList.get(i);
                 final File file = new File(StoryManager.getStoryDirectory().getAbsolutePath() + "/" + entity.storyLocal + ".zip");
-                LogUtil.d("当前story:" + entity.storyName + ":" + entity.storyLocal + ":" + file.getName() + ":" + file.exists());
                 if (!file.exists() && "A".equals(entity.status)) {
-                    OkhttpUtil.downLoadFile(entity.storyPath, new FileDownloadListener() {
-                        @Override
-                        public void onSuccess(byte[] bytes) {
-                            LogUtil.d("下载story成功:" + file.getAbsolutePath());
-                            FileUtils.saveByteToFile(bytes, file.getAbsolutePath());
-                            try {
-                                String path = file.getAbsolutePath();
-                                File storyDirectory = new File(file.getParent(), entity.storyLocal);
-                                if (storyDirectory.exists()) {
-                                    FileUtils.deleteDir(storyDirectory);
-                                }
-                                ZipUtils.unzip(Uri.fromFile(file), storyDirectory);
-                                Intent intent = new Intent();
-                                intent.setAction(StoryBroadcastReciver.STORY_ACTION);
-                                intent.putExtra(StoryBroadcastReciver.EXTRAS_TYPE, StoryBroadcastReciverListener.TYPE_UPDATE_STORY);
-                                WisapeApplication.getInstance().getApplicationContext().sendBroadcast(intent);
-                            } catch (IOException e) {
-                                LogUtil.e("story解压失败：" + file.getName(), e);
-                            }
-                        }
-
-                        @Override
-                        public void onError(String msg) {
-                            LogUtil.d("下载story失败:" + msg);
-                        }
-                    });
+                    LogUtil.d("下载story:" + entity.storyName + ":" + entity.storyLocal + ":" + file.getName() + ":" + file.exists());
+                    downloadStory(file, entity.storyPath, entity.storyLocal);
                 }
             }
             storyEntitYList.addAll(storyLocalEntityList);
@@ -737,6 +695,42 @@ public class StoryLogic {
         message.obj = storyEntitYList;
         LogUtil.d("本地后story数据时间:" + Utils.acquireUTCTimestamp());
         return message;
+    }
+
+    /**
+     * 下载story
+     *
+     * @param storyZipFile    放置story压缩包
+     * @param storyServerPath story服务器地址
+     * @param storyLocal      story本地地址
+     */
+    private void downloadStory(final File storyZipFile, final String storyServerPath, final String storyLocal) {
+        OkhttpUtil.downLoadFile(storyServerPath, new FileDownloadListener() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                LogUtil.d("下载story成功:" + storyZipFile.getAbsolutePath());
+                FileUtils.saveByteToFile(bytes, storyZipFile.getAbsolutePath());
+                try {
+                    String path = storyZipFile.getAbsolutePath();
+                    File storyDirectory = new File(storyZipFile.getParent(), storyLocal);
+                    if (storyDirectory.exists()) {
+                        FileUtils.deleteDir(storyDirectory);
+                    }
+                    ZipUtils.unzip(Uri.fromFile(storyZipFile), storyDirectory);
+                    Intent intent = new Intent();
+                    intent.setAction(StoryBroadcastReciver.STORY_ACTION);
+                    intent.putExtra(StoryBroadcastReciver.EXTRAS_TYPE, StoryBroadcastReciverListener.TYPE_UPDATE_STORY);
+                    WisapeApplication.getInstance().getApplicationContext().sendBroadcast(intent);
+                } catch (IOException e) {
+                    LogUtil.e("story解压失败：" + storyZipFile.getName(), e);
+                }
+            }
+
+            @Override
+            public void onError(String msg) {
+                LogUtil.d("下载story失败:" + msg);
+            }
+        });
     }
 
     /**
@@ -768,10 +762,6 @@ public class StoryLogic {
             if (result == null) {
                 dao.createIfNotExists(storyEntity);
             } else {
-//                storyEntity.storyLocal = result.storyLocal;
-//                storyEntity.id = result.id;
-//                storyEntity.storyMusicLocal = result.storyMusicLocal;
-
                 result.likeNum = storyEntity.likeNum;
                 result.shareNum = storyEntity.shareNum;
                 result.viewNum = storyEntity.viewNum;
@@ -829,7 +819,7 @@ public class StoryLogic {
             dao = databaseHelper.getDao(StoryEntity.class);
             return dao.queryBuilder().where().eq("userId", userId).and().notIn("status", "D").query();
         } catch (SQLException e) {
-            LogUtil.e("从本地数据库查询用户草稿出错:", e);
+            LogUtil.e("从本地数据库查询用户story出错:", e);
             return null;
         } finally {
             db.endTransaction();
@@ -968,6 +958,7 @@ public class StoryLogic {
      * 更新story设置
      */
     public Message updateStorySetting(StoryEntity storyEntity, String storyName, String filePath, String desc) {
+        LogUtil.d("更新story基本设置");
         String iconBase64 = "";
         if (null != filePath && !"".equals(filePath)) {
             iconBase64 = FileUtils.base64ForImage(filePath);
@@ -984,14 +975,20 @@ public class StoryLogic {
         try {
             StoryInfo storyInfo = OkhttpUtil.executePost(HttpUrlConstancts.STORY_SETTING, formBody, StoryInfo.class);
             message.arg1 = HttpUrlConstancts.STATUS_SUCCESS;
+            LogUtil.d("更新story基本设置到服务器成功,开始更新本地数据");
+
             //同时更新本地数据库
             storyEntity.storyThumbUri = storyInfo.small_img;
             storyEntity.storyName = storyInfo.story_name;
             storyEntity.storyDesc = storyInfo.description;
             storyEntity.localCover = storyInfo.local_cover;
             storyEntity = updateStory(WisapeApplication.getInstance(), storyEntity);
+            LogUtil.d("更新story基本设置到本地成功,开始更新share");
             StoryLogic.instance().saveStoryEntityToShare(storyEntity);
-            message.obj = storyEntity;
+
+            //TODO 发送广播更新首页
+            Utils.sendUpdateStoryInfoBroadcast();
+
         } catch (Exception e) {
             LogUtil.e("更新story设置出错:", e);
             message.arg1 = HttpUrlConstancts.STATUS_EXCEPTION;
@@ -1001,16 +998,28 @@ public class StoryLogic {
     }
 
 
+    /**
+     * 保存当前storyEntity到share
+     *
+     * @param storyEntity 当前编辑的storyentity
+     */
     public void saveStoryEntityToShare(StoryEntity storyEntity) {
         String userEncode = new Gson().toJson(storyEntity);
+        LogUtil.d("保存当前StoryEntity到share" + userEncode);
         WisapeApplication.getInstance().getSharePrefrence().edit()
                 .putString(EXTARAS_STORY_ENTITY, Base64.encodeToString(userEncode.getBytes(), Base64.DEFAULT)).commit();
     }
 
+    /**
+     * 获取share中的storyEntity
+     *
+     * @return storyEntity实体
+     */
     public StoryEntity getStoryEntityFromShare() {
         StoryEntity storyEntity = null;
         SharedPreferences sharedPreferences = WisapeApplication.getInstance().getSharePrefrence();
         String decode = sharedPreferences.getString(EXTARAS_STORY_ENTITY, "");
+        LogUtil.d("从share中获取当前storyEntity" + decode);
         if (0 != decode.length()) {
             String gson = new String(Base64.decode(decode, Base64.DEFAULT));
             storyEntity = new Gson().fromJson(gson, StoryEntity.class);
@@ -1018,21 +1027,38 @@ public class StoryLogic {
         return storyEntity;
     }
 
+    /**
+     * 清除share中的storyentity
+     */
     public void clear() {
+        LogUtil.d("清除当前share中的storyentity");
         WisapeApplication.getInstance().getSharePrefrence().edit().remove(EXTARAS_STORY_ENTITY).commit();
     }
 
-    public void saveTempHtml(String html){
-        if(!Utils.isEmpty(html)){
-            WisapeApplication.getInstance().getSharePrefrence().edit().putString("out",html).commit();
+    /**
+     * 保存编辑界面的html到share
+     *
+     * @param html 前端返回的html
+     */
+    public void saveTempHtml(String html) {
+        LogUtil.d("保存当前编辑界面html到share中：" + html);
+        if (!Utils.isEmpty(html)) {
+            WisapeApplication.getInstance().getSharePrefrence().edit().putString("out", html).commit();
         }
     }
 
-    public String getTempHtml(){
-        return WisapeApplication.getInstance().getSharePrefrence().getString("out","");
+    /**
+     * 获取share中保存的缓存的html
+     *
+     * @return
+     */
+    public String getTempHtml() {
+        LogUtil.d("获取share中保存的缓存的编辑界面html数据");
+        return WisapeApplication.getInstance().getSharePrefrence().getString("out", "");
     }
 
-    public void clearTempHtml(){
+    public void clearTempHtml() {
+        LogUtil.d("清除share中保存的html");
         WisapeApplication.getInstance().getSharePrefrence().edit().remove("out").commit();
     }
 }

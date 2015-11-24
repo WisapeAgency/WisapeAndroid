@@ -203,9 +203,9 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
         UserLogic logic = UserLogic.instance();
         switch (what) {
             case LOADER_SIGN_UP:
-                String installId = wisapeApplication.getInstallId();
+//                String installId = wisapeApplication.getInstallId();
                 msg = logic.signUp(SIGN_UP_WITH_EMAIL,
-                        args.getString(ARG_USER_EMIAL), args.getString(ARG_USER_PWD), installId);
+                        args.getString(ARG_USER_EMIAL), args.getString(ARG_USER_PWD), "123");
                 break;
 
             case LOADER_SIGN_UP_WITH_FACEBOOK:
@@ -214,7 +214,7 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
 //                ProfileRequester.ProfileInfo profile = profileRequester.request(param);
                 msg = logic.signUpWith(SIGN_UP_WITH_FACE_BOOK, args.getString(ARG_USER_EMIAL),
                         args.getString(ARG_USER_ICON), args.getString(ARG_USER_NAME),
-                        "", wisapeApplication.getInstallId());
+                        "", "123");
 
                 break;
 
@@ -224,7 +224,7 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
 //                profile = profileRequester.request(param);
                 msg = logic.signUpWith(SIGN_UP_WITH_GOOGLE_PLUS, args.getString(ARG_USER_EMIAL),
                         args.getString(ARG_USER_ICON), args.getString(ARG_USER_NAME),
-                        "", wisapeApplication.getInstallId());
+                        "", "123");
                 break;
 
             case LOADER_SIGN_UP_WITH_TWITTER:
@@ -233,7 +233,7 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
 //                profile = profileRequester.request(twParams);
                 msg = logic.signUpWith(SIGN_UP_WITH_TWITTER, args.getString(ARG_USER_EMIAL),
                         args.getString(ARG_USER_ICON), args.getString(ARG_USER_NAME),
-                        "", wisapeApplication.getInstallId());
+                        "", "123");
                 break;
             default:
                 break;

@@ -19,7 +19,7 @@ import com.wisape.android.activity.SignUpActivity;
 import com.wisape.android.activity.UserProfileActivity;
 import com.wisape.android.content.BroadCastReciverListener;
 import com.wisape.android.content.ClearNumberReciver;
-import com.wisape.android.content.MessageCenterReceiver;
+//import com.wisape.android.content.MessageCenterReceiver;
 import com.wisape.android.content.UpdateUserInfoBroadcastReciver;
 import com.wisape.android.logic.UserLogic;
 import com.wisape.android.util.EnvironmentUtils;
@@ -52,7 +52,7 @@ public class MainMenuFragment extends AbsFragment implements BroadCastReciverLis
 
     private double totleSize;
 
-    private MessageCenterReceiver messageCenterReceiver;
+//    private MessageCenterReceiver messageCenterReceiver;
     private UpdateUserInfoBroadcastReciver userInfoBoradcastReciver;
     private ClearNumberReciver clearNumberReciver;
 
@@ -68,10 +68,10 @@ public class MainMenuFragment extends AbsFragment implements BroadCastReciverLis
 
     private void registerReciver(){
 
-        messageCenterReceiver = new MessageCenterReceiver(this);
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("com.wisape.android.content.MessageCenterReceiver");
-        getActivity().registerReceiver(messageCenterReceiver, intentFilter);
+//        messageCenterReceiver = new MessageCenterReceiver(this);
+//        IntentFilter intentFilter = new IntentFilter();
+//        intentFilter.addAction("com.wisape.android.content.MessageCenterReceiver");
+//        getActivity().registerReceiver(messageCenterReceiver, intentFilter);
 
         userInfoBoradcastReciver = new UpdateUserInfoBroadcastReciver(this);
         IntentFilter filter = new IntentFilter();
@@ -106,8 +106,8 @@ public class MainMenuFragment extends AbsFragment implements BroadCastReciverLis
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.reset(this);
-        messageCenterReceiver.destroy();
-        getActivity().unregisterReceiver(messageCenterReceiver);
+//        messageCenterReceiver.destroy();
+//        getActivity().unregisterReceiver(messageCenterReceiver);
 
         userInfoBoradcastReciver.destory();
         getActivity().unregisterReceiver(userInfoBoradcastReciver);

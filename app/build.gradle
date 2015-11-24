@@ -74,7 +74,7 @@ tasks.withType(JavaCompile) {
 dependencies {
     compile fileTree(dir: "$buildDir/native-libs", include: 'native-libs.jar')
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile files('libs/Parse-1.2.0.jar')
+//    compile files('libs/Parse-1.2.0.jar')
     compile files('libs/FlurryAnalytics-6.0.0.jar')
     compile project(':mobihelp_sdk_android_v1_4')
     compile project(':cordova')

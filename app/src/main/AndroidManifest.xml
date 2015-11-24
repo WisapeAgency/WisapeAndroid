@@ -25,19 +25,19 @@
         android:theme="@style/AppTheme">
 
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/face_book_id"/>
-        <meta-data android:name="com.parse.push.notification_icon" android:resource="@mipmap/logo"/>
+        <!--<meta-data android:name="com.parse.push.notification_icon" android:resource="@mipmap/logo"/>-->
 
-        <meta-data
-            android:name="com.google.android.gms.analytics.globalConfigResource"
-            android:resource="@xml/global_tracker" />
+        <!--<meta-data-->
+            <!--android:name="com.google.android.gms.analytics.globalConfigResource"-->
+            <!--android:resource="@xml/global_tracker" />-->
 
-        <service android:name="com.parse.PushService" />
-        <receiver android:name="com.parse.ParseBroadcastReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.USER_PRESENT" />
-            </intent-filter>
-        </receiver>
+        <!--<service android:name="com.parse.PushService" />-->
+        <!--<receiver android:name="com.parse.ParseBroadcastReceiver">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.BOOT_COMPLETED" />-->
+                <!--<action android:name="android.intent.action.USER_PRESENT" />-->
+            <!--</intent-filter>-->
+        <!--</receiver>-->
 
         <!--parse需要-->
         <!--<service android:name="com.parse.PushService" />-->
@@ -95,9 +95,9 @@
           IMPORTANT: Change "com.parse.starter.permission.C2D_MESSAGE" in the lines below
           to match your app's package name + ".permission.C2D_MESSAGE".
         -->
-        <permission android:protectionLevel="signature"
-            android:name="ccom.wisape.android.permission.C2D_MESSAGE" />
-        <uses-permission android:name="com.wisape.android.permission.C2D_MESSAGE" />
+        <!--<permission android:protectionLevel="signature"-->
+            <!--android:name="ccom.wisape.android.permission.C2D_MESSAGE" />-->
+        <!--<uses-permission android:name="com.wisape.android.permission.C2D_MESSAGE" />-->
         
         <activity android:name="com.facebook.FacebookActivity"
             android:configChanges=

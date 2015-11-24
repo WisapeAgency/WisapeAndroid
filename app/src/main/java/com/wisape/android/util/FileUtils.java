@@ -14,6 +14,8 @@ import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.wisape.android.WisapeApplication;
+import com.wisape.android.database.StoryEntity;
+import com.wisape.android.logic.StoryLogic;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -27,6 +29,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.util.Hashtable;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -184,7 +187,7 @@ public class FileUtils {
             fileOuputStream.flush();
             fileOuputStream.close();
         } catch (Exception e) {
-            LogUtil.e("保存字节到文件出错", e);
+            LogUtil.e("保存下载数据到本地文件出错", e);
         } finally {
             try {
                 if (null != fileOuputStream) {
@@ -219,7 +222,7 @@ public class FileUtils {
             in.close();
             out.close();
         } catch (IOException e) {
-
+            LogUtil.e("复制asset文件夹下到本地文件夹出错",e);
         } finally {
             if (in != null) {
                 try {
@@ -259,7 +262,6 @@ public class FileUtils {
      */
     public static void saveFile(String content, File file) {
         BufferedWriter writer = null;
-        StringBuilder local = new StringBuilder();
         try {
             writer = new BufferedWriter(new OutputStreamWriter(
                     new FileOutputStream(file.getAbsoluteFile()), "UTF-8"));
@@ -377,11 +379,7 @@ public class FileUtils {
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(filePath, options);
-
-        // Calculate inSampleSize
         options.inSampleSize = calculateInSampleSize(options, 360, 680);
-
-        // Decode bitmap with inSampleSize set
         options.inJustDecodeBounds = false;
 
         return BitmapFactory.decodeFile(filePath, options);
@@ -415,7 +413,6 @@ public class FileUtils {
 
     //把bitmap转换成String
     public static String bitmapToString(String filePath) {
-
         Bitmap bm = getSmallBitmap(filePath);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bm.compress(Bitmap.CompressFormat.JPEG, 40, baos);
@@ -448,12 +445,67 @@ public class FileUtils {
                 }
             }
         }
-
         Bitmap bitmap = Bitmap.createBitmap(width, height,
                 Bitmap.Config.ARGB_8888);
         // 通过像素数组生成bitmap,具体参考api
         bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
         return bitmap;
     }
+
+    /**
+     * 保存预览文件
+     * @param previewFile
+     * @param html
+     * @return
+     */
+    public static boolean saveStoryPreviewFile(File previewFile, String html){
+        StoryEntity story = StoryLogic.instance().getStoryEntityFromShare();
+        String header = getFromAssets(PREVIEW_HEADER);
+        String footer = getFromAssets(PREVIEW_FOOTER);
+        PrintWriter writer = null;
+        File dataFile = EnvironmentUtils.getAppDataDirectory();
+        html = html.replace(WISAPE_SD_CARD_LOCATION, dataFile.getAbsolutePath());
+        try {
+            writer = new PrintWriter(previewFile, "utf-8");
+            writer.println(header);
+            writer.println(html);
+            if (!Utils.isEmpty(story.storyMusicLocal)) {
+                writer.println("<div id=\"audio-btn\" class=\"on\" onclick=\"lanren.changeClass(this,'media')\">");
+                writer.println(String.format("    <audio loop=\"loop\" src=\"%s\" id=\"media\" preload=\"preload\"></audio>",
+                        story.storyMusicLocal));
+                writer.println("</div>");
+            }
+            writer.println(footer);
+            writer.close();
+        } catch (IOException e) {
+            LogUtil.e("saveStoryPreview", e);
+            return false;
+        } finally {
+            if (writer != null) {
+                writer.close();
+            }
+        }
+        return true;
+    }
+
+    public static  String getFromAssets(String fileName) {
+        try {
+            InputStreamReader inputReader = new InputStreamReader(WisapeApplication.getInstance().getResources().getAssets().open(fileName));
+            BufferedReader bufReader = new BufferedReader(inputReader);
+            String line;
+            StringBuffer result = new StringBuffer();
+            while ((line = bufReader.readLine()) != null)
+                result.append(line);
+            return result.toString();
+        } catch (Exception e) {
+            LogUtil.e("从assetes中获取文件信息出错",e);
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    private static final String WISAPE_SD_CARD_LOCATION = "/WISAPE_SD_CARD_LOCATION/";
+    private static final String PREVIEW_HEADER = "www/views/header.html";
+    private static final String PREVIEW_FOOTER = "www/views/footer.html";
 
 }

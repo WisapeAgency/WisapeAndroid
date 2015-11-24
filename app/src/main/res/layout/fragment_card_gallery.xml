@@ -41,7 +41,8 @@
                 android:layout_gravity="left|center"
                 android:layout_marginRight="12dp"
                 android:scaleType="center"
-                android:src="@mipmap/activity" />
+                android:src="@mipmap/activity"
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/gift_count"

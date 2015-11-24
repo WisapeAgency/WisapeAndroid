@@ -2,25 +2,15 @@ package com.wisape.android;
 
 import android.app.Application;
 import android.content.Context;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 
 import com.bugtags.library.Bugtags;
 import com.bugtags.library.BugtagsOptions;
 import com.flurry.android.FlurryAgent;
 import com.google.code.microlog4android.config.PropertyConfigurator;
-import com.parse.Parse;
-import com.parse.ParseException;
-import com.parse.ParseInstallation;
-import com.parse.PushService;
-import com.parse.SaveCallback;
-import com.wisape.android.activity.MainActivity;
-import com.wisape.android.content.DataSynchronizerReceiver;
-import com.wisape.android.content.MessageCenterReceiver;
 import com.wisape.android.model.StoryTemplateInfo;
 import com.wisape.android.model.StoryTemplateTypeInfo;
 import com.wisape.android.network.WWWConfig;
-import com.wisape.android.util.Utils;
 
 import org.cubieline.lplayer.PlayerProxy;
 
@@ -28,6 +18,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+//import com.wisape.android.content.DataSynchronizerReceiver;
+//import com.wisape.android.content.MessageCenterReceiver;
 
 /**
  * @author Duke
@@ -47,8 +40,8 @@ public class WisapeApplication extends Application {
     private List<StoryTemplateTypeInfo> templateTypeList = new ArrayList<>();
     private Map<Integer, List<StoryTemplateInfo>> templateMap = new HashMap<>();
     private SharedPreferences sharedPreferences;
-    private String installId;
-    private DataSynchronizerReceiver dataSynchronizerReceiver;
+//    private String installId;
+//    private DataSynchronizerReceiver dataSynchronizerReceiver;
 
 
     @Override
@@ -64,12 +57,12 @@ public class WisapeApplication extends Application {
 
         initBugTags();
         //初始化parse通讯
-        initParse();
+//        initParse();
 
-        dataSynchronizerReceiver = new DataSynchronizerReceiver();
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("com.wisape.android.content.DataSynchronizerReceiver");
-        registerReceiver(dataSynchronizerReceiver, intentFilter);
+//        dataSynchronizerReceiver = new DataSynchronizerReceiver();
+//        IntentFilter intentFilter = new IntentFilter();
+//        intentFilter.addAction("com.wisape.android.content.DataSynchronizerReceiver");
+//        registerReceiver(dataSynchronizerReceiver, intentFilter);
 
     }
 
@@ -88,24 +81,24 @@ public class WisapeApplication extends Application {
     /**
      * 初始化parse
      */
-    private void initParse(){
+//    private void initParse(){
+//
+//
+//        Parse.initialize(this, "L3WrrhBJmbPhRoJ4GYIUDMIErlR8IlvkJuQQJ0Px", "yfC5kFI4jLLeeDaKlepK1hgAGiYJJEHjXfnpaCks");
+//        Parse.setLogLevel(Parse.LOG_LEVEL_VERBOSE);
+//        PushService.subscribe(this, "abcde", MainActivity.class);
+//        PushService.setDefaultPushCallback(this, MainActivity.class);
+//        ParseInstallation.getCurrentInstallation().put("localeIdentifier", Utils.getCountry(this).toUpperCase());
+//        ParseInstallation.getCurrentInstallation().saveInBackground();
+//        installId = ParseInstallation.getCurrentInstallation().getInstallationId();
+//
+//
+//    }
 
 
-        Parse.initialize(this, "L3WrrhBJmbPhRoJ4GYIUDMIErlR8IlvkJuQQJ0Px", "yfC5kFI4jLLeeDaKlepK1hgAGiYJJEHjXfnpaCks");
-        Parse.setLogLevel(Parse.LOG_LEVEL_VERBOSE);
-        PushService.subscribe(this, "abcde", MainActivity.class);
-        PushService.setDefaultPushCallback(this, MainActivity.class);
-        ParseInstallation.getCurrentInstallation().put("localeIdentifier", Utils.getCountry(this).toUpperCase());
-        ParseInstallation.getCurrentInstallation().saveInBackground();
-        installId = ParseInstallation.getCurrentInstallation().getInstallationId();
-
-
-    }
-
-
-    public String getInstallId() {
-        return installId;
-    }
+//    public String getInstallId() {
+//        return installId;
+//    }
 
     public SharedPreferences getSharePrefrence() {
         return sharedPreferences;
@@ -119,9 +112,9 @@ public class WisapeApplication extends Application {
         return templateMap;
     }
 
-    @Override
-    public void onTerminate() {
-        super.onTerminate();
-        unregisterReceiver(dataSynchronizerReceiver);
-    }
+//    @Override
+//    public void onTerminate() {
+//        super.onTerminate();
+//        unregisterReceiver(dataSynchronizerReceiver);
+//    }
 }

@@ -19,8 +19,11 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.wisape.android.R;
+import com.wisape.android.WisapeApplication;
 import com.wisape.android.activity.BaseActivity;
 import com.wisape.android.activity.MessageCenterDetailActivity;
+import com.wisape.android.content.StoryBroadcastReciver;
+import com.wisape.android.content.StoryBroadcastReciverListener;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -154,25 +157,25 @@ public class Utils {
         return true;
     }
 
-    public static void sendNotificatio(Context context, Class<? extends BaseActivity> activity, int msgId, String msgTile, String msgSubject) {
-
-        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-
-        Intent intent = getIntent(context, activity, msgId);
-
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        Notification notify = new Notification.Builder(context)
-                .setSmallIcon(R.mipmap.app_logo)
-                .setTicker(msgTile)
-                .setContentTitle(msgTile)
-                .setContentText(msgSubject)
-                .setContentIntent(pendingIntent)
-                .setNumber(1)
-                .getNotification();
-        notify.flags |= Notification.FLAG_AUTO_CANCEL;
-        notify.defaults = Notification.DEFAULT_ALL;
-        manager.notify(1, notify);
-    }
+//    public static void sendNotificatio(Context context, Class<? extends BaseActivity> activity, int msgId, String msgTile, String msgSubject) {
+//
+//        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+//
+//        Intent intent = getIntent(context, activity, msgId);
+//
+//        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+//        Notification notify = new Notification.Builder(context)
+//                .setSmallIcon(R.mipmap.app_logo)
+//                .setTicker(msgTile)
+//                .setContentTitle(msgTile)
+//                .setContentText(msgSubject)
+//                .setContentIntent(pendingIntent)
+//                .setNumber(1)
+//                .getNotification();
+//        notify.flags |= Notification.FLAG_AUTO_CANCEL;
+//        notify.defaults = Notification.DEFAULT_ALL;
+//        manager.notify(1, notify);
+//    }
 
     private static Intent getIntent(Context context, Class<? extends BaseActivity> activity, int messageID) {
         Intent intent = new Intent(context, activity);
@@ -220,6 +223,16 @@ public class Utils {
                     .error(R.mipmap.icon_login_email)
                     .into(imageView);
         }
+    }
+
+    /**
+     * 发送更新首页story列表信息
+     */
+    public static void sendUpdateStoryInfoBroadcast(){
+        Intent intent = new Intent();
+        intent.setAction(StoryBroadcastReciver.STORY_ACTION);
+        intent.putExtra(StoryBroadcastReciver.EXTRAS_TYPE, StoryBroadcastReciverListener.UPDATE_STORY_SETTING);
+        WisapeApplication.getInstance().sendBroadcast(intent);
     }
 
 }

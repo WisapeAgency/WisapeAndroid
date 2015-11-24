@@ -274,13 +274,8 @@ public class StoryReleaseActivity extends BaseActivity {
         closeProgressDialog();
         switch (data.what) {
             case LOADER_UPDATE_STORYSETTING:
-
                 if (HttpUrlConstancts.STATUS_SUCCESS == data.arg1) {
                     setStoryInfo();
-                    Intent intent = new Intent();
-                    intent.setAction(StoryBroadcastReciver.STORY_ACTION);
-                    intent.putExtra(StoryBroadcastReciver.EXTRAS_TYPE, StoryBroadcastReciverListener.UPDATE_STORY_SETTING);
-                    sendBroadcast(intent);
                 } else {
                     showToast((String) data.obj);
                 }

@@ -3,7 +3,6 @@ package com.wisape.android.logic;
 import android.content.SharedPreferences;
 import android.os.Message;
 import android.util.Base64;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.squareup.okhttp.FormEncodingBuilder;
@@ -13,6 +12,7 @@ import com.wisape.android.http.HttpUrlConstancts;
 import com.wisape.android.http.OkhttpUtil;
 import com.wisape.android.model.UserInfo;
 import com.wisape.android.util.FileUtils;
+import com.wisape.android.util.LogUtil;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -23,8 +23,6 @@ import java.util.Map;
  * Created by LeiGuoting on 3/7/15.
  */
 public class UserLogic {
-    private static final String TAG = UserLogic.class.getSimpleName();
-
     private static UserLogic userLogic = new UserLogic();
 
     private static final String ATTR_TYPE = "type";
@@ -88,6 +86,12 @@ public class UserLogic {
         return singUp(params);
     }
 
+    /**
+     * 用户等了
+     *
+     * @param params 登录传递的参数
+     * @return  返回封装的message
+     */
     private Message singUp(Map<String, String> params) {
         Message message = Message.obtain();
         try {
@@ -97,7 +101,7 @@ public class UserLogic {
             message.arg1 = HttpUrlConstancts.STATUS_SUCCESS;
             message.obj = userInfo;
         } catch (IOException e) {
-            message.arg1 =  HttpUrlConstancts.STATUS_EXCEPTION;
+            message.arg1 = HttpUrlConstancts.STATUS_EXCEPTION;
             message.obj = e.getMessage();
         }
         return message;
@@ -115,7 +119,7 @@ public class UserLogic {
         Message message = Message.obtain();
         try {
             OkhttpUtil.execute(HttpUrlConstancts.PASSWORD_RESET, params);
-            message.arg1 =  HttpUrlConstancts.STATUS_SUCCESS;
+            message.arg1 = HttpUrlConstancts.STATUS_SUCCESS;
         } catch (Exception e) {
             message.arg1 = HttpUrlConstancts.STATUS_EXCEPTION;
             message.obj = e.getMessage();
@@ -130,6 +134,7 @@ public class UserLogic {
         UserInfo userInfo = null;
         SharedPreferences sharedPreferences = WisapeApplication.getInstance().getSharePrefrence();
         String decode = sharedPreferences.getString(EXTRA_USER_INFO, "");
+        LogUtil.d("从share获取用户信息:" + decode);
         if (0 != decode.length()) {
             String gson = new String(Base64.decode(decode, Base64.DEFAULT));
             userInfo = new Gson().fromJson(gson, UserInfo.class);
@@ -144,10 +149,10 @@ public class UserLogic {
      * @param userInfo 加密后的用户信息
      */
     public void saveUserToSharePrefrence(UserInfo userInfo) {
-        Log.w(TAG, "saveUserToSahrePrefrence:" + new Gson().toJson(userInfo));
+        LogUtil.d("保存用户信息到share" + new Gson().toJson(userInfo));
         String userEncode = new Gson().toJson(userInfo);
         WisapeApplication.getInstance().getSharePrefrence().edit()
-                .putString(EXTRA_USER_INFO, Base64.encodeToString(userEncode.getBytes(), Base64.DEFAULT)).apply();
+                .putString(EXTRA_USER_INFO, Base64.encodeToString(userEncode.getBytes(), Base64.DEFAULT)).commit();
 
     }
 
@@ -155,7 +160,8 @@ public class UserLogic {
      * 清除用户信息
      */
     public void clearUserInfo() {
-        WisapeApplication.getInstance().getSharePrefrence().edit().clear().apply();
+        WisapeApplication.getInstance().getSharePrefrence().edit().clear().commit();
+        LogUtil.d("清除share用户信息");
     }
 
 
@@ -168,6 +174,7 @@ public class UserLogic {
      * @param accessToken 唯一标志符
      */
     public Message updateProfile(String nickName, String filePath, String userEmail, String accessToken) {
+        LogUtil.d("更新用户信息");
         String iconBase64 = "";
         if (null != filePath && !"".equals(filePath)) {
             iconBase64 = FileUtils.base64ForImage(filePath);
@@ -176,15 +183,16 @@ public class UserLogic {
                 .add(ATTR_NICK_NAME, nickName)
                 .add(ATTR_EMAIL, userEmail)
                 .add(ATTR_ACCESS_TOKEN, accessToken)
-                .add(ATTR_USER_ICON,iconBase64)
+                .add(ATTR_USER_ICON, iconBase64)
                 .build();
         Message message = Message.obtain();
         try {
             UserInfo userInfo = OkhttpUtil.executePost(HttpUrlConstancts.UPDATE_PROFILE, formBody, UserInfo.class);
             saveUserToSharePrefrence(userInfo);
-            message.arg1 =  HttpUrlConstancts.STATUS_SUCCESS;
+            message.arg1 = HttpUrlConstancts.STATUS_SUCCESS;
             message.obj = userInfo;
         } catch (Exception e) {
+            LogUtil.e("更新用户信息失败:", e);
             message.arg1 = HttpUrlConstancts.STATUS_EXCEPTION;
             message.obj = e.getMessage();
         }

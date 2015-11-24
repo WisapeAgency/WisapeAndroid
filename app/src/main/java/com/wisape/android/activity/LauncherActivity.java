@@ -67,7 +67,7 @@ public class LauncherActivity extends BaseActivity {
         UserLogic logic = UserLogic.instance();
         switch (what) {
             case LOADER_SIGN_UP:
-                String installId = wisapeApplication.getInstallId();
+                String installId = "123";
                 msg = logic.signUp(SIGN_UP_WITH_EMAIL,
                         args.getString(ARG_USER_EMIAL), args.getString(ARG_USER_PWD), installId);
                 break;

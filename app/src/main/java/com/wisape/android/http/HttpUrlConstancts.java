@@ -35,6 +35,9 @@ public class HttpUrlConstancts {
      */
     public static final String GET_USER_STORY_FROM_SERVER = SERVER_ADDRESS + SEPERATOR +"story/list";
 
+    /**
+     * 删除story
+     */
     public static final String DELETE_USER_STORY = SERVER_ADDRESS + SEPERATOR + "story/del";
     /**
      * 修改用户信息
@@ -56,5 +59,13 @@ public class HttpUrlConstancts {
      */
     public static final String USER_ACTIVE = SERVER_ADDRESS + SEPERATOR + "user/active";
 
+    /**
+     * story设置
+     */
     public static final String STORY_SETTING = SERVER_ADDRESS + SEPERATOR + "story/setting";
+
+    /**
+     * 发布story
+     */
+    public static final String STORY_PUBLISH = SERVER_ADDRESS + SEPERATOR + "story/publish";
 }
