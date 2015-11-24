@@ -3,19 +3,16 @@ package com.wisape.android.network;
 import android.net.Uri;
 import android.util.Log;
 
-//import com.parse.codec.digest.DigestUtils;
-import com.parse.codec.digest.DigestUtils;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 import com.wisape.android.common.StoryManager;
 import com.wisape.android.model.StoryTemplateInfo;
 import com.wisape.android.util.EnvironmentUtils;
+import com.wisape.android.util.Utils;
 import com.wisape.android.util.ZipUtils;
 
 import org.apache.commons.io.FileUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -23,7 +20,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -34,6 +30,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
+
+//import com.parse.codec.digest.DigestUtils;
 
 /**
  * Created by William on 2015/9/24.
@@ -157,7 +155,7 @@ public class TemplateDownloader implements Runnable {
             if (destFile.exists()){
                 try{
                     InputStream is = new FileInputStream(destFile);
-                    String md5 = DigestUtils.md5Hex(is);
+                    String md5 = Utils.Md5Util(is);
                     if (md5.equals(templateInfo.hash_code)){
                         unzipTemplate(downUri, template, templateInfo);
                     } else {

@@ -3,8 +3,6 @@ package com.wisape.android.network;
 import android.net.Uri;
 import android.util.Log;
 
-//import com.parse.codec.digest.DigestUtils;
-import com.parse.codec.digest.DigestUtils;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -13,6 +11,7 @@ import com.wisape.android.WisapeApplication;
 import com.wisape.android.common.StoryManager;
 import com.wisape.android.model.StoryFontInfo;
 import com.wisape.android.util.EnvironmentUtils;
+import com.wisape.android.util.Utils;
 import com.wisape.android.util.ZipUtils;
 
 import java.io.BufferedOutputStream;
@@ -24,6 +23,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
+
+//import com.parse.codec.digest.DigestUtils;
 
 /**
  * Created by William on 2015/8/16.
@@ -69,7 +70,7 @@ public class FontDownloader implements Runnable {
         }
         try{
             InputStream is = new FileInputStream(destFile);
-            String md5 = DigestUtils.md5Hex(is);
+            String md5 = Utils.Md5Util(is);
             if (md5.equals(fontInfo.hash_code)){
                 return;
             }

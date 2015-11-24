@@ -309,7 +309,7 @@ public class FileUtils {
         return local.toString();
     }
 
-    /*  解压assets的zip压缩文件到指定目录
+    /* *解压assets的zip压缩文件到指定目录
      * @param context上下文对象
      * @param assetName压缩文件名
      * @param outputDirectory输出目录

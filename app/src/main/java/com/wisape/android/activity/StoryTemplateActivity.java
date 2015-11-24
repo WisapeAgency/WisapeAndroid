@@ -1,7 +1,6 @@
 package com.wisape.android.activity;
 
 import android.app.Activity;
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,26 +8,17 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.util.Log;
-
-//import com.parse.codec.digest.DigestUtils;
-import com.parse.codec.digest.DigestUtils;
 import com.wisape.android.R;
-import com.wisape.android.WisapeApplication;
 import com.wisape.android.api.ApiStory;
 import com.wisape.android.common.StoryManager;
 import com.wisape.android.database.StoryEntity;
 import com.wisape.android.logic.StoryLogic;
 import com.wisape.android.logic.UserLogic;
-import com.wisape.android.model.StoryFontInfo;
 import com.wisape.android.model.StoryTemplateInfo;
 import com.wisape.android.network.DataSynchronizer;
 import com.wisape.android.network.Downloader;
 import com.wisape.android.network.FontDownloader;
-import com.wisape.android.network.FontPreviewDownloader;
-import com.wisape.android.network.TemplateDownloader;
-import com.wisape.android.network.ThumbDownloader;
 import com.wisape.android.network.WWWConfig;
-import com.wisape.android.util.EnvironmentUtils;
 import com.wisape.android.util.LogUtil;
 import com.wisape.android.util.Utils;
 import com.wisape.android.util.ZipUtils;
@@ -53,6 +43,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+//import com.parse.codec.digest.DigestUtils;
 
 /**
  * Created by LeiGuoting on 7/7/15.
@@ -533,7 +525,7 @@ public class StoryTemplateActivity extends AbsCordovaActivity {
             if (destFile.exists()) {
                 try {
                     InputStream is = new FileInputStream(destFile);
-                    String md5 = DigestUtils.md5Hex(is);
+                    String md5 = Utils.Md5Util(is);
                     StoryTemplateInfo templateInfo = StoryLogic.instance()
                             .getStoryTemplateLocalByName(this, template.getName());
                     if (md5.equals(templateInfo.hash_code)) {

@@ -15,7 +15,6 @@ import com.wisape.android.model.AppPhotoBucketInfo;
 import com.wisape.android.common.PhotoSelector;
 import com.wisape.android.model.AppPhotoInfo;
 import com.wisape.android.model.PhotoBucketInfo;
-import com.wisape.android.util.FrescoUriUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -115,7 +114,7 @@ public class PhotoProvider extends ContentProvider{
             return null;
         }
 
-        Uri thumbUri = FrescoUriUtils.fromFilePath(data);
+        Uri thumbUri = Uri.parse(data);
         Log.d(TAG, "#openTypedAssetFile thumbUri:" + thumbUri.toString());
         return super.openTypedAssetFile(thumbUri, mimeTypeFilter, opts, signal);
     }
