@@ -6,7 +6,6 @@ import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bugtags.library.ui.rounded.CircleImageView;
@@ -14,17 +13,12 @@ import com.bumptech.glide.Glide;
 import com.freshdesk.mobihelp.Mobihelp;
 import com.wisape.android.R;
 import com.wisape.android.activity.AboutActivity;
-import com.wisape.android.activity.MessageCenterActivity;
 import com.wisape.android.activity.SignUpActivity;
 import com.wisape.android.activity.UserProfileActivity;
-import com.wisape.android.content.BroadCastReciverListener;
-import com.wisape.android.content.ClearNumberReciver;
-//import com.wisape.android.content.MessageCenterReceiver;
 import com.wisape.android.content.UpdateUserInfoBroadcastReciver;
 import com.wisape.android.logic.UserLogic;
 import com.wisape.android.util.EnvironmentUtils;
 import com.wisape.android.util.FileUtils;
-import com.wisape.android.view.CircleTransform;
 import com.wisape.android.widget.ComfirmDialog;
 
 import java.io.File;
@@ -33,11 +27,12 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
+//import com.wisape.android.content.MessageCenterReceiver;
+
 /**
  * @author Duke
  */
-public class MainMenuFragment extends AbsFragment implements BroadCastReciverListener,UpdateUserInfoBroadcastReciver.UpdateUserInfoBoradcastReciverListener,
-        ClearNumberReciver.ClearNumberListener{
+public class MainMenuFragment extends AbsFragment implements UpdateUserInfoBroadcastReciver.UpdateUserInfoBoradcastReciverListener {
 
     private static final int CLEAR_CACHE = 1;
 
@@ -49,13 +44,8 @@ public class MainMenuFragment extends AbsFragment implements BroadCastReciverLis
     TextView tvMail;
     @InjectView(R.id.message_count)
     TextView tvMsgAccount;
-
     private double totleSize;
-
-//    private MessageCenterReceiver messageCenterReceiver;
     private UpdateUserInfoBroadcastReciver userInfoBoradcastReciver;
-    private ClearNumberReciver clearNumberReciver;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -66,23 +56,11 @@ public class MainMenuFragment extends AbsFragment implements BroadCastReciverLis
         return rootView;
     }
 
-    private void registerReciver(){
-
-//        messageCenterReceiver = new MessageCenterReceiver(this);
-//        IntentFilter intentFilter = new IntentFilter();
-//        intentFilter.addAction("com.wisape.android.content.MessageCenterReceiver");
-//        getActivity().registerReceiver(messageCenterReceiver, intentFilter);
-
+    private void registerReciver() {
         userInfoBoradcastReciver = new UpdateUserInfoBroadcastReciver(this);
         IntentFilter filter = new IntentFilter();
         filter.addAction(UpdateUserInfoBroadcastReciver.ACTION);
         getActivity().registerReceiver(userInfoBoradcastReciver, filter);
-
-        clearNumberReciver = new ClearNumberReciver(this);
-        IntentFilter intentFilter1 = new IntentFilter();
-        intentFilter1.addAction(ClearNumberReciver.CLEAR_ACTION);
-        getActivity().registerReceiver(clearNumberReciver,intentFilter1);
-
     }
 
 
@@ -106,21 +84,10 @@ public class MainMenuFragment extends AbsFragment implements BroadCastReciverLis
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.reset(this);
-//        messageCenterReceiver.destroy();
-//        getActivity().unregisterReceiver(messageCenterReceiver);
-
         userInfoBoradcastReciver.destory();
         getActivity().unregisterReceiver(userInfoBoradcastReciver);
-
-        clearNumberReciver.destroy();
-        getActivity().unregisterReceiver(clearNumberReciver);
-
     }
 
-    @Override
-    public void clearNumber() {
-        clearMsgCount();
-    }
 
     @OnClick(R.id.help_center)
     @SuppressWarnings("unused")
@@ -183,33 +150,11 @@ public class MainMenuFragment extends AbsFragment implements BroadCastReciverLis
         AboutActivity.launch(this);
     }
 
-    @OnClick(R.id.message_center)
-    @SuppressWarnings("unused")
-    protected void onMessageCenterClicked() {
-        MessageCenterActivity.launch(getActivity());
-        clearMsgCount();
-    }
-
-    /**
-     * 清除消息数量
-     */
-    private void clearMsgCount() {
-        tvMsgAccount.setText("0");
-        tvMsgAccount.setVisibility(View.GONE);
-    }
-
     @Override
     public void updateUserInfo() {
         setUserInfodata();
     }
 
-    @Override
-    public void updateMsgCount() {
-        if (tvMsgAccount.getVisibility() == View.GONE) {
-            tvMsgAccount.setVisibility(View.VISIBLE);
-        }
-        tvMsgAccount.setText(Integer.parseInt(tvMsgAccount.getText().toString()) + 1 + "");
-    }
 
     @Override
     public Message loadingInbackground(int what, Bundle args) {
@@ -228,13 +173,13 @@ public class MainMenuFragment extends AbsFragment implements BroadCastReciverLis
     protected void onLoadComplete(Message data) {
         closeProgressDialog();
         super.onLoadComplete(data);
-        int size = (int)totleSize;
+        int size = (int) totleSize;
         switch (data.what) {
             case CLEAR_CACHE:
-                if(size > 0){
+                if (size > 0) {
                     showToast("Clear cache successful,total size :" + size + "MB");
-                }else{
-                    showToast("Clear cache successful,total size :" + totleSize*1024 + "KB");
+                } else {
+                    showToast("Clear cache successful,total size :" + totleSize * 1024 + "KB");
                 }
                 break;
         }

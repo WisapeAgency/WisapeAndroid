@@ -10,13 +10,11 @@ import android.support.v7.widget.AppCompatEditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
+import com.facebook.share.model.ShareLinkContent;
 import com.wisape.android.R;
 import com.wisape.android.WisapeApplication;
 import com.wisape.android.api.ApiStory;
 import com.wisape.android.common.StoryManager;
-import com.wisape.android.content.StoryBroadcastReciver;
-import com.wisape.android.content.StoryBroadcastReciverListener;
 import com.wisape.android.database.StoryEntity;
 import com.wisape.android.http.HttpUrlConstancts;
 import com.wisape.android.logic.StoryLogic;
@@ -113,7 +111,6 @@ public class StoryReleaseActivity extends BaseActivity {
             thumbImage = storyEntity.storyThumbUri;
         }
         Utils.loadImg(this, thumbImage, storyCoverView);
-        LogUtil.d("storylocalCover:" + storyEntity.localCover + "封面地址:" + storyEntity.storyThumbUri + " :story地址:" + storyEntity.storyUri);
     }
 
     @OnClick(R.id.linear_picture)
@@ -183,15 +180,12 @@ public class StoryReleaseActivity extends BaseActivity {
     public void onBackPressed() {
 
         if(!isUpload){
-            LogUtil.d("产生草稿story");
+            LogUtil.d("没有成功上传至服务器暂存为草稿！");
             StoryEntity story = StoryLogic.instance().getStoryEntityFromShare();
             story.status = ApiStory.AttrStoryInfo.STORY_STATUS_TEMPORARY;
-            StoryEntity storyEntity = StoryLogic.instance().updateStory(this, story);
-            StoryLogic.instance().saveStoryEntityToShare(storyEntity);
-            Intent intent = new Intent();
-            intent.setAction(StoryBroadcastReciver.STORY_ACTION);
-            intent.putExtra(StoryBroadcastReciver.EXTRAS_TYPE, StoryBroadcastReciverListener.TYPE_ADD_STORY);
-            WisapeApplication.getInstance().getApplicationContext().sendBroadcast(intent);
+            if(!StoryLogic.instance().updateStory(this, story)){
+                showToast("save failure");
+            }
         }
 
         if (!isStorySettingChange()) {
@@ -241,7 +235,6 @@ public class StoryReleaseActivity extends BaseActivity {
                 storyAttr.storyDescription = story.storyDesc;
                 storyAttr.userId = UserLogic.instance().getUserInfoFromLocal().user_id;
                 storyAttr.storyStatus = ApiStory.AttrStoryInfo.STORY_STATUS_RELEASE;
-//                storyAttr.imgPrefix = StoryManager.getStoryDirectory().getAbsolutePath() + "/" + story.storyLocal;
                 storyAttr.imgPrefix = WISAPE_SD_CARD_LOCATION + "/story/" + story.storyLocal;
                 storyAttr.story_local = story.storyLocal;
                 if (story.localCover == 0) {
@@ -293,7 +286,6 @@ public class StoryReleaseActivity extends BaseActivity {
                     isUpload = true;
                     isSuccess = true;
                 }else{
-                    LogUtil.d("上传story失败");
                     isUpload = false;
                     isSuccess = false;
                     ComfirmDialog comfirmDialog = ComfirmDialog.getInstance(getString(R.string.upload_failure_title), getString(R.string.upload_failure));
@@ -361,35 +353,6 @@ public class StoryReleaseActivity extends BaseActivity {
     @OnClick(R.id.story_release_fb)
     @SuppressWarnings("unused")
     protected void doShare2Facebook() {
-
-//        ShareLinkContent content = new ShareLinkContent.Builder().setContentDescription(storyDescEdit.getText().toString())
-//                .setContentTitle(storyNameEdit.getText().toString())
-//                .setImageUrl(Uri.parse(storyEntity.storyThumbUri))
-//                .setContentUrl(Uri.parse(storyEntity.storyUri))
-//                .build();
-//
-//       AccessToken accessToken =  AccessToken.getCurrentAccessToken();
-//        if(null == accessToken){
-//        }
-//        ShareApi.share(content, new FacebookCallback<Sharer.Result>() {
-//            @Override
-//            public void onSuccess(Sharer.Result result) {
-//                LogUtil.d("facebook分享成功:");
-//            }
-//
-//            @Override
-//            public void onCancel() {
-//                LogUtil.d("facebook分享取消:");
-//            }
-//
-//            @Override
-//            public void onError(FacebookException error) {
-//                LogUtil.e("facebook分享失败:",error.getCause());
-//
-//            }
-//        });
-
-        String html = "<a href=http://ww.baidu.com>" + "<img src=" + storyEntity.storyUri+"/></a>";
         Facebook.ShareParams shareParams = new Facebook.ShareParams();
         shareParams.setImageUrl(storyEntity.storyThumbUri);
         shareParams.setUrl(storyEntity.storyUri);

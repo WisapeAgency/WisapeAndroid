@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.wisape.android.util.Utils;
+
 /**
  * Created by William on 9/15/15.
  */
@@ -20,12 +22,12 @@ public class StoryPreviewActivity extends AbsCordovaActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        if (savedInstanceState != null) {
-//            url = savedInstanceState.getString("url");
-//        } else {
-//            url = getIntent().getStringExtra("url");
-//        }
         String url = getIntent().getStringExtra("url");
+        if(Utils.isEmpty(url)){
+            if(savedInstanceState != null){
+                url = savedInstanceState.getString("url");
+            }
+        }
         loadUrl("file://" + url);
     }
 

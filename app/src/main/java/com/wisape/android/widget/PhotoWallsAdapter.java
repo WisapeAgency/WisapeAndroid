@@ -66,11 +66,10 @@ public class PhotoWallsAdapter extends RecyclerView.Adapter<RecyclerHolder> impl
         if(VIEW_TYPE_PHOTO == holder.getItemViewType()){
             AppPhotoInfo photo = (AppPhotoInfo) data;
             String path = photo.data;
-            Uri uri = Uri.parse(path);
             final ViewGroup.LayoutParams layoutParams = itemView.getLayoutParams();
             final int itemWidth = layoutParams.width;
             final int itemHeight = layoutParams.height;
-            Glide.with(context).load(uri).override(itemWidth,itemHeight).centerCrop().into(thumbView);
+            Glide.with(context).load(path).override(itemWidth,itemHeight).centerCrop().into(thumbView);
         }
     }
 

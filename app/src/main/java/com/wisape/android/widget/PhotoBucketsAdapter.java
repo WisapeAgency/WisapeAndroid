@@ -70,8 +70,10 @@ public class PhotoBucketsAdapter extends RecyclerView.Adapter<RecyclerHolder> im
         final int itemHeight = layoutParams.height;
         Uri uri = PhotoProvider.getBucketThumbUri(bucket.id);
         Glide.with(context).load(uri)
-                .error(R.mipmap.icon_camera)
-                .centerCrop().override(itemWidth,itemHeight).into(thumb);
+                .error(R.mipmap.no_pic)
+                .centerCrop()
+                .override(itemWidth,itemHeight)
+                .into(thumb);
     }
 
     @Override

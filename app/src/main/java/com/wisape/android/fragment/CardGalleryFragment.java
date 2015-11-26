@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Message;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -26,10 +24,7 @@ import com.wisape.android.activity.StoryReleaseActivity;
 import com.wisape.android.activity.StoryTemplateActivity;
 import com.wisape.android.api.ApiStory;
 import com.wisape.android.common.StoryManager;
-//import com.wisape.android.content.ActiveBroadcastReciver;
-import com.wisape.android.content.BroadCastReciverListener;
 import com.wisape.android.content.StoryBroadcastReciver;
-import com.wisape.android.content.StoryBroadcastReciverListener;
 import com.wisape.android.database.StoryEntity;
 import com.wisape.android.http.HttpUrlConstancts;
 import com.wisape.android.logic.StoryLogic;
@@ -42,11 +37,7 @@ import com.wisape.android.view.GalleryView;
 import com.wisape.android.widget.ComfirmDialog;
 import com.wisape.android.widget.PopupWindowMenu;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -58,16 +49,14 @@ import butterknife.OnClick;
  *
  * @author Duke
  */
-public class CardGalleryFragment extends AbsFragment implements PopupWindowMenu.OnPuupWindowItemClickListener, StoryBroadcastReciverListener {
+public class CardGalleryFragment extends AbsFragment implements PopupWindowMenu.OnPuupWindowItemClickListener
+        , StoryBroadcastReciver.StoryBroadcastReciverListener {
 
-//    private static final String PREVIEW_HEADER = "www/views/header.html";
-//    private static final String PREVIEW_FOOTER = "www/views/footer.html";
     private static final String WISAPE_SD_CARD_LOCATION = "/WISAPE_SD_CARD_LOCATION/";
 
     private static final int LOADER_STORY = 1;
     private static final int LOADER_DELETE_STORY = 2;
     private static final int LOADER_PREVIEW_STORY = 3;
-    private static final int LOADER_PUBLISH_STORY = 4;
     private static final int LOADER_EDIT_STORY = 5;
     private static final int LOADER_GET_STORY_LOCAL = 6;
 
@@ -98,7 +87,6 @@ public class CardGalleryFragment extends AbsFragment implements PopupWindowMenu.
         IntentFilter filter = new IntentFilter();
         filter.addAction(StoryBroadcastReciver.STORY_ACTION);
         getActivity().registerReceiver(storyBroadcastReciver, filter);
-
     }
 
     private void initView() {
@@ -123,9 +111,7 @@ public class CardGalleryFragment extends AbsFragment implements PopupWindowMenu.
                 break;
             case LOADER_PREVIEW_STORY:
                 File file = new File(StoryManager.getStoryDirectory(), StoryLogic.instance().getStoryEntityFromShare().storyLocal + "/story.html");
-                LogUtil.d("首页story路径故事:" + file.getAbsolutePath());
                 File previewFile = new File(StoryManager.getStoryDirectory(), StoryLogic.instance().getStoryEntityFromShare().storyLocal + "/preview.html");
-                LogUtil.d("首页预览story路径:" + previewFile.getAbsolutePath());
                 if (previewFile.exists()) {
                     previewFile.delete();
                 }
@@ -141,7 +127,6 @@ public class CardGalleryFragment extends AbsFragment implements PopupWindowMenu.
                 String html = FileUtils.readFileToString(editFile);
                 File dataFile = EnvironmentUtils.getAppDataDirectory();
                 html = html.replace(WISAPE_SD_CARD_LOCATION, dataFile.getAbsolutePath());
-                LogUtil.d("首页编辑story:" + editFile.getAbsolutePath());
                 if (Utils.isEmpty(html)) {
                     message.arg1 = HttpUrlConstancts.STATUS_EXCEPTION;
                     message.obj = "Get StoryInfo Failure";
@@ -252,6 +237,7 @@ public class CardGalleryFragment extends AbsFragment implements PopupWindowMenu.
 
     @Override
     public void storyStateChange(int type) {
+        LogUtil.d("重新加载首页数据");
         startLoad(LOADER_GET_STORY_LOCAL, null);
     }
 
@@ -294,25 +280,6 @@ public class CardGalleryFragment extends AbsFragment implements PopupWindowMenu.
         });
     }
 
-
-
-//    public String getFromAssets(String fileName) {
-//
-//        try {
-//            InputStreamReader inputReader = new InputStreamReader(getActivity().getResources().getAssets().open(fileName));
-//            BufferedReader bufReader = new BufferedReader(inputReader);
-//            String line;
-//            StringBuffer result = new StringBuffer();
-//            while ((line = bufReader.readLine()) != null)
-//                result.append(line);
-//            return result.toString();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return "";
-//    }
-
-
     /*删除列表中的story*/
     private void deleteData() {
         StoryEntity storyEntity = StoryLogic.instance().getStoryEntityFromShare();
@@ -330,43 +297,6 @@ public class CardGalleryFragment extends AbsFragment implements PopupWindowMenu.
         mGalleryAdapter.notifyDataSetChanged();
     }
 
-//    /**
-//     * 保存预览文件
-//     *
-//     * @param previewFile
-//     * @param html
-//     * @param story
-//     * @return
-//     */
-//    private boolean saveStoryPreview(File previewFile, String html, StoryEntity story) {
-//        String header = getFromAssets(PREVIEW_HEADER);
-//        String footer = getFromAssets(PREVIEW_FOOTER);
-//        PrintWriter writer = null;
-//        File dataFile = EnvironmentUtils.getAppDataDirectory();
-//        html = html.replace(WISAPE_SD_CARD_LOCATION, dataFile.getAbsolutePath());
-//        try {
-//            writer = new PrintWriter(previewFile, "utf-8");
-//            writer.println(header);
-//            writer.println(html);
-//            if (!Utils.isEmpty(story.storyMusicLocal)) {
-//                writer.println("<div id=\"audio-btn\" class=\"on\" onclick=\"lanren.changeClass(this,'media')\">");
-//                writer.println(String.format("    <audio loop=\"loop\" src=\"%s\" id=\"media\" preload=\"preload\"></audio>",
-//                        story.storyMusicLocal));
-//                writer.println("</div>");
-//            }
-//            writer.println(footer);
-//            writer.close();
-//        } catch (IOException e) {
-//            LogUtil.e("saveStoryPreview", e);
-//            return false;
-//        } finally {
-//            if (writer != null) {
-//                writer.close();
-//            }
-//        }
-//        return true;
-//    }
-
     /**
      * story列表适配器
      */
@@ -381,7 +311,6 @@ public class CardGalleryFragment extends AbsFragment implements PopupWindowMenu.
 
         @Override
         public void onBindViewHolder(GHolder holder, final int position) {
-//            Glide.with(getActivity()).load(R.mipmap.loading).into(holder.mStoryBg);
             final StoryEntity storyEntity = storyEntityList.get(position);
             LinearLayout.LayoutParams params;
             float screenWidth = mDisplayMetrics.widthPixels;
@@ -417,7 +346,7 @@ public class CardGalleryFragment extends AbsFragment implements PopupWindowMenu.
                 File coverFile = new File(storyDirectory, "thumb.jpg");
 
                 StoryEntity cureent = StoryLogic.instance().getStoryEntityFromShare();
-                if (cureent != null && cureent.id == storyEntity.id){
+                if (cureent != null && cureent.id == storyEntity.id) {
                     Glide.with(getActivity()).load(coverFile)
                             .placeholder(R.mipmap.loading)
                             .error(R.mipmap.loading)
@@ -425,7 +354,7 @@ public class CardGalleryFragment extends AbsFragment implements PopupWindowMenu.
                             .signature(new StringSignature(Utils.acquireUTCTimestamp()))
                             .crossFade()
                             .into(holder.mStoryBg);
-                }else{
+                } else {
                     Glide.with(getActivity()).load(coverFile)
                             .placeholder(R.mipmap.loading)
                             .error(R.mipmap.loading)
@@ -435,13 +364,12 @@ public class CardGalleryFragment extends AbsFragment implements PopupWindowMenu.
                 }
 
 
-
             } else {
                 File storyDirectory = new File(StoryManager.getStoryDirectory(), storyEntity.storyLocal);
                 File coverFile = new File(storyDirectory, "thumb.jpg");
 
                 StoryEntity cureent = StoryLogic.instance().getStoryEntityFromShare();
-                if (cureent != null && cureent.id == storyEntity.id){
+                if (cureent != null && cureent.id == storyEntity.id) {
                     Glide.with(getActivity()).load(coverFile)
                             .placeholder(R.mipmap.loading)
                             .error(R.mipmap.loading)
@@ -449,7 +377,7 @@ public class CardGalleryFragment extends AbsFragment implements PopupWindowMenu.
                             .signature(new StringSignature(Utils.acquireUTCTimestamp()))
                             .crossFade()
                             .into(holder.mStoryBg);
-                }else{
+                } else {
                     Glide.with(getActivity()).load(coverFile)
                             .placeholder(R.mipmap.loading)
                             .error(R.mipmap.loading)
@@ -487,8 +415,8 @@ public class CardGalleryFragment extends AbsFragment implements PopupWindowMenu.
                 int size = storyEntityList.size();
                 for (int i = 0; i < size; i++) {
                     StoryEntity story = storyEntityList.get(i);
-                    if(story != null){
-                        if(story.id == storyEntity.id){
+                    if (story != null && storyEntity != null) {
+                        if (story.id == storyEntity.id) {
                             return i;
                         }
                     }
@@ -519,31 +447,4 @@ public class CardGalleryFragment extends AbsFragment implements PopupWindowMenu.
             ButterKnife.inject(this, itemView);
         }
     }
-
-
-    //    @OnClick(R.id.gift)
-//    @SuppressWarnings("unused")
-//    public void showGift() {
-//        clearMsgCount();
-//        FragmentManager fm = getActivity().getSupportFragmentManager();
-//        FragmentTransaction trans = fm.beginTransaction();
-//        trans.add(R.id.drawer_main, new GiftFragment());
-//        trans.commit();
-//    }
-
-    /**
-     * 清除活动数字
-     */
-//    private void clearMsgCount() {
-//        mTextGifCount.setText("0");
-//        mTextGifCount.setVisibility(View.GONE);
-//    }
-
-//    @Override
-//    public void updateMsgCount() {
-//        if (mTextGifCount.getVisibility() == View.GONE) {
-//            mTextGifCount.setVisibility(View.VISIBLE);
-//        }
-//        mTextGifCount.setText(Integer.parseInt(mTextGifCount.getText().toString()) + 1 + "");
-//    }
 }

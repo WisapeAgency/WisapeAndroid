@@ -1,7 +1,6 @@
 package com.wisape.android.logic;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
@@ -22,8 +21,6 @@ import com.wisape.android.WisapeApplication;
 import com.wisape.android.activity.StoryMusicActivity;
 import com.wisape.android.api.ApiStory;
 import com.wisape.android.common.StoryManager;
-import com.wisape.android.content.StoryBroadcastReciver;
-import com.wisape.android.content.StoryBroadcastReciverListener;
 import com.wisape.android.database.DatabaseHelper;
 import com.wisape.android.database.StoryEntity;
 import com.wisape.android.database.StoryMusicEntity;
@@ -101,7 +98,6 @@ public class StoryLogic {
         if (STORY_STATUS_RELEASE.equals(storyStatus)) {
             try {
                 String zipName = String.format(Locale.US, "%1$s.%2$s", storyUri.getLastPathSegment(), SUFFIX_STORY_COMPRESS);
-                LogUtil.d("#即将上传的story的压缩包名称:" + zipName);
                 Uri storyZip = ZipUtils.zip(storyUri, EnvironmentUtils.getAppTemporaryDirectory(), zipName);
                 attr.story = storyZip;
             } catch (IOException e) {
@@ -163,10 +159,7 @@ public class StoryLogic {
                 LogUtil.d("上传story成功");
             }
             db.setTransactionSuccessful();
-            Intent intent = new Intent();
-            intent.setAction(StoryBroadcastReciver.STORY_ACTION);
-            intent.putExtra(StoryBroadcastReciver.EXTRAS_TYPE, StoryBroadcastReciverListener.TYPE_ADD_STORY);
-            WisapeApplication.getInstance().sendBroadcast(intent);
+            Utils.sendUpdateStoryInfoBroadcast();
         } catch (SQLException e) {
             LogUtil.e("发布时更新到本地数据库失败:", e);
             return false;
@@ -693,7 +686,6 @@ public class StoryLogic {
         Message message = Message.obtain();
         message.arg1 = HttpUrlConstancts.STATUS_SUCCESS;
         message.obj = storyEntitYList;
-        LogUtil.d("本地后story数据时间:" + Utils.acquireUTCTimestamp());
         return message;
     }
 
@@ -711,16 +703,12 @@ public class StoryLogic {
                 LogUtil.d("下载story成功:" + storyZipFile.getAbsolutePath());
                 FileUtils.saveByteToFile(bytes, storyZipFile.getAbsolutePath());
                 try {
-                    String path = storyZipFile.getAbsolutePath();
                     File storyDirectory = new File(storyZipFile.getParent(), storyLocal);
                     if (storyDirectory.exists()) {
                         FileUtils.deleteDir(storyDirectory);
                     }
                     ZipUtils.unzip(Uri.fromFile(storyZipFile), storyDirectory);
-                    Intent intent = new Intent();
-                    intent.setAction(StoryBroadcastReciver.STORY_ACTION);
-                    intent.putExtra(StoryBroadcastReciver.EXTRAS_TYPE, StoryBroadcastReciverListener.TYPE_UPDATE_STORY);
-                    WisapeApplication.getInstance().getApplicationContext().sendBroadcast(intent);
+                    Utils.sendUpdateStoryInfoBroadcast();
                 } catch (IOException e) {
                     LogUtil.e("story解压失败：" + storyZipFile.getName(), e);
                 }
@@ -926,27 +914,27 @@ public class StoryLogic {
      * @param storyEntity 需要新增或者修改的实体
      * @return 出入数据库后返回的实体
      */
-    public StoryEntity updateStory(Context context, StoryEntity storyEntity) {
+    public boolean updateStory(Context context, StoryEntity storyEntity) {
         DatabaseHelper databaseHelper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
         Dao<StoryEntity, Integer> dao;
         SQLiteDatabase database = databaseHelper.getWritableDatabase();
         database.beginTransaction();
-        StoryEntity resultEntity = null;
         try {
             storyEntity.status = ApiStory.AttrStoryInfo.STORY_STATUS_TEMPORARY;
             dao = databaseHelper.getDao(StoryEntity.class);
             StoryEntity localStoryEntity = dao.queryBuilder().where().eq("id", storyEntity.id).queryForFirst();
             if (null != localStoryEntity) {
                 dao.update(storyEntity);
-                resultEntity = storyEntity;
             } else {
-                resultEntity = dao.createIfNotExists(storyEntity);
+                storyEntity = dao.createIfNotExists(storyEntity);
             }
             database.setTransactionSuccessful();
-            return resultEntity;
+            StoryLogic.instance().saveStoryEntityToShare(storyEntity);
+            Utils.sendUpdateStoryInfoBroadcast();
+            return true;
         } catch (SQLException e) {
             LogUtil.e("更新本地story数据库错误:", e);
-            return null;
+            return false;
         } finally {
             database.endTransaction();
             OpenHelperManager.releaseHelper();
@@ -975,20 +963,15 @@ public class StoryLogic {
         try {
             StoryInfo storyInfo = OkhttpUtil.executePost(HttpUrlConstancts.STORY_SETTING, formBody, StoryInfo.class);
             message.arg1 = HttpUrlConstancts.STATUS_SUCCESS;
-            LogUtil.d("更新story基本设置到服务器成功,开始更新本地数据");
-
-            //同时更新本地数据库
             storyEntity.storyThumbUri = storyInfo.small_img;
             storyEntity.storyName = storyInfo.story_name;
             storyEntity.storyDesc = storyInfo.description;
             storyEntity.localCover = storyInfo.local_cover;
-            storyEntity = updateStory(WisapeApplication.getInstance(), storyEntity);
-            LogUtil.d("更新story基本设置到本地成功,开始更新share");
-            StoryLogic.instance().saveStoryEntityToShare(storyEntity);
-
-            //TODO 发送广播更新首页
-            Utils.sendUpdateStoryInfoBroadcast();
-
+            storyEntity.status = storyInfo.rec_status;
+            if(!updateStory(WisapeApplication.getInstance(), storyEntity)){
+                message.arg1 = HttpUrlConstancts.STATUS_EXCEPTION;
+                message.obj = "update story failure";
+            }
         } catch (Exception e) {
             LogUtil.e("更新story设置出错:", e);
             message.arg1 = HttpUrlConstancts.STATUS_EXCEPTION;
@@ -1005,7 +988,7 @@ public class StoryLogic {
      */
     public void saveStoryEntityToShare(StoryEntity storyEntity) {
         String userEncode = new Gson().toJson(storyEntity);
-        LogUtil.d("保存当前StoryEntity到share" + userEncode);
+        LogUtil.d("保存当前StoryEntity到share");
         WisapeApplication.getInstance().getSharePrefrence().edit()
                 .putString(EXTARAS_STORY_ENTITY, Base64.encodeToString(userEncode.getBytes(), Base64.DEFAULT)).commit();
     }
@@ -1019,7 +1002,7 @@ public class StoryLogic {
         StoryEntity storyEntity = null;
         SharedPreferences sharedPreferences = WisapeApplication.getInstance().getSharePrefrence();
         String decode = sharedPreferences.getString(EXTARAS_STORY_ENTITY, "");
-        LogUtil.d("从share中获取当前storyEntity" + decode);
+        LogUtil.d("从share中获取当前storyEntity");
         if (0 != decode.length()) {
             String gson = new String(Base64.decode(decode, Base64.DEFAULT));
             storyEntity = new Gson().fromJson(gson, StoryEntity.class);
@@ -1035,6 +1018,8 @@ public class StoryLogic {
         WisapeApplication.getInstance().getSharePrefrence().edit().remove(EXTARAS_STORY_ENTITY).commit();
     }
 
+
+    private static final String TEMP_HTML = "temp_html";
     /**
      * 保存编辑界面的html到share
      *
@@ -1043,7 +1028,7 @@ public class StoryLogic {
     public void saveTempHtml(String html) {
         LogUtil.d("保存当前编辑界面html到share中：" + html);
         if (!Utils.isEmpty(html)) {
-            WisapeApplication.getInstance().getSharePrefrence().edit().putString("out", html).commit();
+            WisapeApplication.getInstance().getSharePrefrence().edit().putString(TEMP_HTML, html).commit();
         }
     }
 
@@ -1054,11 +1039,31 @@ public class StoryLogic {
      */
     public String getTempHtml() {
         LogUtil.d("获取share中保存的缓存的编辑界面html数据");
-        return WisapeApplication.getInstance().getSharePrefrence().getString("out", "");
+        return WisapeApplication.getInstance().getSharePrefrence().getString(TEMP_HTML, "");
     }
 
     public void clearTempHtml() {
-        LogUtil.d("清除share中保存的html");
-        WisapeApplication.getInstance().getSharePrefrence().edit().remove("out").commit();
+        LogUtil.d("清除share中保存的临时HTML信息");
+        WisapeApplication.getInstance().getSharePrefrence().edit().remove(TEMP_HTML).commit();
     }
+
+    private static final String TEMP_FIRST_PAGE = "temp_first_page";
+
+    public void saveTempFirstPage(String html) {
+        LogUtil.d("保存firstPage数据到share中：" + html);
+        if (!Utils.isEmpty(html)) {
+            WisapeApplication.getInstance().getSharePrefrence().edit().putString(TEMP_FIRST_PAGE, html).commit();
+        }
+    }
+
+    public String getTempFirstPage() {
+        LogUtil.d("获取share中获取fistrPage数据");
+        return WisapeApplication.getInstance().getSharePrefrence().getString(TEMP_FIRST_PAGE, "");
+    }
+
+    public void clearTempFirstPage() {
+        LogUtil.d("清除share中保存的firstPage数据");
+        WisapeApplication.getInstance().getSharePrefrence().edit().remove(TEMP_FIRST_PAGE).commit();
+    }
+
 }

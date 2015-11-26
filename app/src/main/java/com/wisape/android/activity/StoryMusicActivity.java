@@ -124,10 +124,7 @@ public class StoryMusicActivity extends BaseActivity implements StoryMusicAdapte
             storyEntity.storyMusicName = selectedMusic.name;
             storyEntity.storyMusicLocal = Uri.parse(selectedMusic.musicLocal).getPath();
             storyEntity.musicServerId = selectedMusic.serverId;
-
-            StoryEntity result = StoryLogic.instance().updateStory(getApplicationContext(), storyEntity);
-            StoryLogic.instance().saveStoryEntityToShare(result);
-
+            StoryLogic.instance().updateStory(getApplicationContext(), storyEntity);
         }
     }
 

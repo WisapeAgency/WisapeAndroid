@@ -120,6 +120,7 @@ public class ZipUtils{
     }
 
     public static Uri unzip(Uri source, File targetDir) throws IOException{
+        LogUtil.d("开始解压压缩文件："+ source.getPath() + ":" + targetDir.getPath());
         ZipArchiveInputStream zipInput = null;
         try{
             zipInput = new ZipArchiveInputStream(new FileInputStream(new File(source.getPath())));
@@ -138,7 +139,6 @@ public class ZipUtils{
 
             for(;null != (entry = zipInput.getNextZipEntry());){
                 entryName = entry.getName();
-                LogUtil.d("ZipUtils" + "#unzip entryName:" + entryName);
                 if(entry.isDirectory()){
                     entryFile = new File(targetDir, entryName);
                     if(!entryFile.exists()){
@@ -164,15 +164,12 @@ public class ZipUtils{
                 }
             }
         }catch (IOException e) {
-//            LogUtil.e("zipUtils解压缩失败",e);
-//            throw e;
+            LogUtil.e("zipUtils解压缩失败:"+source.getPath(),e);
         }finally {
             if(null != zipInput){
                 try {
                     zipInput.close();
-                }catch(IOException e){
-
-                }
+                }catch(IOException e){ }
             }
         }
         return Uri.fromFile(targetDir);

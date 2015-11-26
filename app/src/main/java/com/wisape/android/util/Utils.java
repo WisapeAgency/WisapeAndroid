@@ -1,9 +1,6 @@
 package com.wisape.android.util;
 
 import android.app.ActivityManager;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.ComponentName;
@@ -20,10 +17,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.wisape.android.R;
 import com.wisape.android.WisapeApplication;
-import com.wisape.android.activity.BaseActivity;
-import com.wisape.android.activity.MessageCenterDetailActivity;
 import com.wisape.android.content.StoryBroadcastReciver;
-import com.wisape.android.content.StoryBroadcastReciverListener;
 
 import java.io.File;
 import java.io.InputStream;
@@ -87,42 +81,6 @@ public class Utils {
     public static String base64ForImage(Uri uri) {
 
        return FileUtils.base64ForImage(uri.getPath());
-
-//        InputStream inputStream;
-//        try {
-//            inputStream = new BufferedInputStream(new FileInputStream(uri.getPath()));
-//        } catch (IOException e) {
-//            throw new IllegalStateException(e);
-//        }
-//
-//        ByteArrayOutputStream outputStream = null;
-//        try {
-//            outputStream = new ByteArrayOutputStream(102400 * 2);
-//            byte[] buffer = new byte[102400];
-//            int count;
-//            for (; 0 < (count = inputStream.read(buffer)); ) {
-//                outputStream.write(buffer, 0, count);
-//            }
-//
-//            byte[] data = outputStream.toByteArray();
-//
-//            String base64 = Base64.encodeToString(data, Base64.DEFAULT);
-//            return base64;
-//        } catch (IOException e) {
-//            return "";
-//        } finally {
-//            try {
-//                if (null != inputStream) {
-//                    inputStream.close();
-//                }
-//
-//                if (null != outputStream) {
-//                    outputStream.close();
-//                }
-//            } catch (IOException e) {
-//                //do nothing
-//            }
-//        }
     }
 
     public static String acquireCountryIso(Context context) {
@@ -147,17 +105,17 @@ public class Utils {
         return context.getResources().getConfiguration().locale.getCountry();
     }
 
-    public boolean isAppForground(Context mContext) {
-        ActivityManager am = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
-        List<ActivityManager.RunningTaskInfo> tasks = am.getRunningTasks(1);
-        if (!tasks.isEmpty()) {
-            ComponentName topActivity = tasks.get(0).topActivity;
-            if (!topActivity.getPackageName().equals(mContext.getPackageName())) {
-                return false;
-            }
-        }
-        return true;
-    }
+//    public boolean isAppForground(Context mContext) {
+//        ActivityManager am = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
+//        List<ActivityManager.RunningTaskInfo> tasks = am.getRunningTasks(1);
+//        if (!tasks.isEmpty()) {
+//            ComponentName topActivity = tasks.get(0).topActivity;
+//            if (!topActivity.getPackageName().equals(mContext.getPackageName())) {
+//                return false;
+//            }
+//        }
+//        return true;
+//    }
 
 //    public static void sendNotificatio(Context context, Class<? extends BaseActivity> activity, int msgId, String msgTile, String msgSubject) {
 //
@@ -179,12 +137,12 @@ public class Utils {
 //        manager.notify(1, notify);
 //    }
 
-    private static Intent getIntent(Context context, Class<? extends BaseActivity> activity, int messageID) {
-        Intent intent = new Intent(context, activity);
-        intent.putExtra(MessageCenterDetailActivity.MESSAGE_ID, messageID);
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        return intent;
-    }
+//    private static Intent getIntent(Context context, Class<? extends BaseActivity> activity, int messageID) {
+//        Intent intent = new Intent(context, activity);
+//        intent.putExtra(MessageCenterDetailActivity.MESSAGE_ID, messageID);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//        return intent;
+//    }
 
     private static final int BLACK = 0xff000000;
     private static final int WITHE = 0xffffffff;
@@ -230,9 +188,10 @@ public class Utils {
      * 发送更新首页story列表信息
      */
     public static void sendUpdateStoryInfoBroadcast(){
+        LogUtil.d("发送广播更新首页story列表信息");
         Intent intent = new Intent();
         intent.setAction(StoryBroadcastReciver.STORY_ACTION);
-        intent.putExtra(StoryBroadcastReciver.EXTRAS_TYPE, StoryBroadcastReciverListener.UPDATE_STORY_SETTING);
+        intent.putExtra(StoryBroadcastReciver.EXTRAS_TYPE, StoryBroadcastReciver.TYPE_UPDATE_STORY);
         WisapeApplication.getInstance().sendBroadcast(intent);
     }
 

@@ -3,7 +3,6 @@ package com.wisape.android.content;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 /**
  * 更新用户信息
@@ -36,5 +35,4 @@ public class UpdateUserInfoBroadcastReciver extends BroadcastReceiver {
     public interface UpdateUserInfoBoradcastReciverListener {
         void updateUserInfo();
     }
-
 }

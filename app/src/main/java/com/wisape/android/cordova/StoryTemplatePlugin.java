@@ -17,8 +17,6 @@ import com.wisape.android.activity.StoryReleaseActivity;
 import com.wisape.android.activity.StoryTemplateActivity;
 import com.wisape.android.api.ApiStory;
 import com.wisape.android.common.StoryManager;
-import com.wisape.android.content.StoryBroadcastReciver;
-import com.wisape.android.content.StoryBroadcastReciverListener;
 import com.wisape.android.database.StoryEntity;
 import com.wisape.android.database.StoryMusicEntity;
 import com.wisape.android.logic.StoryLogic;
@@ -82,7 +80,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
     public static final String ACTION_BACK = "back";
     public static final String ACTION_EDIT = "edit";
     public static final String ACTION_GET_CONTENT = "getContent";
-    public static final String ACTION_CHECK_DOWNLOAD = "checkInitState";//onInitCompleted
+    public static final String ACTION_INIT_STATE = "checkInitState";
     public static final String ACTION_OPEN_LINK = "openLink";
     public static final String ACTION_IM_SAVE="isave";
 
@@ -95,31 +93,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
 
     private CustomProgress customProgress;
     private StoryLogic logic = StoryLogic.instance();
-    /**
-     * 显示进度对话框
-     */
-    public void showProgressDialog() {
 
-        if (customProgress == null) {
-            customProgress = CustomProgress.show(getCurrentActivity(), getCurrentActivity().getResources()
-                    .getString(R.string.progress_loading_data), true);
-        }
-        if (customProgress.isShowing()) {
-            customProgress.setMessage(getCurrentActivity().getResources().getString(R.string.progress_loading_data));
-            return;
-        }
-        customProgress.setMessage(getCurrentActivity().getResources().getString(R.string.progress_loading_data));
-        customProgress.show();
-    }
-
-    /**
-     * 关闭进度对话框
-     */
-    public void closeProgressDialog() {
-        if (customProgress != null && customProgress.isShowing()) {
-            customProgress.dismiss();
-        }
-    }
 
     @Override
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
@@ -130,10 +104,6 @@ public class StoryTemplatePlugin extends AbsPlugin {
         void run(Bundle bundle) throws Exception;
     }
 
-
-    /* helper to execute functions async and handle the result codes
-     *
-     */
     private void threadhelper(final TemplateOp f, final Bundle bundle, final CallbackContext callbackContext){
         cordova.getThreadPool().execute(new Runnable() {
             public void run() {
@@ -150,13 +120,12 @@ public class StoryTemplatePlugin extends AbsPlugin {
         if (null == action || 0 == action.length()) {
             return true;
         }
-        LogUtil.d("调用接口动作:" + action);
+        LogUtil.d("前端调用原生提供接口动作:" + action);
         final Context context = getCurrentActivity().getApplicationContext();
         if (ACTION_GET_STAGE_CATEGORY.equals(action)) {//getStageCategory
             threadhelper(new TemplateOp() {
                 public void run(Bundle bundle) {
                     JSONArray jsonStr = logic.listStoryTemplateTypeLocal(context);
-                    LogUtil.d("模版分类信息:" + jsonStr);
                     callbackContext.success(jsonStr);
                 }
             }, null, callbackContext);
@@ -252,13 +221,11 @@ public class StoryTemplatePlugin extends AbsPlugin {
             }
             threadhelper(new TemplateOp() {
                 public void run(Bundle bundle) {
+
                     String storyThumb = bundle.getString(EXTRA_STORY_THUMB);
                     String html = bundle.getString(EXTRA_STORY_HTML);
                     String path = bundle.getString(EXTRA_FILE_PATH);
                     com.alibaba.fastjson.JSONArray paths = JSON.parseArray(path);
-
-                    LogUtil.d("保存story前端返回的封面路径:" + storyThumb);
-                    LogUtil.d("保存story前端返回的需要替换路径:" + paths.toJSONString());
 
                     StoryEntity story = StoryLogic.instance().getStoryEntityFromShare();
                     story.status = ApiStory.AttrStoryInfo.STORY_STATUS_TEMPORARY;
@@ -272,14 +239,11 @@ public class StoryTemplatePlugin extends AbsPlugin {
                         callbackContext.error(-1);
                         return;
                     }
-                    StoryEntity storyEntity = StoryLogic.instance().updateStory(WisapeApplication.getInstance(), story);
-                    if(null == storyEntity){
+                    if(!StoryLogic.instance().updateStory(WisapeApplication.getInstance(), story)){
                         callbackContext.error(-1);
                         return;
                     }
                     callbackContext.success();
-                    StoryLogic.instance().saveStoryEntityToShare(storyEntity);
-                    sendBroadcastUpdateStory();
                     MainActivity.launch(getCurrentActivity());
                     cordova.getActivity().finish();
                 }
@@ -298,9 +262,6 @@ public class StoryTemplatePlugin extends AbsPlugin {
                     String path = bundle.getString(EXTRA_FILE_PATH);
                     com.alibaba.fastjson.JSONArray paths = JSON.parseArray(path);
 
-                    LogUtil.d("预览story前端返回的封面路径:" + storyThumb);
-                    LogUtil.d("预览story前端返回需要替换的路径:" + paths.toJSONString());
-
                     StoryEntity story = StoryLogic.instance().getStoryEntityFromShare();
                     story.status = ApiStory.AttrStoryInfo.STORY_STATUS_TEMPORARY;
                     File myStory = new File(StoryManager.getStoryDirectory(), story.storyLocal);
@@ -312,7 +273,6 @@ public class StoryTemplatePlugin extends AbsPlugin {
                         callbackContext.error(-1);
                         return;
                     }
-//                    StoryEntity storyEntity = StoryLogic.instance().updateStory(getCurrentActivity(), StoryLogic.instance().getStoryEntityFromShare());
                     StoryLogic.instance().saveStoryEntityToShare(story);
                     File previewFile = new File(myStory, FILE_NAME_PREVIEW);
                     if (saveStoryPreview(previewFile, html, story)) {
@@ -327,32 +287,9 @@ public class StoryTemplatePlugin extends AbsPlugin {
             callbackContext.success();
             StoryReleaseActivity.launch(cordova.getActivity());
             getCurrentActivity().finish();
-//            Bundle bundle = new Bundle();
-//            if (null != args && args.length() == 3) {
-//                bundle.putString(EXTRA_STORY_THUMB, args.getString(0));
-//                bundle.putString(EXTRA_STORY_HTML, args.getString(1));
-//                bundle.putString(EXTRA_FILE_PATH, args.getString(2));
-//            }
-//            showProgressDialog();
-////            startLoad(WHAT_PUBLISH, bundle);
-//            threadhelper(new TemplateOp() {
-//                public void run(Bundle bundle) {
-////                    String storyThumb = bundle.getString(EXTRA_STORY_THUMB);
-////                    String html = bundle.getString(EXTRA_STORY_HTML);
-////                    String path = bundle.getString(EXTRA_FILE_PATH);
-////                    com.alibaba.fastjson.JSONArray paths = JSON.parseArray(path);
-////
-////                    LogUtil.d("发布story前端返回的封面路径:" + storyThumb);
-////                    LogUtil.d("发布story前端返回需要替换的路径:" + paths.toJSONString());
-//
-//
-//
-//                }
-//            }, bundle, callbackContext);
         } else if (ACTION_SETTING.equals(action)) {
             StoryMusicEntity musicEntity = new StoryMusicEntity();
             StoryEntity storyEntity = StoryLogic.instance().getStoryEntityFromShare();
-            String musicName = storyEntity.storyMusicName;
             musicEntity.musicLocal = storyEntity.storyMusicLocal;
             musicEntity.name = storyEntity.storyMusicName;
             musicEntity.serverId = storyEntity.musicServerId;
@@ -362,7 +299,6 @@ public class StoryTemplatePlugin extends AbsPlugin {
             callbackContext.success();
             cordova.getActivity().finish();
         } else if (ACTION_EDIT.equals(action)) {
-            LogUtil.d("编辑动作");
             StoryEntity storyEntity = StoryLogic.instance().getStoryEntityFromShare();
             if (storyEntity != null) {
                 doEditStory(storyEntity);
@@ -376,30 +312,25 @@ public class StoryTemplatePlugin extends AbsPlugin {
                 LogUtil.d("获取内容数据的内容:" + html);
                 callbackContext.success(html);
             }
-        } else if (ACTION_CHECK_DOWNLOAD.equals(action)) {
-            LogUtil.d("检测是否下载");
+        } else if (ACTION_INIT_STATE.equals(action)) {
             threadhelper(new TemplateOp() {
                 public void run(Bundle bundle) {
                     while (DataSynchronizer.getInstance().isDownloading()) {
                         try {
                             Thread.sleep(300);
                         } catch (InterruptedException e) {
-
+                            LogUtil.e("休眠被打断:",e);
                         }
                     }
                     StoryTemplateInfo templateInfo = DataSynchronizer.getInstance().getFirstTemplate();
-                    StoryManager.getStoryTemplateDirectory().getAbsolutePath();
-                    String content = "<div class=\"stage-content edit-area pages-img pages-img-bg\"     style=\" text-align:center;word-break:break-all;background: url(/storage/sdcard0/wisape/com.wisape.android/data/template/cover/img/bg.jpg);background-size: cover;background-position:50% 50%;width:100%;height:100%;position: relative;\">    <div class=\"stage-content-box\" style=\"position: absolute;text-align: center;top:3.65rem;width:16rem;-webkit-transform-origin:0 0;\">        <div class=\"symbol\">            <div class=\"pages-txt edit-area\" data-animation=\"animated flash\"  style=\"display: inline-block;font-family: 'bebas';font-size:3.5rem;line-height: 3.5rem;min-height: 3.5rem;min-width:14rem;color:#cc0001;\">                JOITN            </div>        </div>        <div class=\"symbol\" style=\"z-index: 3;\">            <div class=\"pages-txt edit-area\" data-animation=\"animated flash\" style=\"display: inline-block;margin-top:0.5rem;font-family: 'bebas';font-size:3.5rem;line-height: 3.5rem;min-height: 3.5rem;min-width:14rem;color:#000;\">                WISAPE            </div>        </div>    </div>    <div class=\"stage-content-box\" style=\"position: absolute;bottom:1rem;text-align: center;width:16rem;-webkit-transform-origin:0 100%;\">        <div class=\"symbol\" style=\"z-index: 999; \">            <div class=\"pages-img edit-area\"  data-animation=\"animated fadeInUp\">                <img style=\"width:4.44rem;height:1.03rem;\" src=\"123/cover/img/logo.png\"></div>        </div>        <div class=\"symbol\" style=\"z-index: 3;\">            <div class=\"pages-txt edit-area\" data-animation=\"animated fadeInUp\" style=\"font-size:0.53rem;color:#000;font-family: 'Lato';margin-top:0.3rem;min-height: 0.53rem;min-width:14rem;\">                Something Wonderful is Coming            </div>        </div>    </div></div>";
-                    content =  content.replaceAll("123", StoryManager.getStoryTemplateDirectory().getAbsolutePath());
-                    LogUtil.d("当前content:"+content);
-                    LogUtil.d("检测是否下载是否是空文件夹" + (templateInfo == null));
-
-//                    String content = "";
+                    String content = "";
                     if (templateInfo != null) {
                         File path = new File(StoryManager.getStoryTemplateDirectory(), templateInfo.temp_name + "/" + "stage.html");
                         content = readHtml(path.getAbsolutePath());
+                        StoryLogic.instance().saveTempFirstPage(content);
                     }else {
                         LogUtil.d("获取第一个page信息为null使用默认信息");
+                        content = StoryLogic.instance().getTempFirstPage();
                     }
                     callbackContext.success(content);
                 }
@@ -415,7 +346,6 @@ public class StoryTemplatePlugin extends AbsPlugin {
             }
             callbackContext.success();
         }else if(ACTION_IM_SAVE.equals(action)){
-            LogUtil.d("保存临时数据");
             Bundle bundle = new Bundle();
             if (null != args && args.length() == 3) {
                 bundle.putString(EXTRA_STORY_THUMB, args.getString(0));
@@ -424,10 +354,7 @@ public class StoryTemplatePlugin extends AbsPlugin {
             }
             threadhelper(new TemplateOp() {
                 public void run(Bundle bundle) {
-                    String storyThumb = bundle.getString(EXTRA_STORY_THUMB);
                     String html = bundle.getString(EXTRA_STORY_HTML);
-                    String path = bundle.getString(EXTRA_FILE_PATH);
-                    com.alibaba.fastjson.JSONArray paths = JSON.parseArray(path);
                     StoryLogic.instance().saveTempHtml(html);
                 }
             }, bundle, callbackContext);
@@ -442,7 +369,6 @@ public class StoryTemplatePlugin extends AbsPlugin {
         File dataFile = EnvironmentUtils.getAppDataDirectory();
         html = html.replace(WISAPE_SD_CARD_LOCATION, dataFile.getAbsolutePath());
         StoryTemplateActivity.launch(getCurrentActivity(), html, 0);
-//        callbackContext.success(html);
     }
 
     @Override
@@ -736,14 +662,28 @@ public class StoryTemplatePlugin extends AbsPlugin {
     }
 
     /**
-     * 发送消息通知首页更新数据
+     * 显示进度对话框
      */
-    private void sendBroadcastUpdateStory() {
-        Intent intent = new Intent();
-        intent.setAction(StoryBroadcastReciver.STORY_ACTION);
-        intent.putExtra(StoryBroadcastReciver.EXTRAS_TYPE, StoryBroadcastReciverListener.TYPE_ADD_STORY);
-        WisapeApplication.getInstance().getApplicationContext().sendBroadcast(intent);
+    public void showProgressDialog() {
+
+        if (customProgress == null) {
+            customProgress = CustomProgress.show(getCurrentActivity(), getCurrentActivity().getResources()
+                    .getString(R.string.progress_loading_data), true);
+        }
+        if (customProgress.isShowing()) {
+            customProgress.setMessage(getCurrentActivity().getResources().getString(R.string.progress_loading_data));
+            return;
+        }
+        customProgress.setMessage(getCurrentActivity().getResources().getString(R.string.progress_loading_data));
+        customProgress.show();
     }
 
-
+    /**
+     * 关闭进度对话框
+     */
+    public void closeProgressDialog() {
+        if (customProgress != null && customProgress.isShowing()) {
+            customProgress.dismiss();
+        }
+    }
 }

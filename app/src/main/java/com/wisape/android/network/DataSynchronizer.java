@@ -60,7 +60,6 @@ public class DataSynchronizer {
     }
 
     public StoryTemplateInfo getFirstTemplate() {
-//        return firstTemplate;
         if (allTemplate.size() != 0){
             return allTemplate.get(0);
         }

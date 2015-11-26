@@ -14,14 +14,11 @@ import com.wisape.android.util.LogUtil;
  */
 public class StoryBroadcastReciver extends BroadcastReceiver {
 
-    private static final String TAG = StoryBroadcastReciver.class.getSimpleName();
-
     public static final String STORY_ACTION = "com.wisape.android.content.StoryBroadcastReciver";
     public static final String EXTRAS_TYPE = "story_type";
-    public static final String EXRAS_DATA = "storyinfo";
+    public static final String TYPE_UPDATE_STORY = "update_story";
 
     private volatile boolean isDestoyed;
-
     private StoryBroadcastReciverListener listener;
 
     public StoryBroadcastReciver(StoryBroadcastReciverListener broadcastReciverListener){
@@ -30,15 +27,20 @@ public class StoryBroadcastReciver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        LogUtil.d("收到推送消息更新首页story信息" );
         if(!isDestoyed){
             listener.storyStateChange(intent.getExtras().getInt(EXTRAS_TYPE));
         }
     }
 
     public void destory(){
-        LogUtil.d("销毁更新首页story广播接收器");
         isDestoyed = true;
         listener = null;
+    }
+
+    /**
+     * story广播接收监听器
+     */
+    public interface StoryBroadcastReciverListener{
+        void storyStateChange(int type);
     }
 }

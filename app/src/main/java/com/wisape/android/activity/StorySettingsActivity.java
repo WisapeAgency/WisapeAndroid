@@ -204,10 +204,7 @@ public class StorySettingsActivity extends BaseActivity {
     }
 
     private void doSaveStorySettings() {
-//        storyEntity.storyName = storyNameEdit.getText().toString();
-//        storyEntity.storyDesc = storyDescEdit.getText().toString();
-        StoryEntity result = StoryLogic.instance().updateStory(getApplicationContext(), storyEntity);
-        StoryLogic.instance().saveStoryEntityToShare(result);
+       StoryLogic.instance().updateStory(getApplicationContext(), storyEntity);
     }
 
     @Override

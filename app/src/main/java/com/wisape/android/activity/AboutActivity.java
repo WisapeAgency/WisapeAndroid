@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.wisape.android.R;
 import com.wisape.android.network.VolleyHelper;
+import com.wisape.android.util.LogUtil;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -105,7 +106,7 @@ public class AboutActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        String url = acquireUri(SHARE_URL);
+        String url = "http://www.wisape.com";
         if(item.getItemId() == R.id.share_about){
             Intent intent = new Intent(Intent.ACTION_SEND); // 启动分享发送的属性
             intent.setType("text/plain"); // 分享发送的数据类型
