@@ -230,6 +230,7 @@ function success(){
 	//设置页面的出现
 	$(".m-page").eq(page_n-1).removeClass("show active").addClass("hide");
 	$(".m-page").eq(newM-1).removeClass("active hide").addClass("show");
+	fnVmiddle(newM-1);
 
 
 	//重新设置页面移动的控制值
@@ -276,21 +277,6 @@ $(function(){
 		}
 	}
 	$(window).on('load',_orientationchange);
-
-	$(".j-vmiddle").each(function(){
-		var _this = $(this),
-				parent = _this.parents("div[symbol=top]");
-		scale = 1;
-		if(_this.css("transform").split("matrix(")[1]) {
-			scale = parseFloat(_this.css("transform").split("matrix(")[1].split(",")[0])
-		}
-		console.info(_this.css("transform"));
-		console.info(_this.parents(".stage-content").height());
-		console.info(_this.height());
-		_this.css({
-			"margin-top": (parent.height() - _this.height()*scale)/2
-		})
-	})
 });
 
 
@@ -328,4 +314,23 @@ function addAnimation(index){
 	})
 }
 
+
+function fnVmiddle(i){
+	$(".j-vmiddle").eq(i).each(function(){
+		var _this = $(this),
+				parent = _this.parents("div[symbol=top]");
+		scale = 1;
+		if(_this.css("transform").split("matrix(")[1]) {
+			scale = parseFloat(_this.css("transform").split("matrix(")[1].split(",")[0])
+		}
+		console.info(_this.css("transform"));
+		console.info(parent.height());
+		console.info(_this.height());
+		_this.css({
+			"margin-top": (parent.height() - _this.height()*scale)/2
+		})
+	});
+};
+
+fnVmiddle(0);
 
