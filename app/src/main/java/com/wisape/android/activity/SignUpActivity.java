@@ -3,47 +3,48 @@ package com.wisape.android.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.os.Bundle;
 import android.os.Message;
+import android.text.Html;
+import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
 import android.text.style.UnderlineSpan;
+import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.webkit.CookieManager;
-import android.webkit.CookieSyncManager;
 import android.widget.TextView;
 
 import com.wisape.android.R;
 import com.wisape.android.WisapeApplication;
 import com.wisape.android.logic.UserLogic;
-import com.wisape.android.model.UserInfo;
 import com.wisape.android.network.DataSynchronizer;
 import com.wisape.android.util.LogUtil;
 import com.wisape.android.util.Utils;
 import com.wisape.android.widget.SignUpEditText;
 
-import org.json.JSONException;
+import org.w3c.dom.Text;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import cn.sharesdk.facebook.Facebook;
 import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.PlatformActionListener;
-import cn.sharesdk.framework.ShareSDK;
-import cn.sharesdk.google.GooglePlus;
-import cn.sharesdk.twitter.Twitter;
 
 /**
  * 登录界面
  * Created by LeiGuoting on 3/7/15.
  */
 public class SignUpActivity extends BaseActivity implements SignUpEditText.OnActionListener,PlatformActionListener {
-    private static final String TAG = SignUpActivity.class.getSimpleName();
-
-    private static final String EXTRA_PROFILE_PARAM = "profile_param";
 
     private static final String EXTRA_LOG_OUT = "log_out";
 
@@ -58,13 +59,7 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
     private static final int LOADER_SIGN_UP_WITH_GOOGLE_PLUS = 4;
 
     public static final String SIGN_UP_WITH_EMAIL = "1";
-    public static final String SIGN_UP_WITH_FACE_BOOK = "2";
-    public static final String SIGN_UP_WITH_TWITTER = "3";
-    public static final String SIGN_UP_WITH_GOOGLE_PLUS = "4";
 
-    public static final int REQUEST_CODE_FACEBOOK_LOGIN = 1;
-    public static final int REQUEST_CODE_TWITTER_LOGIN = 2;
-    public static final int REQUEST_CODE_GOOGLE_PLUS_LOGIN = 3;
 
     @InjectView(R.id.sign_up_email)
     protected SignUpEditText emailEdit;
@@ -72,8 +67,8 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
     protected SignUpEditText passwordEdit;
     @InjectView(R.id.sign_up_forget_password)
     protected TextView forgetPassword;
-
-    private String message;
+    @InjectView(R.id.btn_goto_regist)
+    protected TextView textGotoRegister;
 
     public static void launch(Activity activity) {
         Intent intent = new Intent(activity.getApplicationContext(), SignUpActivity.class);
@@ -84,7 +79,7 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
     public static void launch(Context context,String message) {
         Intent intent = new Intent(context, SignUpActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra(EXTRA_LOG_OUT,message);
+        intent.putExtra(EXTRA_LOG_OUT, message);
         context.startActivity(intent);
     }
 
@@ -92,20 +87,16 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
-//        ShareSDK.initSDK(this);
         ButterKnife.inject(this);
         emailEdit.setOnActionListener(this);
         passwordEdit.setOnActionListener(this);
         SpannableString string = new SpannableString(forgetPassword.getText());
         string.setSpan(new UnderlineSpan(), 0, string.length(), 0);
         forgetPassword.setText(string);
-        Bundle bundle = getIntent().getExtras();
-        if(null != bundle){
-            message = getIntent().getExtras().getString(EXTRA_LOG_OUT);
-            if(!Utils.isEmpty(message)){
-                showToast(message);
-            }
-        }
+
+        SpannableStringBuilder style=new SpannableStringBuilder("Don't have an Account?Sign Up");
+        style.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.app_sixth_transparent_50p)), 0, 22, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        textGotoRegister.setText(style);
     }
 
 
@@ -126,76 +117,6 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
         }
     }
 
-    @OnClick(R.id.sign_up_with_twitter)
-    @SuppressWarnings("unused")
-    protected void doSignUPWithTwitter() {
-        authorize(new Twitter(this));
-//        Resources resources = getResources();
-//        OAuthParams params = new OAuthParams(
-//                OAuthParams.VERSION_OAUTH_2,
-//                OAuthParams.OAUTH_TWITTER,
-//                "Twitter",
-//                "",
-//                resources.getString(R.string.twitter_api_key),
-//                resources.getString(R.string.twitter_api_secret_key),
-//                resources.getString(R.string.twitter_api_callback_uri));
-//        OAuthActivity.start(this, params, REQUEST_CODE_TWITTER_LOGIN);
-    }
-
-    @OnClick(R.id.sign_up_with_facebook)
-    @SuppressWarnings("unused")
-    protected void doSignUPWithFacebook() {
-        authorize(new Facebook(this));
-//        Resources resources = getResources();
-//        OAuthParams params = new OAuthParams(
-//                OAuthParams.VERSION_OAUTH_2,
-//                OAuthParams.OAUTH_FACEBOOK,
-//                "Facebook",
-//                "public_profile,email",
-//                resources.getString(R.string.facebook_api_key),
-//                resources.getString(R.string.facebook_api_secret_key),
-//                resources.getString(R.string.facebook_api_callback_uri));
-//        OAuthActivity.start(this, params, REQUEST_CODE_FACEBOOK_LOGIN);
-    }
-
-    @OnClick(R.id.sign_up_with_google_plus)
-    @SuppressWarnings("unused")
-    protected void doSignUPWithGooglePlus() {
-        authorize(new GooglePlus(this));
-//        Resources resources = getResources();
-//        OAuthParams params = new OAuthParams(
-//                OAuthParams.VERSION_OAUTH_2,
-//                OAuthParams.OAUTH_GOOGLEPLUS,
-//                "Google+",
-//                "openid,email,profile",
-//                resources.getString(R.string.googleplus_api_key),
-//                resources.getString(R.string.googleplus_api_secret_key),
-//                resources.getString(R.string.googleplus_api_callback_uri));
-//        OAuthActivity.start(this, params, REQUEST_CODE_GOOGLE_PLUS_LOGIN);
-    }
-
-    /**
-     * 用于授权
-     *
-     * @param plat
-     */
-    private void authorize(Platform plat) {
-        /**** 下面2个步骤是用于授权时可以切换用户 ******/
-        // tip1:清除缓存-这样可以切换账户，即每次都可以进入授权登录界面
-        CookieSyncManager.createInstance(plat.getContext());
-        CookieManager cookieManager = CookieManager.getInstance();
-        cookieManager.removeAllCookie();
-        CookieSyncManager.getInstance().sync();
-        // tip2:判断本地是否有平台授权信息文件,如果有就删除账户信息，否则无法进入授权相关界面，而是直接引用本地授权信息文件
-        if (plat.isValid()) {
-            plat.removeAccount();
-        }
-        // 授权监听
-        plat.setPlatformActionListener(this);
-        plat.SSOSetting(true);
-        plat.showUser(null);
-    }
-
 
     @Override
     protected Message onLoadBackgroundRunning(int what, Bundle args) throws AsyncLoaderError {
@@ -203,37 +124,8 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
         UserLogic logic = UserLogic.instance();
         switch (what) {
             case LOADER_SIGN_UP:
-//                String installId = wisapeApplication.getInstallId();
                 msg = logic.signUp(SIGN_UP_WITH_EMAIL,
                         args.getString(ARG_USER_EMIAL), args.getString(ARG_USER_PWD), "123");
-                break;
-
-            case LOADER_SIGN_UP_WITH_FACEBOOK:
-//                ProfileRequester.Param param = args.getParcelable(EXTRA_PROFILE_PARAM);
-//                ProfileRequester profileRequester = new ProfileForFacebookRequester();
-//                ProfileRequester.ProfileInfo profile = profileRequester.request(param);
-                msg = logic.signUpWith(SIGN_UP_WITH_FACE_BOOK, args.getString(ARG_USER_EMIAL),
-                        args.getString(ARG_USER_ICON), args.getString(ARG_USER_NAME),
-                        "", "123");
-
-                break;
-
-            case LOADER_SIGN_UP_WITH_GOOGLE_PLUS:
-//                param = args.getParcelable(EXTRA_PROFILE_PARAM);
-//                profileRequester = new ProfileForGooglePlusRequester();
-//                profile = profileRequester.request(param);
-                msg = logic.signUpWith(SIGN_UP_WITH_GOOGLE_PLUS, args.getString(ARG_USER_EMIAL),
-                        args.getString(ARG_USER_ICON), args.getString(ARG_USER_NAME),
-                        "", "123");
-                break;
-
-            case LOADER_SIGN_UP_WITH_TWITTER:
-//                ProfileForTwitterRequester.TwitterParams twParams = args.getParcelable(EXTRA_PROFILE_PARAM);
-//                profileRequester = new ProfileForTwitterRequester();
-//                profile = profileRequester.request(twParams);
-                msg = logic.signUpWith(SIGN_UP_WITH_TWITTER, args.getString(ARG_USER_EMIAL),
-                        args.getString(ARG_USER_ICON), args.getString(ARG_USER_NAME),
-                        "", "123");
                 break;
             default:
                 break;
@@ -246,7 +138,6 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
     protected void onLoadCompleted(Message data) {
         super.onLoadCompleted(data);
         if (STATUS_SUCCESS == data.arg1) {
-            UserInfo user = (UserInfo) data.obj;
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -268,6 +159,7 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
             }
         }
     }
+
 
     private boolean verifyEMail(String email) {
         if (null == email) {
@@ -359,12 +251,16 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
     protected void onDestroy() {
         super.onDestroy();
         ButterKnife.reset(this);
-//        ShareSDK.stopSDK();
     }
 
     @OnClick(R.id.sign_up_forget_password)
     @SuppressWarnings("unused")
     protected void doForgetPassword() {
         PasswordResetActivity.launch(this);
+    }
+
+    @OnClick(R.id.btn_goto_regist)
+    protected void gotoRegister(){
+        RegisterActivity.luanch(this);
     }
 }

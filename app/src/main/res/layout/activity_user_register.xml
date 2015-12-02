@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:scaleType="center"
+        android:src="@mipmap/icon_regist_logo" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:orientation="vertical">
+        <com.wisape.android.widget.SignUpEditText
+            android:id="@+id/regist_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginStart="20dp"
+            android:inputType="text"
+            app:edit_background="@drawable/sign_up_edit_bg_normal"
+            app:edit_height="40dp"
+            app:edit_textStyle="@style/App.TextStyle.Edit"
+            app:icon_paddingEnd="9dp"
+            app:show_error="true"
+            app:sign_up_icon="@mipmap/icon_login_email"
+            app:warning_height="24dp"
+            app:warning_icon="@drawable/icon_warning"
+            app:warning_icon_paddingEnd="9dp"
+            app:warning_textStyle="@style/SignUp.Warning" />
+
+        <com.wisape.android.widget.SignUpEditText
+            android:id="@+id/regist_pwd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:inputType="textPassword"
+            app:edit_background="@drawable/sign_up_edit_bg_normal"
+            app:edit_height="40dp"
+            app:edit_textStyle="@style/App.TextStyle.Edit"
+            app:icon_paddingEnd="9dp"
+            app:show_error="true"
+            app:sign_up_icon="@mipmap/icon_email_lock"
+            app:warning_height="24dp"
+            app:warning_icon="@mipmap/icon_warning"
+            app:warning_icon_paddingEnd="9dp"
+            app:warning_textStyle="@style/SignUp.Warning" />
+
+        <com.wisape.android.widget.SignUpEditText
+            android:id="@+id/regist_repeat_pwd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:inputType="textPassword"
+            app:edit_background="@drawable/sign_up_edit_bg_normal"
+            app:edit_height="40dp"
+            app:edit_textStyle="@style/App.TextStyle.Edit"
+            app:icon_paddingEnd="9dp"
+            app:show_error="true"
+            app:sign_up_icon="@mipmap/icon_pwd_repeat"
+            app:warning_height="24dp"
+            app:warning_icon="@mipmap/icon_warning"
+            app:warning_icon_paddingEnd="9dp"
+            app:warning_textStyle="@style/SignUp.Warning" />
+
+        <Button
+            android:id="@+id/sign_up_btn"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginBottom="76dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="45dp"
+            android:background="@drawable/sign_up_btn_bg"
+            android:text="@string/user_create_account"
+            android:textAllCaps="false" />
+
+    </LinearLayout>
+
+</LinearLayout>

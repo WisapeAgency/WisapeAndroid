@@ -10,7 +10,14 @@ import android.support.v7.widget.AppCompatEditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.share.Sharer;
 import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareDialog;
+import com.google.android.gms.plus.PlusShare;
 import com.wisape.android.R;
 import com.wisape.android.WisapeApplication;
 import com.wisape.android.api.ApiStory;
@@ -31,7 +38,6 @@ import java.util.HashMap;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import cn.sharesdk.facebook.Facebook;
 import cn.sharesdk.facebookmessenger.FacebookMessenger;
 import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.PlatformActionListener;
@@ -84,6 +90,7 @@ public class StoryReleaseActivity extends BaseActivity {
         ShareSDK.initSDK(this);
         updateStoryInfo();
         setStoryInfo();
+        FacebookSdk.sdkInitialize(getApplicationContext());
     }
 
     private void updateStoryInfo() {
@@ -129,9 +136,13 @@ public class StoryReleaseActivity extends BaseActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        closeProgressDialog();
         if (data == null) {
             return;
         }
+
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+
         if (resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
             switch (requestCode) {
@@ -353,12 +364,7 @@ public class StoryReleaseActivity extends BaseActivity {
     @OnClick(R.id.story_release_fb)
     @SuppressWarnings("unused")
     protected void doShare2Facebook() {
-        Facebook.ShareParams shareParams = new Facebook.ShareParams();
-        shareParams.setImageUrl(storyEntity.storyThumbUri);
-        shareParams.setUrl(storyEntity.storyUri);
-        shareParams.setTitle(storyEntity.storyUri);
-        shareParams.setText(storyEntity.storyUri);
-        startShare(Facebook.NAME, shareParams);
+        faceBookShare();
     }
 
     @OnClick(R.id.story_release_messenger)
@@ -375,10 +381,22 @@ public class StoryReleaseActivity extends BaseActivity {
     @OnClick(R.id.story_release_google_plus)
     @SuppressWarnings("unused")
     protected void doShare2GooglePlus() {
-        GooglePlus.ShareParams shareParams = new GooglePlus.ShareParams();
-        shareParams.setText(storyEntity.storyUri);
-        shareParams.setImageUrl(storyEntity.storyThumbUri);
-        startShare(GooglePlus.NAME, shareParams);
+        if (!isUpload) {
+            showProgressDialog(R.string.progress_loading_data);
+            return;
+        }
+        showProgressDialog(R.string.progress_loading_data);
+        Intent shareIntent = new PlusShare.Builder(this)
+                .setType("text/plain")
+                .setText(storyNameEdit.getText() + ":" + storyDescEdit.getText())
+                .setContentUrl(Uri.parse(storyEntity.storyUri))
+                .getIntent();
+
+        if (getPackageManager().resolveActivity(shareIntent, 0) == null) {
+            showToast(" publish failure,not client");
+        }else{
+            startActivityForResult(shareIntent, 0);
+        }
     }
 
     @OnClick(R.id.story_release_twitter)
@@ -447,6 +465,7 @@ public class StoryReleaseActivity extends BaseActivity {
         }
 
         Platform platform = ShareSDK.getPlatform(this, platName);
+        showProgressDialog(R.string.progress_loading_data);
         platform.setPlatformActionListener(new PlatformActionListener() {
             @Override
             public void onComplete(Platform platform, int i, HashMap<String, Object> hashMap) {
@@ -458,7 +477,7 @@ public class StoryReleaseActivity extends BaseActivity {
 
             @Override
             public void onError(Platform platform, int i, Throwable throwable) {
-                LogUtil.e(platName + "分享成功失败", throwable);
+                LogUtil.e(platName + "分享失败", throwable);
                 Message message = Message.obtain();
                 message.obj = platName + " publish failure,not client";
                 handler.sendMessage(message);
@@ -477,10 +496,64 @@ public class StoryReleaseActivity extends BaseActivity {
     android.os.Handler handler = new android.os.Handler() {
         @Override
         public void handleMessage(Message msg) {
+            closeProgressDialog();
             showToast((String) msg.obj);
         }
     };
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        closeProgressDialog();
+    }
+
+    /**
+     * facebook分享
+     */
+    private void faceBookShare(){
+
+        if (!isUpload) {
+            showProgressDialog(R.string.progress_loading_data);
+            return;
+        }
+
+        showProgressDialog(R.string.progress_loading_data);
+        callbackManager = CallbackManager.Factory.create();
+        shareDialog = new ShareDialog(this);
+        shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
+            @Override
+            public void onSuccess(Sharer.Result result) {
+                LogUtil.d("facebook分享成功");
+               showToast("facebook publish success");
+            }
+
+            @Override
+            public void onCancel() {
+                LogUtil.d("facebook分享取消");
+                showToast("facebook publish cancle");
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+                LogUtil.e("facebook分享失败",error);
+                showToast("facebook publish failure,not client");
+
+            }
+        });
+
+        if (ShareDialog.canShow(ShareLinkContent.class)) {
+            ShareLinkContent linkContent = new ShareLinkContent.Builder()
+                    .setContentTitle(storyNameEdit.getText().toString())
+                    .setContentDescription(
+                           storyDescEdit.getText().toString())
+                    .setImageUrl(Uri.parse(storyEntity.storyThumbUri))
+                    .setContentUrl(Uri.parse(storyEntity.storyUri))
+                    .build();
+
+            shareDialog.show(linkContent);
+        }
+    }
 
     @Override
     protected void onDestroy() {
@@ -488,4 +561,9 @@ public class StoryReleaseActivity extends BaseActivity {
         ButterKnife.reset(this);
         ShareSDK.stopSDK();
     }
+
+
+
+    private CallbackManager callbackManager;
+    private ShareDialog shareDialog;
 }

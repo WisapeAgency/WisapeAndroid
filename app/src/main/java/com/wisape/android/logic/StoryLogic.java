@@ -1026,7 +1026,7 @@ public class StoryLogic {
      * @param html 前端返回的html
      */
     public void saveTempHtml(String html) {
-        LogUtil.d("保存当前编辑界面html到share中：" + html);
+        LogUtil.d("保存当前编辑界面html到share中：\n" + html);
         if (!Utils.isEmpty(html)) {
             WisapeApplication.getInstance().getSharePrefrence().edit().putString(TEMP_HTML, html).commit();
         }
@@ -1050,7 +1050,7 @@ public class StoryLogic {
     private static final String TEMP_FIRST_PAGE = "temp_first_page";
 
     public void saveTempFirstPage(String html) {
-        LogUtil.d("保存firstPage数据到share中：" + html);
+        LogUtil.d("保存firstPage数据到share中：\n" + html);
         if (!Utils.isEmpty(html)) {
             WisapeApplication.getInstance().getSharePrefrence().edit().putString(TEMP_FIRST_PAGE, html).commit();
         }

@@ -28,7 +28,7 @@ public class StoryBroadcastReciver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if(!isDestoyed){
-            listener.storyStateChange(intent.getExtras().getInt(EXTRAS_TYPE));
+            listener.storyStateChange(1);
         }
     }
 

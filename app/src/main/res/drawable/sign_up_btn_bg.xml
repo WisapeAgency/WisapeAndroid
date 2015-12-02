@@ -3,7 +3,7 @@
 
     <item android:state_pressed="false">
         <shape>
-            <corners android:radius="8dp"/>
+            <corners android:radius="10dp"/>
 
             <solid android:color="@color/app_btn_green_normal"/>
         </shape>
@@ -11,8 +11,7 @@
 
     <item android:state_pressed="false">
         <shape>
-            <corners android:radius="8dp"/>
-
+            <corners android:radius="20dp"/>
             <solid android:color="@color/app_btn_green_pressed"/>
         </shape>
     </item>

@@ -11,6 +11,7 @@ import com.wisape.android.logic.StoryLogic;
 import com.wisape.android.model.StoryFontInfo;
 import com.wisape.android.model.StoryTemplateInfo;
 import com.wisape.android.model.StoryTemplateTypeInfo;
+import com.wisape.android.util.LogUtil;
 import com.wisape.android.util.Utils;
 
 import org.json.JSONArray;
@@ -123,9 +124,11 @@ public class DataSynchronizer {
             if (templateFile.exists()){
                 try{
                     InputStream is = new FileInputStream(templateFile);
-                    String md5 = Utils.Md5Util(is);
+                    String md5 = Utils.Md5Util(is).toLowerCase();
+                    LogUtil.d("本地MD5值：" + md5 +":服务器上的模版的MD5值：" + template.hashCode);
                     //服务器文件与本地文件的md5不相同需要重新下载
                     if (!md5.equals(template.hashCode)){
+                        LogUtil.d("MD5值不相同，进行模版下载");
                         downloadTempQueue.offer(templateInfo);
                     }
                 }catch (IOException e){

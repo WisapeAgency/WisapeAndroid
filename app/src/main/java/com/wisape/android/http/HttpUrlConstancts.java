@@ -20,6 +20,9 @@ public class HttpUrlConstancts {
      */
     public static final String USER_LOGIN = SERVER_ADDRESS + SEPERATOR + "user/login";
 
+
+    public static final String USER_REGISTER = SERVER_ADDRESS + SEPERATOR + "user/register";
+
     /**
      * 重置密码
      */

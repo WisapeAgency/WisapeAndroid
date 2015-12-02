@@ -44,6 +44,7 @@ public class WisapeApplication extends Application {
 //    private DataSynchronizerReceiver dataSynchronizerReceiver;
 
 
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -65,7 +66,6 @@ public class WisapeApplication extends Application {
 //        registerReceiver(dataSynchronizerReceiver, intentFilter);
 
     }
-
 
     private void initBugTags(){
         BugtagsOptions options = new BugtagsOptions.Builder().

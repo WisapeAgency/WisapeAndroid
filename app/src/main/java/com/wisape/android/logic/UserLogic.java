@@ -45,30 +45,6 @@ public class UserLogic {
     private UserLogic() {
     }
 
-
-    /**
-     * 第三方登录
-     *
-     * @param type      登录类型
-     * @param email     邮箱
-     * @param userIcon  用户头像
-     * @param nickName  昵称
-     * @param uniqueStr 唯一
-     * @param installId parses使用
-     * @return 信息
-     */
-    public Message signUpWith(String type, String email, String userIcon, String nickName, String uniqueStr, String installId) {
-        params.clear();
-        params.put(ATTR_TYPE, type + "");
-        params.put(ATTR_EMAIL, email);
-        params.put(ATTR_INSTALL_ID, installId);
-        params.put(ATTR_NICK_NAME, nickName);
-        params.put(ATTR_USER_ICON, userIcon);
-        params.put(ATTR_UNIQUE_STR, uniqueStr);
-
-        return singUp(params);
-    }
-
     /**
      * 邮箱登录
      *
@@ -87,7 +63,7 @@ public class UserLogic {
     }
 
     /**
-     * 用户等了
+     * 用户登录
      *
      * @param params 登录传递的参数
      * @return  返回封装的message
@@ -96,6 +72,29 @@ public class UserLogic {
         Message message = Message.obtain();
         try {
             UserInfo userInfo = OkhttpUtil.execute(HttpUrlConstancts.USER_LOGIN, params, UserInfo.class);
+            userInfo.user_pwd = params.get(ATTR_PASSWORD);
+            saveUserToSharePrefrence(userInfo);
+            message.arg1 = HttpUrlConstancts.STATUS_SUCCESS;
+            message.obj = userInfo;
+        } catch (IOException e) {
+            message.arg1 = HttpUrlConstancts.STATUS_EXCEPTION;
+            message.obj = e.getMessage();
+        }
+        return message;
+    }
+
+    /**
+     * 用户注册
+     * @return　　返回注册后的封装信息
+     */
+    public Message register(String email,String pwd,String installId){
+        Message message = Message.obtain();
+        params.clear();
+        params.put(ATTR_EMAIL,email);
+        params.put(ATTR_PASSWORD,pwd);
+        params.put(ATTR_INSTALL_ID,installId);
+        try {
+            UserInfo userInfo = OkhttpUtil.execute(HttpUrlConstancts.USER_REGISTER, params, UserInfo.class);
             userInfo.user_pwd = params.get(ATTR_PASSWORD);
             saveUserToSharePrefrence(userInfo);
             message.arg1 = HttpUrlConstancts.STATUS_SUCCESS;
@@ -134,7 +133,7 @@ public class UserLogic {
         UserInfo userInfo = null;
         SharedPreferences sharedPreferences = WisapeApplication.getInstance().getSharePrefrence();
         String decode = sharedPreferences.getString(EXTRA_USER_INFO, "");
-        LogUtil.d("从share获取用户信息:" + decode);
+        LogUtil.d("从share获取用户信息:\n" + decode);
         if (0 != decode.length()) {
             String gson = new String(Base64.decode(decode, Base64.DEFAULT));
             userInfo = new Gson().fromJson(gson, UserInfo.class);
@@ -149,7 +148,7 @@ public class UserLogic {
      * @param userInfo 加密后的用户信息
      */
     public void saveUserToSharePrefrence(UserInfo userInfo) {
-        LogUtil.d("保存用户信息到share" + new Gson().toJson(userInfo));
+        LogUtil.d("保存用户信息到share\n" + new Gson().toJson(userInfo));
         String userEncode = new Gson().toJson(userInfo);
         WisapeApplication.getInstance().getSharePrefrence().edit()
                 .putString(EXTRA_USER_INFO, Base64.encodeToString(userEncode.getBytes(), Base64.DEFAULT)).commit();

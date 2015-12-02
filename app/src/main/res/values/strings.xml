@@ -34,7 +34,7 @@
     <string name="add_email">Email Accout</string>
 
     <!--Sign Up-->
-    <string name="sign_up_btn">Join in</string>
+    <string name="sign_up_btn">Login in</string>
     <string name="forget_password">Forget the password?</string>
     <string name="sign_up_email_not_right">Email address is invalid</string>
     <string name="sign_up_password_can_not_null">Password not null</string>
@@ -126,4 +126,7 @@
     <string name="delete_story_content">the story will be deleted from the device and can not be recovered</string>
 
     <string name="category_name_all">All</string>
+
+    <string name="user_register">sign up</string>
+    <string name="user_create_account">Create Account</string>
 </resources>
