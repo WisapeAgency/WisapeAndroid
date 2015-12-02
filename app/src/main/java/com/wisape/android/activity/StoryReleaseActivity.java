@@ -16,6 +16,7 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.share.Sharer;
 import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.MessageDialog;
 import com.facebook.share.widget.ShareDialog;
 import com.google.android.gms.plus.PlusShare;
 import com.wisape.android.R;
@@ -364,18 +365,13 @@ public class StoryReleaseActivity extends BaseActivity {
     @OnClick(R.id.story_release_fb)
     @SuppressWarnings("unused")
     protected void doShare2Facebook() {
-        faceBookShare();
+        faceBookShare(0);
     }
 
     @OnClick(R.id.story_release_messenger)
     @SuppressWarnings("unused")
     protected void doShare2Messenger() {
-        FacebookMessenger.ShareParams shareParams = new FacebookMessenger.ShareParams();
-        shareParams.setAddress(UserLogic.instance().getUserInfoFromLocal().user_email);
-        shareParams.setImageUrl(storyEntity.storyThumbUri);
-        shareParams.setTitle(storyEntity.storyName);
-        shareParams.setText(storyEntity.storyUri);
-        startShare(FacebookMessenger.NAME, shareParams);
+        faceBookShare(1);
     }
 
     @OnClick(R.id.story_release_google_plus)
@@ -516,14 +512,13 @@ public class StoryReleaseActivity extends BaseActivity {
     /**
      * facebook分享
      */
-    private void faceBookShare(){
+    private void faceBookShare(int type){
 
         if (!isUpload) {
             showProgressDialog(R.string.progress_loading_data);
             return;
         }
 
-        showProgressDialog(R.string.progress_loading_data);
         callbackManager = CallbackManager.Factory.create();
         shareDialog = new ShareDialog(this);
         shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
@@ -552,16 +547,20 @@ public class StoryReleaseActivity extends BaseActivity {
             return;
         }
 
-        if (ShareDialog.canShow(ShareLinkContent.class)) {
-            ShareLinkContent linkContent = new ShareLinkContent.Builder()
-                    .setContentTitle(storyNameEdit.getText().toString())
-                    .setContentDescription(
-                           storyDescEdit.getText().toString())
-                    .setImageUrl(Uri.parse(storyEntity.storyThumbUri))
-                    .setContentUrl(Uri.parse(storyEntity.storyUri))
-                    .build();
+        ShareLinkContent linkContent = new ShareLinkContent.Builder()
+                .setContentTitle(storyNameEdit.getText().toString())
+                .setContentDescription(
+                        storyDescEdit.getText().toString())
+                .setImageUrl(Uri.parse(storyEntity.storyThumbUri))
+                .setContentUrl(Uri.parse(storyEntity.storyUri))
+                .build();
 
-            shareDialog.show(linkContent);
+        if(1 == type){
+            MessageDialog.show(this, linkContent);
+        }else{
+            if (ShareDialog.canShow(ShareLinkContent.class)) {
+                shareDialog.show(linkContent);
+            }
         }
     }
 

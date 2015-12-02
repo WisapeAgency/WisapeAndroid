@@ -87,11 +87,12 @@ public class UserLogic {
      * 用户注册
      * @return　　返回注册后的封装信息
      */
-    public Message register(String email,String pwd,String installId){
+    public Message register(String email,String pwd,String userName,String installId){
         Message message = Message.obtain();
         params.clear();
         params.put(ATTR_EMAIL,email);
         params.put(ATTR_PASSWORD,pwd);
+        params.put(ATTR_NICK_NAME,userName);
         params.put(ATTR_INSTALL_ID,installId);
         try {
             UserInfo userInfo = OkhttpUtil.execute(HttpUrlConstancts.USER_REGISTER, params, UserInfo.class);

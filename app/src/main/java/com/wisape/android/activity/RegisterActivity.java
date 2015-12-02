@@ -20,14 +20,12 @@ import butterknife.OnClick;
 public class RegisterActivity extends BaseActivity {
 
     private static final int LOADER_REGISTER = 1;
-    private static final String ARG_USER_EMIAL = "user_email";
-    private static final String ARG_USER_PWD = "user_pwd";
 
     @InjectView(R.id.regist_email)
     protected SignUpEditText textEmail;
     @InjectView(R.id.regist_pwd)
     protected SignUpEditText textPwd;
-    @InjectView(R.id.regist_repeat_pwd)
+    @InjectView(R.id.regist_user_name)
     protected SignUpEditText textRepeatPwd;
 
     public static void luanch(BaseActivity activity) {
@@ -56,7 +54,7 @@ public class RegisterActivity extends BaseActivity {
 
     @Override
     protected Message onLoadBackgroundRunning(int what, Bundle args) throws AsyncLoaderError {
-        return UserLogic.instance().register(textEmail.getText(), textPwd.getText(), "");
+        return UserLogic.instance().register(textEmail.getText(), textPwd.getText(),textRepeatPwd.getText(), "");
     }
 
     @Override
