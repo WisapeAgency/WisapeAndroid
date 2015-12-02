@@ -385,7 +385,12 @@ public class StoryReleaseActivity extends BaseActivity {
             showProgressDialog(R.string.progress_loading_data);
             return;
         }
-        showProgressDialog(R.string.progress_loading_data);
+
+        if(Utils.isEmpty(storyEntity.storyUri) || Utils.isEmpty(storyEntity.storyThumbUri)){
+            showToast("share exceptioin");
+            return;
+        }
+
         Intent shareIntent = new PlusShare.Builder(this)
                 .setType("text/plain")
                 .setText(storyNameEdit.getText() + ":" + storyDescEdit.getText())
@@ -541,6 +546,11 @@ public class StoryReleaseActivity extends BaseActivity {
 
             }
         });
+
+        if(Utils.isEmpty(storyEntity.storyUri) || Utils.isEmpty(storyEntity.storyThumbUri)){
+            showToast("share exceptioin");
+            return;
+        }
 
         if (ShareDialog.canShow(ShareLinkContent.class)) {
             ShareLinkContent linkContent = new ShareLinkContent.Builder()

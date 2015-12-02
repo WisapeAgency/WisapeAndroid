@@ -62,7 +62,7 @@
             app:warning_textStyle="@style/SignUp.Warning" />
 
         <com.wisape.android.widget.SignUpEditText
-            android:id="@+id/regist_repeat_pwd"
+            android:id="@+id/regist_user_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="20dp"
@@ -76,7 +76,7 @@
             app:edit_textStyle="@style/App.TextStyle.Edit"
             app:icon_paddingEnd="9dp"
             app:show_error="true"
-            app:sign_up_icon="@mipmap/icon_pwd_repeat"
+            app:sign_up_icon="@mipmap/icon_regit_user_name"
             app:warning_height="24dp"
             app:warning_icon="@mipmap/icon_warning"
             app:warning_icon_paddingEnd="9dp"

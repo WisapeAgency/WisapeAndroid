@@ -95,11 +95,7 @@ public class RegisterActivity extends BaseActivity {
 
         String pwdRe = textRepeatPwd.getText();
         if (Utils.isEmpty(pwdRe)) {
-            textRepeatPwd.setError("repeat password not be null");
-            return false;
-        }
-        if(!pwd.equals(pwdRe)){
-            textRepeatPwd.setError("password is not same");
+            textRepeatPwd.setError("userName not be null");
             return false;
         }
         return true;
