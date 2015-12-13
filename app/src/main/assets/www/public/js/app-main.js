@@ -211,7 +211,7 @@ WisapeEditer = {
             for (var i = 0; i < WisapeEditer.storyData.length; i++) {
                 retHtml += '<section class="m-page hide pages-item" > <div class="m-img" >' + WisapeEditer.storyData[i].replace("file://","") + '</div> </section>';
             }
-            retHtml += '<section class="u-arrow"><img src="file:///android_asset/www/public/img/btn01_arrow.png" /></section></div>';
+            //retHtml += '<section class="u-arrow"><img src="file:///android_asset/www/public/img/btn01_arrow.png" /></section></div>';
             pageScroll.find(".pages-img").each(function () {
                 var me = $(this);
                 if (me.hasClass("pages-img-bg")) {
