@@ -28,7 +28,7 @@ var Msize = $(".m-page").size(), 	//页面的数目
 
 
 
-/* 
+/*
  ** 单页切换 各个元素fixed 控制body高度
  */
 var v_h	= null;		//记录设备的高度
@@ -197,6 +197,7 @@ function page_touchend(e){
 		//切画页面(移动成功)
 		if( move_p && Math.abs(moveP) >5 ){
 			var me = $(".m-page").eq(newM-1);
+			fnVmiddle(newM-1);
 			me.animate({'top':0},300,"easeOutSine",function(){
 				/*
 				 ** 切换成功回调的函数
@@ -230,7 +231,7 @@ function success(){
 	//设置页面的出现
 	$(".m-page").eq(page_n-1).removeClass("show active").addClass("hide");
 	$(".m-page").eq(newM-1).removeClass("active hide").addClass("show");
-	fnVmiddle(newM-1);
+
 
 
 	//重新设置页面移动的控制值
@@ -246,8 +247,6 @@ function success(){
 	}
 
 }
-
-
 
 
 /*
@@ -316,16 +315,18 @@ function addAnimation(index){
 
 
 function fnVmiddle(i){
-	$(".j-vmiddle").eq(i).each(function(){
+	console.info("fnVmiddle");
+	console.info(i);
+	$(".m-page").eq(i).find(".j-vmiddle").each(function(){
 		var _this = $(this),
-				parent = _this.parents("div[symbol=top]");
+			parent = _this.parents("div[symbol=top]");
 		scale = 1;
 		if(_this.css("transform").split("matrix(")[1]) {
 			scale = parseFloat(_this.css("transform").split("matrix(")[1].split(",")[0])
 		}
 		console.info(_this.css("transform"));
-		console.info(parent.height());
-		console.info(_this.height());
+		console.info(parent);
+		console.info(_this);
 		_this.css({
 			"margin-top": (parent.height() - _this.height()*scale)/2
 		})
@@ -333,4 +334,3 @@ function fnVmiddle(i){
 };
 
 fnVmiddle(0);
-

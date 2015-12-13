@@ -281,6 +281,7 @@ WisapeEditer = {
                 retHtml += '<li class="tpl-page-item" draggable="false"><span class="drag-handle">☰</span><i class="icon-correct"></i>' + WisapeEditer.storyData[i] + '</li>';
             };
             $("#storyDragBox").html(retHtml);
+            setTplLayout(0.3);
 
             for (var k = 0; k < $("#storyDragBox li").length; k++) {
 
@@ -366,7 +367,8 @@ WisapeEditer = {
                     console.info("WisapeEditer.storyData:");
                     console.info(WisapeEditer.storyData);
                 });
-            }
+            };
+            setTplLayout(0.6);
         });
 
         //stage列表事件
@@ -873,20 +875,7 @@ WisapeEditer = {
         $("#pages-scroll ul").find("li").eq(0).find(".pages-txt").addClass("edit-area-active");
         WisapeEditer.selectedStagetIndex = 1;
         console.info($("#pages-scroll ul").html());
-        $(".j-vmiddle").each(function(){
-            var _this = $(this),
-                parent = _this.parents("div[symbol=top]");
-            scale = 1;
-            if(_this.css("transform").split("matrix(")[1]) {
-                scale = parseFloat(_this.css("transform").split("matrix(")[1].split(",")[0])
-            }
-            console.info(_this.css("transform"));
-            console.info(_this.parents(".stage-content").height());
-            console.info(_this.height());
-            _this.css({
-                "margin-top": (parent.height() - _this.height()*scale)/2
-            })
-        })
+        setTplLayout(0.6);
         if (cb !== null)cb();
         setPagesScroll();
     },
@@ -963,6 +952,7 @@ WisapeEditer = {
         $(".color-sub").find("span").removeClass("selected");
 
         console.info("editPage:" + editPage.html());
+        setTplLayout(0.875);
     },
 
     ShowView: function (from, to) {
@@ -1095,6 +1085,30 @@ var Dialog = {
         target.hide();
     }
 };
+
+function setTplLayout(sc){
+    setTimeout(function(){
+        $(".j-vmiddle").each(function(){
+            var _this = $(this),
+                parent = _this.parents(".stage-content");
+            console.info("xx");
+            console.info(_this.parents("div[symbol=top]"));
+            scale = sc;
+
+            //if(_this.css("transform").split("matrix(")[1]) {
+            //    scale = parseFloat(_this.css("transform").split("matrix(")[1].split(",")[0]);
+            //}
+
+            console.info(scale);
+            console.info(_this.css("transform"));
+            console.info(_this.parents(".stage-content").height());
+            console.info(_this.height());
+            _this.css({
+                "margin-top": (parent.height() - _this.height()*scale)/2
+            })
+        })
+    },50)
+}
 
 
 
