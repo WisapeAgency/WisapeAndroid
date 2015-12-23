@@ -124,10 +124,10 @@ public class DataSynchronizer {
             if (templateFile.exists()){
                 try{
                     InputStream is = new FileInputStream(templateFile);
-                    String md5 = Utils.Md5Util(is).toLowerCase();
+                    String md5 = Utils.Md5Util(is);
                     LogUtil.d("本地MD5值：" + md5 +":服务器上的模版的MD5值：" + template.hashCode);
                     //服务器文件与本地文件的md5不相同需要重新下载
-                    if (!md5.equals(template.hashCode)){
+                    if (!md5.toLowerCase().equals(template.hashCode)){
                         LogUtil.d("MD5值不相同，进行模版下载");
                         downloadTempQueue.offer(templateInfo);
                     }

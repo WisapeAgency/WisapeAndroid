@@ -70,7 +70,7 @@
             android:layout_marginRight="20dp"
             android:layout_marginStart="20dp"
             android:layout_marginTop="10dp"
-            android:inputType="textPassword"
+            android:inputType="text"
             app:edit_background="@drawable/sign_up_edit_bg_normal"
             app:edit_height="40dp"
             app:edit_textStyle="@style/App.TextStyle.Edit"

@@ -69,10 +69,10 @@ public abstract class BaseActivity extends VolleyActivity {
      *
      * @param resId 显示的字符串资源ID
      */
-    public void showProgressDialog(@Nullable int resId) {
+    public void showProgressDialog(@Nullable int resId,boolean canCancle) {
 
         if (customProgress == null) {
-            customProgress = CustomProgress.show(this, getResources().getString(resId), true);
+            customProgress = CustomProgress.show(this, getResources().getString(resId), canCancle);
         }
         if (customProgress.isShowing()) {
             customProgress.setMessage(getResources().getString(resId));
@@ -93,7 +93,7 @@ public abstract class BaseActivity extends VolleyActivity {
 
 
     protected void startLoadWithProgress(int what, Bundle args) {
-        showProgressDialog(R.string.progress_loading_data);
+        showProgressDialog(R.string.progress_loading_data,false);
         startLoad(what, args);
     }
 

@@ -14,6 +14,7 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.share.ShareApi;
 import com.facebook.share.Sharer;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.MessageDialog;
@@ -126,9 +127,9 @@ public class StoryReleaseActivity extends BaseActivity {
     public void onPictureClick() {
         if (!isUpload) {
             if(!isSuccess){
-                showToast("upload story failure");
+                showToast("upload story wait");
             }else{
-                showProgressDialog(R.string.progress_loading_data);
+                showProgressDialog(R.string.progress_loading_data,true);
             }
             return;
         }
@@ -142,7 +143,9 @@ public class StoryReleaseActivity extends BaseActivity {
             return;
         }
 
-        callbackManager.onActivityResult(requestCode, resultCode, data);
+        if(callbackManager != null){
+            callbackManager.onActivityResult(requestCode, resultCode, data);
+        }
 
         if (resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
@@ -344,7 +347,7 @@ public class StoryReleaseActivity extends BaseActivity {
     @SuppressWarnings("unused")
     protected void doShare2CopyUrl() {
         if (!isUpload) {
-            showProgressDialog(R.string.progress_loading_data);
+            showProgressDialog(R.string.progress_loading_data,true);
             return;
         }
         Utils.clipText(this, storyEntity.storyUri);
@@ -378,7 +381,7 @@ public class StoryReleaseActivity extends BaseActivity {
     @SuppressWarnings("unused")
     protected void doShare2GooglePlus() {
         if (!isUpload) {
-            showProgressDialog(R.string.progress_loading_data);
+            showProgressDialog(R.string.progress_loading_data,true);
             return;
         }
 
@@ -437,7 +440,7 @@ public class StoryReleaseActivity extends BaseActivity {
     @SuppressWarnings("unused")
     protected void doShare2QR() {
         if (!isUpload) {
-            showProgressDialog(R.string.progress_loading_data);
+            showProgressDialog(R.string.progress_loading_data,true);
             return;
         }
         QrDialogFragment qrDialogFragment = QrDialogFragment.instance(storyEntity.storyUri
@@ -449,7 +452,7 @@ public class StoryReleaseActivity extends BaseActivity {
     @SuppressWarnings("unused")
     protected void doShare2More() {
         if (!isUpload) {
-            showProgressDialog(R.string.progress_loading_data);
+            showProgressDialog(R.string.progress_loading_data,true);
             return;
         }
         Intent intent = new Intent(Intent.ACTION_SEND); // 启动分享发送的属性
@@ -461,12 +464,12 @@ public class StoryReleaseActivity extends BaseActivity {
 
     private void startShare(final String platName, Platform.ShareParams shareParams) {
         if (!isUpload) {
-            showProgressDialog(R.string.progress_loading_data);
+            showProgressDialog(R.string.progress_loading_data,true);
             return;
         }
 
         Platform platform = ShareSDK.getPlatform(this, platName);
-        showProgressDialog(R.string.progress_loading_data);
+        showProgressDialog(R.string.progress_loading_data,true);
         platform.setPlatformActionListener(new PlatformActionListener() {
             @Override
             public void onComplete(Platform platform, int i, HashMap<String, Object> hashMap) {
@@ -515,7 +518,7 @@ public class StoryReleaseActivity extends BaseActivity {
     private void faceBookShare(int type){
 
         if (!isUpload) {
-            showProgressDialog(R.string.progress_loading_data);
+            showProgressDialog(R.string.progress_loading_data,true);
             return;
         }
 
@@ -525,7 +528,6 @@ public class StoryReleaseActivity extends BaseActivity {
             @Override
             public void onSuccess(Sharer.Result result) {
                 LogUtil.d("facebook分享成功");
-               showToast("facebook publish success");
             }
 
             @Override
@@ -543,14 +545,14 @@ public class StoryReleaseActivity extends BaseActivity {
         });
 
         if(Utils.isEmpty(storyEntity.storyUri) || Utils.isEmpty(storyEntity.storyThumbUri)){
+            LogUtil.d("分享的地址出现错误");
             showToast("share exceptioin");
             return;
         }
 
         ShareLinkContent linkContent = new ShareLinkContent.Builder()
                 .setContentTitle(storyNameEdit.getText().toString())
-                .setContentDescription(
-                        storyDescEdit.getText().toString())
+                .setContentDescription(storyDescEdit.getText().toString())
                 .setImageUrl(Uri.parse(storyEntity.storyThumbUri))
                 .setContentUrl(Uri.parse(storyEntity.storyUri))
                 .build();
@@ -562,6 +564,7 @@ public class StoryReleaseActivity extends BaseActivity {
                 shareDialog.show(linkContent);
             }
         }
+        ShareApi.share(linkContent,null);
     }
 
     @Override

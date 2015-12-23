@@ -77,7 +77,7 @@ public abstract class AbsFragment extends Fragment implements LoaderManager.Load
     }
 
     protected void showProgressDialog(int resId){
-        ((BaseActivity) getActivity()).showProgressDialog(resId);
+        ((BaseActivity) getActivity()).showProgressDialog(resId,false);
     }
 
     protected void closeProgressDialog(){

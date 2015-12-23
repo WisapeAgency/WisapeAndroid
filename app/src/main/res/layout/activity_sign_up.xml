@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scaleType="center"
-        android:src="@mipmap/icon_login_logo"
+        android:src="@mipmap/icon_regist_logo"
         android:layout_gravity="center"
         android:layout_weight="1"/>
 
@@ -35,7 +35,7 @@
         app:sign_up_icon="@mipmap/icon_login_email"
         app:warning_height="24dp"
         app:warning_icon="@drawable/icon_warning"
-        app:warning_icon_paddingEnd="9dp"
+        app:warning_icon_paddingEnd="5dp"
         app:warning_textStyle="@style/SignUp.Warning" />
 
     <com.wisape.android.widget.SignUpEditText

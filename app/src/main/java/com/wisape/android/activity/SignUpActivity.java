@@ -94,7 +94,7 @@ public class SignUpActivity extends BaseActivity implements SignUpEditText.OnAct
         string.setSpan(new UnderlineSpan(), 0, string.length(), 0);
         forgetPassword.setText(string);
 
-        SpannableStringBuilder style=new SpannableStringBuilder("Don't have an Account?Sign Up");
+        SpannableStringBuilder style=new SpannableStringBuilder("Don't have an Account? Sign Up");
         style.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.app_sixth_transparent_50p)), 0, 22, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         textGotoRegister.setText(style);
     }

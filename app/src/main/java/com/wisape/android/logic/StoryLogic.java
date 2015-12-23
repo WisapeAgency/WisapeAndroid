@@ -170,6 +170,22 @@ public class StoryLogic {
         return true;
     }
 
+    /**
+     * 上传story压缩包
+     * @param storyId　story服务器ID
+     * @param storyUri 本地story路径
+     */
+    public void uploadZip(long storyId,Uri storyUri){
+        try {
+            String zipName = String.format(Locale.US, "%1$s.%2$s", storyUri.getLastPathSegment(), SUFFIX_STORY_COMPRESS);
+            Uri storyZip = ZipUtils.zip(storyUri, EnvironmentUtils.getAppTemporaryDirectory(), zipName);
+//            attr.story = storyZip;
+        } catch (IOException e) {
+            LogUtil.e("生成story压缩包出错!", e);
+//            return false;
+        }
+    }
+
 
     public boolean saveStoryLocal(Context context, StoryEntity story) {
         DatabaseHelper helper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
